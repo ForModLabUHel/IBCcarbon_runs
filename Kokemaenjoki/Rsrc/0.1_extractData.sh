@@ -15,4 +15,4 @@
 
 module load r-env
 echo "TMPDIR=/scratch/project_2000994" > .Renviron
-srun Rscript --no-save 0.1extractData.r
+srun Rscript --no-save 0.1_extractData.r
