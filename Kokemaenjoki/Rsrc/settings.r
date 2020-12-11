@@ -4,8 +4,8 @@
 # }
 
 ###choose PREBAS version
-vPREBAS <- "v0.2.x"   #### choose PREBAS verson to run the model  "master"
-devtools::install_github("ForModLabUHel/Rprebasso", ref=vPREBAS)
+# vPREBAS <- "v0.2.x"   #### choose PREBAS verson to run the model  "master"
+# devtools::install_github("ForModLabUHel/Rprebasso", ref=vPREBAS)
 
 library(raster)
 library(rgdal)
