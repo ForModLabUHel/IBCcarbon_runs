@@ -1,6 +1,10 @@
 # load("/scratch/project_2000994/PREBASruns/resDE_n4_pMAP.rdata")
 
 # setwd("C:/Users/minunno/Documents/research/ibc-carbon/EvoRun")
+devtools::source_url("https://github.com/ForModLabUHel/IBCcarbon_runs/Kokemaenjoki/Rsrc/settings.r")
+
+source_url("https://raw.githubusercontent.com/ForModLabUHel/satRuns/master/Rsrc/functions.r")
+
 setwd(pathtoken)
 
 data.all <- fread("kokeInputs")
@@ -16,83 +20,7 @@ areaTot <- sum(data.all$N)
 data.all = data.all[ba < 32766]
 data.all = data.all[!is.na(cons)]
 
-# data.shape <- readOGR("C:/Users/minunno/Documents/research/ibc-carbon/EVOarea/hyperlentoehdotus.shp")
-# # data.shape <- readOGR("/wrk/mpeltoni/DONOTREMOVE/Ilmastopaneeli_toprocess/codeshare/EVOarea/hyperlentoehdotus.shp")
-# 
-# data.luke <- fread("lukeInputs/data.proc.2.txt")
-# 
-# coordinates(data.luke) = c("x", "y")
-# crs(data.luke) <- data.shape@proj4string
-# evo_subset <- data.luke[data.shape, ]
-# dim(evo_subset)
-# data.evo <- as.data.table(evo_subset)
 
-###how to extract data from raster
-# ciao <- raster("ba2.tif")
-# r2 <- crop(ciao, extent(data.shape))
-# r3 <- mask(r2, data.shape)
-
-# data.evo <- fread("/wrk/mpeltoni/DONOTREMOVE/Ilmastopaneeli_toprocess/codeshare/EVOarea/input_evo.txt")
-
-
-# model for Hc  estimation
-HcMod <- function(H,D,N,BA,V,Age){
-  b0 <- -3.2697
-  bH <- 0.4125
-  bD <- 0.3769
-  bH.D <- -0.7335
-  bN <- 0.1117
-  bBA <- -0.1052
-  bV <- 0.4796
-  bAge <- 0.1568
-  stand <- -3.14E-12
-  plotx <- -7.07E-13
-  Cb = exp(b0 + bH*log(H)+ bD *log(D) + bH.D *(H/D) +
-             bN * log(N)+ bBA * log(BA) + bV * log(V) +  bAge * log(Age) +stand+plotx)
-  
-  return(pmin(Cb,0.2*H))
-}
-
-sample_data.f = function(data.all, nSample) {
-  cloudpixels = data.all[, sum(ba==32766)]
-  nonforest = data.all[, sum(ba==32767)]
-  forest = data.all[, sum(ba< 32766)]
-  AREA = (forest + cloudpixels) * 16 * 16 * 1000 #m2
-  AREA_1000ha = AREA / 10000 / 1000
-  
-  ## REMOVE CLOUD COVERED, AND WHERE cons = NA (...? why)
-  data.all = data.all[ba < 32766]
-  data.all = data.all[!is.na(cons)]
-  
-  ## REDUCE SAMPLE FOR TESTING ---------------------------------------
-  smp = floor(seq(1, dim(data.all)[1], len=nSample))
-  data.sample = data.all[smp]
-  
-  # summary(data.sample[, 3:11])
-  
-  for (col in colnames(data.sample)[c(3, 5:11)]) set(data.sample, j=col,
-                                                     value=as.double(data.sample[[col]]))
-  
-  ## -----------------------------------------------------------------
-  
-  
-  ## AVOID ZERO CASES
-  
-  data.sample$dbh = as.double(data.sample$dbh)
-  
-  data.sample[pine == 0 & spruce == 0 & decid ==0 & fert ==1, decid:=1  ]
-  data.sample[pine == 0 & spruce == 0 & decid ==0 & fert <= 3 & fert > 1, spruce:=1  ]
-  data.sample[pine == 0 & spruce == 0 & decid ==0 & fert >= 4, pine:=1  ]
-  siteX <- union(which(data.sample$ba <=0.041),which(data.sample$h<= 15))
-  siteX <- union(siteX,which(data.sample$dbh<=0.5))
-  data.sample$nTree <- data.sample$ba/(pi/4*( data.sample$dbh/100)^2)
-  siteNN <- which(data.sample$nTree>5000)
-  siteX <- union(siteX,siteNN)
-  data.sample[siteX,h:=15]
-  data.sample[siteX,dbh:=0.5]
-  data.sample[siteX,ba:=0.0431969]
-  data.sample
-}
 
 
 # StartingYear = climate data that detrermines simulation period must have year greater than this.
