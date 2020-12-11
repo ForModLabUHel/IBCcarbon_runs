@@ -1,6 +1,5 @@
-.libPaths(c("/scratch/project_2000994/project_rpackages", .libPaths()))
-setwd("/scratch/project_2000994/PREBASruns/Kokemaenjoki")
-source("initializeMod.r")
+devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/Kokemaenjoki/Rsrc/settings.r")
+source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/Kokemaenjoki/Rsrc/functions.r")
 sampleIDs <- 1:12
 for(sampleID in sampleIDs){
   set.seed(1)
