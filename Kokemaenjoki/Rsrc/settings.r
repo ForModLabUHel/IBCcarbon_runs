@@ -28,3 +28,18 @@ forCent <- readOGR(dsn = "/scratch/project_2000994/PREBASruns/Kokemaenjoki/shape
 ####paths
 pathtoken = "/scratch/project_2000994/PREBASruns/Kokemaenjoki/"
 climatepath = "/scratch/project_2000994/RCP/"
+
+setwd(pathtoken)
+
+data.all <- fread("input/kokeInputs")
+setnames(data.all,"consArea","cons")
+cloudpixels = data.all[, sum(ba==32766)]
+nonforest = data.all[, sum(ba==32767)]
+forest = data.all[, sum(ba< 32766)]
+AREA = (forest + cloudpixels) * 16 * 16 * 1000 #m2
+AREA_1000ha = AREA / 10000 / 1000
+data.all[,area:=N*16^2/10000]
+areaTot <- sum(data.all$N)
+## REMOVE CLOUD COVERED, AND WHERE cons = NA (...? why)
+data.all = data.all[ba < 32766]
+data.all = data.all[!is.na(cons)]
