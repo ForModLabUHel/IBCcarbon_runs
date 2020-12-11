@@ -11,7 +11,6 @@ sample_data.f = function(data.all, nSample) {
   ## REMOVE CLOUD COVERED, AND WHERE cons = NA (...? why)
   data.all = data.all[ba < 32766]
   data.all = data.all[!is.na(cons)]
-  data.all = data.all[landclass == 1]
   
   ## REDUCE SAMPLE FOR TESTING ---------------------------------------
   smp = floor(seq(1, dim(data.all)[1], len=nSample))
@@ -28,14 +27,49 @@ sample_data.f = function(data.all, nSample) {
   ## AVOID ZERO CASES
   
   data.sample$dbh = as.double(data.sample$dbh)
-  data.sample[ba <=0.041, ba:=0.041]
+  
   data.sample[pine == 0 & spruce == 0 & decid ==0 & fert ==1, decid:=1  ]
   data.sample[pine == 0 & spruce == 0 & decid ==0 & fert <= 3 & fert > 1, spruce:=1  ]
   data.sample[pine == 0 & spruce == 0 & decid ==0 & fert >= 4, pine:=1  ]
-  data.sample[ h<= 15, h:=15]
-  data.sample[dbh<=0.5, dbh:=0.5]
+  siteX <- union(which(data.sample$ba <=0.041),which(data.sample$h<= 15))
+  siteX <- union(siteX,which(data.sample$dbh<=0.5))
+  data.sample$nTree <- data.sample$ba/(pi/4*( data.sample$dbh/100)^2)
+  siteNN <- which(data.sample$nTree>5000)
+  siteX <- union(siteX,siteNN)
+  data.sample[siteX,h:=15]
+  data.sample[siteX,dbh:=0.5]
+  data.sample[siteX,ba:=0.0431969]
   data.sample
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # StartingYear = climate data that detrermines simulation period must have year greater than this.
 create_prebas_input.f = function(r_no, clim, data.sample, nYears, startingYear=0) { # dat = climscendataset
