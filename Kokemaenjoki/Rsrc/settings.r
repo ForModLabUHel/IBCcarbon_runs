@@ -62,7 +62,8 @@ if(file.exists("input/kokeInputs")){
 }
 
 
-
+####load data
+load("outSoil/InitSoilCstst_Base.rdata")
 rempast = fread('/scratch/project_2000994/PREBASruns/metadata/Luke_Met_Poistuma_01.csv')
 rempast = rempast[Puutavaralaji %in% c('Kaikki puutavaralajit','Energiapuu')]
 rempast = rempast[Metsakeskusalue != "KOKO MAA"]
