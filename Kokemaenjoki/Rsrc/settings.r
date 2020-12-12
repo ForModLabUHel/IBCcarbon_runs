@@ -15,7 +15,8 @@ library(plyr)
 require(sm)
 library(reshape2)
 library(Rprebasso)
-
+library(parallel)
+nCores <- 12
 
 # name raster file with segs
 rastSegFN <- "/scratch/project_2000994/MVMIsegments/segment-IDs/ls_seg2.img"

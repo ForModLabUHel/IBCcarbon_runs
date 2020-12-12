@@ -205,7 +205,7 @@ runModel <- function(sampleID){
                    harvest=region$HarvLim,
                    energyWood = region$multiEnergyWood)
         
-        # save(out,file=paste0("output/",rcpfile,harscen,"_sample",sampleID,".rdata"))
+        save(out,file=paste0("output/",rcpfile,harscen,"_sample",sampleID,".rdata"))
         rm(region); gc()
         rm(out); gc()
         # out = simSummary.f(region=region, r_no, nYears, startingYear, rcpfile, harscen)
@@ -227,7 +227,6 @@ runModel <- function(sampleID){
       }
     }
   }
-  return(out)
 }
 
 sample_data.f = function(data.all, nSample) {
