@@ -201,9 +201,14 @@ runModel <- function(sampleID){
         # save(initPrebas,HarvLim1,file=paste0("test1",harscen,".rdata"))
         system.time(region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLim1),minDharv = 1.))
         # out <- region$multiOut[,,,,1]
-        out = list(annual=region$multiOut[,,,,1],
+        out = list(annual=region$multiOut[,,varSel,,1],
                    harvest=region$HarvLim,
-                   energyWood = region$multiEnergyWood)
+                   energyWood = region$multiEnergyWood,
+                   fAPAR = region$fAPAR,
+                   ets = region$multiOut[,,5,1,1],
+                   p0 = region$multiOut[,,6,1,1],
+                   siteType = region$multiOut[,1,3,1,1],
+                   GVout = region$GVout)
         
         save(out,file=paste0("output/",rcpfile,harscen,"_sample",sampleID,".rdata"))
         rm(region); gc()

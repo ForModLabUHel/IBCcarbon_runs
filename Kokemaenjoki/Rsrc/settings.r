@@ -17,7 +17,7 @@ library(reshape2)
 library(Rprebasso)
 library(parallel)
 nCores <- 12
-
+varSel <- c(8,9,11:14,17:18,22,24:33,37:39,42:46)
 # name raster file with segs
 rastSegFN <- "/scratch/project_2000994/MVMIsegments/segment-IDs/ls_seg2.img"
 
