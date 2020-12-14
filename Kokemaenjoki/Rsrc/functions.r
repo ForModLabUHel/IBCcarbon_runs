@@ -593,260 +593,256 @@ simSummary.f = function(region=region, r_no, nYears, startingYear, rcpfile, hars
              grossgrowth_INAREA, dbh, age, gpp, npp, nep, B_tree, lproj)
 }
 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# # StartingYear = climate data that detrermines simulation period must have year greater than this.
-# create_prebas_input.f = function(r_no, clim, data.sample, nYears, startingYear=0) { # dat = climscendataset
-#   
-#   nSites <- nrow(data.sample)
-#   
-#   ###site Info matrix. nrow = nSites, cols: 1 = siteID; 2 = climID; 3=site type;
-#   ###4 = nLayers; 5 = nSpecies;
-#   ###6=SWinit;   7 = CWinit; 8 = SOGinit; 9 = Sinit
-#   
-#   siteInfo <- matrix(c(NA,NA,NA,160,0,0,20,3,3),nSites,9,byrow = T)
-#   #siteInfo <- matrix(c(NA,NA,NA,3,3,160,0,0,20),nSites,9,byrow = T)
-#   siteInfo[,1] <- 1:nSites
-#   siteInfo[,2] <- data.sample[,id]
-#   siteInfo[,3] <- data.sample[,fert]
-#   
-#   litterSize <- matrix(0,3,3)
-#   litterSize[1,1:2] <- 30
-#   litterSize[1,3] <- 10
-#   litterSize[2,] <- 2
-#   
-#   ###Initialise model
-#   # initVardension nSites,variables, nLayers
-#   # variables: 1 = species; 2 = Age; 3 = H; 4=dbh; 5 = ba; 6 = Hc
-#   initVar <- array(NA, dim=c(nSites,6,3))
-#   data.sample[,baP:= (ba * pine/(pine+spruce+decid))]
-#   data.sample[,h:= h/10]
-#   data.sample[,N:=ba/(pi*(dbh/2)^2/10000)]
-#   data.sample[,VforHc:= N*(pi*(dbh/2)^2/10000)*h/3]
-#   data.sample[,hc:= pmax(0,HcMod(h,dbh,N,ba,VforHc,age))]
-#   
-#   initVar[,1,] <- as.numeric(rep(1:3,each=nSites))
-#   initVar[,2,] <- as.numeric(data.sample[,age])
-#   initVar[,3,] <- as.numeric(data.sample[,h])
-#   initVar[,3,][which(initVar[,3,]<1.5)] <- 1.5  ####if H < 1.5 set to 1.5
-#   
-#   initVar[,4,] <- as.numeric(data.sample[,dbh])
-#   # initVar[,5,1] <- as.numeric(data.sample[,(ba * pine/(pine+spruce+decid))])
-#   # initVar[,5,2] <- as.numeric(data.sample[,(ba * spruce/(pine+spruce+decid))])
-#   # initVar[,5,3] <- as.numeric(data.sample[,(ba * decid/(pine+spruce+decid))])
-#   initVar[,5,] = 0.
-#   ix = unlist(data.sample[, which.max(c(pine, spruce, decid)), by=1:nrow(data.sample)] [, 2])
-#   for(jx in 1:nSites) initVar[jx,5,ix[jx]] = as.numeric(data.sample[, ba])[jx]
-#   initVar[,6,] <- as.numeric(data.sample[,hc])
-#   
-#   ###check which BA ==0. and set to 0 the rest of the variables
-#   NoPine <- which(initVar[,5,1]==0.)
-#   NoSpruce <- which(initVar[,5,2]==0.)
-#   NoDecid <- which(initVar[,5,3]==0.)
-#   
-#   siteInfo[NoPine,8] <- siteInfo[NoPine,8] - 1
-#   siteInfo[NoSpruce,8] <- siteInfo[NoSpruce,8] - 1
-#   siteInfo[NoDecid,8] <- siteInfo[NoDecid,8] - 1
-#   
-#   #siteInfo[NoPine,4] <- siteInfo[NoPine,4] - 1
-#   #siteInfo[NoSpruce,4] <- siteInfo[NoSpruce,4] - 1
-#   #siteInfo[NoDecid,4] <- siteInfo[NoDecid,4] - 1
-#   initVar[NoPine,3:6,1] <- 0.
-#   initVar[NoSpruce,3:6,2] <- 0.
-#   initVar[NoDecid,3:6,3] <- 0.
-#   initVar[NoSpruce,,2] <- initVar[NoSpruce,,3]
-#   initVar[NoPine,,1:2] <- initVar[NoPine,,2:3]
-#   
-#   # initVar[which(initVar[,5,1]==0.),,1] <- initVar[which(initVar[,5,1]==0.),,2]
-#   # initVar[which(initVar[,5,1]==0.),,2] <- initVar[which(initVar[,5,1]==0.),,3]
-#   # initVar[which(initVar[,5,1]==0.),1,3] <- 1
-#   # initVar[which(initVar[,5,1]==0.),3:6,3] <- 0
-#   
-#   if (FALSE) {
-#     dat = dat[id %in% data.sample[, unique(id)]]
-#     
-#     
-#     dat[, pvm:= as.Date('1980-01-01') - 1 + rday ]
-#     dat[, DOY:= as.numeric(format(pvm, "%j"))]
-#     dat[, Year:= as.numeric(format(pvm, "%Y"))]
-#     dat = dat[Year >= startingYear]
-#     dat[DOY==366, DOY:=365]
-#     
-#     
-#     PARtran = t( dcast(dat[, list(id, rday, PAR)], rday ~ id,
-#                        value.var="PAR")[, -1])
-#     TAirtran = t( dcast(dat[, list(id, rday, TAir)], rday ~ id,
-#                         value.var="TAir")[, -1])
-#     VPDtran = t( dcast(dat[, list(id, rday, VPD)], rday ~ id,
-#                        value.var="VPD")[, -1])
-#     Preciptran = t( dcast(dat[, list(id, rday, Precip)], rday ~ id,
-#                           value.var="Precip")[, -1])
-#     CO2tran = t( dcast(dat[, list(id, rday, CO2)], rday ~ id,
-#                        value.var="CO2")[, -1])
-#   }
-#   siteInfo[, 2]  = match(siteInfo[, 2], as.numeric(rownames(clim[[1]])))
-#   
-#   defaultThin=as.numeric(1-data.sample[, cons])
-#   ClCut = as.numeric(1-data.sample[, cons])
-#   ## Set to match climate data years
-#   
-#   initPrebas <- InitMultiSite(nYearsMS = rep(nYears,nSites),siteInfo=siteInfo,
-#                               litterSize = litterSize,#pAWEN = parsAWEN,
-#                               defaultThin=defaultThin,
-#                               ClCut = ClCut,
-#                               multiInitVar = as.array(initVar),
-#                               PAR = clim[[1]][, 1:(nYears*365)],
-#                               TAir=clim[[2]][, 1:(nYears*365)],
-#                               VPD=clim[[3]][, 1:(nYears*365)],
-#                               Precip=clim[[4]][, 1:(nYears*365)],
-#                               CO2=clim[[5]][, 1:(nYears*365)],
-#                               yassoRun = 1,lukeRuns = 1.)
-#   initPrebas
-# }
-# 
-# yasso.mean.climate.f = function(dat, data.sample, startingYear, nYears){
-#   dat = dat[id %in% data.sample[, unique(id)]]
-#   dat[, DOY:=rep(1:365, len=dim(dat)[1])]
-#   dat[, Year:=rep(1980:2099, each=365)]
-#   #dat[, Year:= as.numeric(format(pvm, "%Y"))]
-#   dat = dat[Year >= startingYear & Year <= startingYear+nYears]
-#   dat[, pvm:= as.Date(paste(Year, '-01-01', sep="")) - 1 + DOY ]
-#   #dat[, DOY:= as.numeric(format(pvm, "%j"))]
-#   dat[, Mon:= as.numeric(format(pvm, "%m"))]
-#   #dat[DOY==366, DOY:=365]
-#   Tmean = dat[, mean(TAir), by = Year]
-#   Tsum = dat[, sum(ifelse(TAir>5, TAir-5, 0)), by=.(id, Year)][, mean(V1), by=Year]
-#   PAR = dat[, mean(PAR), by = Year]
-#   VPD = dat[, mean(VPD), by = Year]
-#   CO2 = dat[, mean(CO2), by = Year]
-#   Precip = dat[, sum(Precip), by = .(id, Year)][, mean(V1), by=Year]
-#   Tampl = dat[, .(mean(TAir)), by = .(id, Year, Mon)][, (max(V1)-min(V1))/2, by=Year]
-#   
-#   out = cbind(Tmean, Precip[, -1], Tampl[, -1], CO2[, -1], PAR[, -1], VPD[, -1], Tsum[, -1])
-#   colnames(out) = c('Year','Tmean','Precip','Tampl', 'CO2', "PAR", "VPD", "Tsum5")
-#   out
-# }
-# 
-# 
-# prep.climate.f = function(dat, data.sample, startingYear, nYears){
-#   dat = dat[id %in% data.sample[, unique(id)]]
-#   dat[, pvm:= as.Date('1980-01-01') - 1 + rday ]
-#   dat[, DOY:= as.numeric(format(pvm, "%j"))]
-#   dat[, Mon:= as.numeric(format(pvm, "%m"))]
-#   dat[, Year:= as.numeric(format(pvm, "%Y"))]
-#   dat = dat[Year >= startingYear & Year <= startingYear+nYears]
-#   dat[DOY==366, DOY:=365]
-#   
-#   PARtran = t( dcast(dat[, list(id, rday, PAR)], rday ~ id,
-#                      value.var="PAR")[, -1])
-#   TAirtran = t( dcast(dat[, list(id, rday, TAir)], rday ~ id,
-#                       value.var="TAir")[, -1])
-#   VPDtran = t( dcast(dat[, list(id, rday, VPD)], rday ~ id,
-#                      value.var="VPD")[, -1])
-#   Preciptran = t( dcast(dat[, list(id, rday, Precip)], rday ~ id,
-#                         value.var="Precip")[, -1])
-#   CO2tran = t( dcast(dat[, list(id, rday, CO2)], rday ~ id,
-#                      value.var="CO2")[, -1])
-#   list(PARtran, TAirtran, VPDtran, Preciptran, CO2tran)
-# }
-# 
-# 
-# simSummary.f = function(region=region, r_no, nYears, startingYear, rcpfile, harscen) {
-#   
-#   out = region[['multiOut']]
-#   VOL = out[, , 30, , 1]
-#   VOL = apply(VOL, c(1,2), sum)
-#   ## SO THIS IS NOW MEAN VOL PER HA OF nSample SIMULATED SAMPLES (by YEAR):
-#   VOL = apply(VOL, 2, mean)
-#   ## Multiply by area (tha)
-#   VOL_INAREA = VOL * nfiareas[ID==r_no, AREA] * 1000 / 1000000 ## mill m3
-#   ## at the beginning 207.7 mill m3, vrt 189.9 according to NFI (for region 7 = Keski-Suomi)
-#   
-#   Vmort = out[, , 42, , 1]
-#   Vmort = apply(Vmort, c(1,2), sum)
-#   ## SO THIS IS NOW MEAN VOL PER HA OF nSample SIMULATED SAMPLES (by YEAR):
-#   Vmort = apply(Vmort, 2, mean)
-#   Vmort_INAREA = Vmort * nfiareas[ID==r_no, AREA] * 1000 / 1000000 ## mill m3
-#   
-#   
-#   ## WHY THIS IS NOT THE SAME AS har?
-#   Vharvested = out[, , 37, , 1]
-#   Vharvested = apply(Vharvested, c(1,2), sum)
-#   ## SO THIS IS NOW MEAN VOL PER HA OF nSample SIMULATED SAMPLES (by YEAR):
-#   Vharvested = apply(Vharvested, 2, mean)
-#   Vharvested_INAREA = Vharvested * nfiareas[ID==r_no, AREA] * 1000 / 1000000 ## mill m3
-#   
-#   grossgrowth = out[, , 43, , 1]
-#   grossgrowth = apply(grossgrowth, c(1,2), sum)
-#   ## SO THIS IS NOW MEAN VOL PER HA OF nSample SIMULATED SAMPLES (by YEAR):
-#   grossgrowth = apply(grossgrowth, 2, mean)
-#   grossgrowth_INAREA = grossgrowth * nfiareas[ID==r_no, AREA] * 1000 / 1000000 ## mill m3
-#   
-#   dbh = out[, , 12, , 1]
-#   dbh = apply(dbh, c(1,2), mean)
-#   ## SO THIS IS NOW MEAN VOL PER HA OF nSample SIMULATED SAMPLES (by YEAR):
-#   dbh = apply(dbh, 2, mean)
-#   
-#   age = out[, , 7, , 1]
-#   age = apply(age, c(1,2), mean)
-#   ## SO THIS IS NOW MEAN VOL PER HA OF nSample SIMULATED SAMPLES (by YEAR):
-#   age = apply(age, 2, mean)
-#   
-#   gpp = out[, , 10, , 1]
-#   gpp = apply(gpp, c(1,2), sum)
-#   ## SO THIS IS NOW MEAN VOL PER HA OF nSample SIMULATED SAMPLES (by YEAR):
-#   gpp = apply(gpp, 2, mean)
-#   #npp_INAREA = npp * nfiareas[ID==7, AREA] * 1000 / 1000000 ## mill m3
-#   
-#   
-#   npp = out[, , 18, , 1]
-#   npp = apply(npp, c(1,2), sum)
-#   ## SO THIS IS NOW MEAN VOL PER HA OF nSample SIMULATED SAMPLES (by YEAR):
-#   npp = apply(npp, 2, mean)
-#   #npp_INAREA = npp * nfiareas[ID==7, AREA] * 1000 / 1000000 ## mill m3
-#   
-#   
-#   nep = out[, , 46, , 1]
-#   nep = apply(nep, c(1,2), sum, na.rm=TRUE)
-#   ## SO THIS IS NOW MEAN VOL PER HA OF nSample SIMULATED SAMPLES (by YEAR):
-#   nep = apply(nep, 2, mean)
-#   
-#   
-#   B_tree = out[, , 35, , 1]
-#   B_tree = apply(B_tree, c(1,2), sum)
-#   ## SO THIS IS NOW MEAN VOL PER HA OF nSample SIMULATED SAMPLES (by YEAR):
-#   B_tree = apply(B_tree, 2, mean)
-#   
-#   lproj = out[, , 21, , 1]
-#   lproj = apply(lproj, c(1,2), mean)
-#   ## SO THIS IS NOW MEAN VOL PER HA OF nSample SIMULATED SAMPLES (by YEAR):
-#   lproj = apply(lproj, 2, mean)
-#   data.table(r_no, rcpfile, harscen, year=startingYear + (1:nYears),
-#              VOL, VOL_INAREA, Vharvested, Vmort, Vmort_INAREA,
-#              grossgrowth_INAREA, dbh, age, gpp, npp, nep, B_tree, lproj)
-# }
+# this function create maps in tif format from raw data.
+createTif <- function(climate, management, yearOut, variable, species, startingYear){
+  simYear <- yearOut - startingYear
+  
+  files <- intersect(list.files(path= "output/", pattern = climate), list.files(path= "output/",pattern = management))
+  
+  outX <- data.table()
+  ops <- split(data.all, sample(1:115, nrow(data.all), replace=T))
+  
+  for(i in 1:length(files)){
+    sampleID <- paste0("sample",i,".")
+    
+    fileX <- files[grep(sampleID,files,fixed = T)]
+    
+    load(paste0("output/",fileX))
+    
+    out <- data.table(out$annual[,simYear,variable,])
+    
+    set.seed(1)
+    sampleX <- ops[[i]]
+    sampleX[,area := N*16^2/10000]
+    sampleX[,id:=climID]
+    
+    outX <- rbind(outX,cbind(sampleX$segID,out))
+    print(i)
+  }
+  
+  
+  
+  setnames(outX,c("segID","pine","spruce","birch"))
+  
+  outX[, tot := rowSums(.SD), .SDcols = c("pine","spruce","birch")]
+  
+  
+  outXY <- merge(kokeIDsTab,outX,all = T)
+  
+  ###create raster 
+  rastX <- rasterFromXYZ(outXY[,c("x","y",species),with=F])
+  crs(rastX) <- crs(kokeShp)
+  
+  rastName <- paste0("outRast/",climate,"_",management,"_var",varNames[variable],
+                     "_spec",species,"_year",yearOut,".tif")
+  writeRaster(rastX,filename = rastName)
+}
+
+# this function create maps in tif format from data.tables selecting one year or the average of a time priod if yearOut is a vector of years
+createTifFromDT <- function(climate, management, yearOut, variable, species, startingYear){
+  simYear <- yearOut - startingYear
+  fileDT=paste0("outputDT/",varNames[variable],"_",management,"_",climate,".rdata")  
+  load(fileDT)
+  
+  outX <- t(get(varNames[variable]))
+  if (length(simYear)==1) outX <- outX[simYear,]
+  if (length(simYear)>1) outX <- colMeans(outX[simYear,],na.rm = T)
+  
+  segID <- areas <-numeric(0)
+  set.seed(1)
+  ops <- split(data.all, sample(1:115, nrow(data.all), replace=T))
+  for(i in 1:115){
+    # set.seed(1)
+    sampleX <- ops[[i]]
+    sampleX[,area := N*16^2/10000]
+    sampleX[,id:=climID]
+    segID <- c(segID,sampleX$segID)
+    areas <- c(areas,sampleX$area)
+    # print(i)
+  }
+  outX <- data.table(cbind(segID,areas,outX))
+  
+  setnames(outX,c("segID","areas",varNames[variable]))
+  
+  # outX[, tot := rowSums(.SD), .SDcols = c("pine","spruce","birch")]
+  
+  outXY <- merge(kokeIDsTab,outX,all = T)
+  
+  ###create raster 
+  rastX <- rasterFromXYZ(outXY[,c("x","y",varNames[variable]),with=F])
+  crs(rastX) <- crs(kokeShp)
+  
+  rastName <- paste0("outRast/",climate,"_",management,"_var",varNames[variable],
+                     "_spec",species,"_year",min(yearOut),"_",max(yearOut),".tif")
+  writeRaster(rastX,filename = rastName,overwrite=T)
+}
+
+
+
+##function to compile all data and create data.table 
+createDT <- function(climate, management,variable, species, startingYear){
+  
+  files <- intersect(list.files(path= "output/", pattern = climate), list.files(path= "output/",pattern = management))
+  
+  for (ij in variable) assign(varNames[ij],data.table())
+  VenergyWood <- WenergyWood <- data.table()
+  
+  # segID <- areas <-numeric(0)
+  
+  for(i in 1:length(files)){
+    sampleID <- paste0("sample",i,".")
+    
+    fileX <- files[grep(sampleID,files,fixed = T)]
+    
+    load(paste0("output/",fileX))
+    
+    ###sum harvests
+    if(i==1){
+      harvest <- out$harvest
+    }else{
+      harvest <- harvest+out$harvest  
+    }
+    
+    VenergyWood <- rbind(VenergyWood,apply(out$energyWood[,,,1],1:2,sum))
+    WenergyWood <- rbind(WenergyWood,apply(out$energyWood[,,,2],1:2,sum))
+    
+    margin= 1:2#(length(dim(out$annual[,,variable,]))-1)
+    for (ij in variable) assign(varNames[ij],
+                                data.table(rbind(eval(parse(text = varNames[ij])),
+                                                 apply(out$annual[,,ij,],margin,sum))))
+    
+    print(i)
+  }
+  
+  ###proc and save total harvests
+  totHarvest <- data.table(harvest)
+  setnames(totHarvest,c("roundWood","energyWood"))
+  save(totHarvest,file=paste0("outputDT/","totHarvest","_",management,"_",climate,".rdata"))
+  
+  save(VenergyWood,file=paste0("outputDT/","VenergyWood","_",management,"_",climate,".rdata"))
+  save(WenergyWood,file=paste0("outputDT/","WenergyWood","_",management,"_",climate,".rdata"))
+  
+  
+  for(ij in variable) save(list=varNames[ij],file=paste0("outputDT/",varNames[ij],"_",management,"_",climate,".rdata"))
+}
+
+##function to compile all data and create data.table by species
+createDTbySp <- function(climate, management,variable, species, startingYear){
+  
+  files <- intersect(list.files(path= "output/", pattern = climate), list.files(path= "output/",pattern = management))
+  
+  for (ij in variable){
+    assign(paste0(varNames[ij],1),data.table())
+    assign(paste0(varNames[ij],2),data.table())
+    assign(paste0(varNames[ij],3),data.table())
+  }
+  # segID <- areas <-numeric(0)
+  
+  for(i in 1:length(files)){
+    sampleID <- paste0("sample",i,".")
+    
+    fileX <- files[grep(sampleID,files,fixed = T)]
+    
+    load(paste0("output/",fileX))
+    
+    margin= 1:2#(length(dim(out$annual[,,variable,]))-1)
+    for (ij in variable){
+      assign(paste0(varNames[ij],1),
+             data.table(rbind(eval(parse(text = paste0(varNames[ij],1))),
+                              out$annual[,,ij,1])))
+      assign(paste0(varNames[ij],2),
+             data.table(rbind(eval(parse(text = paste0(varNames[ij],2))),
+                              out$annual[,,ij,2])))
+      assign(paste0(varNames[ij],3),
+             data.table(rbind(eval(parse(text = paste0(varNames[ij],3))),
+                              out$annual[,,ij,3])))
+    } 
+    
+    print(i)
+  }
+  
+  for(ij in variable){
+    save(list=c(paste0(varNames[ij],1),paste0(varNames[ij],2),paste0(varNames[ij],3)),
+         file=paste0("outputDT/",varNames[ij],"_",management,"_",climate,"_bySpecies.rdata"))
+  } 
+}
+
+
+# this function compute the annual totals of the region from data.tables 
+aTOTfromDT <- function(yearOut, variable, species="tot", startingYear){
+  simYear <- yearOut - startingYear
+  segID <- areas <-numeric(0)
+  set.seed(1)
+  ops <- split(data.all, sample(1:115, nrow(data.all), replace=T))
+  for(i in 1:115){
+    sampleX <- ops[[i]]
+    sampleX[,area := N*16^2/10000]
+    sampleX[,id:=climID]
+    segID <- c(segID,sampleX$segID)
+    areas <- c(areas,sampleX$area)
+    # print(i)
+  }
+  files <- list.files("outputDT/",pattern=paste0(varNames[variable],"_"))
+  if (species=="tot") files <- files[-grep("bySpecies",files)]
+  allOut <- data.table()
+  for(i in 1:length(files)){
+    load(paste0("outputDT/",files[i]))
+    
+    dats <- strsplit(files[i], "[_.]+")
+    if(variable %in% 32:33) dats[[1]] <- dats[[1]][-2]
+    climate=dats[[1]][3]
+    management=dats[[1]][2]
+    outX <- get(varNames[variable])*areas
+    outX <- colMeans(outX,na.rm=T)
+    outX <- data.table(cbind(outX,climate,management))
+    outX[,year:=yearOut]
+    allOut <- rbind(allOut,outX)
+  }
+  
+  setnames(allOut,c(varNames[variable],"climate","management","year"))
+  allOut$climate <- factor(allOut$climate)
+  allOut$management <- factor(allOut$management)
+  allOut[,1] <- as.numeric(unlist(allOut[,1]))
+  
+  fwrite(allOut,file= paste0("plots/",varNames[variable],"_DT.txt"))  
+  
+  p <- ggplot(data=allOut, 
+              aes_string(x="year", y=varNames[variable])) +
+    # scale_shape_manual(values=1:nlevels(countryTot$harvScenario)) +
+    labs(title = varNames[variable])+
+    # geom_smooth() +
+    xlab("Year") +
+    ylab("") +
+    geom_point(aes(colour=management, shape = climate,group=interaction(management, climate))) +
+    geom_line(aes(colour=management, group=interaction(management, climate)))
+  
+  pdf(file=paste0("plots/",varNames[variable], ".pdf"))
+  print(p)
+  dev.off()
+}
+
+###compute total biomass from DTs
+Wtot <- function(manClim){
+  files <- paste0("outputDT/",varNames[c(24:25,31:33)],manClim)
+  for(i in 1:5) load(files[i])
+  Wtot <- Wstem + W_croot + wf_STKG + Wbranch + WfineRoots
+  save(Wtot,file = paste0("outputDT/","Wtot",manClim))
+}
+
+
+createPlotfromDT <- function(path, variable){
+  DT <- fread(paste0(path,varNames[variable],"_DT.txt"))
+  p <- ggplot(data=DT, 
+              aes_string(x="year", y=varNames[variable])) +
+    # scale_shape_manual(values=1:nlevels(countryTot$harvScenario)) +
+    labs(title = varNames[variable])+
+    # geom_smooth() +
+    xlab("Year") +
+    ylab("") +
+    geom_point(aes(colour=management, shape = climate,group=interaction(management, climate))) +
+    geom_line(aes(colour=management, group=interaction(management, climate)))
+  
+  png(file=paste0("plots/",varNames[variable], ".png"),width = 500,height = 500)
+  print(p)
+  dev.off()
+}
