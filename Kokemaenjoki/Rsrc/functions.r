@@ -707,10 +707,11 @@ createDT <- function(climate, management,variable, species, startingYear){
     WenergyWood <- rbind(WenergyWood,apply(out$energyWood[,,,2],1:2,sum))
     
     margin= 1:2#(length(dim(out$annual[,,variable,]))-1)
-    for (ij in variable) assign(varNames[ij],
-                                data.table(rbind(eval(parse(text = varNames[ij])),
-                                                 apply(out$annual[,,ij,],margin,sum))))
-    
+    for (ij in variable) {
+     varIndx <- match(varNames[ij],varNames[varSel])  
+     assign(varNames[ij],data.table(rbind(eval(parse(text = varNames[ij])),
+                 apply(out$annual[,,varIndx,],margin,sum))))
+    }    
     print(i)
   }
   

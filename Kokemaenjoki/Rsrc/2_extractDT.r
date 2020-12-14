@@ -1,10 +1,16 @@
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/Kokemaenjoki/Rsrc/settings.r")
 source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/Kokemaenjoki/Rsrc/functions.r")
 
+load("input/segIDkoke.rdata")
+setnames(kokeIDsTab,"ls_seg2","segID")
+kokeShp <- readOGR(dsn = "shapes", layer = "Koke_Paavesistoalue_VALUE")
+varNames[c(9,26:29,43:46)] <- c("ResTot","LitFol","LitFroot","LitBranch","LitWood",
+                                "grossGrowth","GPP","Rh","NEP")
 clims <- "CurrClim" #c("CurrClim", "rcp26", "rcp45")
-mans <- c("MaxSust", "Base","Low") #"Base"
+mans <- "Base"#c("MaxSust", "Base","Low") #"Base"
 yearOut <- 2060
- variable <- c(43,7,8,18,17,24:33,37,38,39,41,44:46)
+variable <- c(43,7,8,18,17,24:33,37,38,39,41,44:46)
+# varSelindx <- match(varNames[c(43,7,8,18,17,24:33,37,38,39,41,44:46)],varNames[varSel])
  # variable <- c(30,37,42,43)
 varNames[47] <- "Wtot"
 species <- "tot" #1,2,3
