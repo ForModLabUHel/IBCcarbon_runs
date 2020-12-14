@@ -1,16 +1,20 @@
+module load r-env
+echo "TMPDIR=/scratch/project_2000994" > .Renviron
+srun Rscript --no-save 2_extractDT.r
+
 #!/bin/bash -l
 # created: Jun 22, 2018 3:37 PM
 # author: minunnof
-#SBATCH --job-name=test
+#SBATCH --job-name=extDT
 #SBATCH --partition=small
 #SBATCH --account=project_2000994
 #SBATCH --output=sbaOut/output_%j.txt
 #SBATCH --error=sbaOut/errors_%j.txt
-#SBATCH --time=05:00:00
+#SBATCH --time=24:00:00
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=12
+#SBATCH --cpus-per-task=1
 #SBATCH --nodes=1
-#SBATCH --mem-per-cpu=30000
+#SBATCH --mem-per-cpu=80000
 #SBATCH --mail-type=END
 #SBATCH --mail-user=francesco.minunno@helsinki.fi
 
@@ -25,5 +29,6 @@ fi
 # Specify a temp folder path
 echo "TMPDIR=/scratch/project_2000994" >> ~/.Renviron
 # Run the R script
-srun singularity_wrapper exec Rscript --no-save runModel_koke1.r
+srun singularity_wrapper exec Rscript --no-save 2_extractDT.r
+
 
