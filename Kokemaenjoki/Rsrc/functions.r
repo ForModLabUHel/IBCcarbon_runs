@@ -847,3 +847,12 @@ createPlotfromDT <- function(path, variable){
   print(p)
   dev.off()
 }
+
+calMean <- function(varX,hscenX,areas){
+  load(paste0("outputDT/",varX,"_",hscenX,"_CurrClim.rdata"))
+  varAreas <- get(varX)*areas
+  # Vareas <- Vareas[-siteX]
+  totX <- colSums(varAreas,na.rm = T)
+  meanX <- totX/sum(areas)#co
+  return(meanX)
+}

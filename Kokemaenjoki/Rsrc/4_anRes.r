@@ -1,24 +1,13 @@
-.libPaths(c("/projappl/project_2000994/project_rpackages", .libPaths()))
-libpath <- .libPaths()[1]
-setwd("/scratch/project_2000994/PREBASruns/Kokemaenjoki/")
-source("extractOutFunctions.R")
-source("initializeMod.r")
-
-clims <- "CurrClim" #c("CurrClim", "rcp26", "rcp45")
-mans <- c("Low", "MaxSust","Base") #"Base"
-
+devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/Kokemaenjoki/Rsrc/settings.r")
+source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/Kokemaenjoki/Rsrc/functions.r")
 
 load("segAreas.rdata")
-rm(list=setdiff(ls(), "areas"))
-gc()
-calMean <- function(varX,hscenX,areas){
-  load(paste0("outputDT/",varX,"_",hscenX,"_CurrClim.rdata"))
-  varAreas <- get(varX)*areas
-  # Vareas <- Vareas[-siteX]
-  totX <- colSums(varAreas,na.rm = T)
-  meanX <- totX/sum(areas)#co
-  return(meanX)
-}
+# rm(list=setdiff(ls(), "areas"))
+# gc()
+
+clims <- "CurrClim" #c("CurrClim", "rcp26", "rcp45")
+mans <- "Base"#c("Low", "MaxSust","Base") #"Base"
+
 
 nYears <- 84
 dtX <- data.table()
@@ -26,13 +15,9 @@ dtX <- data.table()
 variables <- unique(sub("_.*","",list.files("outputDT/")))
 variables[c(19,22)] <- c("W_croot","wf_STKG")
 for(varX in variables){
-  harvScen <- "Base"
-  dtX <- rbind(dtX,cbind(as.numeric(calMean(varX,harvScen,areas)),harvScen,1:nYears,varX))
-  harvScen <- "MaxSust"
-  dtX <- rbind(dtX,cbind(as.numeric(calMean(varX,harvScen,areas)),harvScen,1:nYears,varX))
-  harvScen <- "Low"
-  dtX <- rbind(dtX,cbind(as.numeric(calMean(varX,harvScen,areas)),harvScen,1:nYears,varX))
-  # dtX[,variable:=varX]
+  for(harvScen in mans){
+    dtX <- rbind(dtX,cbind(as.numeric(calMean(varX,harvScen,areas)),harvScen,1:nYears,varX))
+  }
   print(varX)
 }
 
