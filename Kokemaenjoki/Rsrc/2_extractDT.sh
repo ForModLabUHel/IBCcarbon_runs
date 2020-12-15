@@ -1,7 +1,3 @@
-module load r-env
-echo "TMPDIR=/scratch/project_2000994" > .Renviron
-srun Rscript --no-save 2_extractDT.r
-
 #!/bin/bash -l
 # created: Jun 22, 2018 3:37 PM
 # author: minunnof
