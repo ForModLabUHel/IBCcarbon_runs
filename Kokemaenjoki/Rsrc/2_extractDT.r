@@ -6,8 +6,8 @@ setnames(kokeIDsTab,"ls_seg2","segID")
 kokeShp <- readOGR(dsn = "shapes", layer = "Koke_Paavesistoalue_VALUE")
 varNames[c(9,26:29,43:46)] <- c("ResTot","LitFol","LitFroot","LitBranch","LitWood",
                                 "grossGrowth","GPP","Rh","NEP")
-clims <- "CurrClim" #c("CurrClim", "rcp26", "rcp45")
-mans <- "Base"#c("MaxSust", "Base","Low") #"Base"
+clims <- rps#"CurrClim" #c("CurrClim", "rcp26", "rcp45")
+mans <- harvestscenarios#"Base"#c("MaxSust", "Base","Low") #"Base"
 yearOut <- 2060
 variable <- c(43,7,8,18,17,24:33,37,38,39,41,44:46)
 # varSelindx <- match(varNames[c(43,7,8,18,17,24:33,37,38,39,41,44:46)],varNames[varSel])
