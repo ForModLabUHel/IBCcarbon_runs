@@ -25,7 +25,7 @@ per3=2034:2050
 # per1=2017:2030
 # per2=2040:2069
 # per3=2070:2098
-clims <- rps#"CurrClim" #c("CurrClim", "rcp26", "rcp45")
+clims <- rcps#"CurrClim" #c("CurrClim", "rcp26", "rcp45")
 mans <- harvestscenarios#"Base"#c("MaxSust", "Base","Low") #"Base"
 # for(variable in variables){
 for(climate in clims){

@@ -5,7 +5,7 @@ load("segAreas.rdata")
 # rm(list=setdiff(ls(), "areas"))
 # gc()
 
-clims <- rps#"CurrClim" #c("CurrClim", "rcp26", "rcp45")
+clims <- rcps#"CurrClim" #c("CurrClim", "rcp26", "rcp45")
 mans <- harvestscenarios#"Base"#c("MaxSust", "Base","Low") #"Base"
 
 
