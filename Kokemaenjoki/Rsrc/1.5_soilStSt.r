@@ -18,7 +18,7 @@ for(i in 1:3829) weatherYasso[i,,] <- as.matrix(weatherYassoAnnual[id==i & year 
 set.seed(1)
 ops <- split(data.all, sample(1:115, nrow(data.all), replace=T))
 
-sampleID=8
+sampleID=1
 soilTotC <- rh <- data.table()
 soilCststXX <- list()
 ####Calculate steady state
@@ -26,7 +26,7 @@ soilCststXX <- list()
 for(sampleID in 1:115){
   sampleX <- ops[[sampleID]]
   # load("Kokemaenjoki/Rsrc/CurrClim.rdataBase_sample2.rdata")
-  load(paste0("output/CurrClim.rdata",ststScen,"_sample",sampleID,".rdata"))
+  load(paste0("output/",rcps,ststScen,"_sample",sampleID,".rdata"))
   
   indx <- match(varNames[26],varNames[varSel])
   Lf <- apply(out$annual[,,indx,],c(1,3),mean,na.rm=T)
