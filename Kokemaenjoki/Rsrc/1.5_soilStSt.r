@@ -20,10 +20,10 @@ ops <- split(data.all, sample(1:115, nrow(data.all), replace=T))
 
 # sampleID=1
 soilTotC <- rh <- data.table()
-soilCststXX <- list()
+
 ####Calculate steady state
 # test <- list()
-mclapply(1:115, function(sampleID) {
+soilCststXX <- mclapply(1:115, function(sampleID) {
   sampleX <- ops[[sampleID]]
   # load("Kokemaenjoki/Rsrc/CurrClim.rdataBase_sample2.rdata")
   load(paste0("output/",rcps,ststScen,"_sample",sampleID,".rdata"))
