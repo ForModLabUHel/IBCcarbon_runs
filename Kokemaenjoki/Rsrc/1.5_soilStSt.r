@@ -55,7 +55,7 @@ soilCststXX <- mclapply(1:115, function(sampleID) {
   nClimID <- 3829
   climIDs <- sampleX$CurrClimID
   
-  soilCststXX[[sampleID]] <- .Fortran("StstYasso",litter=as.array(litter),
+  soilCststXX <- .Fortran("StstYasso",litter=as.array(litter),
                                       litterSize=as.array(litterSize),
                                       nLayers=as.integer(nLayers), 
                                       nSites=as.integer(nSites),
@@ -87,11 +87,11 @@ soilCststXX <- mclapply(1:115, function(sampleID) {
                                                      c(AWENgv2[ij,],0),litterSize=0,leac=0.,rep(0,5),stSt=1.)[[8]]))
   ####add gvsoilc to first layer foliage soilC
   # check in normal runs where ground vegetation soilC is calculated
-  soilCststXX[[sampleID]]$soilC[,,1,1] <- soilCststXX[[sampleID]]$soilC[,,1,1] + ststGV
-  soilCststXX[[sampleID]]$AWENgv <- AWENgv
+  soilCststXX$soilC[,,1,1] <- soilCststXX$soilC[,,1,1] + ststGV
+  soilCststXX$AWENgv <- AWENgv
   print(sampleID)
   # test[[sampleID]] <- xx[c(1,12)]
-  print(range(apply(soilCststXX[[sampleID]]$soilC/1e4,1,sum)))
+  print(range(apply(soilCststXX$soilC/1e4,1,sum)))
   return(soilCststXX)
 }, mc.cores = nCores)      ## Split this job across 10 cores
 
