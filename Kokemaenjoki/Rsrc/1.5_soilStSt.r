@@ -92,6 +92,7 @@ soilCststXX <- mclapply(1:115, function(sampleID) {
   print(sampleID)
   # test[[sampleID]] <- xx[c(1,12)]
   print(range(apply(soilCststXX[[sampleID]]$soilC/1e4,1,sum)))
+  return(soilCststXX)
 }, mc.cores = nCores)      ## Split this job across 10 cores
 
   save(soilCststXX,file=paste0("outSoil/InitSoilCstst_",ststScen,".rdata"))
