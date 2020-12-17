@@ -26,8 +26,8 @@ runModel <- function(sampleID){
   for(rcpfile in rcps) { ## ---------------------------------------------
     print(date())
     print(rcpfile)
-    if(rcpfile=="CurrClim.rdata"){
-      load(paste(climatepath, rcpfile, sep=""))  
+    if(rcpfile=="CurrClim"){
+      load(paste(climatepath, rcpfile,".rdata", sep=""))  
       #####process data considering only current climate###
       # dat <- dat[rday %in% 1:10958] #uncomment to select some years (10958 needs to be modified)
       maxRday <- max(dat$rday)
@@ -36,7 +36,7 @@ runModel <- function(sampleID){
       dat[,rday:=xday]
       
     } else{
-      load(paste(climatepath, rcpfile, sep=""))  
+      load(paste(climatepath, rcpfile,".rdata", sep=""))  
     }
     # load("C:/Users/minunno/Documents/research/lukeDB/example #2/CanESM2.rcp45.rdata")
     
@@ -55,82 +55,20 @@ runModel <- function(sampleID){
       # data.all = fread(paste("data.proc.", r_no, ".txt",sep=""))
       # dat = dat[id %in% data.all[, unique(id)]]
       gc()
-      # data.all <- data.evo
-      # data.all <- fread("raster/data.procEVO.txt")
-      # data.all <- fread("EVOarea/data.procEVO.txt")
-      # data.all <- data.all[sampleX]
       ## Prepare the same initial state for all harvest scenarios that are simulated in a loop below
       data.sample = sample_data.f(sampleX, nSample)
-      if(rcpfile=="CurrClim.rdata") data.sample$id <- data.sample$CurrClimID
+      if(rcpfile=="CurrClim") data.sample$id <- data.sample$CurrClimID
       totAreaSample <- sum(data.sample$area)
-      # data.sample = rbind(data.sample,sample_data.f(data.all[sampleX], nSample))
-      # if(r_no==1) data.sample[which(id==1350),id:=1351]#####!!!!!!region 1 do not macth climID 1350 in dat
-      # if(r_no==3) data.sample[which(id==5174),id:=5175]#####!!region3 5174 ->5175
-      # if(r_no==12) data.sample[which(id==6689),id:=6688]#####!!region12 6689 -> 6688
-      # if(r_no==15){
-      #   data.sample[which(id==1726),id:=1725]#####!!region15 1726 -> 1725
-      #   data.sample[which(id==1240),id:=1241]#####!!region15 1240 -> 1241
-      # }
-      # yclim_allYears = yasso.mean.climate.f(dat, data.sample, 1980, 119)
-      # 
-      # # fwrite(yclim_allYears, file=paste('results_evo/mean.climate.', r_no, ".nfi", nfiareas[ID == r_no, NFIcode], ".",
-      # #                                   rcpfile, '.txt', sep=""))
-      # yclim =  yclim_allYears[Year >= 1990 & Year < startingYear] ## For Yasso
-      # rm(yclim_allYears)
       
       clim = prep.climate.f(dat, data.sample, startingYear, nYears)
       
       Region = nfiareas[ID==r_no, Region]
-      # harscen="Base"
-      # HarvLim0 = nfiareas[ID==r_no, VOL_fraction]*rem[Scenario == harscen & Area == Region, "1990-startingYear"]
-      # HarvLim0  = (nSample) / nfiareas[ID == r_no, AREA] * HarvLim0
-      # ## First, estimate the soil SS: climate is mean from 1980-2009, forest is startingYear forest, and harvest is
-      # ## Base scenarios harvest
-      # initPrebas = create_prebas_input.f(r_no, clim, data.sample, nYears = 1,
-      #                                    startingYear = startingYear)
-      # #initPrebas$nYears = rep(1, length(initPrebas$nYears))
-      # system.time(region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLim0), minDharv = 15.0))
-      # # initPrebas$nYears = rep(nYears, length(initPrebas$nYears))
-      # 
-      # L = region$multiOut[, 1, c(4, 26:29), , 1]
-      # L = as.data.table(adply(L, c(1,3)))
-      # L = L[, .(sum(Litter_fol + Litter_fr),
-      #           sum(Litter_branch), sum(Litter_wood)), by=.(X1, species)]
-      # L = L[, .(mean(V1), mean(V2), mean(V3)), by=species][species!=0]
-      # L = cbind(L, c(0, 2, 30), c(0, 2, 30), c(0, 2, 10), c(1, 2, 3))[, -1]
-      # 
-      # S = soilCstst(L, as.numeric(yclim[, mean(Tmean)]), as.numeric(yclim[, mean(Tampl)]),
-      #               as.numeric(yclim[, mean(Precip)]),species = 1:3)
-      # S = apply(S,c(1,2),sum)
       
       ## Second, continue now starting from soil SS
-      # initPrebas$nYears = nYears
-      # data.sample = sample_data.f(sampleX, nSample)
-      # if(r_no==1) data.sample[which(id==1350),id:=1351]#####!!!!!!region 1 do not macth climID 1350 in dat
-      # if(r_no==3) data.sample[which(id==5174),id:=5175]#####!!region3 5174 ->5175
-      # if(r_no==12) data.sample[which(id==6689),id:=6688]#####!!region12 6689 -> 6688
-      # if(r_no==15){
-      #   data.sample[which(id==1726),id:=1725]#####!!region15 1726 -> 1725
-      #   data.sample[which(id==1240),id:=1241]#####!!region15 1240 -> 1241
-      # }
       initPrebas = create_prebas_input.f(r_no, clim, data.sample, nYears = nYears,
                                          startingYear = startingYear,domSPrun=domSPrun)
       ###set parameters
       #    initPrebas$pCROBAS <- pCROBAS
-      
-      # #####old parameters for new version
-      # pX <- pCROB; pX[12,] <- pCROB[12,]-1
-      # pX[31,] <- 0.
-      # pX[c(8,9),1] <- c(0.4,0.5)
-      # pX[c(8,9),2] <- c(0.4,0.5)
-      # pX[c(8,9),3] <- c(0.4,0.5)
-      # pX[21,1] <- c(0.4) #alfar1 pine
-      # pX[22,1] <- c(0.44) #alfar2 pine
-      # alfar3                      0.47000000  3.800000e-01    0.64000000
-      # alfar4                      0.64000000  4.800000e-01    0.75000000
-      # alfar5                      0.84000000  5.800000e-01    0.94000000
-      # initPrebas$pCROBAS <- pX
-      # #####old parameters for new version END
       
       
       opsna <- which(is.na(initPrebas$multiInitVar))
@@ -143,7 +81,7 @@ runModel <- function(sampleID){
       initPrebas$soilC[,1,,,] <- soilCststXX[[sampleID]]$soilC
       
       ##here mix years for weather inputs for Curr Climate
-      if(rcpfile=="CurrClim.rdata"){
+      if(rcpfile=="CurrClim"){
         set.seed(10)
         resampleYear <- sample(1:nYears,nYears)
         initPrebas$ETSy <- initPrebas$ETSy[,resampleYear]
@@ -213,22 +151,6 @@ runModel <- function(sampleID){
         save(out,file=paste0("output/",rcpfile,harscen,"_sample",sampleID,".rdata"))
         rm(region); gc()
         rm(out); gc()
-        # out = simSummary.f(region=region, r_no, nYears, startingYear, rcpfile, harscen)
-        # fwrite(out, file = paste("results_evo/regionSummaries", sampleID , "_",
-        #                          harscen,"_", rcpfile,".txt", sep="" ), append=TRUE)
-        # out = list(annual=region$multiOut[, , -c(1, 2, 19, 20), , 1],
-        #            dailysample=region$dailyPRELES[floor(seq(1, nSample,
-        #                                                     len=min(c(nSample/100), 100))), , ])
-        # if (WRITEREGIONDATA) save(out,
-        #                           file = paste("results_evo/regionOutput_", sampleID, "_",
-        #                                        harscen,"_", rcpfile, sep="" ))
-        # 
-        # tabOut <- data.table(melt(out$annual))
-        # tabOut[,Var4:=as.numeric(Var4)]
-        # setnames(tabOut,c("siteID","year","output","layer","value"))
-        # 
-        # if (WRITEREGIONDATA) fwrite(tabOut,file = paste("results_evo/EvoTab_", 
-        #                                                 sampleID, harscen,"_", rcpfile,".txt", sep="" ))
       }
     }
   }
