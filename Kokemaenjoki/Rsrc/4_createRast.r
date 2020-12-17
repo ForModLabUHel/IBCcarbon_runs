@@ -34,7 +34,7 @@ for(climate in clims){
   mclapply(variables, function(jx) {
     createTifFromDT(climate, management, yearOut, jx, species, startingYear)
   }, mc.cores = nCores)      ## Split this job across 10 cores
-  print(varNames[management])
+  print(management)
   }
 }
 # print(varNames[variable])
@@ -47,7 +47,7 @@ for(climate in clims){
     mclapply(variables, function(jx) {
       createTifFromDT(climate, management, yearOut, jx, species, startingYear)
     }, mc.cores = nCores)      ## Split this job across 10 cores
-    print(varNames[management])
+    print(management)
   }
 }
 print("tif period2 done")
@@ -58,7 +58,7 @@ for(climate in clims){
     mclapply(variables, function(jx) {
       createTifFromDT(climate, management, yearOut, jx, species, startingYear)
     }, mc.cores = nCores)      ## Split this job across 10 cores
-    print(varNames[management])
+    print(management)
   }
 }
 print("tif period3 done")
