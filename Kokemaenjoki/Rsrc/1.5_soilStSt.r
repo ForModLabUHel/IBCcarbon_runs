@@ -18,12 +18,12 @@ for(i in 1:3829) weatherYasso[i,,] <- as.matrix(weatherYassoAnnual[id==i & year 
 set.seed(1)
 ops <- split(data.all, sample(1:115, nrow(data.all), replace=T))
 
-sampleID=1
+# sampleID=1
 soilTotC <- rh <- data.table()
 soilCststXX <- list()
 ####Calculate steady state
 # test <- list()
-for(sampleID in 1:115){
+mclapply(1:115, function(sampleID) {
   sampleX <- ops[[sampleID]]
   # load("Kokemaenjoki/Rsrc/CurrClim.rdataBase_sample2.rdata")
   load(paste0("output/",rcps,ststScen,"_sample",sampleID,".rdata"))
@@ -56,18 +56,18 @@ for(sampleID in 1:115){
   climIDs <- sampleX$CurrClimID
   
   soilCststXX[[sampleID]] <- .Fortran("StstYasso",litter=as.array(litter),
-                 litterSize=as.array(litterSize),
-                 nLayers=as.integer(nLayers), 
-                 nSites=as.integer(nSites),
-                 nSp=as.integer(nSp),
-                 species=as.matrix(species),
-                 nClimID=as.integer(nClimID),
-                 climIDs=as.integer(climIDs),
-                 pAWEN=as.matrix(parsAWEN),
-                 pYasso=as.double(pYAS),
-                 climate=as.matrix(climate),
-                 soilC=as.array(soilC)) 
-
+                                      litterSize=as.array(litterSize),
+                                      nLayers=as.integer(nLayers), 
+                                      nSites=as.integer(nSites),
+                                      nSp=as.integer(nSp),
+                                      species=as.matrix(species),
+                                      nClimID=as.integer(nClimID),
+                                      climIDs=as.integer(climIDs),
+                                      pAWEN=as.matrix(parsAWEN),
+                                      pYasso=as.double(pYAS),
+                                      climate=as.matrix(climate),
+                                      soilC=as.array(soilC)) 
+  
   ###calculate steady state C for gv
   fAPAR <- out$fAPAR
   fAPAR[which(is.na(out$fAPAR),arr.ind = T)] <- 0.
@@ -92,7 +92,8 @@ for(sampleID in 1:115){
   print(sampleID)
   # test[[sampleID]] <- xx[c(1,12)]
   print(range(apply(soilCststXX[[sampleID]]$soilC/1e4,1,sum)))
-}
+}, mc.cores = nCores)      ## Split this job across 10 cores
+
   save(soilCststXX,file=paste0("outSoil/InitSoilCstst_",ststScen,".rdata"))
   
 
