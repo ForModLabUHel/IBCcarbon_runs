@@ -17,12 +17,17 @@ species <- "tot" #1,2,3
 startingYear <- 2015
 
 for(climate in clims){
-  for(management in mans){
-    createDT(climate,management,variable,species,startingYear)
-
-    print(management)
-  }
+    mclapply(mans, function(jx) {
+      createDT(climate,jx,variable,species,startingYear)
+    }, mc.cores = nCores)      ## Split this job across 10 cores
 }
+# for(climate in clims){
+#   for(management in mans){
+#     createDT(climate,management,variable,species,startingYear)
+#     
+#     print(management)
+#   }
+# }
 
 ##Create data.table energyWood
 
