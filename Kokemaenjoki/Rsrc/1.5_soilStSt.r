@@ -23,7 +23,7 @@ soilTotC <- rh <- data.table()
 
 ####Calculate steady state
 soilCststXX <- list()
-for(sampleID in sampleIDs){
+for(sampleID in 1:115){
 # soilCststXX <- mclapply(1:115, function(sampleID) {
   sampleX <- ops[[sampleID]]
   # load("Kokemaenjoki/Rsrc/CurrClim.rdataBase_sample2.rdata")
