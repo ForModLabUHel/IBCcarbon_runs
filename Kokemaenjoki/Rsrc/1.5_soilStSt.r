@@ -22,8 +22,9 @@ ops <- split(data.all, sample(1:115, nrow(data.all), replace=T))
 soilTotC <- rh <- data.table()
 
 ####Calculate steady state
-# test <- list()
-soilCststXX <- mclapply(1:115, function(sampleID) {
+soilCststXX <- list()
+for(sampleID in sampleIDs){
+# soilCststXX <- mclapply(1:115, function(sampleID) {
   sampleX <- ops[[sampleID]]
   # load("Kokemaenjoki/Rsrc/CurrClim.rdataBase_sample2.rdata")
   load(paste0("output/",rcps,ststScen,"_sample",sampleID,".rdata"))
@@ -92,8 +93,10 @@ soilCststXX <- mclapply(1:115, function(sampleID) {
   print(sampleID)
   # test[[sampleID]] <- xx[c(1,12)]
   print(range(apply(soilCxx$soilC/1e4,1,sum)))
-  return(soilCxx)
-}, mc.cores = nCores)      ## Split this job across 10 cores
+  soilCststXX[[sampleID]] <- soilCxx
+}
+# return(soilCxx)
+# }, mc.cores = nCores)      ## Split this job across 10 cores
 
   save(soilCststXX,file=paste0("outSoil/InitSoilCstst_",ststScen,".rdata"))
   
