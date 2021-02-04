@@ -84,8 +84,8 @@ for(sampleID in 1:115){
   ###calculate steady state soil C per GV
   # ststGV <- matrix(NA,nSites,5)
   ststGV <- t(sapply(1:nSites, function(ij) .Fortran("mod5c",
-                                                     pYAS,1.,colMeans(weatherYasso[climIDs[ij],,]),rep(0,5),
-                                                     c(AWENgv2[ij,],0),litterSize=0,leac=0.,rep(0,5),stSt=1.)[[8]]))
+                            pYAS,1.,colMeans(weatherYasso[climIDs[ij],,]),rep(0,5),
+                       c(AWENgv2[ij,],0),litterSize=0,leac=0.,rep(0,5),stSt=1.)[[8]]))
   ####add gvsoilc to first layer foliage soilC
   # check in normal runs where ground vegetation soilC is calculated
   soilCxx$soilC[,,1,1] <- soilCxx$soilC[,,1,1] + ststGV
