@@ -17,6 +17,7 @@ library(reshape2)
 library(Rprebasso)
 library(parallel)
 library(ggplot2)
+library(abind)
 
 nCores <- 6
 varSel <- c(7,8,9,11:14,17:18,22,24:33,37:39,41:46)
