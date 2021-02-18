@@ -76,7 +76,7 @@ for(sampleID in 1:115){
   for(ij in 1:nYears){
     AWENgv[,ij,] <- t(sapply(1:nrow(fAPAR), function(i) .Fortran("fAPARgv",fAPAR[i,ij],
                                                                  out$ets[i,ij],out$siteType[ij],
-                                                                 0,0,out$p0[ij,1],rep(0,4))[[7]]))
+                                                                 0,0,out$p0[i,ij],rep(0,4))[[7]]))
   }
   AWENgv2 <- apply(AWENgv,c(1,3),mean,na.rm=T)
   
