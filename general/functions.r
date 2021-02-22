@@ -78,7 +78,7 @@ runModel <- function(sampleID){
       # initSoil[,,1,,1] <- initSoilCstst[[r_no]]
       # initSoil <- aperm(initSoil,c(4,5,1:3))
       # initPrebas$soilC <- initSoil
-      initPrebas$soilC[,1,,,] <- soilCststXX[[sampleID]]$soilC
+      if(exists("soilCststXX")) initPrebas$soilC[,1,,,] <- soilCststXX[[sampleID]]$soilC
       
       ##here mix years for weather inputs for Curr Climate
       if(rcpfile=="CurrClim"){
@@ -134,6 +134,7 @@ runModel <- function(sampleID){
           if(harscen == "Low"){ HarvLim1 <- HarvLimX * 0.6}
           if(harscen == "MaxSust"){HarvLim1 <- HarvLimX * 1.2}
         } 
+        print(HarvLim1)
         # initPrebas$energyCut <- rep(0.,length(initPrebas$energyCut))
         # HarvLim1 <- rep(0,2)
         # save(initPrebas,HarvLim1,file=paste0("test1",harscen,".rdata"))
