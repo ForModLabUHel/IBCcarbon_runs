@@ -1,9 +1,16 @@
 print("start")
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
 source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
-sampleIDs <- 1:12
+
+setX=1
+
+nSamples <- ceiling(dim(data.all)[1]/20000)
+sampleIDs <- split(1:nSamples,             # Applying split() function
+                   cut(seq_along(1:nSamples),
+                   nSetRuns,
+                   labels = FALSE))[[setX]]
 set.seed(1)
-ops <- split(data.all, sample(1:115, nrow(data.all), replace=T))
+ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
 # for(sampleID in sampleIDs){
   mclapply(sampleIDs, function(jx) {
        runModel(jx)  ## Do nothing for 10 seconds
@@ -18,3 +25,4 @@ ops <- split(data.all, sample(1:115, nrow(data.all), replace=T))
 # plot(colSums(ciao))
 # ops <- ciao*sampleX$area
 # plot(colSums(ops))
+
