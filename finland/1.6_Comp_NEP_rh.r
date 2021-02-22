@@ -1,7 +1,7 @@
 .libPaths(c("/projappl/project_2000994/project_rpackages", .libPaths()))
 libpath <- .libPaths()[1]
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/Kokemaenjoki/Rsrc/settings.r")
-source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
+source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/Kokemaenjoki/Rsrc/functions.r")
 
 ###Settings
 #Harvest scenarios
