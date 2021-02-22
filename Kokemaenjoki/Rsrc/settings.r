@@ -45,7 +45,6 @@ harvestscenarios = c("Base","Low","MaxSust","NoHarv")#c("Low","MaxSust","NoHarv"
 rcps = "CurrClim" #c("CanESM2.rcp45.rdata","CanESM2.rcp85.rdata")#c("CurrClim","CanESM2.rcp26.rdata")#,"CanESM2.rcp45.rdata","CanESM2.rcp85.rdata")
 regions = 4 # c(1:2,11:15)
 r_no=4
-nSetRuns = 10 #number of set runs
 
 
 if(file.exists("input/kokeInputs")){

@@ -47,7 +47,8 @@ harvestscenarios = "Base"#c("Low","MaxSust","NoHarv","Base")
 rcps = "CurrClim" #c("CanESM2.rcp45.rdata","CanESM2.rcp85.rdata")#c("CurrClim","CanESM2.rcp26.rdata")#,"CanESM2.rcp45.rdata","CanESM2.rcp85.rdata")
 regions = 1#1:15 # c(1:2,11:15)
 r_no=1
-data.all[which(data.all$area>500)]
+nSetRuns = 10 #number of set runs
+
 
 
 load(paste0("input/data.all_forCent_",r_no,".rdata"))
@@ -59,6 +60,7 @@ load(paste0("input/data.all_forCent_",r_no,".rdata"))
   AREA_1000ha = AREA / 10000 / 1000
   data.all[,area:=nPix*16^2/10000]
   pixTot <- sum(data.all$nPix)
+  setnames(data.all,"nPix","N")
   ## REMOVE CLOUD COVERED, AND WHERE cons = NA (...? why)
   data.all = data.all[ba < 32766]
   data.all = data.all[!is.na(cons)]
