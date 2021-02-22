@@ -1,6 +1,6 @@
 print("start")
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/Kokemaenjoki/Rsrc/settings.r")
-source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/Kokemaenjoki/Rsrc/functions.r")
+source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
 sampleIDs <- 61:71
 set.seed(1)
 ops <- split(data.all, sample(1:115, nrow(data.all), replace=T))
