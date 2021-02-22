@@ -1,7 +1,9 @@
-# if(CSCrun){
+CSCrun=T
+
+if(CSCrun){
   .libPaths(c("/projappl/project_2000994/project_rpackages", .libPaths()))
   libpath <- .libPaths()[1]
-# }
+}
 
 ###choose PREBAS version
 vPREBAS <- "master"   #### choose PREBAS version to run the model  "master" "v0.2.x"
@@ -22,15 +24,15 @@ library(abind)
 nCores <- 6
 varSel <- c(7,8,9,11:14,17:18,22,24:33,37:39,41:46)
 # name raster file with segs
-rastSegFN <- "/scratch/project_2000994/MVMIsegments/segment-IDs/ls_seg2.img"
+# rastSegFN <- "/scratch/project_2000994/MVMIsegments/segment-IDs/ls_seg2.img"
 
 ####read shapefiles for masking
-maskX <- readOGR(dsn = "/scratch/project_2000994/PREBASruns/Kokemaenjoki/shapes/", layer = "Koke_Paavesistoalue_VALUE")
-forCent <- readOGR(dsn = "/scratch/project_2000994/PREBASruns/Kokemaenjoki/shapes/",layer = "mkeskus13tm35")
+# maskX <- readOGR(dsn = "/scratch/project_2000994/PREBASruns/Kokemaenjoki/shapes/", layer = "Koke_Paavesistoalue_VALUE")
+# forCent <- readOGR(dsn = "/scratch/project_2000994/PREBASruns/Kokemaenjoki/shapes/",layer = "mkeskus13tm35")
 
 
 ####paths
-pathtoken = "/scratch/project_2000994/PREBASruns/Kokemaenjoki/"
+pathtoken = "/scratch/project_2000994/PREBASruns/finRuns/"
 climatepath = "/scratch/project_2000994/RCP/"
 
 setwd(pathtoken)
