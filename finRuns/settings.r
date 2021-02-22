@@ -38,38 +38,34 @@ climatepath = "/scratch/project_2000994/RCP/"
 setwd(pathtoken)
 
 
-harvestLims <- c(9775000,1466000)
-year1harv=1
-domSPrun = 0
+# harvestLims <- c(9775000,1466000)
+year1harv=1 ###if 1 set harvLim for Low and MaxSust as 0.6 and 1.2 of HarvLim (Base)
+domSPrun = 0   ### 1 -> run only dominant layer
 startingYear = 2015
 nYears = 2099-startingYear
-harvestscenarios = c("Base","Low","MaxSust","NoHarv")#c("Low","MaxSust","NoHarv","Base")
+harvestscenarios = "Base"#c("Low","MaxSust","NoHarv","Base")
 rcps = "CurrClim" #c("CanESM2.rcp45.rdata","CanESM2.rcp85.rdata")#c("CurrClim","CanESM2.rcp26.rdata")#,"CanESM2.rcp45.rdata","CanESM2.rcp85.rdata")
-regions = 4 # c(1:2,11:15)
-r_no=4
+regions = 1#1:15 # c(1:2,11:15)
+r_no=1
+data.all[which(data.all$area>500)]
 
 
+load(paste0("input/data.all_forCent_",r_no,".rdata"))
 
-if(file.exists("input/kokeInputs")){
-  data.all <- fread("input/kokeInputs")
-  setnames(data.all,"consArea","cons")
   cloudpixels = data.all[, sum(ba==32766)]
   nonforest = data.all[, sum(ba==32767)]
   forest = data.all[, sum(ba< 32766)]
   AREA = (forest + cloudpixels) * 16 * 16 * 1000 #m2
   AREA_1000ha = AREA / 10000 / 1000
-  data.all[,area:=N*16^2/10000]
-  areaTot <- sum(data.all$N)
+  data.all[,area:=nPix*16^2/10000]
+  pixTot <- sum(data.all$nPix)
   ## REMOVE CLOUD COVERED, AND WHERE cons = NA (...? why)
   data.all = data.all[ba < 32766]
   data.all = data.all[!is.na(cons)]
-}else{
- print("extract data!!!")
-}
 
 
 ####load data
-load("outSoil/InitSoilCstst_Base.rdata")
+# load("outSoil/InitSoilCstst_Base.rdata")
 rempast = fread('/scratch/project_2000994/PREBASruns/metadata/Luke_Met_Poistuma_01.csv')
 rempast = rempast[Puutavaralaji %in% c('Kaikki puutavaralajit','Energiapuu')]
 rempast = rempast[Metsakeskusalue != "KOKO MAA"]

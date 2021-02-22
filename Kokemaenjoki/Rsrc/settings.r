@@ -37,7 +37,7 @@ setwd(pathtoken)
 
 
 harvestLims <- c(9775000,1466000)
-year1harv=1
+year1harv=1  ###if 1 set harvLim for Low and MaxSust as 0.6 and 1.2 of HarvLim (Base)
 domSPrun = 0
 startingYear = 2015
 nYears = 2099-startingYear
