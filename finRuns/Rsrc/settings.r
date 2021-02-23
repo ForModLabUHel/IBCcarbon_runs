@@ -45,8 +45,8 @@ startingYear = 2015
 nYears = 2099-startingYear
 harvestscenarios = "Base"#c("Low","MaxSust","NoHarv","Base")
 rcps = "CurrClim" #c("CanESM2.rcp45.rdata","CanESM2.rcp85.rdata")#c("CurrClim","CanESM2.rcp26.rdata")#,"CanESM2.rcp45.rdata","CanESM2.rcp85.rdata")
-regions = 1#1:15 # c(1:2,11:15)
-r_no=1
+r_no = regions = 1
+
 nSetRuns = 10 #number of set runs
 
 

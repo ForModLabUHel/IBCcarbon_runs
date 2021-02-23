@@ -134,7 +134,6 @@ runModel <- function(sampleID){
           if(harscen == "Low"){ HarvLim1 <- HarvLimX * 0.6}
           if(harscen == "MaxSust"){HarvLim1 <- HarvLimX * 1.2}
         } 
-        print(HarvLim1)
         # initPrebas$energyCut <- rep(0.,length(initPrebas$energyCut))
         # HarvLim1 <- rep(0,2)
         # save(initPrebas,HarvLim1,file=paste0("test1",harscen,".rdata"))
