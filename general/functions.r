@@ -137,25 +137,25 @@ runModel <- function(sampleID){
         # initPrebas$energyCut <- rep(0.,length(initPrebas$energyCut))
         # HarvLim1 <- rep(0,2)
         # save(initPrebas,HarvLim1,file=paste0("test1",harscen,".rdata"))
-        region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLim1),minDharv = 1.)
+        region <- regionPrebas(initPrebas)
+        # region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLim1),minDharv = 1.)
         initSoilC <- stXX_GV(region, 1)
         region <- yassoPREBASin(region,initSoilC)
         
         # out <- region$multiOut[,,,,1]
         
-        margin= 1:2#(length(dim(out$annual[,,variable,]))-1)
-        funX <- c("baWmean","baWmean","sum")
-        for (ij in 1:length(variable)) {
+        margin= 1:2#(length(dim(out$annual[,,varSel,]))-1)
+        for (ij in 1:length(varSel)) {
           if(funX[ij]=="baWmean"){
-            assign(varNames[variable[ij]],data.table(segID=sampleX$segID,baWmean(region,variable[ij])))
+            assign(varNames[varSel[ij]],data.table(segID=sampleX$segID,baWmean(region,varSel[ij])))
           }
           if(funX[ij]=="sum"){
-            assign(varNames[variable[ij]],data.table(segID=sampleX$segID,apply(region$multiOut[,,variable[ij],,1],margin,sum)))
+            assign(varNames[varSel[ij]],data.table(segID=sampleX$segID,apply(region$multiOut[,,varSel[ij],,1],margin,sum)))
           }
-          save(list=varNames[variable[ij]],file=paste0("outputDT/forCent",r_no,"/",varNames[variable[ij]],"_",
-                                                       "sampleID",sampleID,"_",management,"_",climate,".rdata"))
+          save(list=varNames[varSel[ij]],file=paste0("outputDT/forCent",r_no,"/",varNames[varSel[ij]],"_",
+                                                       "sampleID",sampleID,"_",harscen,"_",rcpfile,".rdata"))
         }  
-        rm(list=c("region",varNames[variable])); gc()
+        rm(list=c("region",varNames[varSel])); gc()
         # rm(out); gc()
       }
     }
