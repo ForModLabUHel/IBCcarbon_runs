@@ -22,7 +22,9 @@ library(ggplot2)
 library(abind)
 
 nCores <- 6
-varSel <- c(7,8,9,11:14,17:18,22,24:33,37:39,41:46)
+varSel <- c(7,8,9,11:13,17:18,22,24:33,37:39,41:46)
+funX <- rep("sum",length(varSel))
+funX[match(varNames[c(7,11:12)],varNames[varSel])] <- "baWmean"
 # name raster file with segs
 # rastSegFN <- "/scratch/project_2000994/MVMIsegments/segment-IDs/ls_seg2.img"
 

@@ -137,20 +137,26 @@ runModel <- function(sampleID){
         # initPrebas$energyCut <- rep(0.,length(initPrebas$energyCut))
         # HarvLim1 <- rep(0,2)
         # save(initPrebas,HarvLim1,file=paste0("test1",harscen,".rdata"))
-        system.time(region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLim1),minDharv = 1.))
-        # out <- region$multiOut[,,,,1]
-        out = list(annual=region$multiOut[,,varSel,,1],
-                   harvest=region$HarvLim,
-                   energyWood = region$multiEnergyWood,
-                   fAPAR = region$fAPAR,
-                   ets = region$multiOut[,,5,1,1],
-                   p0 = region$multiOut[,,6,1,1],
-                   siteType = region$multiOut[,1,3,1,1],
-                   GVout = region$GVout)
+        region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLim1),minDharv = 1.)
+        initSoilC <- stXX_GV(region, 1)
+        region <- yassoPREBASin(region,initSoilC)
         
-        save(out,file=paste0("output/",rcpfile,harscen,"_sample",sampleID,".rdata"))
-        rm(region); gc()
-        rm(out); gc()
+        # out <- region$multiOut[,,,,1]
+        
+        margin= 1:2#(length(dim(out$annual[,,variable,]))-1)
+        funX <- c("baWmean","baWmean","sum")
+        for (ij in 1:length(variable)) {
+          if(funX[ij]=="baWmean"){
+            assign(varNames[variable[ij]],data.table(segID=sampleX$segID,baWmean(region,variable[ij])))
+          }
+          if(funX[ij]=="sum"){
+            assign(varNames[variable[ij]],data.table(segID=sampleX$segID,apply(region$multiOut[,,variable[ij],,1],margin,sum)))
+          }
+          save(list=varNames[variable[ij]],file=paste0("outputDT/forCent",r_no,"/",varNames[variable[ij]],"_",
+                                                       "sampleID",sampleID,"_",management,"_",climate,".rdata"))
+        }  
+        rm(list=c("region",varNames[variable])); gc()
+        # rm(out); gc()
       }
     }
   }
@@ -211,7 +217,7 @@ create_prebas_input.f = function(r_no, clim, data.sample, nYears, startingYear=0
   
   siteInfo <- matrix(c(NA,NA,NA,160,0,0,20,3,3,413,0.45,0.118),nSites,12,byrow = T)
   #siteInfo <- matrix(c(NA,NA,NA,3,3,160,0,0,20),nSites,9,byrow = T)
-  siteInfo[,1] <- 1:nSites
+  siteInfo[,1] <- data.sample$segID
   siteInfo[,2] <- as.numeric(data.sample[,id])
   siteInfo[,3] <- data.sample[,fert]
   
