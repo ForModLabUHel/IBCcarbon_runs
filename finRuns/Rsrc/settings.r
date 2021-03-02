@@ -39,6 +39,7 @@ climatepath = "/scratch/project_2000994/RCP/"
 
 setwd(pathtoken)
 
+roundTotWoodRatio <- 0.87
 
 harvestLims <- c(9775000,1466000)
 year1harv=0 ###if 1 set harvLim for Low and MaxSust as 0.6 and 1.2 of HarvLim (Base)

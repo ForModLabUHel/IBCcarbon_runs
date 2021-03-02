@@ -133,12 +133,17 @@ runModel <- function(sampleID){
           HarvLim1 <- HarvLimX
           if(harscen == "Low"){ HarvLim1 <- HarvLimX * 0.6}
           if(harscen == "MaxSust"){HarvLim1 <- HarvLimX * 1.2}
-        } 
+        }else{
+          roundWood <- HarvLim1 * roundTotWoodRatio
+          enWood <- HarvLim1 - roundWood
+          HarvLim1 <- cbind(roundWood,enWood)
+        }
+          
         # initPrebas$energyCut <- rep(0.,length(initPrebas$energyCut))
         # HarvLim1 <- rep(0,2)
         # save(initPrebas,HarvLim1,file=paste0("test1",harscen,".rdata"))
-        region <- regionPrebas(initPrebas)
-        # region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLim1),minDharv = 1.)
+        # region <- regionPrebas(initPrebas)
+        region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLim1),minDharv = 1.)
         initSoilC <- stXX_GV(region, 1)
         region <- yassoPREBASin(region,initSoilC)
         
