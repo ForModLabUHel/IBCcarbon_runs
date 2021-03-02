@@ -78,7 +78,7 @@ runModel <- function(sampleID){
       # initSoil[,,1,,1] <- initSoilCstst[[r_no]]
       # initSoil <- aperm(initSoil,c(4,5,1:3))
       # initPrebas$soilC <- initSoil
-      if(exists("soilCststXX")) initPrebas$soilC[,1,,,] <- soilCststXX[[sampleID]]$soilC
+      # if(exists("soilCststXX")) initPrebas$soilC[,1,,,] <- soilCststXX[[sampleID]]$soilC
       
       ##here mix years for weather inputs for Curr Climate
       if(rcpfile=="CurrClim"){
