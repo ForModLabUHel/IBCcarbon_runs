@@ -52,6 +52,17 @@ r_no = regions = 1
 
 nSetRuns = 10 #number of set runs
 
+####period for model output calculations
+per1=2017:2025
+per2=2026:2033
+per3=2034:2050
+simYear1 = per1 - startingYear
+simYear2 = per2 - startingYear
+simYear3 = per3 - startingYear
+colsOut1 = c(paste("V", simYear1, sep=""))
+colsOut2 = c(paste("V", simYear2, sep=""))
+colsOut3 = c(paste("V", simYear3, sep=""))
+
 
 
 load(paste0("input/data.all_forCent_",r_no,".rdata"))

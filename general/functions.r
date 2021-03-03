@@ -157,6 +157,13 @@ runModel <- function(sampleID){
           if(funX[ij]=="sum"){
             assign(varNames[varSel[ij]],data.table(segID=sampleX$segID,apply(region$multiOut[,,varSel[ij],,1],margin,sum)))
           }
+          p1 <- get(varNames[varSel[ij]])[, .(per1 = rowMeans(.SD)), .SDcols = colsOut1, by = segID] 
+          p2 <- get(varNames[varSel[ij]])[, .(per2 = rowMeans(.SD)), .SDcols = colsOut2, by = segID] 
+          p3 <- get(varNames[varSel[ij]])[, .(per3 = rowMeans(.SD)), .SDcols = colsOut3, by = segID] 
+          outX <- merge(p1,p2)
+          outX <- merge(outX,p3)
+          assign(varNames[varSel[ij]],outX)
+          
           save(list=varNames[varSel[ij]],file=paste0("outputDT/forCent",r_no,"/",varNames[varSel[ij]],"_",
                                                        "sampleID",sampleID,"_",harscen,"_",rcpfile,".rdata"))
         }  
