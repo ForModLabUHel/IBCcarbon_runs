@@ -164,8 +164,10 @@ runModel <- function(sampleID){
           pX <- merge(pX,p3)
           assign(varNames[varSel[ij]],pX)
           
-          save(list=varNames[varSel[ij]],file=paste0("outputDT/forCent",r_no,"/",varNames[varSel[ij]],"_",
-                                                       "sampleID",sampleID,"_",harscen,"_",rcpfile,".rdata"))
+          save(list=varNames[varSel[ij]],file=paste0("outputDT/forCent",r_no,"/",
+                                                     varNames[varSel[ij]],"_",
+                                                       harscen,"_",rcpfile,"_",
+                                                     "sampleID",sampleID,".rdata"))
         }  
         rm(list=c("region",varNames[varSel])); gc()
         # rm(out); gc()
