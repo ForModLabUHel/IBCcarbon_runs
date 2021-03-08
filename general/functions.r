@@ -157,9 +157,9 @@ runModel <- function(sampleID){
           if(funX[ij]=="sum"){
             outX <- data.table(segID=sampleX$segID,apply(region$multiOut[,,varSel[ij],,1],margin,sum))
           }
-          p1 <- get(varNames[varSel[ij]])[, .(per1 = rowMeans(.SD)), .SDcols = colsOut1, by = segID] 
-          p2 <- get(varNames[varSel[ij]])[, .(per2 = rowMeans(.SD)), .SDcols = colsOut2, by = segID] 
-          p3 <- get(varNames[varSel[ij]])[, .(per3 = rowMeans(.SD)), .SDcols = colsOut3, by = segID] 
+          p1 <- outX[, .(per1 = rowMeans(.SD)), .SDcols = colsOut1, by = segID] 
+          p2 <- outX[, .(per2 = rowMeans(.SD)), .SDcols = colsOut2, by = segID] 
+          p3 <- outX[, .(per3 = rowMeans(.SD)), .SDcols = colsOut3, by = segID] 
           pX <- merge(p1,p2)
           pX <- merge(pX,p3)
           assign(varNames[varSel[ij]],pX)
@@ -168,6 +168,7 @@ runModel <- function(sampleID){
                                                      varNames[varSel[ij]],"_",
                                                        harscen,"_",rcpfile,"_",
                                                      "sampleID",sampleID,".rdata"))
+          rm(list=varNames[varSel[ij]]); gc()
         }  
         rm(list=c("region",varNames[varSel])); gc()
         # rm(out); gc()
