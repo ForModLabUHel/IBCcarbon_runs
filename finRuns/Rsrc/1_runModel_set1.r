@@ -8,6 +8,7 @@ sampleIDs <- split(1:nSamples,             # Applying split() function
                    cut(seq_along(1:nSamples),
                    nSetRuns,
                    labels = FALSE))[[setX]]
+sampleIDs <- c(17:18,28)
 set.seed(1)
 ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
 # for(sampleID in sampleIDs){
