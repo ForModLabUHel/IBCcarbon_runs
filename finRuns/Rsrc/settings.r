@@ -1,5 +1,6 @@
 CSCrun=T
 
+###load packages in CSC project folder
 if(CSCrun){
   .libPaths(c("/projappl/project_2000994/project_rpackages", .libPaths()))
   libpath <- .libPaths()[1]
@@ -21,8 +22,11 @@ library(parallel)
 library(ggplot2)
 library(abind)
 
-nCores <- 6
-varSel <- c(7,8,9,11:13,17:18,22,24:33,37:39,41:46)
+r_no = regions = 1  ### forest center ID
+nCores <- 6  ####  number of cores
+varSel <- c(7,8,9,11:13,17:18,22,24:33,37:39,41:46)   #### variables IDs to be stored
+
+###set if you want to use Layers sum of BA average of stored variables
 funX <- rep("sum",length(varSel))
 funX[match(varNames[c(7,11:12)],varNames[varSel])] <- "baWmean"
 # name raster file with segs
@@ -39,16 +43,17 @@ climatepath = "/scratch/project_2000994/RCP/"
 
 setwd(pathtoken)
 
+####ratio used to calculate round Wood percentage of total harvest, the remaining is Energywood
 roundTotWoodRatio <- 0.87
 
 harvestLims <- c(9775000,1466000)
 year1harv=0 ###if 1 set harvLim for Low and MaxSust as 0.6 and 1.2 of HarvLim (Base)
 domSPrun = 0   ### 1 -> run only dominant layer
 startingYear = 2015
-nYears = 2099-startingYear
+nYears = 2051-startingYear
 harvestscenarios = "Base"#c("Low","MaxSust","NoHarv","Base")
 rcps = "CurrClim" #c("CanESM2.rcp45.rdata","CanESM2.rcp85.rdata")#c("CurrClim","CanESM2.rcp26.rdata")#,"CanESM2.rcp45.rdata","CanESM2.rcp85.rdata")
-r_no = regions = 1
+
 
 nSetRuns = 10 #number of set runs
 
