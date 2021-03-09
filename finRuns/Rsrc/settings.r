@@ -22,7 +22,7 @@ library(parallel)
 library(ggplot2)
 library(abind)
 
-r_no = regions = 2  ### forest center ID
+# r_no = regions = 2  ### forest center ID
 nCores <- 6  ####  number of cores
 varSel <- c(7,8,9,11:13,17:18,22,24:33,37:39,41:46)   #### variables IDs to be stored
 
