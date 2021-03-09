@@ -5,6 +5,7 @@
 ## MAIN SCRIPT
 ## ---------------------------------------------------------------------
 runModel <- function(sampleID){
+  print(paste("start sample ID",sampleID))
   sampleX <- ops[[sampleID]]
   sampleX[,area := N*16^2/10000]
   sampleX[,id:=climID]
@@ -175,6 +176,7 @@ runModel <- function(sampleID){
       }
     }
   }
+  print(paste("end sample ID",sampleID))
 }
 
 sample_data.f = function(data.all, nSample) {
