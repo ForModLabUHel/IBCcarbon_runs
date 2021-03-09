@@ -5,7 +5,7 @@
 ## MAIN SCRIPT
 ## ---------------------------------------------------------------------
 runModel <- function(sampleID){
-  print(date())
+  # print(date())
   print(paste("start sample ID",sampleID))
   sampleX <- ops[[sampleID]]
   sampleX[,area := N*16^2/10000]
@@ -26,7 +26,7 @@ runModel <- function(sampleID){
   # load("/scratch/project_2000994/PREBASruns/metadata/initSoilCstst.rdata")
   # load("outSoil/InitSoilCstst_Base.rdata")
   for(rcpfile in rcps) { ## ---------------------------------------------
-    print(rcpfile)
+    # print(rcpfile)
     if(rcpfile=="CurrClim"){
       load(paste(climatepath, rcpfile,".rdata", sep=""))  
       #####process data considering only current climate###
@@ -95,9 +95,9 @@ runModel <- function(sampleID){
       # Loop management scenarios ------------------------------------------------
       for(harscen in harvestscenarios) { ## MaxSust fails, others worked.
         # print(date())
-        print(harscen)
+        # print(harscen)
         i = i + 1
-        print(paste(i, (length(harvestscenarios)*length(rcps)*length(regions)), sep="/"))
+        # print(paste(i, (length(harvestscenarios)*length(rcps)*length(regions)), sep="/"))
         # harscen ="Base"
         ## Assign harvesting quota for the region based on volume (in NFI startingYear) and MELA
         Region = nfiareas[ID==r_no, Region]
