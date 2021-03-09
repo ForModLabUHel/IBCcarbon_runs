@@ -5,6 +5,7 @@
 ## MAIN SCRIPT
 ## ---------------------------------------------------------------------
 runModel <- function(sampleID){
+  print(date())
   print(paste("start sample ID",sampleID))
   sampleX <- ops[[sampleID]]
   sampleX[,area := N*16^2/10000]
@@ -25,7 +26,6 @@ runModel <- function(sampleID){
   # load("/scratch/project_2000994/PREBASruns/metadata/initSoilCstst.rdata")
   # load("outSoil/InitSoilCstst_Base.rdata")
   for(rcpfile in rcps) { ## ---------------------------------------------
-    print(date())
     print(rcpfile)
     if(rcpfile=="CurrClim"){
       load(paste(climatepath, rcpfile,".rdata", sep=""))  
@@ -42,9 +42,9 @@ runModel <- function(sampleID){
     # load("C:/Users/minunno/Documents/research/lukeDB/example #2/CanESM2.rcp45.rdata")
     
     ## Loop regions -------------------------------------------------------
-    for (r_no in regions) {
-      print(date())
-      print(paste("Region", r_no) )
+    # for (r_no in regions) {
+      # print(date())
+      # print(paste("Region", r_no) )
       # r_no=7
       ## Load samples from regions; region-files include every 1000th pixel
       ## Pixel data are from 16 m x 16 m cells, but all numbers are per unit area.
@@ -94,7 +94,7 @@ runModel <- function(sampleID){
       
       # Loop management scenarios ------------------------------------------------
       for(harscen in harvestscenarios) { ## MaxSust fails, others worked.
-        print(date())
+        # print(date())
         print(harscen)
         i = i + 1
         print(paste(i, (length(harvestscenarios)*length(rcps)*length(regions)), sep="/"))
@@ -174,7 +174,7 @@ runModel <- function(sampleID){
         rm(list=c("region")); gc()
         # rm(out); gc()
       }
-    }
+    # } ###region loop
   }
   print(paste("end sample ID",sampleID))
 }
