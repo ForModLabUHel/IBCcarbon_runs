@@ -170,7 +170,7 @@ runModel <- function(sampleID){
                                                      "sampleID",sampleID,".rdata"))
           rm(list=varNames[varSel[ij]]); gc()
         }  
-        rm(list=c("region",varNames[varSel])); gc()
+        rm(list=c("region")); gc()
         # rm(out); gc()
       }
     }
