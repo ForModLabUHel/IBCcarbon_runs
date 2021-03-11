@@ -24,6 +24,8 @@ library(abind)
 
 # r_no = regions = 2  ### forest center ID
 nCores <- 6  ####  number of cores
+# varOuts <- c("H","BA","D")
+# varSel <- match(varOuts,varNames)
 varSel <- c(7,8,9,11:13,17:18,22,24:33,37:39,41:46)   #### variables IDs to be stored
 
 ###set if you want to use Layers sum of BA average of stored variables
