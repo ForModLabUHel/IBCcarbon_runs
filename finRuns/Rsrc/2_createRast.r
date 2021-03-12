@@ -1,5 +1,4 @@
 # r_no <- regions <- 1
-print(start)
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
 source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
 
@@ -10,10 +9,8 @@ forCentIDsTab <- forCentIDsTab[segID!=0]
 setkey(forCentIDsTab,segID)
 
 varXs <- c(varNames[varSel], specialVars)
-print(varXs)
 for(varX in varXs){
   # varX <- varXs[1]
-  print(paste("start",varX))
   fileXs <- list.files(path = pathFiles, pattern = varX)
   outX <- data.table()
   for(i in 1:length(fileXs)){
