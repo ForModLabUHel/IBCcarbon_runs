@@ -68,8 +68,8 @@ nYears = 2051-startingYear
 harvestscenarios = "Base"#c("Low","MaxSust","NoHarv","Base")
 rcps = "CurrClim" #c("CanESM2.rcp45.rdata","CanESM2.rcp85.rdata")#c("CurrClim","CanESM2.rcp26.rdata")#,"CanESM2.rcp45.rdata","CanESM2.rcp85.rdata")
 
-
-nSetRuns = 10 #number of set runs
+nSitesRun = 20000  ###aproximative number of samples for set runs
+# nSetRuns = 10 #number of set runs
 
 ####period for model output calculations
 per1=2017:2025
