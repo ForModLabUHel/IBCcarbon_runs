@@ -21,7 +21,6 @@ library(Rprebasso)
 library(parallel)
 library(ggplot2)
 library(abind)
-library(DescTools)
 
 # r_no = regions = 2  ### forest center ID
 nCores <- 6  ####  number of cores
@@ -30,7 +29,7 @@ nCores <- 6  ####  number of cores
 # MinPeat-index, NEPdrPeat, VenergyWood, WenergyWood
   
 varOuts <- c("GPPspecies", "gross growth", "NEP sp", 
-             "npp", "soilC", "age","W_croot", "V", "Wbranch",
+             "npp", "soilC", "W_croot", "V", "Wbranch",
              "wf_STKG", "WfineRoots", "Vharvested", 
              "Wharvested", "Wstem", "DeadWoodVolume", "D", "BA", "H",
              "sitetype","Litter_fol", "Litter_fr", 
