@@ -1,3 +1,4 @@
+
 ## ---------------------------------------------------------------------
 ## FUNCTIONS
 ## ---------------------------------------------------------------------
@@ -861,17 +862,16 @@ specialVarProc <- function(){
                         harscen,"_",rcpfile,"_",
                         "sampleID",sampleID,".rdata"))
 
-  ####VenergyWood
-  outX <- data.table(segID=sampleX$segID,apply(region$multiEnergyWood[,,,1],1:2,sum))
+  ####Wtot
+  outX <- data.table(segID=sampleX$segID,apply(region$multiOut[,,c(24,25,31,32,33),,1],margin,sum))
   p1 <- outX[, .(per1 = rowMeans(.SD)), .SDcols = colsOut1, by = segID] 
   p2 <- outX[, .(per2 = rowMeans(.SD)), .SDcols = colsOut2, by = segID] 
   p3 <- outX[, .(per3 = rowMeans(.SD)), .SDcols = colsOut3, by = segID] 
   pX <- merge(p1,p2)
-  VenergyWood <- merge(pX,p3)
-  save(VenergyWood,file=paste0("outputDT/forCent",r_no,"/VenergyWood_",
+  Wtot <- merge(pX,p3)
+  save(Wtot,file=paste0("outputDT/forCent",r_no,"/Wtot_",
                                harscen,"_",rcpfile,"_",
                                "sampleID",sampleID,".rdata"))
   
-  rm(domSpecies,domAge,Vdec,WenergyWood,VenergyWood); gc()
-  
-}
+  rm(domSpecies,domAge,Vdec,WenergyWood,Wtot,pX,p1,p2,p3); gc()
+ } 
