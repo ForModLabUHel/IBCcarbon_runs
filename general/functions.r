@@ -170,7 +170,51 @@ runModel <- function(sampleID){
                                                        harscen,"_",rcpfile,"_",
                                                      "sampleID",sampleID,".rdata"))
           rm(list=varNames[varSel[ij]]); gc()
-        }  
+        }
+        
+        ####process and save special variables: 
+        ###dominant Species
+        outX <- data.table(segID=sampleX$segID,apply(region$multiOut[,,30,,1],1:2,which.max))
+        ###take the most frequent species in the periods
+        p1 <- outX[,.(per1 = Mode(as.numeric(.SD))[1]),.SDcols=colsOut1,by=segID]
+        p2 <- outX[,.(per2 = Mode(as.numeric(.SD))[1]),.SDcols=colsOut2,by=segID]
+        p3 <- outX[,.(per3 = Mode(as.numeric(.SD))[1]),.SDcols=colsOut3,by=segID]
+        pX <- merge(p1,p2)
+        pX <- merge(pX,p3)
+        domSpecies <- pX
+        save(domSpecies,file=paste0("outputDT/forCent",r_no,"/domSpecies_",
+                                                   harscen,"_",rcpfile,"_",
+                                                   "sampleID",sampleID,".rdata"))
+        # rm(domSpecies); gc()
+        
+        ###age dominant species
+        matX <- apply(region$multiOut[,simYear1,7,,1],c(1,3),mean)
+        per1 <- matX[cbind(1:84, domSpecies$per1)]
+        matX <- apply(region$multiOut[,simYear2,7,,1],c(1,3),mean)
+        per2 <- matX[cbind(1:84, domSpecies$per2)]
+        matX <- apply(region$multiOut[,simYear3,7,,1],c(1,3),mean)
+        per3 <- matX[cbind(1:84, domSpecies$per3)]
+        domAge <- data.table(segID=sampleX$segID,per1=per1,per2=per2,per3=per3)
+        save(domAge,file=paste0("outputDT/forCent",r_no,"/domAge_",
+                                    harscen,"_",rcpfile,"_",
+                                    "sampleID",sampleID,".rdata"))
+        
+        ###deciduous Volume Vdec
+        outX <- data.table(segID=sampleX$segID,region$multiOut[,,30,3,1])
+        p1 <- outX[, .(per1 = rowMeans(.SD)), .SDcols = colsOut1, by = segID] 
+        p2 <- outX[, .(per2 = rowMeans(.SD)), .SDcols = colsOut2, by = segID] 
+        p3 <- outX[, .(per3 = rowMeans(.SD)), .SDcols = colsOut3, by = segID] 
+        pX <- merge(p1,p2)
+        pX <- merge(pX,p3)
+        Vdec <- pX
+        save(Vdec,file=paste0("outputDT/forCent",r_no,"/Vdec_",
+                                    harscen,"_",rcpfile,"_",
+                                    "sampleID",sampleID,".rdata"))
+        
+        rm(domSpecies,domAge,Vdec); gc()
+        
+        
+        
         rm(list=c("region")); gc()
         # rm(out); gc()
       }

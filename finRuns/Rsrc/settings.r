@@ -21,6 +21,7 @@ library(Rprebasso)
 library(parallel)
 library(ggplot2)
 library(abind)
+library(DescTools)
 
 # r_no = regions = 2  ### forest center ID
 nCores <- 6  ####  number of cores
