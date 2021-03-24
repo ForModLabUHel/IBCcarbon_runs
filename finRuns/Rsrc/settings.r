@@ -21,6 +21,7 @@ library(Rprebasso)
 library(parallel)
 library(ggplot2)
 library(abind)
+library(DescTools)
 
 # r_no = regions = 2  ### forest center ID
 nCores <- 6  ####  number of cores
@@ -28,15 +29,14 @@ nCores <- 6  ####  number of cores
 # Missing from varOuts: 
 # MinPeat-index, NEPdrPeat, VenergyWood, WenergyWood
   
-varOuts <- c("GPPspecies", "gross growth", "NEP sp", 
-             "npp", "soilC", "W_croot", "V", "Wbranch",
-             "wf_STKG", "WfineRoots", "Vharvested", 
-             "Wharvested", "Wstem", "DeadWoodVolume", "D", "BA", "H",
-             "sitetype","Litter_fol", "Litter_fr", 
-             "Litter_fWoody", "Litter_cWoody")
+varOuts <- c("Wtot", "GPPspecies", "npp", "gross growth", 
+             "soilC", "V", "age", "Wharvested", 
+             "Litter_fol", "Litter_fr", 
+             "Litter_fWoody", "Litter_cWoody",
+             "DeadWoodVolume", "D", "BA", "H",
+             "sitetype","NEP sp")
 varSel <- match(varOuts,varNames)
-
-specialVars <- c("domSpecies","domAge","Vdec")
+specialVars <- c("domSpecies","domAge","Vdec","WenergyWood")
 
 #varSel <- c(7,8,9,11:13,17:18,22,24:33,37:39,41:46)   #### variables IDs to be stored
 
@@ -68,8 +68,8 @@ nYears = 2051-startingYear
 harvestscenarios = "Base"#c("Low","MaxSust","NoHarv","Base")
 rcps = "CurrClim" #c("CanESM2.rcp45.rdata","CanESM2.rcp85.rdata")#c("CurrClim","CanESM2.rcp26.rdata")#,"CanESM2.rcp45.rdata","CanESM2.rcp85.rdata")
 
-
-nSetRuns = 10 #number of set runs
+nSitesRun = 20000  ###aproximative number of samples for set runs
+# nSetRuns = 10 #number of set runs
 
 ####period for model output calculations
 per1=2017:2025
