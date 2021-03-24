@@ -27,7 +27,7 @@ library(DescTools)
 nCores <- 6  ####  number of cores
 
 # Missing from varOuts: 
-# MinPeat-index, NEPdrPeat, VenergyWood, WenergyWood
+# MinPeat-index, NEPdrPeat
   
 varOuts <- c("Wtot", "GPPspecies", "npp", "gross growth", 
              "soilC", "V", "age", "Wharvested", 
