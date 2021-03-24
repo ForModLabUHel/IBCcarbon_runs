@@ -29,12 +29,13 @@ nCores <- 6  ####  number of cores
 # MinPeat-index, NEPdrPeat, VenergyWood, WenergyWood
   
 varOuts <- c("GPPspecies", "gross growth", "NEP sp", 
-             "npp", "soilC", "W_croot", "V", "Wbranch",
+             "npp", "soilC", "age","W_croot", "V", "Wbranch",
              "wf_STKG", "WfineRoots", "Vharvested", 
              "Wharvested", "Wstem", "DeadWoodVolume", "D", "BA", "H",
              "sitetype","Litter_fol", "Litter_fr", 
              "Litter_fWoody", "Litter_cWoody")
 varSel <- match(varOuts,varNames)
+
 specialVars <- c("domSpecies","domAge","Vdec")
 
 #varSel <- c(7,8,9,11:13,17:18,22,24:33,37:39,41:46)   #### variables IDs to be stored
