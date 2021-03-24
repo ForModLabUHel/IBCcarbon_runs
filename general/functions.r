@@ -1,3 +1,4 @@
+
 ## ---------------------------------------------------------------------
 ## FUNCTIONS
 ## ---------------------------------------------------------------------
@@ -873,5 +874,4 @@ specialVarProc <- function(){
                                "sampleID",sampleID,".rdata"))
   
   rm(domSpecies,domAge,Vdec,WenergyWood,Wtot,pX,p1,p2,p3); gc()
-  
-}
+ } 
