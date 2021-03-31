@@ -827,7 +827,6 @@ specialVarProc <- function(sampleX,region,r_no,harscen,rcpfile,sampleID){
                               harscen,"_",rcpfile,"_",
                               "sampleID",sampleID,".rdata"))
   # rm(domSpecies); gc()
-  print("domSpecies")
   ###age dominant species
   matX <- apply(region$multiOut[,simYear1,7,,1],c(1,3),mean)
   per1 <- matX[cbind(1:84, domSpecies$per1)]
@@ -839,7 +838,6 @@ specialVarProc <- function(sampleX,region,r_no,harscen,rcpfile,sampleID){
   save(domAge,file=paste0("outputDT/forCent",r_no,"/domAge_",
                           harscen,"_",rcpfile,"_",
                           "sampleID",sampleID,".rdata"))
-  print("domAge")
   ###deciduous Volume Vdec
   outX <- data.table(segID=sampleX$segID,region$multiOut[,,30,3,1])
   p1 <- outX[, .(per1 = rowMeans(.SD)), .SDcols = colsOut1, by = segID] 
@@ -851,8 +849,7 @@ specialVarProc <- function(sampleX,region,r_no,harscen,rcpfile,sampleID){
   save(Vdec,file=paste0("outputDT/forCent",r_no,"/Vdec_",
                         harscen,"_",rcpfile,"_",
                         "sampleID",sampleID,".rdata"))
-  print("Vdec")
- 
+
   ####WenergyWood
   outX <- data.table(segID=sampleX$segID,apply(region$multiEnergyWood[,,,2],1:2,sum))
   p1 <- outX[, .(per1 = rowMeans(.SD)), .SDcols = colsOut1, by = segID] 
@@ -863,7 +860,6 @@ specialVarProc <- function(sampleX,region,r_no,harscen,rcpfile,sampleID){
   save(WenergyWood,file=paste0("outputDT/forCent",r_no,"/WenergyWood_",
                         harscen,"_",rcpfile,"_",
                         "sampleID",sampleID,".rdata"))
-print("WenergyWood")
   ####Wtot
   outX <- data.table(segID=sampleX$segID,apply(region$multiOut[,,c(24,25,31,32,33),,1],1:2,sum))
   p1 <- outX[, .(per1 = rowMeans(.SD)), .SDcols = colsOut1, by = segID] 
@@ -874,6 +870,5 @@ print("WenergyWood")
   save(Wtot,file=paste0("outputDT/forCent",r_no,"/Wtot_",
                                harscen,"_",rcpfile,"_",
                                "sampleID",sampleID,".rdata"))
-  print("Wtot")
   rm(domSpecies,domAge,Vdec,WenergyWood,Wtot,pX,p1,p2,p3); gc()
  } 
