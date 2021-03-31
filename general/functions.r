@@ -813,6 +813,7 @@ calMean <- function(varX,hscenX,areas){
 
 
 specialVarProc <- function(sampleX,region,r_no,harscen,rcpfile,sampleID){
+  nYears <-  max(region$nYears)
   ####process and save special variables: 
   ###dominant Species
   outX <- data.table(segID=sampleX$segID,apply(region$multiOut[,,30,,1],1:2,which.max))
@@ -829,11 +830,11 @@ specialVarProc <- function(sampleX,region,r_no,harscen,rcpfile,sampleID){
   # rm(domSpecies); gc()
   ###age dominant species
   matX <- apply(region$multiOut[,simYear1,7,,1],c(1,3),mean)
-  per1 <- matX[cbind(1:84, domSpecies$per1)]
+  per1 <- matX[cbind(1:nYears, domSpecies$per1)]
   matX <- apply(region$multiOut[,simYear2,7,,1],c(1,3),mean)
-  per2 <- matX[cbind(1:84, domSpecies$per2)]
+  per2 <- matX[cbind(1:nYears, domSpecies$per2)]
   matX <- apply(region$multiOut[,simYear3,7,,1],c(1,3),mean)
-  per3 <- matX[cbind(1:84, domSpecies$per3)]
+  per3 <- matX[cbind(1:nYears, domSpecies$per3)]
   domAge <- data.table(segID=sampleX$segID,per1=per1,per2=per2,per3=per3)
   save(domAge,file=paste0("outputDT/forCent",r_no,"/domAge_",
                           harscen,"_",rcpfile,"_",
