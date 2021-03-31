@@ -65,10 +65,11 @@ runModel <- function(sampleID){
       clim = prep.climate.f(dat, data.sample, startingYear, nYears)
       
       Region = nfiareas[ID==r_no, Region]
-      
+
       ## Second, continue now starting from soil SS
       initPrebas = create_prebas_input.f(r_no, clim, data.sample, nYears = nYears,
                                          startingYear = startingYear,domSPrun=domSPrun)
+      
       ###set parameters
       #    initPrebas$pCROBAS <- pCROBAS
       
@@ -148,7 +149,7 @@ runModel <- function(sampleID){
         region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLim1),minDharv = 1.)
         initSoilC <- stXX_GV(region, 1)
         region <- yassoPREBASin(region,initSoilC)
-        
+        print("all runs done")
         # out <- region$multiOut[,,,,1]
         
         margin= 1:2#(length(dim(out$annual[,,varSel,]))-1)
@@ -174,7 +175,8 @@ runModel <- function(sampleID){
         }
         
        ####process and save special variales
-        specialVarProc()
+print("start special vars")
+        specialVarProc(sampleX,region,r_no,harscen,rcpfile,sampleID)
         
         
         rm(list=c("region")); gc()
@@ -810,7 +812,7 @@ calMean <- function(varX,hscenX,areas){
 
 
 
-specialVarProc <- function(){
+specialVarProc <- function(sampleX,region,r_no,harscen,rcpfile,sampleID){
   ####process and save special variables: 
   ###dominant Species
   outX <- data.table(segID=sampleX$segID,apply(region$multiOut[,,30,,1],1:2,which.max))

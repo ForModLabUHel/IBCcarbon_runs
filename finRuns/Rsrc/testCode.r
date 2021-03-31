@@ -1,5 +1,5 @@
-r_no <- regions <- 2 
-sampleID <- 10
+r_no <- regions <- 1
+sampleID <- 7
 manScen <- "Base"
 
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
