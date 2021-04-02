@@ -147,9 +147,11 @@ runModel <- function(sampleID){
         # save(initPrebas,HarvLim1,file=paste0("test1",harscen,".rdata"))
         # region <- regionPrebas(initPrebas)
         region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLim1),minDharv = 1.)
+        print(paste("runModel",sampleID))
         initSoilC <- stXX_GV(region, 1)
+        print(paste("initSoilC",sampleID))
         region <- yassoPREBASin(region,initSoilC)
-        print("all runs done")
+        print(paste("all runs done",sampleID))
         # out <- region$multiOut[,,,,1]
         
         margin= 1:2#(length(dim(out$annual[,,varSel,]))-1)
