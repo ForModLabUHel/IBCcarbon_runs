@@ -12,7 +12,7 @@ pdf(paste0("rasters/forCent",r_no,"/histograms.pdf"))
 varXs <- c(varNames[varSel], specialVars)
 for(varX in varXs){
   # varX <- varXs[1]
-  fileXs <- list.files(path = pathFiles, pattern = varX)
+  fileXs <- list.files(path = paste0(pathtoken,pathFiles), pattern = paste0(varX,"_"))
   outX <- data.table()
   for(i in 1:length(fileXs)){
     load(paste0(pathFiles,fileXs[i]))
