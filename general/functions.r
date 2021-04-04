@@ -153,9 +153,13 @@ runModel <- function(sampleID){
         region <- yassoPREBASin(region,initSoilC)
         print(paste("all runs done",sampleID))
         # out <- region$multiOut[,,,,1]
-        
+  
         ####create pdf for test plots
-        if(sampleID==10) pdf(paste0("outputDT/forCent",r_no,"/testPlots.pdf"))
+        if(sampleID==10){
+          pdf(paste0("outputDT/forCent",r_no,"/testPlots.pdf"))
+          out <- region$multiOut[,,varSel,,1]
+          save(out,file = paste0("outputDT/forCent",r_no,"/testData.rdata"))
+        } 
         margin= 1:2#(length(dim(out$annual[,,varSel,]))-1)
         for (ij in 1:length(varSel)) {
           if(funX[ij]=="baWmean"){
