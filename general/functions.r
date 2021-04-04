@@ -902,7 +902,8 @@ testPlot <- function(outX,titleX){
     # cc$metric=as.factor(cc$metric)
     cc$metric=factor(cc$metric)
     cc$value=as.double(cc$value)
-    ggplot(data=cc, aes(x=simYear, y=value, col=metric,group=metric)) +
+    testP <- ggplot(data=cc, aes(x=simYear, y=value, col=metric,group=metric)) +
       geom_line()+
       geom_point() + ggtitle(titleX)
+    print(testP)
 }
