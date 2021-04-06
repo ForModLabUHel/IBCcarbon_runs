@@ -12,8 +12,8 @@ set.seed(1)
 ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
 # for(sampleID in sampleIDs){
 # set.seed(1234, kind = "L'Ecuyer-CMRG" )
-mclapply(sampleIDs, function(jx,sampleID,ops,harvestLims,data.all,
-                             rcps,climatepath,dat,startingYear, nYears,
+mclapply(sampleIDs, function(jx,ops,harvestLims,data.all,
+                             rcps,climatepath,startingYear, nYears,
                              nfiareas,r_no,domSPrun,harvestscenarios,
                              rem,year1harv,HarvLimX,roundTotWoodRatio,varSel,
                              colsOut1,colsOut2,colsOut3) {
