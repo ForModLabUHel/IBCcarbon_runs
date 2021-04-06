@@ -166,6 +166,7 @@ runModel <- function(sampleID,ops,harvestLims,data.all,
         } 
         margin= 1:2#(length(dim(out$annual[,,varSel,]))-1)
         for (ij in 1:length(varSel)) {
+          print(varSel[ij])
           if(funX[ij]=="baWmean"){
             outX <- data.table(segID=sampleX$segID,baWmean(region,varSel[ij]))
           }
