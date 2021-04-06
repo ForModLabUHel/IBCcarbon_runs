@@ -40,7 +40,7 @@ for(varX in varXs){
                                       varX,"_",min(per3),"-",max(per3),".tiff"),overwrite=T)
   hist(rastX, main = paste(varX,"per3"))
   
-  # file.remove(paste0(pathFiles,fileXs))
+  file.remove(paste0(pathFiles,fileXs))
   print(varX)
 }
 dev.off()
