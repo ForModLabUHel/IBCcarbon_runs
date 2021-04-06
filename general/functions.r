@@ -6,7 +6,7 @@
 ## MAIN SCRIPT
 ## ---------------------------------------------------------------------
 runModel <- function(sampleID,ops,harvestLims,data.all,
-                     rcps,climatepath,dat,startingYear, nYears,
+                     rcps,climatepath,startingYear, nYears,
                      nfiareas,r_no,domSPrun,harvestscenarios,
                      rem,year1harv,HarvLimX,roundTotWoodRatio,varSel){
   # print(date())
