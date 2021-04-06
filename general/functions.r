@@ -8,7 +8,7 @@
 runModel <- function(sampleID,ops,harvestLims,data.all,
                      rcps,climatepath,startingYear, nYears,
                      nfiareas,r_no,domSPrun,harvestscenarios,
-                     rem,year1harv,HarvLimX,roundTotWoodRatio,varSel){
+                     rem,year1harv,HarvLimX,roundTotWoodRatio,varSel,funX){
   # print(date())
   print(paste("start sample ID",sampleID))
   sampleX <- ops[[sampleID]]
