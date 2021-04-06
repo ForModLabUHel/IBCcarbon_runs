@@ -8,7 +8,8 @@
 runModel <- function(sampleID,ops,harvestLims,data.all,
                      rcps,climatepath,startingYear, nYears,
                      nfiareas,r_no,domSPrun,harvestscenarios,
-                     rem,year1harv,HarvLimX,roundTotWoodRatio,varSel,funX){
+                     rem,year1harv,HarvLimX,roundTotWoodRatio,varSel,
+                     funX,colsOut1,colsOut2,colsOut3){
   # print(date())
   print(paste("start sample ID",sampleID))
   sampleX <- ops[[sampleID]]
@@ -190,7 +191,8 @@ runModel <- function(sampleID,ops,harvestLims,data.all,
         
        ####process and save special variales
 print("start special vars")
-        specialVarProc(sampleX,region,r_no,harscen,rcpfile,sampleID)
+        specialVarProc(sampleX,region,r_no,harscen,rcpfile,sampleID,
+                       colsOut1,colsOut2,colsOut3)
         
         
         rm(list=c("region")); gc()
@@ -826,7 +828,8 @@ calMean <- function(varX,hscenX,areas){
 
 
 
-specialVarProc <- function(sampleX,region,r_no,harscen,rcpfile,sampleID){
+specialVarProc <- function(sampleX,region,r_no,harscen,rcpfile,sampleID,
+                           colsOut1,colsOut2,colsOut3){
   nYears <-  max(region$nYears)
   nSites <-  max(region$nSites)
   ####process and save special variables: 
