@@ -24,10 +24,12 @@ mclapply(sampleIDs, function(jx,sampleID,ops,harvestLims,data.all,
 #                 c("sampleID","ops","harvestLims","data.all",
 #                 "rcps","climatepath","startingYear", "nYears",
 #                 "nfiareas","r_no","domSPrun","harvestscenarios",
-#                 "rem","year1harv","HarvLimX","roundTotWoodRatio","varSel","funX")))
+#                 "rem","year1harv","HarvLimX","roundTotWoodRatio","varSel","funX",
+#                 "colsOut1","colsOut2","colsOut3")))
 # source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
 # 
 # runModel(sampleID=12,ops,harvestLims,data.all,
 #          rcps,climatepath,startingYear, nYears,
 #          nfiareas,r_no,domSPrun,harvestscenarios,
-#          rem,year1harv,HarvLimX,roundTotWoodRatio,varSel,funX)
+#          rem,year1harv,HarvLimX,roundTotWoodRatio,varSel,funX,
+#          colsOut1,colsOut2,colsOut3)
