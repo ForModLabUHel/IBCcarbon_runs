@@ -18,14 +18,15 @@ mclapply(sampleIDs, function(jx,sampleID,ops,harvestLims,data.all,
                              rem,year1harv,HarvLimX,roundTotWoodRatio,varSel) {
   runModel(jx)  ## Do nothing for 10 seconds
 }, mc.cores = nCores)      ## Split this job across 10 cores
-
-rm(list=setdiff(ls(), 
-                c("sampleID","ops","harvestLims","data.all",
-                "rcps","climatepath","dat","startingYear", "nYears",
-                "nfiareas","r_no","domSPrun","harvestscenarios",
-                "rem","year1harv","HarvLimX","roundTotWoodRatio","varSel","funX")))
-
-runModel(sampleID=12,ops,harvestLims,data.all,
-         rcps,climatepath,dat,startingYear, nYears,
-         nfiareas,r_no,domSPrun,harvestscenarios,
-         rem,year1harv,HarvLimX,roundTotWoodRatio,varSel,funX)
+# 
+# rm(list=setdiff(ls(), 
+#                 c("sampleID","ops","harvestLims","data.all",
+#                 "rcps","climatepath","dat","startingYear", "nYears",
+#                 "nfiareas","r_no","domSPrun","harvestscenarios",
+#                 "rem","year1harv","HarvLimX","roundTotWoodRatio","varSel","funX")))
+# source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
+# 
+# runModel(sampleID=12,ops,harvestLims,data.all,
+#          rcps,climatepath,dat,startingYear, nYears,
+#          nfiareas,r_no,domSPrun,harvestscenarios,
+#          rem,year1harv,HarvLimX,roundTotWoodRatio,varSel,funX)
