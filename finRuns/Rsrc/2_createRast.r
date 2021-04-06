@@ -7,7 +7,7 @@ pathFiles <- paste0("outputDT/forCent",r_no,"/")
 load(paste0("input/forCent_",r_no,"_IDsTab.rdata"))
 forCentIDsTab <- forCentIDsTab[segID!=0]
 setkey(forCentIDsTab,segID)
-pdf(paste0("rasters/forCent",r_no,"/histograms.pdf"))
+pdf(paste0("plots/histRast_",r_no,".pdf"))
 
 varXs <- c(varNames[varSel], specialVars)
 for(varX in varXs){

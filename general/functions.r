@@ -156,7 +156,7 @@ runModel <- function(sampleID){
   
         ####create pdf for test plots
         if(sampleID==10){
-          pdf(paste0("outputDT/forCent",r_no,"/testPlots.pdf"))
+          pdf(paste0("plots/testPlots_",r_no,".pdf"))
           out <- region$multiOut[,,varSel,,1]
           save(out,file = paste0("outputDT/forCent",r_no,"/testData.rdata"))
         } 
