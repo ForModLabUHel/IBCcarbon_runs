@@ -55,6 +55,9 @@ funX[match(varNames[c(7,11:12)],varNames[varSel])] <- "baWmean"
 pathtoken = "/scratch/project_2000994/PREBASruns/finRuns/"
 climatepath = "/scratch/project_2000994/RCP/"
 
+crsX <- ("+proj=utm +zone=35 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m
+  +no_defs")
+
 setwd(pathtoken)
 
 ####ratio used to calculate round Wood percentage of total harvest, the remaining is Energywood

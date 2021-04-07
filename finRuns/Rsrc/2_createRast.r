@@ -26,16 +26,19 @@ for(varX in varXs){
   
   # can make a loop 
   rastX <- rasterFromXYZ(tabX[,.(x,y,per1)])
+  crs(rastX) <- crsX
   writeRaster(rastX,filename = paste0("rasters/forCent",r_no,"/",
                                       varX,"_",min(per1),"-",max(per1),".tiff"),overwrite=T)
   hist(rastX, main = paste(varX,"per1"))
   
   rastX <- rasterFromXYZ(tabX[,.(x,y,per2)])
+  crs(rastX) <- crsX
   writeRaster(rastX,filename = paste0("rasters/forCent",r_no,"/",
                                       varX,"_",min(per2),"-",max(per2),".tiff"),overwrite=T)
   hist(rastX, main = paste(varX,"per2"))
   
   rastX <- rasterFromXYZ(tabX[,.(x,y,per3)])
+  crs(rastX) <- crsX
   writeRaster(rastX,filename = paste0("rasters/forCent",r_no,"/",
                                       varX,"_",min(per3),"-",max(per3),".tiff"),overwrite=T)
   hist(rastX, main = paste(varX,"per3"))
