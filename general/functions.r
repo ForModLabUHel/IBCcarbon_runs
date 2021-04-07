@@ -156,7 +156,7 @@ runModel <- function(sampleID){
         # out <- region$multiOut[,,,,1]
   
         ####create pdf for test plots
-        if(sampleID==10){
+        if(sampleID==sampleForPlots){
           pdf(paste0("plots/testPlots_",r_no,".pdf"))
           out <- region$multiOut
           save(out,file = paste0("outputDT/forCent",r_no,"/testData.rdata"))
@@ -173,7 +173,6 @@ runModel <- function(sampleID){
           }
           ####test plot
           # print(outX)
-          if(sampleID==10){testPlot(outX,varNames[varSel[ij]],areas)}
           
           p1 <- outX[, .(per1 = rowMeans(.SD)), .SDcols = colsOut1, by = segID] 
           p2 <- outX[, .(per2 = rowMeans(.SD)), .SDcols = colsOut2, by = segID] 
@@ -190,7 +189,7 @@ runModel <- function(sampleID){
         }
         
        ####process and save special variales
-print(paste("start special vars",r_no))
+print(paste("start special vars",sampleID))
         specialVarProc(sampleX,region,r_no,harscen,rcpfile,sampleID,
                        colsOut1,colsOut2,colsOut3,areas)
         
@@ -837,7 +836,7 @@ specialVarProc <- function(sampleX,region,r_no,harscen,rcpfile,sampleID,
   outX <- data.table(segID=sampleX$segID,apply(region$multiOut[,,30,,1],1:2,which.max))
   
   ####test plot
-  if(sampleID==10){testPlot(outX,"domSpecies",areas)}
+  if(sampleID==sampleForPlots){testPlot(outX,"domSpecies",areas)}
   ###take the most frequent species in the periods
   p1 <- outX[,.(per1 = Mode(as.numeric(.SD))[1]),.SDcols=colsOut1,by=segID]
   p2 <- outX[,.(per2 = Mode(as.numeric(.SD))[1]),.SDcols=colsOut2,by=segID]
@@ -862,7 +861,7 @@ specialVarProc <- function(sampleX,region,r_no,harscen,rcpfile,sampleID,
                           "sampleID",sampleID,".rdata"))
   ###deciduous Volume Vdec
   outX <- data.table(segID=sampleX$segID,region$multiOut[,,30,3,1])
-  if(sampleID==10){testPlot(outX,"Vdec",areas)}
+  if(sampleID==sampleForPlots){testPlot(outX,"Vdec",areas)}
   p1 <- outX[, .(per1 = rowMeans(.SD)), .SDcols = colsOut1, by = segID] 
   p2 <- outX[, .(per2 = rowMeans(.SD)), .SDcols = colsOut2, by = segID] 
   p3 <- outX[, .(per3 = rowMeans(.SD)), .SDcols = colsOut3, by = segID] 
@@ -875,7 +874,7 @@ specialVarProc <- function(sampleX,region,r_no,harscen,rcpfile,sampleID,
 
   ####WenergyWood
   outX <- data.table(segID=sampleX$segID,apply(region$multiEnergyWood[,,,2],1:2,sum))
-  if(sampleID==10){testPlot(outX,"WenergyWood",areas)}
+  if(sampleID==sampleForPlots){testPlot(outX,"WenergyWood",areas)}
   p1 <- outX[, .(per1 = rowMeans(.SD)), .SDcols = colsOut1, by = segID] 
   p2 <- outX[, .(per2 = rowMeans(.SD)), .SDcols = colsOut2, by = segID] 
   p3 <- outX[, .(per3 = rowMeans(.SD)), .SDcols = colsOut3, by = segID] 
@@ -886,7 +885,7 @@ specialVarProc <- function(sampleX,region,r_no,harscen,rcpfile,sampleID,
                         "sampleID",sampleID,".rdata"))
   ####Wtot
   outX <- data.table(segID=sampleX$segID,apply(region$multiOut[,,c(24,25,31,32,33),,1],1:2,sum))
-  if(sampleID==10){testPlot(outX,"Wtot",areas)}
+  if(sampleID==sampleForPlots){testPlot(outX,"Wtot",areas)}
   p1 <- outX[, .(per1 = rowMeans(.SD)), .SDcols = colsOut1, by = segID] 
   p2 <- outX[, .(per2 = rowMeans(.SD)), .SDcols = colsOut2, by = segID] 
   p3 <- outX[, .(per3 = rowMeans(.SD)), .SDcols = colsOut3, by = segID] 
@@ -896,7 +895,7 @@ specialVarProc <- function(sampleX,region,r_no,harscen,rcpfile,sampleID,
                                harscen,"_",rcpfile,"_",
                                "sampleID",sampleID,".rdata"))
   rm(domSpecies,domAge,Vdec,WenergyWood,Wtot,pX,p1,p2,p3); gc()
-  if(sampleID==10){dev.off()}
+  if(sampleID==sampleForPlots){dev.off()}
   
 } 
 
