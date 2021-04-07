@@ -173,6 +173,7 @@ runModel <- function(sampleID){
           }
           ####test plot
           # print(outX)
+          if(sampleID==sampleForPlots){testPlot(outX,varNames[varSel[ij]],areas)}
           
           p1 <- outX[, .(per1 = rowMeans(.SD)), .SDcols = colsOut1, by = segID] 
           p2 <- outX[, .(per2 = rowMeans(.SD)), .SDcols = colsOut2, by = segID] 
