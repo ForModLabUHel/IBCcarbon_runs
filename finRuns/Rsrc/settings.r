@@ -1,4 +1,4 @@
-
+print("buongiorno")
 CSCrun=T
 
 ###load packages in CSC project folder
@@ -6,10 +6,12 @@ if(CSCrun){
   .libPaths(c("/projappl/project_2000994/project_rpackages", .libPaths()))
   # libpath <- .libPaths()[1]
 }
-
+print("fatto")
 ###choose PREBAS version
 vPREBAS <- "master"   #### choose PREBAS version to run the model  "master" "v0.2.x"
 devtools::install_github("ForModLabUHel/Rprebasso", ref=vPREBAS)
+ 
+.libPaths()
 
 library(raster)
 library(rgdal)
