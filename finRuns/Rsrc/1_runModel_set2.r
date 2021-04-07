@@ -19,11 +19,7 @@ runModel(10,ops,harvestLims,data.all,
 # for(sampleID in sampleIDs){
 # set.seed(1234, kind = "L'Ecuyer-CMRG" )
 mclapply(sampleIDs, function(jx) {
-  runModel(jx,ops,harvestLims,data.all,
-           rcps,climatepath,startingYear, nYears,
-           nfiareas,r_no,domSPrun,harvestscenarios,
-           rem,year1harv,HarvLimX,roundTotWoodRatio,varSel,
-           colsOut1,colsOut2,colsOut3)  ## Do nothing for 10 seconds
+  runModel(jx)  ## Do nothing for 10 seconds
 }, mc.cores = nCores)      ## Split this job across 10 cores
 
 # rm(list=setdiff(ls(),

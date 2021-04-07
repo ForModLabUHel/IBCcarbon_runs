@@ -5,11 +5,7 @@
 ## ---------------------------------------------------------------------
 ## MAIN SCRIPT
 ## ---------------------------------------------------------------------
-runModel <- function(sampleID,ops,harvestLims,data.all,
-                     rcps,climatepath,startingYear, nYears,
-                     nfiareas,r_no,domSPrun,harvestscenarios,
-                     rem,year1harv,HarvLimX,roundTotWoodRatio,varSel,
-                     funX,colsOut1,colsOut2,colsOut3){
+runModel <- function(sampleID){
   # print(date())
   print(paste("start sample ID",sampleID))
   sampleX <- ops[[sampleID]]
