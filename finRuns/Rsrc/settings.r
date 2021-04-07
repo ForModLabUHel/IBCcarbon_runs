@@ -11,7 +11,7 @@ print("fatto")
 vPREBAS <- "master"   #### choose PREBAS version to run the model  "master" "v0.2.x"
 devtools::install_github("ForModLabUHel/Rprebasso", ref=vPREBAS)
  
-.libPaths()
+print(.libPaths())
 
 library(raster)
 library(rgdal)
