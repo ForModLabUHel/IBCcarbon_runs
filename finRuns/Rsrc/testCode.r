@@ -1,5 +1,5 @@
 r_no <- regions <- 1
-sampleID <- 7
+sampleID <- 10
 manScen <- "Base"
 
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
@@ -37,7 +37,7 @@ nSample = nrow(sampleX)#200#nrow(data.all)
 i = 0
 # load("/scratch/project_2000994/PREBASruns/metadata/initSoilCstst.rdata")
 # load("outSoil/InitSoilCstst_Base.rdata")
-rcpfile = rcps)
+rcpfile = rcps
   # print(rcpfile)
   if(rcpfile=="CurrClim"){
     load(paste(climatepath, rcpfile,".rdata", sep=""))  
@@ -166,44 +166,45 @@ rcpfile = rcps)
     print(paste("all runs done",sampleID))
     # out <- region$multiOut[,,,,1]
     
-    # ####create pdf for test plots
-    # if(sampleID==10){
-    #   pdf(paste0("plots/testPlots_",r_no,".pdf"))
-    #   out <- region$multiOut
-    #   save(out,file = paste0("outputDT/forCent",r_no,"/testData.rdata"))
-    #   rm(out);gc()
-    # } 
-    # margin= 1:2#(length(dim(out$annual[,,varSel,]))-1)
-    # for (ij in 1:length(varSel)) {
-    #   print(varSel[ij])
-    #   if(funX[ij]=="baWmean"){
-    #     outX <- data.table(segID=sampleX$segID,baWmean(region,varSel[ij]))
-    #   }
-    #   if(funX[ij]=="sum"){
-    #     outX <- data.table(segID=sampleX$segID,apply(region$multiOut[,,varSel[ij],,1],margin,sum))
-    #   }
-    #   ####test plot
-    #   # print(outX)
-    #   if(sampleID==10){testPlot(outX,varNames[varSel[ij]],areas)}
-    #   
-    #   p1 <- outX[, .(per1 = rowMeans(.SD)), .SDcols = colsOut1, by = segID] 
-    #   p2 <- outX[, .(per2 = rowMeans(.SD)), .SDcols = colsOut2, by = segID] 
-    #   p3 <- outX[, .(per3 = rowMeans(.SD)), .SDcols = colsOut3, by = segID] 
-    #   pX <- merge(p1,p2)
-    #   pX <- merge(pX,p3)
-    #   assign(varNames[varSel[ij]],pX)
-    #   
-    #   save(list=varNames[varSel[ij]],file=paste0("outputDT/forCent",r_no,"/",
-    #                                              varNames[varSel[ij]],"_",
-    #                                              harscen,"_",rcpfile,"_",
-    #                                              "sampleID",sampleID,".rdata"))
-    #   rm(list=varNames[varSel[ij]]); gc()
-    # }
-    # 
-    # ####process and save special variales
-    # print("start special vars")
-    # specialVarProc(sampleX,region,r_no,harscen,rcpfile,sampleID,
-    #                colsOut1,colsOut2,colsOut3,areas)
-    # 
-    # 
-    # 
+
+    
+        ####create pdf for test plots
+    if(sampleID==10){
+      pdf(paste0("plots/testPlots_",r_no,".pdf"))
+      out <- region$multiOut
+      save(out,file = paste0("outputDT/forCent",r_no,"/testData.rdata"))
+      rm(out);gc()
+    }
+    margin= 1:2#(length(dim(out$annual[,,varSel,]))-1)
+    for (ij in 1:length(varSel)) {
+      print(varSel[ij])
+      if(funX[ij]=="baWmean"){
+        outX <- data.table(segID=sampleX$segID,baWmean(region,varSel[ij]))
+      }
+      if(funX[ij]=="sum"){
+        outX <- data.table(segID=sampleX$segID,apply(region$multiOut[,,varSel[ij],,1],margin,sum))
+      }
+      ####test plot
+      # print(outX)
+      if(sampleID==10){testPlot(outX,varNames[varSel[ij]],areas)}
+
+      p1 <- outX[, .(per1 = rowMeans(.SD)), .SDcols = colsOut1, by = segID]
+      p2 <- outX[, .(per2 = rowMeans(.SD)), .SDcols = colsOut2, by = segID]
+      p3 <- outX[, .(per3 = rowMeans(.SD)), .SDcols = colsOut3, by = segID]
+      pX <- merge(p1,p2)
+      pX <- merge(pX,p3)
+      assign(varNames[varSel[ij]],pX)
+
+      save(list=varNames[varSel[ij]],file=paste0("outputDT/forCent",r_no,"/",
+                                                 varNames[varSel[ij]],"_",
+                                                 harscen,"_",rcpfile,"_",
+                                                 "sampleID",sampleID,".rdata"))
+      rm(list=varNames[varSel[ij]]); gc()
+    }
+
+    ####process and save special variales
+    print("start special vars")
+    specialVarProc(sampleX,region,r_no,harscen,rcpfile,sampleID,
+                   colsOut1,colsOut2,colsOut3,areas)
+
+

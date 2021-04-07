@@ -828,7 +828,7 @@ calMean <- function(varX,hscenX,areas){
 
 
 specialVarProc <- function(sampleX,region,r_no,harscen,rcpfile,sampleID,
-                           colsOut1,colsOut2,colsOut3,areas,smpleForPlots){
+                           colsOut1,colsOut2,colsOut3,areas,sampleForPlots){
   nYears <-  max(region$nYears)
   nSites <-  max(region$nSites)
   ####process and save special variables: 
