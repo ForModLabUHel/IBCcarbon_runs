@@ -174,6 +174,7 @@ runModel <- function(sampleID,ops,harvestLims,data.all,
             outX <- data.table(segID=sampleX$segID,apply(region$multiOut[,,varSel[ij],,1],margin,sum))
           }
           ####test plot
+          print(outX)
           if(sampleID==10){testPlot(outX,varNames[varSel[ij]])}
           
           p1 <- outX[, .(per1 = rowMeans(.SD)), .SDcols = colsOut1, by = segID] 
