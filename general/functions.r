@@ -157,8 +157,9 @@ runModel <- function(sampleID){
         ####create pdf for test plots
         if(sampleID==10){
           pdf(paste0("plots/testPlots_",r_no,".pdf"))
-          out <- region$multiOut[,,varSel,,1]
+          out <- region$multiOut
           save(out,file = paste0("outputDT/forCent",r_no,"/testData.rdata"))
+          rm(out);gc()
         } 
         margin= 1:2#(length(dim(out$annual[,,varSel,]))-1)
         for (ij in 1:length(varSel)) {
@@ -171,7 +172,7 @@ runModel <- function(sampleID){
           }
           ####test plot
           print(outX)
-          if(sampleID==10){testPlot(outX,varNames[varSel[ij]])}
+          if(sampleID==10){testPlot(outX,varNames[varSel[ij]],areas)}
           
           p1 <- outX[, .(per1 = rowMeans(.SD)), .SDcols = colsOut1, by = segID] 
           p2 <- outX[, .(per2 = rowMeans(.SD)), .SDcols = colsOut2, by = segID] 
@@ -190,7 +191,7 @@ runModel <- function(sampleID){
        ####process and save special variales
 print("start special vars")
         specialVarProc(sampleX,region,r_no,harscen,rcpfile,sampleID,
-                       colsOut1,colsOut2,colsOut3)
+                       colsOut1,colsOut2,colsOut3,areas)
         
         
         rm(list=c("region")); gc()
@@ -827,7 +828,7 @@ calMean <- function(varX,hscenX,areas){
 
 
 specialVarProc <- function(sampleX,region,r_no,harscen,rcpfile,sampleID,
-                           colsOut1,colsOut2,colsOut3){
+                           colsOut1,colsOut2,colsOut3,areas){
   nYears <-  max(region$nYears)
   nSites <-  max(region$nSites)
   ####process and save special variables: 
@@ -835,7 +836,7 @@ specialVarProc <- function(sampleX,region,r_no,harscen,rcpfile,sampleID,
   outX <- data.table(segID=sampleX$segID,apply(region$multiOut[,,30,,1],1:2,which.max))
   
   ####test plot
-  if(sampleID==10){testPlot(outX,"domSpecies")}
+  if(sampleID==10){testPlot(outX,"domSpecies",areas)}
   ###take the most frequent species in the periods
   p1 <- outX[,.(per1 = Mode(as.numeric(.SD))[1]),.SDcols=colsOut1,by=segID]
   p2 <- outX[,.(per2 = Mode(as.numeric(.SD))[1]),.SDcols=colsOut2,by=segID]
@@ -860,7 +861,7 @@ specialVarProc <- function(sampleX,region,r_no,harscen,rcpfile,sampleID,
                           "sampleID",sampleID,".rdata"))
   ###deciduous Volume Vdec
   outX <- data.table(segID=sampleX$segID,region$multiOut[,,30,3,1])
-  if(sampleID==10){testPlot(outX,"Vdec")}
+  if(sampleID==10){testPlot(outX,"Vdec",areas)}
   p1 <- outX[, .(per1 = rowMeans(.SD)), .SDcols = colsOut1, by = segID] 
   p2 <- outX[, .(per2 = rowMeans(.SD)), .SDcols = colsOut2, by = segID] 
   p3 <- outX[, .(per3 = rowMeans(.SD)), .SDcols = colsOut3, by = segID] 
@@ -873,7 +874,7 @@ specialVarProc <- function(sampleX,region,r_no,harscen,rcpfile,sampleID,
 
   ####WenergyWood
   outX <- data.table(segID=sampleX$segID,apply(region$multiEnergyWood[,,,2],1:2,sum))
-  if(sampleID==10){testPlot(outX,"WenergyWood")}
+  if(sampleID==10){testPlot(outX,"WenergyWood",areas)}
   p1 <- outX[, .(per1 = rowMeans(.SD)), .SDcols = colsOut1, by = segID] 
   p2 <- outX[, .(per2 = rowMeans(.SD)), .SDcols = colsOut2, by = segID] 
   p3 <- outX[, .(per3 = rowMeans(.SD)), .SDcols = colsOut3, by = segID] 
@@ -884,7 +885,7 @@ specialVarProc <- function(sampleX,region,r_no,harscen,rcpfile,sampleID,
                         "sampleID",sampleID,".rdata"))
   ####Wtot
   outX <- data.table(segID=sampleX$segID,apply(region$multiOut[,,c(24,25,31,32,33),,1],1:2,sum))
-  if(sampleID==10){testPlot(outX,"Wtot")}
+  if(sampleID==10){testPlot(outX,"Wtot",areas)}
   p1 <- outX[, .(per1 = rowMeans(.SD)), .SDcols = colsOut1, by = segID] 
   p2 <- outX[, .(per2 = rowMeans(.SD)), .SDcols = colsOut2, by = segID] 
   p3 <- outX[, .(per3 = rowMeans(.SD)), .SDcols = colsOut3, by = segID] 
@@ -901,11 +902,12 @@ specialVarProc <- function(sampleX,region,r_no,harscen,rcpfile,sampleID,
 
 
 ####test plot
-testPlot <- function(outX,titleX){
+testPlot <- function(outX,titleX,areas){
     cc <- data.table(rbind(cbind(1:nYears,apply(outX[,2:(nYears+1)],2,min,na.rm=T),"min"),
-                           cbind(1:nYears,apply(outX[,2:(nYears+1)],2,max,na.rm=T),"max"),
-                           cbind(1:nYears,apply(outX[,2:(nYears+1)],2,median,na.rm=T),"median"),
-                           cbind(1:nYears,apply(outX[,2:(nYears+1)],2,mean,na.rm=T),"mean")))
+                cbind(1:nYears,apply(outX[,2:(nYears+1)],2,max,na.rm=T),"max"),
+                cbind(1:nYears,apply(outX[,2:(nYears+1)],2,median,na.rm=T),"median"),
+                cbind(1:nYears,apply(outX[,2:(nYears+1)],2,mean,na.rm=T),"aritMean")),
+                cbind(1:nYears,apply((outX[,2:(nYears+1)]*areas/sum(areas)),2,sum,na.rm=T),"regionMean"))
     setnames(cc,c("simYear","value","metric"))
     # cc$metric=as.factor(cc$metric)
     cc$metric=factor(cc$metric)
