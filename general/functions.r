@@ -164,7 +164,7 @@ runModel <- function(sampleID){
         } 
         margin= 1:2#(length(dim(out$annual[,,varSel,]))-1)
         for (ij in 1:length(varSel)) {
-          print(varSel[ij])
+          # print(varSel[ij])
           if(funX[ij]=="baWmean"){
             outX <- data.table(segID=sampleX$segID,baWmean(region,varSel[ij]))
           }
@@ -190,7 +190,7 @@ runModel <- function(sampleID){
         }
         
        ####process and save special variales
-print("start special vars")
+print(paste("start special vars",r_no))
         specialVarProc(sampleX,region,r_no,harscen,rcpfile,sampleID,
                        colsOut1,colsOut2,colsOut3,areas)
         
