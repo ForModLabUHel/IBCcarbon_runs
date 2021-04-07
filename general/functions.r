@@ -191,7 +191,7 @@ runModel <- function(sampleID){
        ####process and save special variales
 print(paste("start special vars",sampleID))
         specialVarProc(sampleX,region,r_no,harscen,rcpfile,sampleID,
-                       colsOut1,colsOut2,colsOut3,areas)
+                       colsOut1,colsOut2,colsOut3,areas,sampleForPlots)
         
         
         rm(list=c("region")); gc()
@@ -828,7 +828,7 @@ calMean <- function(varX,hscenX,areas){
 
 
 specialVarProc <- function(sampleX,region,r_no,harscen,rcpfile,sampleID,
-                           colsOut1,colsOut2,colsOut3,areas){
+                           colsOut1,colsOut2,colsOut3,areas,smpleForPlots){
   nYears <-  max(region$nYears)
   nSites <-  max(region$nSites)
   ####process and save special variables: 
