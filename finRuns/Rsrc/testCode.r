@@ -168,13 +168,13 @@ rcpfile = rcps
     ####create pdf for test plots
     if(sampleID==sampleForPlots){
       pdf(paste0("plots/testPlots_",r_no,".pdf"))
-      out <- region$multiOut
-      save(out,file = paste0("outputDT/forCent",r_no,"/testData.rdata"))
-      rm(out);gc()
-    } 
+      # out <- region$multiOut
+      # save(out,file = paste0("outputDT/forCent",r_no,"/testData.rdata"))
+      # rm(out);gc()
+    }
     margin= 1:2#(length(dim(out$annual[,,varSel,]))-1)
     for (ij in 1:length(varSel)) {
-      # print(varSel[ij])
+      print(varSel[ij])
       if(funX[ij]=="baWmean"){
         outX <- data.table(segID=sampleX$segID,baWmean(region,varSel[ij]))
       }
