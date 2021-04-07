@@ -4,7 +4,7 @@ CSCrun=T
 ###load packages in CSC project folder
 if(CSCrun){
   .libPaths(c("/projappl/project_2000994/project_rpackages", .libPaths()))
-  libpath <- .libPaths()[1]
+  # libpath <- .libPaths()[1]
 }
 
 ###choose PREBAS version
