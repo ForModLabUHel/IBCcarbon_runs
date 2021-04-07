@@ -60,6 +60,7 @@ runModel <- function(sampleID){
       ## Prepare the same initial state for all harvest scenarios that are simulated in a loop below
       data.sample = sample_data.f(sampleX, nSample)
       if(rcpfile=="CurrClim") data.sample$id <- data.sample$CurrClimID
+      areas <- data.sample$area
       totAreaSample <- sum(data.sample$area)
       
       clim = prep.climate.f(dat, data.sample, startingYear, nYears)
