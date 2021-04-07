@@ -1,4 +1,4 @@
-r_no <- regions <- 1
+r_no <- regions <- 4
 sampleID <- 10
 manScen <- "Base"
 
@@ -18,7 +18,6 @@ ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
 
 
 
-print(paste("start sample ID",sampleID))
 sampleX <- ops[[sampleID]]
 sampleX[,area := N*16^2/10000]
 sampleX[,id:=climID]
@@ -166,18 +165,16 @@ rcpfile = rcps
     print(paste("all runs done",sampleID))
     # out <- region$multiOut[,,,,1]
     
-
-    
-        ####create pdf for test plots
-    if(sampleID==10){
+    ####create pdf for test plots
+    if(sampleID==sampleForPlots){
       pdf(paste0("plots/testPlots_",r_no,".pdf"))
       out <- region$multiOut
       save(out,file = paste0("outputDT/forCent",r_no,"/testData.rdata"))
       rm(out);gc()
-    }
+    } 
     margin= 1:2#(length(dim(out$annual[,,varSel,]))-1)
     for (ij in 1:length(varSel)) {
-      print(varSel[ij])
+      # print(varSel[ij])
       if(funX[ij]=="baWmean"){
         outX <- data.table(segID=sampleX$segID,baWmean(region,varSel[ij]))
       }
@@ -186,25 +183,23 @@ rcpfile = rcps
       }
       ####test plot
       # print(outX)
-      if(sampleID==10){testPlot(outX,varNames[varSel[ij]],areas)}
-
-      p1 <- outX[, .(per1 = rowMeans(.SD)), .SDcols = colsOut1, by = segID]
-      p2 <- outX[, .(per2 = rowMeans(.SD)), .SDcols = colsOut2, by = segID]
-      p3 <- outX[, .(per3 = rowMeans(.SD)), .SDcols = colsOut3, by = segID]
+      
+      p1 <- outX[, .(per1 = rowMeans(.SD)), .SDcols = colsOut1, by = segID] 
+      p2 <- outX[, .(per2 = rowMeans(.SD)), .SDcols = colsOut2, by = segID] 
+      p3 <- outX[, .(per3 = rowMeans(.SD)), .SDcols = colsOut3, by = segID] 
       pX <- merge(p1,p2)
       pX <- merge(pX,p3)
       assign(varNames[varSel[ij]],pX)
-
+      
       save(list=varNames[varSel[ij]],file=paste0("outputDT/forCent",r_no,"/",
                                                  varNames[varSel[ij]],"_",
                                                  harscen,"_",rcpfile,"_",
                                                  "sampleID",sampleID,".rdata"))
       rm(list=varNames[varSel[ij]]); gc()
     }
-
+    
     ####process and save special variales
-    print("start special vars")
+    print(paste("start special vars",sampleID))
     specialVarProc(sampleX,region,r_no,harscen,rcpfile,sampleID,
-                   colsOut1,colsOut2,colsOut3,areas)
-
-
+                   colsOut1,colsOut2,colsOut3,areas,sampleForPlots)
+    
