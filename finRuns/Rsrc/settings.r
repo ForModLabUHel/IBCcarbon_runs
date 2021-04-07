@@ -18,13 +18,13 @@ library(rgdal)
 library(data.table)
 library(devtools)
 library(plyr)
-require(sm)
 # library(reshape2)
 library(Rprebasso)
 library(parallel)
 library(ggplot2)
 library(abind)
 library(DescTools)
+require(sm)
 
 # r_no = regions = 2  ### forest center ID
 nCores <- 6  ####  number of cores
