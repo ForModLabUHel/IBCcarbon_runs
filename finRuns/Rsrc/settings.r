@@ -25,7 +25,7 @@ require(sm)
 
 # r_no = regions = 2  ### forest center ID
 nCores <- 6  ####  number of cores
-smpleForPlots <- 10
+smpleForPlots <- 910
 # Missing from varOuts: 
 # MinPeat-index, NEPdrPeat
   
