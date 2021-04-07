@@ -17,6 +17,7 @@ ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
 
 
 
+
 print(paste("start sample ID",sampleID))
 sampleX <- ops[[sampleID]]
 sampleX[,area := N*16^2/10000]
@@ -36,8 +37,7 @@ nSample = nrow(sampleX)#200#nrow(data.all)
 i = 0
 # load("/scratch/project_2000994/PREBASruns/metadata/initSoilCstst.rdata")
 # load("outSoil/InitSoilCstst_Base.rdata")
-# for(rcpfile in rcps) { ## ---------------------------------------------
-rcpfile = rcps
+rcpfile = rcps)
   # print(rcpfile)
   if(rcpfile=="CurrClim"){
     load(paste(climatepath, rcpfile,".rdata", sep=""))  
@@ -71,6 +71,7 @@ rcpfile = rcps
   ## Prepare the same initial state for all harvest scenarios that are simulated in a loop below
   data.sample = sample_data.f(sampleX, nSample)
   if(rcpfile=="CurrClim") data.sample$id <- data.sample$CurrClimID
+  areas <- data.sample$area
   totAreaSample <- sum(data.sample$area)
   
   clim = prep.climate.f(dat, data.sample, startingYear, nYears)
@@ -80,6 +81,7 @@ rcpfile = rcps
   ## Second, continue now starting from soil SS
   initPrebas = create_prebas_input.f(r_no, clim, data.sample, nYears = nYears,
                                      startingYear = startingYear,domSPrun=domSPrun)
+  
   ###set parameters
   #    initPrebas$pCROBAS <- pCROBAS
   
@@ -103,9 +105,9 @@ rcpfile = rcps
     initPrebas$weatherYasso <- initPrebas$weatherYasso[,resampleYear,]
   }
   
-  harscen=manScen
+  
   # Loop management scenarios ------------------------------------------------
-  # for(harscen in harvestscenarios) { ## MaxSust fails, others worked.
+  harscen = harvestscenarios
     # print(date())
     # print(harscen)
     i = i + 1
@@ -157,6 +159,51 @@ rcpfile = rcps
     # save(initPrebas,HarvLim1,file=paste0("test1",harscen,".rdata"))
     # region <- regionPrebas(initPrebas)
     region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLim1),minDharv = 1.)
+    print(paste("runModel",sampleID))
     initSoilC <- stXX_GV(region, 1)
+    print(paste("initSoilC",sampleID))
     region <- yassoPREBASin(region,initSoilC)
+    print(paste("all runs done",sampleID))
+    # out <- region$multiOut[,,,,1]
     
+    # ####create pdf for test plots
+    # if(sampleID==10){
+    #   pdf(paste0("plots/testPlots_",r_no,".pdf"))
+    #   out <- region$multiOut
+    #   save(out,file = paste0("outputDT/forCent",r_no,"/testData.rdata"))
+    #   rm(out);gc()
+    # } 
+    # margin= 1:2#(length(dim(out$annual[,,varSel,]))-1)
+    # for (ij in 1:length(varSel)) {
+    #   print(varSel[ij])
+    #   if(funX[ij]=="baWmean"){
+    #     outX <- data.table(segID=sampleX$segID,baWmean(region,varSel[ij]))
+    #   }
+    #   if(funX[ij]=="sum"){
+    #     outX <- data.table(segID=sampleX$segID,apply(region$multiOut[,,varSel[ij],,1],margin,sum))
+    #   }
+    #   ####test plot
+    #   # print(outX)
+    #   if(sampleID==10){testPlot(outX,varNames[varSel[ij]],areas)}
+    #   
+    #   p1 <- outX[, .(per1 = rowMeans(.SD)), .SDcols = colsOut1, by = segID] 
+    #   p2 <- outX[, .(per2 = rowMeans(.SD)), .SDcols = colsOut2, by = segID] 
+    #   p3 <- outX[, .(per3 = rowMeans(.SD)), .SDcols = colsOut3, by = segID] 
+    #   pX <- merge(p1,p2)
+    #   pX <- merge(pX,p3)
+    #   assign(varNames[varSel[ij]],pX)
+    #   
+    #   save(list=varNames[varSel[ij]],file=paste0("outputDT/forCent",r_no,"/",
+    #                                              varNames[varSel[ij]],"_",
+    #                                              harscen,"_",rcpfile,"_",
+    #                                              "sampleID",sampleID,".rdata"))
+    #   rm(list=varNames[varSel[ij]]); gc()
+    # }
+    # 
+    # ####process and save special variales
+    # print("start special vars")
+    # specialVarProc(sampleX,region,r_no,harscen,rcpfile,sampleID,
+    #                colsOut1,colsOut2,colsOut3,areas)
+    # 
+    # 
+    # 
