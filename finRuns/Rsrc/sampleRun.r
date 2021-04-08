@@ -1,4 +1,4 @@
-sampleID=10
+sampleID=16
 r_no = regions = 6 ### forest center ID
 
 nSetRuns = 10 #number of set runs
