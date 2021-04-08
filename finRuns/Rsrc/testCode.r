@@ -1,4 +1,4 @@
-r_no <- regions <- 4
+r_no <- regions <- 6
 sampleID <- 10
 manScen <- "Base"
 
