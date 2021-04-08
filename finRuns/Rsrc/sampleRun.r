@@ -1,11 +1,12 @@
 sampleID=16
 r_no = regions = 6 ### forest center ID
-
+sampleForPlotsX <- TRUE 
+  
 nSetRuns = 10 #number of set runs
 
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
 source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
-sampleForPlots <- sampleID
+if(sampleForPlotsX) sampleForPlots <- sampleID
 setX=1
 nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
 sampleIDs <- split(1:nSamples,             # Applying split() function
