@@ -1,6 +1,6 @@
 sampleID=16
 r_no = regions = 6 ### forest center ID
-sampleForPlotsX <- TRUE 
+sampleForPlotsX <- F 
   
 nSetRuns = 10 #number of set runs
 
