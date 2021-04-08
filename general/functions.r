@@ -175,9 +175,9 @@ runModel <- function(sampleID){
           # print(outX)
           if(sampleID==sampleForPlots){testPlot(outX,varNames[varSel[ij]],areas)}
           
-          p1 <- outX[, .(per1 = rowMeans(.SD)), .SDcols = colsOut1, by = segID] 
-          p2 <- outX[, .(per2 = rowMeans(.SD)), .SDcols = colsOut2, by = segID] 
-          p3 <- outX[, .(per3 = rowMeans(.SD)), .SDcols = colsOut3, by = segID] 
+          p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
+          p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
+          p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
           pX <- merge(p1,p2)
           pX <- merge(pX,p3)
           assign(varNames[varSel[ij]],pX)
@@ -863,9 +863,9 @@ specialVarProc <- function(sampleX,region,r_no,harscen,rcpfile,sampleID,
   ###deciduous Volume Vdec
   outX <- data.table(segID=sampleX$segID,region$multiOut[,,30,3,1])
   if(sampleID==sampleForPlots){testPlot(outX,"Vdec",areas)}
-  p1 <- outX[, .(per1 = rowMeans(.SD)), .SDcols = colsOut1, by = segID] 
-  p2 <- outX[, .(per2 = rowMeans(.SD)), .SDcols = colsOut2, by = segID] 
-  p3 <- outX[, .(per3 = rowMeans(.SD)), .SDcols = colsOut3, by = segID] 
+  p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
+  p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
+  p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
   pX <- merge(p1,p2)
   pX <- merge(pX,p3)
   Vdec <- pX
@@ -876,9 +876,9 @@ specialVarProc <- function(sampleX,region,r_no,harscen,rcpfile,sampleID,
   ####WenergyWood
   outX <- data.table(segID=sampleX$segID,apply(region$multiEnergyWood[,,,2],1:2,sum))
   if(sampleID==sampleForPlots){testPlot(outX,"WenergyWood",areas)}
-  p1 <- outX[, .(per1 = rowMeans(.SD)), .SDcols = colsOut1, by = segID] 
-  p2 <- outX[, .(per2 = rowMeans(.SD)), .SDcols = colsOut2, by = segID] 
-  p3 <- outX[, .(per3 = rowMeans(.SD)), .SDcols = colsOut3, by = segID] 
+  p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
+  p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
+  p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
   pX <- merge(p1,p2)
   WenergyWood <- merge(pX,p3)
   save(WenergyWood,file=paste0("outputDT/forCent",r_no,"/WenergyWood_",
@@ -887,9 +887,9 @@ specialVarProc <- function(sampleX,region,r_no,harscen,rcpfile,sampleID,
   ####Wtot
   outX <- data.table(segID=sampleX$segID,apply(region$multiOut[,,c(24,25,31,32,33),,1],1:2,sum))
   if(sampleID==sampleForPlots){testPlot(outX,"Wtot",areas)}
-  p1 <- outX[, .(per1 = rowMeans(.SD)), .SDcols = colsOut1, by = segID] 
-  p2 <- outX[, .(per2 = rowMeans(.SD)), .SDcols = colsOut2, by = segID] 
-  p3 <- outX[, .(per3 = rowMeans(.SD)), .SDcols = colsOut3, by = segID] 
+  p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
+  p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
+  p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
   pX <- merge(p1,p2)
   Wtot <- merge(pX,p3)
   save(Wtot,file=paste0("outputDT/forCent",r_no,"/Wtot_",

@@ -185,9 +185,9 @@ rcpfile = rcps
       # print(outX)
       if(sampleID==sampleForPlots){testPlot(outX,varNames[varSel[ij]],areas)}
       
-      p1 <- outX[, .(per1 = rowMeans(.SD)), .SDcols = colsOut1, by = segID] 
-      p2 <- outX[, .(per2 = rowMeans(.SD)), .SDcols = colsOut2, by = segID] 
-      p3 <- outX[, .(per3 = rowMeans(.SD)), .SDcols = colsOut3, by = segID] 
+      p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
+      p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
+      p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
       pX <- merge(p1,p2)
       pX <- merge(pX,p3)
       assign(varNames[varSel[ij]],pX)
