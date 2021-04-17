@@ -3,18 +3,20 @@ source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/maste
 
 setX=1
 nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
-# sampleIDs <- split(1:nSamples,             # Applying split() function
-#                    cut(seq_along(1:nSamples),
-#                    nSetRuns,
-#                    labels = FALSE))[[setX]]
+sampleIDs <- split(1:nSamples,             # Applying split() function
+                   cut(seq_along(1:nSamples),
+                   nSetRuns,
+                   labels = FALSE))[[setX]]
 set.seed(1)
 ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
 # for(sampleID in sampleIDs){
 # set.seed(1234, kind = "L'Ecuyer-CMRG" )
-library('stringi')
-fileX <- list.files(path= "/scratch/project_2000994/PREBASruns/finRuns/outputDT/forCent12/", pattern = "age")
-sampleIDs <- which(!1:nSamples %in%  as.numeric(stri_extract_last(fileX, regex = "(\\d+)")))
-print(sampleIDs)
+
+# ###check and run missing sampleIDs 
+# library('stringi')
+# fileX <- list.files(path= "/scratch/project_2000994/PREBASruns/finRuns/outputDT/forCent12/", pattern = "age")
+# sampleIDs <- which(!1:nSamples %in%  as.numeric(stri_extract_last(fileX, regex = "(\\d+)")))
+# print(sampleIDs)
 mclapply(sampleIDs, function(jx) {
   runModel(jx)  ## Do nothing for 10 seconds
 }, mc.cores = nCores)      ## Split this job across 10 cores
