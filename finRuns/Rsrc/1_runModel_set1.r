@@ -3,10 +3,10 @@ source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/maste
 
 setX=1
 nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
-sampleIDs <- split(1:nSamples,             # Applying split() function
-                   cut(seq_along(1:nSamples),
-                   nSetRuns,
-                   labels = FALSE))[[setX]]
+# sampleIDs <- split(1:nSamples,             # Applying split() function
+#                    cut(seq_along(1:nSamples),
+#                    nSetRuns,
+#                    labels = FALSE))[[setX]]
 set.seed(1)
 ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
 # for(sampleID in sampleIDs){
