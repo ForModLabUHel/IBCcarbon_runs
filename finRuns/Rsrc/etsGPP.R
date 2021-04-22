@@ -160,10 +160,10 @@ for(ijx in 1:15){
   # save(initPrebas,HarvLim1,file=paste0("test1",harscen,".rdata"))
   # region <- regionPrebas(initPrebas)
   region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLim1),minDharv = 1.)
-  ets <- region$multiOut[,,5,1,1]
-  gpp <- apply(region$multiOut[,,44,,1],1:2, sum)
-  age <- region$multiOut[,,7,1,1]
-  siteID <- region$multiOut[,,1,1,1]
+  ets <- region$multiOut[,1:5,5,1,1]
+  gpp <- apply(region$multiOut[,1:5,44,,1],1:2, sum)
+  age <- region$multiOut[,1:5,7,1,1]
+  siteID <- region$multiOut[,1:5,1,1,1]
   
   dataX <- rbind(dataX,data.table(siteID= as.vector(siteID),
                       ETS=as.vector(ets),
