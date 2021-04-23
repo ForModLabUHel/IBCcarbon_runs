@@ -1,7 +1,7 @@
 dataX <- data.table()
 for(ijx in 1:15){
   r_no <- regions <- ijx
-  sampleID <- 24
+  sampleID <- 1
   manScen <- "Base"
   
   devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
