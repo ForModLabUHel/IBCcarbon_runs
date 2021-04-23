@@ -2,6 +2,7 @@ library(data.table)
 dataX <- data.table()
 for(ijx in 1:15){
   r_no <- regions <- ijx
+  print(r_no)
   sampleID <- 1
   manScen <- "Base"
   
