@@ -174,3 +174,16 @@ for(ijx in 1:15){
                       age = as.vector(age)))
   print(r_no)
 }
+
+
+library(ggplot2)
+
+plotX <- ggplot(data=dataX[GPP>0.], aes(x=ETS, y=GPP,col=as.factor(region)))+#, fill=run,col=run)) +
+  # geom_bar(stat="identity", color="black", position=position_dodge()) +
+  # geom_smooth(method = "lm", fullrange = TRUE, se = TRUE) + 
+  geom_point()
+  # scale_fill_manual(values=alpha(colX,.3))
+plotX
+
+save(plotX,dataX,file = "dataForAnnikkiCUE.rdata")
+
