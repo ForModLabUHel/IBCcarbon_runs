@@ -1,5 +1,5 @@
 library(data.table)
-dataX <- data.table()
+XdataX <- dataX <- data.table()
 for(ijx in 1:15){
   r_no <- regions <- ijx
   print(r_no)
@@ -162,28 +162,137 @@ for(ijx in 1:15){
   # save(initPrebas,HarvLim1,file=paste0("test1",harscen,".rdata"))
   # region <- regionPrebas(initPrebas)
   region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLim1),minDharv = 1.)
-  ets <- region$multiOut[,1:5,5,1,1]
-  gpp <- apply(region$multiOut[,1:5,44,,1],1:2, sum)
-  age <- region$multiOut[,1:5,7,1,1]
-  siteID <- region$multiOut[,1:5,1,1,1]
+  ets <- region$multiOut[,1,5,1,1]
+  gpp <- apply(region$multiOut[,1,44,,1],1, sum)
+  age <- region$multiOut[,1,7,1,1]
+  siteID <- region$multiOut[,1,1,1,1]
+  npp <- apply(region$multiOut[,1,18,,1],1, sum)
+  nwL <- apply(region$multiOut[,1,26:27,,1],1, sum)
+  fwL <- apply(region$multiOut[,1,28,,1],1, sum)
+  cwL <- apply(region$multiOut[,1,29,,1],1, sum)
+  gppGV <- region$GVout[,1,3]
+  gvL <- region$GVout[,1,2]
+  gpp2 <- apply(region$multiOut[,1,10,,1]*1000,1, sum)
   
-  dataX <- rbind(dataX,data.table(siteID= as.vector(siteID),
+  Xets <- region$multiOut[,1:10,5,1,1]
+  Xgpp <- apply(region$multiOut[,1:10,44,,1],1:2, sum)
+  Xage <- region$multiOut[,1:10,7,1,1]
+  XsiteID <- region$multiOut[,1:10,1,1,1]
+  Xnpp <- apply(region$multiOut[,1:10,18,,1],1:2, sum)
+  XnwL <- apply(region$multiOut[,1:10,26:27,,1],1:2, sum)
+  XfwL <- apply(region$multiOut[,1:10,28,,1],1:2, sum)
+  XcwL <- apply(region$multiOut[,1:10,29,,1],1:2, sum)
+  XgppGV <- region$GVout[,1:10,3]
+  XgvL <- region$GVout[,1:10,2]
+  Xgpp2 <- apply(region$multiOut[,1:10,10,,1]*1000,1:2, sum)
+
+    dataX <- rbind(dataX,data.table(siteID= as.vector(siteID),
                       ETS=as.vector(ets),
                       GPP=as.vector(gpp),
+                      GPP2=as.vector(gpp2),
                       region=as.vector(r_no),
-                      age = as.vector(age)))
-  print(r_no)
+                      age = as.vector(age),
+                      gppGV = as.vector(gppGV),
+                      gvL = as.vector(gvL),
+                      siteID = as.vector(siteID),
+                      npp = as.vector(npp),
+                      nwL = as.vector(nwL),
+                      fwL = as.vector(fwL),
+                      cwL = as.vector(cwL)
+                      ))
+    XdataX <- rbind(XdataX,data.table(siteID= as.vector(XsiteID),
+                                    ETS=as.vector(Xets),
+                                    GPP=as.vector(Xgpp),
+                                    GPP2=as.vector(Xgpp2),
+                                    region=as.vector(Xr_no),
+                                    age = as.vector(Xage),
+                                    gppGV = as.vector(XgppGV),
+                                    gvL = as.vector(XgvL),
+                                    siteID = as.vector(XsiteID),
+                                    npp = as.vector(Xnpp),
+                                    nwL = as.vector(XnwL),
+                                    fwL = as.vector(XfwL),
+                                    cwL = as.vector(XcwL)
+    ))
+    print(r_no)
 }
 
+dataX[ETS<450, ETSgroup:=400]
+dataX[ETS>=450 & ETS<550, ETSgroup:=500]
+dataX[ETS>=550 & ETS<650, ETSgroup:=600]
+dataX[ETS>=650 & ETS<750, ETSgroup:=700]
+dataX[ETS>=750 & ETS<850, ETSgroup:=800]
+dataX[ETS>=850 & ETS<950, ETSgroup:=900]
+dataX[ETS>=950 & ETS<1050, ETSgroup:=1000]
+dataX[ETS>=1050 & ETS<1150, ETSgroup:=1100]
+dataX[ETS>=1150 & ETS<1250, ETSgroup:=1200]
+dataX[ETS>=1250 & ETS<1350, ETSgroup:=1300]
+dataX[ETS>=1350 & ETS<1450, ETSgroup:=1400]
+dataX[ETS>=1450 & ETS<1550, ETSgroup:=1500]
+dataX[ETS>=1550, ETSgroup:=1600]
 
-library(ggplot2)
+XdataX[ETS<450, ETSgroup:=400]
+XdataX[ETS>=450 & ETS<550, ETSgroup:=500]
+XdataX[ETS>=550 & ETS<650, ETSgroup:=600]
+XdataX[ETS>=650 & ETS<750, ETSgroup:=700]
+XdataX[ETS>=750 & ETS<850, ETSgroup:=800]
+XdataX[ETS>=850 & ETS<950, ETSgroup:=900]
+XdataX[ETS>=950 & ETS<1050, ETSgroup:=1000]
+XdataX[ETS>=1050 & ETS<1150, ETSgroup:=1100]
+XdataX[ETS>=1150 & ETS<1250, ETSgroup:=1200]
+XdataX[ETS>=1250 & ETS<1350, ETSgroup:=1300]
+XdataX[ETS>=1350 & ETS<1450, ETSgroup:=1400]
+XdataX[ETS>=1450 & ETS<1550, ETSgroup:=1500]
+XdataX[ETS>=1550, ETSgroup:=1600]
 
-plotX <- ggplot(data=dataX[GPP>0.], aes(x=ETS, y=GPP,col=as.factor(region)))+#, fill=run,col=run)) +
-  # geom_bar(stat="identity", color="black", position=position_dodge()) +
-  # geom_smooth(method = "lm", fullrange = TRUE, se = TRUE) + 
-  geom_point()
-  # scale_fill_manual(values=alpha(colX,.3))
-plotX
 
-save(plotX,dataX,file = "dataForAnnikkiCUE.rdata")
 
+
+dataXbyETS <- dataX[,mean(GPP),by=ETSgroup]
+setnames(dataXbyETS,"V1","GPPtrees")
+dataXbyETS$GPPtreesPreles <- dataX[,mean(GPP2),by=ETSgroup]$V1/3
+dataXbyETS$gppGV <- dataX[,mean(gppGV),by=ETSgroup]$V1
+dataXbyETS$gvL <- dataX[,mean(gvL),by=ETSgroup]$V1
+dataXbyETS$NPPtrees <- dataX[,mean(npp,na.rm=T),by=ETSgroup]$V1
+dataXbyETS$nwL <- dataX[,mean(nwL),by=ETSgroup]$V1
+dataXbyETS$fwL <- dataX[,mean(fwL),by=ETSgroup]$V1
+dataXbyETS$cwL <- dataX[,mean(cwL),by=ETSgroup]$V1
+dataXbyETS$age <- dataX[,mean(age),by=ETSgroup]$V1
+# write.csv(dataXbyETS,file="~/research/IBC-carbon/IBC-carbonByETS.csv")
+save(dataXbyETS,dataX,file="dataGPPAnnikkicue.rdata")
+
+
+XdataXbyETS <- XdataX[,mean(GPP),by=ETSgroup]
+setnames(XdataXbyETS,"V1","GPPtrees")
+XdataXbyETS$GPPtreesPreles <- XdataX[,mean(GPP2),by=ETSgroup]$V1/3
+XdataXbyETS$gppGV <- XdataX[,mean(gppGV),by=ETSgroup]$V1
+XdataXbyETS$gvL <- XdataX[,mean(gvL),by=ETSgroup]$V1
+XdataXbyETS$NPPtrees <- XdataX[,mean(npp,na.rm=T),by=ETSgroup]$V1
+XdataXbyETS$nwL <- XdataX[,mean(nwL),by=ETSgroup]$V1
+XdataXbyETS$fwL <- XdataX[,mean(fwL),by=ETSgroup]$V1
+XdataXbyETS$cwL <- XdataX[,mean(cwL),by=ETSgroup]$V1
+XdataXbyETS$age <- XdataX[,mean(age),by=ETSgroup]$V1
+# write.csv(XdataXbyETS,file="~/research/IBC-carbon/IBC-carbonByETS.csv")
+save(XdataXbyETS,XdataX,file="dataGPPAnnikkicue.rdata")
+
+
+
+# library(ggplot2)
+# library(data.table)
+# ciao <- sample(1:nrow(dataX[GPP>0.]),20000)
+# 
+# xx <- lm(dataX[GPP>0.][ciao]$GPP ~dataX[GPP>0.][ciao]$ETS)
+# summary(xx)
+# 
+# plotX <- ggplot(data=dataX[GPP>0.][ciao], aes(x=ETS, y=GPP,col=as.factor(region)))+#, fill=run,col=run)) +
+#   # geom_bar(stat="identity", color="black", position=position_dodge()) +
+#   # geom_smooth(method = "lm", fullrange = TRUE, se = TRUE) + 
+#   geom_point() +
+#   # geom_smooth(method = "lm", color = NA) #+
+#   geom_abline(intercept = xx$coefficients[1],slope =xx$coefficients[2])
+#   # scale_fill_manual(values=alpha(colX,.3))
+# plotX
+#   # load("C:/Users/checcomi/Documents/research/IBC-carbon/dataForAnnikkiCUE.rdata")
+# save(plotX,dataX,file = "dataForAnnikkiCUE.rdata")
+# 
+# 
