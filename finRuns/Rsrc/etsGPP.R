@@ -204,7 +204,7 @@ for(ijx in 1:15){
                                     ETS=as.vector(Xets),
                                     GPP=as.vector(Xgpp),
                                     GPP2=as.vector(Xgpp2),
-                                    region=as.vector(Xr_no),
+                                    region=as.vector(r_no),
                                     age = as.vector(Xage),
                                     gppGV = as.vector(XgppGV),
                                     gvL = as.vector(XgvL),
