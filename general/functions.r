@@ -300,62 +300,62 @@ create_prebas_input.f = function(r_no, clim, data.sample, nYears, startingYear=0
     initVar[,5,1] <- as.numeric(data.sample[,(ba * pine/(pine+spruce+decid))])
     initVar[,5,2] <- as.numeric(data.sample[,(ba * spruce/(pine+spruce+decid))])
     initVar[,5,3] <- as.numeric(data.sample[,(ba * decid/(pine+spruce+decid))])
-    ####increase spruce dbh 10% for spruce sitetype 1:2
-    data.sample[pine>0. & spruce >0. & fert<2.5 & baSP > baP,X:=(ba-1.1*baSP-baB)/baP]
-    data.sample[pine>0. & spruce >0. & fert<2.5 & baSP > baP,dbhP:=X*dbh]
-    data.sample[pine>0. & spruce >0. & fert<2.5 & baSP > baP,dbhSP:=1.1*dbh]
-    data.sample[pine>0. & spruce >0. & fert<2.5  & baSP > baP & dbhP<0.5,dbhSP:=((ba-(0.5/dbh)*baP-baB)/baSP)*dbh]
-    data.sample[pine>0. & spruce >0. & fert<2.5  & baSP > baP & dbhP<0.5,dbhP:=0.5]
-    
-    data.sample[pine>0. & spruce >0. & fert<2.5 & baSP <= baP,dbhSP:=dbh * (ba - 0.9*baP - baB)/baSP]
-    data.sample[pine>0. & spruce >0. & fert<2.5 & baSP <= baP,dbhP:=pmax(0.9*dbh,0.3)]
-    
-    ####increase spruce h 10% for spruce sitetype 1:2
-    data.sample[pine>0. & spruce >0. & fert<2.5 & baSP > baP,X:=(ba-1.1*baSP-baB)/baP]
-    data.sample[pine>0. & spruce >0. & fert<2.5 & baSP > baP,hP:=X*h]   
-    data.sample[pine>0. & spruce >0. & fert<2.5 & baSP > baP,hSP:=1.1*h]
-    data.sample[pine>0. & spruce >0. & fert<2.5 & baSP > baP & hP<1.5,hSP:=((ba-(1.5/h)*baP-baB)/baSP)*h]
-    data.sample[pine>0. & spruce >0. & fert<2.5 & baSP > baP & hP<1.5,hP:=1.5]
-    
-    data.sample[pine>0. & spruce >0. & fert<2.5 & baSP <= baP,hSP:=h * (ba - 0.9*baP - baB)/baSP]
-    data.sample[pine>0. & spruce >0. & fert<2.5 & baSP <= baP,hP:=pmax(0.9*h,1.3)]
-    
-    ####increase spruce dbh 5% for spruce sitetype 3
-    data.sample[pine>0. & spruce >0. & fert==3 & baSP > baP,X:=(ba-1.05*baSP-baB)/baP]
-    data.sample[pine>0. & spruce >0. & fert==3 & baSP > baP,dbhP:=X*dbh]   
-    data.sample[pine>0. & spruce >0. & fert==3 & baSP > baP,dbhSP:=1.05*dbh]
-    data.sample[pine>0. & spruce >0. & fert==3 & baSP > baP & dbhP<0.5,dbhSP:=((ba-(0.5/dbh)*baP-baB)/baSP)*dbh]
-    data.sample[pine>0. & spruce >0. & fert==3 & baSP > baP & dbhP<0.5,dbhP:=0.5]
-    
-    data.sample[pine>0. & spruce >0. & fert==3 & baSP <= baP,dbhSP:=pmin(25,(dbh * (ba - 0.95*baP - baB)/baSP))]
-    data.sample[pine>0. & spruce >0. & fert==3 & baSP <= baP,dbhP:=pmax(0.95*dbh,0.3)]
-    
-    ####increase spruce h 5% for spruce sitetype 3
-    data.sample[pine>0. & spruce >0. & fert==3,X:=(ba-1.05*baSP-baB)/baP]
-    data.sample[pine>0. & spruce >0. & fert==3,hP:=X*h]  
-    data.sample[pine>0. & spruce >0. & fert==3,hSP:=1.05*h]  
-    data.sample[pine>0. & spruce >0. & fert==3 & hP<1.5,hSP:=((ba-(1.5/h)*baP-baB)/baSP)*h]
-    data.sample[pine>0. & spruce >0. & fert==3 & hP<1.5,hP:=1.5]
-    
-    data.sample[pine>0. & spruce >0. & fert==3 & baSP <= baP,hSP:=pmin(30.,(h * (ba - 0.95*baP - baB)/baSP))]
-    data.sample[pine>0. & spruce >0. & fert==3 & baSP <= baP,hP:=pmax(0.95*h,1.3)]
-    
-    ####increase pine dbh 10% for sitetype >= 4
-    data.sample[pine>0. & spruce >0. & fert>3.5 & baP > baSP,X:=(ba-1.1*baP-baB)/baSP]
-    data.sample[pine>0. & spruce >0. & fert>3.5 & baP > baSP,dbhSP:=X*dbh]   
-    data.sample[pine>0. & spruce >0. & fert>3.5 & baP > baSP,dbhP:=1.1*dbh]   
-    data.sample[pine>0. & spruce >0. & fert>3.5 & baP > baSP & dbhSP<0.5,dbhP:=((ba-(0.5/dbh)*baSP-baB)/baP)*dbh]
-    data.sample[pine>0. & spruce >0. & fert>3.5 & baP > baSP & dbhSP<0.5,dbhSP:=0.5]
-    data.sample[pine>0. & spruce >0. & fert>3.5 & baP > baSP,dbhP:=dbh * (ba - 0.9*baSP - baB)/baP]
-    data.sample[pine>0. & spruce >0. & fert>3.5 & baP > baSP,dbhSP:=pmax(0.9*dbh,0.3)]
-    ####increase pine h 10% for sitetype >= 4
-    data.sample[pine>0. & spruce >0. & fert>3.5 & baP > baSP,X:=(ba-1.1*baP-baB)/baSP]
-    data.sample[pine>0. & spruce >0. & fert>3.5 & baP > baSP,hSP:=X*h]   
-    data.sample[pine>0. & spruce >0. & fert>3.5 & baP > baSP,hP:=1.1*h]   
-    data.sample[pine>0. & spruce >0. & fert>3.5 & baP > baSP & hSP<1.5,hP:=((ba-(1.5/h)*baSP-baB)/baP)*h]
-    data.sample[pine>0. & spruce >0. & fert>3.5 & baP > baSP & hSP<1.5,hSP:=1.5]
-    data.sample[pine>0. & spruce >0. & fert>3.5 & baP > baSP,hP:=h * (ba - 0.9*baSP - baB)/baP]
-    data.sample[pine>0. & spruce >0. & fert>3.5 & baP > baSP,hSP:=pmax(0.9*h,1.3)]
+    # ####increase spruce dbh 10% for spruce sitetype 1:2
+    # data.sample[pine>0. & spruce >0. & fert<2.5 & baSP > baP,X:=(ba-1.1*baSP-baB)/baP]
+    # data.sample[pine>0. & spruce >0. & fert<2.5 & baSP > baP,dbhP:=X*dbh]
+    # data.sample[pine>0. & spruce >0. & fert<2.5 & baSP > baP,dbhSP:=1.1*dbh]
+    # data.sample[pine>0. & spruce >0. & fert<2.5  & baSP > baP & dbhP<0.5,dbhSP:=((ba-(0.5/dbh)*baP-baB)/baSP)*dbh]
+    # data.sample[pine>0. & spruce >0. & fert<2.5  & baSP > baP & dbhP<0.5,dbhP:=0.5]
+    # 
+    # data.sample[pine>0. & spruce >0. & fert<2.5 & baSP <= baP,dbhSP:=dbh * (ba - 0.9*baP - baB)/baSP]
+    # data.sample[pine>0. & spruce >0. & fert<2.5 & baSP <= baP,dbhP:=pmax(0.9*dbh,0.3)]
+    # 
+    # ####increase spruce h 10% for spruce sitetype 1:2
+    # data.sample[pine>0. & spruce >0. & fert<2.5 & baSP > baP,X:=(ba-1.1*baSP-baB)/baP]
+    # data.sample[pine>0. & spruce >0. & fert<2.5 & baSP > baP,hP:=X*h]   
+    # data.sample[pine>0. & spruce >0. & fert<2.5 & baSP > baP,hSP:=1.1*h]
+    # data.sample[pine>0. & spruce >0. & fert<2.5 & baSP > baP & hP<1.5,hSP:=((ba-(1.5/h)*baP-baB)/baSP)*h]
+    # data.sample[pine>0. & spruce >0. & fert<2.5 & baSP > baP & hP<1.5,hP:=1.5]
+    # 
+    # data.sample[pine>0. & spruce >0. & fert<2.5 & baSP <= baP,hSP:=h * (ba - 0.9*baP - baB)/baSP]
+    # data.sample[pine>0. & spruce >0. & fert<2.5 & baSP <= baP,hP:=pmax(0.9*h,1.3)]
+    # 
+    # ####increase spruce dbh 5% for spruce sitetype 3
+    # data.sample[pine>0. & spruce >0. & fert==3 & baSP > baP,X:=(ba-1.05*baSP-baB)/baP]
+    # data.sample[pine>0. & spruce >0. & fert==3 & baSP > baP,dbhP:=X*dbh]   
+    # data.sample[pine>0. & spruce >0. & fert==3 & baSP > baP,dbhSP:=1.05*dbh]
+    # data.sample[pine>0. & spruce >0. & fert==3 & baSP > baP & dbhP<0.5,dbhSP:=((ba-(0.5/dbh)*baP-baB)/baSP)*dbh]
+    # data.sample[pine>0. & spruce >0. & fert==3 & baSP > baP & dbhP<0.5,dbhP:=0.5]
+    # 
+    # data.sample[pine>0. & spruce >0. & fert==3 & baSP <= baP,dbhSP:=pmin(25,(dbh * (ba - 0.95*baP - baB)/baSP))]
+    # data.sample[pine>0. & spruce >0. & fert==3 & baSP <= baP,dbhP:=pmax(0.95*dbh,0.3)]
+    # 
+    # ####increase spruce h 5% for spruce sitetype 3
+    # data.sample[pine>0. & spruce >0. & fert==3,X:=(ba-1.05*baSP-baB)/baP]
+    # data.sample[pine>0. & spruce >0. & fert==3,hP:=X*h]  
+    # data.sample[pine>0. & spruce >0. & fert==3,hSP:=1.05*h]  
+    # data.sample[pine>0. & spruce >0. & fert==3 & hP<1.5,hSP:=((ba-(1.5/h)*baP-baB)/baSP)*h]
+    # data.sample[pine>0. & spruce >0. & fert==3 & hP<1.5,hP:=1.5]
+    # 
+    # data.sample[pine>0. & spruce >0. & fert==3 & baSP <= baP,hSP:=pmin(30.,(h * (ba - 0.95*baP - baB)/baSP))]
+    # data.sample[pine>0. & spruce >0. & fert==3 & baSP <= baP,hP:=pmax(0.95*h,1.3)]
+    # 
+    # ####increase pine dbh 10% for sitetype >= 4
+    # data.sample[pine>0. & spruce >0. & fert>3.5 & baP > baSP,X:=(ba-1.1*baP-baB)/baSP]
+    # data.sample[pine>0. & spruce >0. & fert>3.5 & baP > baSP,dbhSP:=X*dbh]   
+    # data.sample[pine>0. & spruce >0. & fert>3.5 & baP > baSP,dbhP:=1.1*dbh]   
+    # data.sample[pine>0. & spruce >0. & fert>3.5 & baP > baSP & dbhSP<0.5,dbhP:=((ba-(0.5/dbh)*baSP-baB)/baP)*dbh]
+    # data.sample[pine>0. & spruce >0. & fert>3.5 & baP > baSP & dbhSP<0.5,dbhSP:=0.5]
+    # data.sample[pine>0. & spruce >0. & fert>3.5 & baP > baSP,dbhP:=dbh * (ba - 0.9*baSP - baB)/baP]
+    # data.sample[pine>0. & spruce >0. & fert>3.5 & baP > baSP,dbhSP:=pmax(0.9*dbh,0.3)]
+    # ####increase pine h 10% for sitetype >= 4
+    # data.sample[pine>0. & spruce >0. & fert>3.5 & baP > baSP,X:=(ba-1.1*baP-baB)/baSP]
+    # data.sample[pine>0. & spruce >0. & fert>3.5 & baP > baSP,hSP:=X*h]   
+    # data.sample[pine>0. & spruce >0. & fert>3.5 & baP > baSP,hP:=1.1*h]   
+    # data.sample[pine>0. & spruce >0. & fert>3.5 & baP > baSP & hSP<1.5,hP:=((ba-(1.5/h)*baSP-baB)/baP)*h]
+    # data.sample[pine>0. & spruce >0. & fert>3.5 & baP > baSP & hSP<1.5,hSP:=1.5]
+    # data.sample[pine>0. & spruce >0. & fert>3.5 & baP > baSP,hP:=h * (ba - 0.9*baSP - baB)/baP]
+    # data.sample[pine>0. & spruce >0. & fert>3.5 & baP > baSP,hSP:=pmax(0.9*h,1.3)]
     initVar[,3,1] <- as.numeric(data.sample[,hP])
     initVar[,3,2] <- as.numeric(data.sample[,hSP])
     initVar[,4,1] <- as.numeric(data.sample[,dbhP])
