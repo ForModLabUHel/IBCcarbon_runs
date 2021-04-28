@@ -1,5 +1,8 @@
-r_no <- regions <- 2
-sampleID <- 10
+# for(sampleID in 1:73){
+  
+
+r_no <- regions <- 1
+sampleID <- 14
 manScen <- "Base"
 
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
@@ -190,6 +193,9 @@ rcpfile = rcps
       p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
       pX <- merge(p1,p2)
       pX <- merge(pX,p3)
+      
+      NAs <- which(is.na(pX),arr.ind)
+      
       assign(varNames[varSel[ij]],pX)
       
       save(list=varNames[varSel[ij]],file=paste0("outputDT/forCent",r_no,"/",

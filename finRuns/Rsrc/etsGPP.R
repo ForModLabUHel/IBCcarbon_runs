@@ -273,7 +273,7 @@ XdataXbyETS$fwL <- XdataX[,mean(fwL),by=ETSgroup]$V1
 XdataXbyETS$cwL <- XdataX[,mean(cwL),by=ETSgroup]$V1
 XdataXbyETS$age <- XdataX[,mean(age),by=ETSgroup]$V1
 # write.csv(XdataXbyETS,file="~/research/IBC-carbon/IBC-carbonByETS.csv")
-save(XdataXbyETS,XdataX,file="dataGPPAnnikkicue.rdata")
+save(XdataXbyETS,XdataX,file="XdataGPPAnnikkicue.rdata")
 
 
 
