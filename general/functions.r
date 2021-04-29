@@ -318,7 +318,7 @@ create_prebas_input.f = function(r_no, clim, data.sample, nYears, startingYear=0
       ####increase spruce h 10% for spruce sitetype 1:2
       data.sample[pine>0. & spruce >0. & fert<2.5, X:=pmax(minDelta,(ba-1.1*baSP-baB)/baP)]
       data.sample[pine>0. & spruce >0. & fert<2.5,hSP:=1.1*h]
-      data.sample[pine>0. & spruce >0. & fert<2.5 & X==minDelta,hSP:=h*(ba-minDdelta* baP-baB)/baSP]
+      data.sample[pine>0. & spruce >0. & fert<2.5 & X==minDelta,hSP:=h*(ba-minDelta* baP-baB)/baSP]
       data.sample[pine>0. & spruce >0. & fert<2.5, hP:=X*h]
       data.sample[pine>0. & spruce >0. & fert<2.5 & hP<1.5,hSP:=((ba-(1.5/h)*baP-baB)/baSP)*h]
       data.sample[pine>0. & spruce >0. & fert<2.5 & hP<1.5,hP:=1.5]
@@ -341,7 +341,7 @@ create_prebas_input.f = function(r_no, clim, data.sample, nYears, startingYear=0
       data.sample[pine>0. & spruce >0. & fert==3, X:=pmax(minDelta,(ba-1.05*baSP-baB)/baP)]
       data.sample[pine>0. & spruce >0. & fert==3, hP:=X*h]
       data.sample[pine>0. & spruce >0. & fert==3, hSP:=1.05*h]
-      data.sample[pine>0. & spruce >0. & fert==3 & X==minDelta,hSP:=h*(ba-minDdelta* baP-baB)/baSP]
+      data.sample[pine>0. & spruce >0. & fert==3 & X==minDelta,hSP:=h*(ba-minDelta* baP-baB)/baSP]
       data.sample[pine>0. & spruce >0. & fert==3 & hP<1.5, hSP:=((ba-(1.5/h)*baP-baB)/baSP)*h]
       data.sample[pine>0. & spruce >0. & fert==3 & hP<1.5, hP:=1.5]
 
