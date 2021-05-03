@@ -304,7 +304,7 @@ create_prebas_input.f = function(r_no, clim, data.sample, nYears, startingYear=0
     if(TRUE){ #### if true will vary H and D of pine and spruce using siteType
 
       ###increase spruceP dbh 10% for spruceP sitetype 1:2
-      minDelta <- 0.5
+      minDelta <- 0.75
       data.sample[pine>0. & spruce >0. & fert<2.5,X:=pmax(minDelta,(ba-1.1*baSP-baB)/baP)]
       data.sample[pine>0. & spruce >0. & fert<2.5,dbhSP:=1.1*dbh]
       data.sample[pine>0. & spruce >0. & fert<2.5 & X==minDelta,dbhSP:=dbh*(ba-minDelta* baP-baB)/baSP]
