@@ -56,5 +56,5 @@ NEP_raster <- paste0("rasters/forCent",r_no,"/NEP sp",
 GPP_tab <- data.table(rasterToPoints(GPP_raster))
 NEP_tab <- data.table(rasterToPoints(NEP_raster))
   ifelse(test = nrow(GPP_tab) == nrow(NEP_tab),
-         yes = print("NAs seems to match"),
+         yes = print("NA test OK"),
           no= print("NAs do not match"))
