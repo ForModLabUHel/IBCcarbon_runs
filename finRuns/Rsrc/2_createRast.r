@@ -1,4 +1,4 @@
-# r_no <- regions <- 1
+# r_no <- regions <- 12
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
 source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
 
@@ -10,7 +10,7 @@ setkey(forCentIDsTab,segID)
 pdf(paste0("plots/histRast_",r_no,".pdf"))
 
 varXs <- c(varNames[varSel], specialVars)
-for(varX in varXs){
+for(varX in varXs[5:22]){
   # varX <- varXs[1]
   fileXs <- list.files(path = paste0(pathtoken,pathFiles), pattern = paste0(varX,"_"))
   outX <- data.table()
