@@ -9,8 +9,8 @@ forCentIDsTab <- forCentIDsTab[segID!=0]
 setkey(forCentIDsTab,segID)
 pdf(paste0("plots/histRast_",r_no,".pdf"))
 
-varXs <- c(varNames[varSel], specialVars)
-for(varX in varXs[17:22]){
+varXs <- c(varNames[46],varNames[varSel[-17]], specialVars)
+for(varX in varXs){
   # varX <- varXs[1]
   fileXs <- list.files(path = paste0(pathtoken,pathFiles), pattern = paste0(varX,"_"))
   outX <- data.table()
