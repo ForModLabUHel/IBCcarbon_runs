@@ -154,7 +154,53 @@ runModel <- function(sampleID){
         region <- yassoPREBASin(region,initSoilC)
         print(paste("all runs done",sampleID))
         # out <- region$multiOut[,,,,1]
-  
+
+  #####start initialize deadWood volume
+        manFor <-  which(region$ClCut==1)
+        unmanFor <- which(region$clcut==0.)
+        Dmort <- matrix(0,2,3)
+        for(ikl in 1:3) Dmort[1,ikl] <- median(region$multiOut[manFor,,12,ikl,1][which(region$multiOut[manFor,,41,ikl,1]>0.,arr.ind = T)])
+        if(length(unmanFor)>0) for(ikl in 1:3) Dmort[1,ikl] <- median(region$multiOut[unmanFor,,12,ikl,1][which(region$multiOut[unmanFor,,41,ikl,1]>0.,arr.ind = T)])
+        
+        
+        pX <- pCROB[c(35:37,44),1:3]
+        
+        # Dmort <- 15   ###Diameter of dead trees
+        species <- 1:3 ####species ID
+        baPer <- matrix(0,2,3) ##### species Basal area
+        
+        totBAs <-apply(region$multiOut[,,13,,1],1:2,sum)
+        totBAs <- array(rep(totBAs,3),dim=c(region$nSites,nYears,3))
+        baPer[1,] <- apply(region$multiOut[manFor,,13,,1]/totBAs[manFor,,],3,mean,na.rm=T)
+        baPer[2,] <- apply(region$multiOut[unmanFor,,13,,1]/totBAs[unmanFor,,],3,mean,na.rm=T)
+        
+        nSp <- length(species) ####number of Species
+        deadVmanFor <- 5  ###initial dead Volume for managed forests
+        deadVunmanFor <- 100  ###initial dead Volume for unmanaged forests
+        
+        ###run model managed forests
+        deadVinitMan <- matrix(0,(nYears),nSp) ####deadWood matrix (nrow=years; ncol=species)
+        deadVinitX <- deadVmanFor * baPer[1,] ###choose between deadVmanFor and deadVunmanFor
+        for(i in 1:nYears){
+          deadVinitMan[(i),] = deadVinitX * exp(-exp(pX[1,] + 
+                     pX[2,]*i + pX[3,]*Dmort[1,] + mean(pX[4,])))
+        } 
+        region$multiOut[manFor,,8,,1] <- region$multiOut[manFor,,8,,1] + aperm(replicate(length(manFor),deadVinitMan),c(3,1:2))
+        
+        ###run model unmanaged forests
+        if(length(unmanFor)>0){
+          deadVinitUn <- matrix(0,(nYears),nSp) ####deadWood matrix (nrow=years; ncol=species)
+          deadVinitX <- deadVunmanFor * baPer[2,] ###choose between deadVmanFor and deadVunmanFor
+          for(i in 1:nYears){
+            deadVinitUn[(i),] = deadVinitX * exp(-exp(pX[1,] + 
+                          pX[2,]*i + pX[3,]*Dmort[2,] + pX[4,]))
+          } 
+          region$multiOut[unmanFor,,8,,1] <- region$multiOut[unmanFor,,8,,1] +
+            aperm(replicate(length(unmanFor),deadVinitMan),c(3,1:2))
+        }
+        
+        ####end initialize deadWood Volume
+        
         ####create pdf for test plots
         if(sampleID==sampleForPlots){
           pdf(paste0("plots/testPlots_",r_no,".pdf"))
