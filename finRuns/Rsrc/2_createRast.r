@@ -57,4 +57,4 @@ GPP_tab <- data.table(rasterToPoints(GPP_raster))
 NEP_tab <- data.table(rasterToPoints(NEP_raster))
   ifelse(test = nrow(GPP_tab) == nrow(NEP_tab),
          yes = print("NA test OK"),
-          no= print("NAs do not match"))
+          no= print(paste("NAs do not match!",nrow(GPP_tab) - nrow(NEP_tab), "NAs in NEP")))
