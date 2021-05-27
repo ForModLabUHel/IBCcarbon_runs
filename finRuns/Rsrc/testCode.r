@@ -1,7 +1,7 @@
 # for(sampleID in 1:73){
   
 
-r_no <- regions <- 1
+r_no <- regions <- 12
 sampleID <- 2
 manScen <- "Base"
 
@@ -21,6 +21,7 @@ ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
 
 print(paste("start sample ID",sampleID))
 sampleX <- ops[[sampleID]]
+# sampleX <- data.all[segID %in% vecIds]
 sampleX[,area := N*16^2/10000]
 sampleX[,id:=climID]
 HarvLimX <- harvestLims * sum(sampleX$area)/sum(data.all$area)
