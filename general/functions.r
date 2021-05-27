@@ -157,7 +157,7 @@ runModel <- function(sampleID){
 
   #####start initialize deadWood volume
         manFor <-  which(region$ClCut==1)
-        unmanFor <- which(region$clcut==0.)
+        unmanFor <- which(region$ClCut==0)
         Dmort <- matrix(0,2,3)
         for(ikl in 1:3) Dmort[1,ikl] <- median(region$multiOut[manFor,,12,ikl,1][which(region$multiOut[manFor,,41,ikl,1]>0.,arr.ind = T)])
         if(length(unmanFor)>0) for(ikl in 1:3) Dmort[1,ikl] <- median(region$multiOut[unmanFor,,12,ikl,1][which(region$multiOut[unmanFor,,41,ikl,1]>0.,arr.ind = T)])
@@ -198,7 +198,6 @@ runModel <- function(sampleID){
           region$multiOut[unmanFor,,8,,1] <- region$multiOut[unmanFor,,8,,1] +
             aperm(replicate(length(unmanFor),deadVinitMan),c(3,1:2))
         }
-        
         ####end initialize deadWood Volume
         
         ####create pdf for test plots

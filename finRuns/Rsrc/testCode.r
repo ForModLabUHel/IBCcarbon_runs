@@ -19,8 +19,7 @@ set.seed(1)
 ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
 
 
-
-
+print(paste("start sample ID",sampleID))
 sampleX <- ops[[sampleID]]
 sampleX[,area := N*16^2/10000]
 sampleX[,id:=climID]
@@ -39,8 +38,8 @@ nSample = nrow(sampleX)#200#nrow(data.all)
 i = 0
 # load("/scratch/project_2000994/PREBASruns/metadata/initSoilCstst.rdata")
 # load("outSoil/InitSoilCstst_Base.rdata")
-rcpfile = rcps
-  # print(rcpfile)
+# for(rcpfile in rcps) { ## ---------------------------------------------
+rcpfile = rcps  # print(rcpfile)
   if(rcpfile=="CurrClim"){
     load(paste(climatepath, rcpfile,".rdata", sep=""))  
     #####process data considering only current climate###
@@ -109,7 +108,7 @@ rcpfile = rcps
   
   
   # Loop management scenarios ------------------------------------------------
-  harscen = harvestscenarios
+  harscen ="Base"
     # print(date())
     # print(harscen)
     i = i + 1
@@ -168,45 +167,87 @@ rcpfile = rcps
     print(paste("all runs done",sampleID))
     # out <- region$multiOut[,,,,1]
     
-    ####create pdf for test plots
-    if(sampleID==sampleForPlots){
-      pdf(paste0("plots/testPlots_",r_no,".pdf"))
-      # out <- region$multiOut
-      # save(out,file = paste0("outputDT/forCent",r_no,"/testData.rdata"))
-      # rm(out);gc()
-    }
-    margin= 1:2#(length(dim(out$annual[,,varSel,]))-1)
-    for (ij in 1:length(varSel)) {
-      print(varSel[ij])
-      if(funX[ij]=="baWmean"){
-        outX <- data.table(segID=sampleX$segID,baWmean(region,varSel[ij]))
-      }
-      if(funX[ij]=="sum"){
-        outX <- data.table(segID=sampleX$segID,apply(region$multiOut[,,varSel[ij],,1],margin,sum))
-      }
-      ####test plot
-      # print(outX)
-      if(sampleID==sampleForPlots){testPlot(outX,varNames[varSel[ij]],areas)}
-      
-      p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
-      p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
-      p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
-      pX <- merge(p1,p2)
-      pX <- merge(pX,p3)
-      
-      NAs <- which(is.na(pX),arr.ind)
-      
-      assign(varNames[varSel[ij]],pX)
-      
-      save(list=varNames[varSel[ij]],file=paste0("outputDT/forCent",r_no,"/",
-                                                 varNames[varSel[ij]],"_",
-                                                 harscen,"_",rcpfile,"_",
-                                                 "sampleID",sampleID,".rdata"))
-      rm(list=varNames[varSel[ij]]); gc()
+    #####start initialize deadWood volume
+    manFor <-  which(region$ClCut==1)
+    unmanFor <- which(region$ClCut==0.)
+    Dmort <- matrix(0,2,3)
+    for(ikl in 1:3) Dmort[1,ikl] <- median(region$multiOut[manFor,,12,ikl,1][which(region$multiOut[manFor,,41,ikl,1]>0.,arr.ind = T)])
+    if(length(unmanFor)>0) for(ikl in 1:3) Dmort[1,ikl] <- median(region$multiOut[unmanFor,,12,ikl,1][which(region$multiOut[unmanFor,,41,ikl,1]>0.,arr.ind = T)])
+    
+    
+    pX <- pCROB[c(35:37,44),1:3]
+    
+    # Dmort <- 15   ###Diameter of dead trees
+    species <- 1:3 ####species ID
+    baPer <- matrix(0,2,3) ##### species Basal area
+    
+    totBAs <-apply(region$multiOut[,,13,,1],1:2,sum)
+    totBAs <- array(rep(totBAs,3),dim=c(region$nSites,nYears,3))
+    baPer[1,] <- apply(region$multiOut[manFor,,13,,1]/totBAs[manFor,,],3,mean,na.rm=T)
+    baPer[2,] <- apply(region$multiOut[unmanFor,,13,,1]/totBAs[unmanFor,,],3,mean,na.rm=T)
+    
+    nSp <- length(species) ####number of Species
+    deadVmanFor <- 5  ###initial dead Volume for managed forests
+    deadVunmanFor <- 100  ###initial dead Volume for unmanaged forests
+    
+    ###run model managed forests
+    deadVinitMan <- matrix(0,(nYears),nSp) ####deadWood matrix (nrow=years; ncol=species)
+    deadVinitX <- deadVmanFor * baPer[1,] ###choose between deadVmanFor and deadVunmanFor
+    for(i in 1:nYears){
+      deadVinitMan[(i),] = deadVinitX * exp(-exp(pX[1,] + 
+                                                   pX[2,]*i + pX[3,]*Dmort[1,] + mean(pX[4,])))
+    } 
+    region$multiOut[manFor,,8,,1] <- region$multiOut[manFor,,8,,1] + aperm(replicate(length(manFor),deadVinitMan),c(3,1:2))
+    
+    ###run model unmanaged forests
+    if(length(unmanFor)>0){
+      deadVinitUn <- matrix(0,(nYears),nSp) ####deadWood matrix (nrow=years; ncol=species)
+      deadVinitX <- deadVunmanFor * baPer[2,] ###choose between deadVmanFor and deadVunmanFor
+      for(i in 1:nYears){
+        deadVinitUn[(i),] = deadVinitX * exp(-exp(pX[1,] + 
+                                                    pX[2,]*i + pX[3,]*Dmort[2,] + pX[4,]))
+      } 
+      region$multiOut[unmanFor,,8,,1] <- region$multiOut[unmanFor,,8,,1] +
+        aperm(replicate(length(unmanFor),deadVinitUn),c(3,1:2))
     }
     
-    ####process and save special variales
-    print(paste("start special vars",sampleID))
-    specialVarProc(sampleX,region,r_no,harscen,rcpfile,sampleID,
-                   colsOut1,colsOut2,colsOut3,areas,sampleForPlots)
     
+    ####both type of forests
+    plot(deadVinitUn[,1],type='l',ylim=range(deadVinitUn,deadVinitMan),col=2,main="Managed and Unmanaged forests")
+    lines(deadVinitUn[,2],col=3)
+    lines(deadVinitUn[,3],col=4)
+    legend("topright",c("pine","spruce","birch","managed","unmanaged"),
+           col=c(2:4,1,1),lty=c(1,1,1,1,2))
+    lines(deadVinitMan[,1],col=2,lty=2)
+    lines(deadVinitMan[,2],col=3,lty=2)
+    lines(deadVinitMan[,3],col=4,lty=2)
+    
+    
+    plot(deadVinitUn[,1],type='l',ylim=range(deadVinitUn),col=2,main="Unmanaged forests")
+    lines(deadVinitUn[,2],col=3)
+    lines(deadVinitUn[,3],col=4)
+    legend("topright",c("pine","spruce","birch"),
+           col=c(2:4),lty=c(1,1,1))
+    
+    plot(deadVinitMan[,1],type='l',ylim=range(deadVinitMan),col=2,main="Managed forests")
+    lines(deadVinitMan[,2],col=3)
+    lines(deadVinitMan[,3],col=4)
+    legend("topright",c("pine","spruce","birch"),
+           col=c(2:4),lty=c(1,1,1))
+    
+    
+    ####end initialize deadWood Volume
+    
+    
+    meanUnman <- apply(region$multiOut[unmanFor,,42,,1],2:3,mean)
+    meanMan <- apply(region$multiOut[manFor,,42,,1],2:3,mean)
+    
+    medianUnman <- apply(region$multiOut[unmanFor,,42,,1],1:2,sum)
+    medianMan <- apply(region$multiOut[manFor,,42,,1],1:2,sum)
+    medianUnman <- apply(medianUnman,2,median)
+    medianMan <- apply(medianMan,2,median)
+    
+    plot(rowSums(meanUnman),type='l',col="dark green",ylim=c(0.,5.))
+    lines(rowSums(meanMan),col=2)
+    lines(medianUnman,col="dark green",lty=2)
+    lines(medianMan,col=2,lty=2)
