@@ -30,7 +30,7 @@ sampleForPlots <- 999
 # MinPeat-index, NEPdrPeat
 
 varOuts <- c("NEP sp","DeadWoodVolume", 
-             # "npp", ,"GPPspecies","gross growth", 
+             # "GPPspecies","npp", "gross growth", 
              #"soilC", "V", "age", "Wharvested", 
              "Litter_fol", "Litter_fr", 
              "Litter_fWoody", "Litter_cWoody",
