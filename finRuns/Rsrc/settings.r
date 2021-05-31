@@ -28,9 +28,10 @@ nCores <- 6  ####  number of cores
 sampleForPlots <- 999
 # Missing from varOuts: 
 # MinPeat-index, NEPdrPeat
-  
-varOuts <- c("DeadWoodVolume","GPPspecies","NEP sp", "npp", 
-             "gross growth", "soilC", "V", "age", "Wharvested", 
+
+varOuts <- c("NEP sp","DeadWoodVolume", 
+             # "npp", ,"GPPspecies","gross growth", 
+             #"soilC", "V", "age", "Wharvested", 
              "Litter_fol", "Litter_fr", 
              "Litter_fWoody", "Litter_cWoody",
              "D", "BA", "H", "sitetype")

@@ -48,13 +48,15 @@ for(varX in varXs){
 }
 dev.off()
 
-print("checking data")
-GPP_raster <- paste0("rasters/forCent",r_no,"/GPPspecies",
-       "_",min(per1),"-",max(per1),".tif")
-NEP_raster <- paste0("rasters/forCent",r_no,"/NEP sp",
-              "_",min(per1),"-",max(per1),".tif")
-GPP_tab <- data.table(rasterToPoints(GPP_raster))
-NEP_tab <- data.table(rasterToPoints(NEP_raster))
-  ifelse(test = nrow(GPP_tab) == nrow(NEP_tab),
-         yes = print("NA test OK"),
-          no= print(paste("NAs do not match!",nrow(GPP_tab) - nrow(NEP_tab), "NAs in NEP")))
+# print("checking data")
+# GPP_raster <- paste0("rasters/forCent",r_no,"/GPPspecies",
+#        "_",min(per1),"-",max(per1),".tif")
+# NEP_raster <- paste0("rasters/forCent",r_no,"/NEP sp",
+#               "_",min(per1),"-",max(per1),".tif")
+# GPP_tab <- data.table(rasterToPoints(GPP_raster))
+# NEP_tab <- data.table(rasterToPoints(NEP_raster))
+#   ifelse(test = nrow(GPP_tab) == nrow(NEP_tab),
+#          yes = print("NA test OK"),
+#           no= print(paste("NAs do not match!",
+#   nrow(GPP_tab) - nrow(NEP_tab), "NAs in NEP")))
+#   
