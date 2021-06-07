@@ -18,4 +18,4 @@ ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
 
 mclapply(sampleIDs, function(jx) {
   runModel(jx)  ## Do nothing for 10 seconds
-}, mc.cores = nCores)      ## Split this job across 10 cores
+}, mc.cores = nCores,mc.silent=FALSE)      ## Split this job across 10 cores
