@@ -29,12 +29,12 @@ sampleForPlots <- 999
 # Missing from varOuts: 
 # MinPeat-index, NEPdrPeat
 
-varOuts <- c("GPPspecies", "npp", "gross growth", 
+varOuts <- c("GPPspecies","NEP sp", "npp", "gross growth", 
              "soilC", "V", "age", "Wharvested", 
              "Litter_fol", "Litter_fr", 
              "Litter_fWoody", "Litter_cWoody",
              "DeadWoodVolume", "D", "BA", "H",
-             "sitetype","NEP sp")
+             "sitetype")
 varSel <- match(varOuts,varNames)
 specialVars <- c("domSpecies","domAge","Vdec","WenergyWood","Wtot")
 
