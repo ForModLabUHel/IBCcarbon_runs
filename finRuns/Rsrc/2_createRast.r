@@ -10,7 +10,7 @@ setkey(forCentIDsTab,segID)
 pdf(paste0("plots/histRast_",r_no,".pdf"))
 
 varXs <- c(varNames[varSel], specialVars)
-for(varX in varXs[1:2]){
+for(varX in varXs){
   # varX <- varXs[1]
   fileXs <- list.files(path = paste0(pathtoken,pathFiles), pattern = paste0(varX,"_"))
   outX <- data.table()
@@ -43,7 +43,7 @@ for(varX in varXs[1:2]){
                                       varX,"_",min(per3),"-",max(per3),".tiff"),overwrite=T)
   hist(rastX, main = paste(varX,"per3"))
   
-  # file.remove(paste0(pathFiles,fileXs))
+  file.remove(paste0(pathFiles,fileXs))
   print(varX)
 }
 dev.off()
