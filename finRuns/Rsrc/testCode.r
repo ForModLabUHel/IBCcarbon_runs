@@ -32,68 +32,68 @@ for(i in 1:504){
   print(which(sampleX$segID %in% idx))
 }
 
-sampleX[,area := N*16^2/10000]
-sampleX[,id:=climID]
-HarvLimX <- harvestLims * sum(sampleX$area)/sum(data.all$area)
-nSample = nrow(sampleX)#200#nrow(data.all)
-## Loop management scenarios
-# harvestscenarios = c("Policy", "MaxSust", "Base","Low","Tapio","NoHarv") ## noharv must be the last element otherwise cons area are ignored
-# WRITEREGIONDATA = TRUE
-
-# climatepath = "/scratch/project_2000994/RCP/"
-
-# regionsummaries = data.table()
-
-
-## ---------------------------------------------------------
-i = 0
-# load("/scratch/project_2000994/PREBASruns/metadata/initSoilCstst.rdata")
-# load("outSoil/InitSoilCstst_Base.rdata")
-# for(rcpfile in rcps) { ## ---------------------------------------------
-rcpfile = rcps  # print(rcpfile)
-  if(rcpfile=="CurrClim"){
-    load(paste(climatepath, rcpfile,".rdata", sep=""))  
-    #####process data considering only current climate###
-    # dat <- dat[rday %in% 1:10958] #uncomment to select some years (10958 needs to be modified)
-    maxRday <- max(dat$rday)
-    xday <- c(dat$rday,(dat$rday+maxRday),(dat$rday+maxRday*2))
-    dat = rbind(dat,dat,dat)
-    dat[,rday:=xday]
+  sampleX[,area := N*16^2/10000]
+  sampleX[,id:=climID]
+  HarvLimX <- harvestLims * sum(sampleX$area)/sum(data.all$area)
+  nSample = nrow(sampleX)#200#nrow(data.all)
+  ## Loop management scenarios
+  # harvestscenarios = c("Policy", "MaxSust", "Base","Low","Tapio","NoHarv") ## noharv must be the last element otherwise cons area are ignored
+  # WRITEREGIONDATA = TRUE
+  
+  # climatepath = "/scratch/project_2000994/RCP/"
+  
+  # regionsummaries = data.table()
+  
+  
+  ## ---------------------------------------------------------
+  i = 0
+  # load("/scratch/project_2000994/PREBASruns/metadata/initSoilCstst.rdata")
+  # load("outSoil/InitSoilCstst_Base.rdata")
+  # for(rcpfile in rcps) { ## ---------------------------------------------
+  rcpfile = rcps  # print(rcpfile)
+    if(rcpfile=="CurrClim"){
+      load(paste(climatepath, rcpfile,".rdata", sep=""))  
+      #####process data considering only current climate###
+      # dat <- dat[rday %in% 1:10958] #uncomment to select some years (10958 needs to be modified)
+      maxRday <- max(dat$rday)
+      xday <- c(dat$rday,(dat$rday+maxRday),(dat$rday+maxRday*2))
+      dat = rbind(dat,dat,dat)
+      dat[,rday:=xday]
+      
+    } else{
+      load(paste(climatepath, rcpfile,".rdata", sep=""))  
+    }
+    # load("C:/Users/minunno/Documents/research/lukeDB/example #2/CanESM2.rcp45.rdata")
     
-  } else{
-    load(paste(climatepath, rcpfile,".rdata", sep=""))  
-  }
-  # load("C:/Users/minunno/Documents/research/lukeDB/example #2/CanESM2.rcp45.rdata")
-  
-  ## Loop regions -------------------------------------------------------
-  # for (r_no in regions) {
-  # print(date())
-  # print(paste("Region", r_no) )
-  # r_no=7
-  ## Load samples from regions; region-files include every 1000th pixel
-  ## Pixel data are from 16 m x 16 m cells, but all numbers are per unit area.
-  ## Model also produces per values  per hectar or m2.
-  ## Note also that some of the pixels are non-forest (not metsamaa, kitumaa, joutomaa)
-  ## or not inside Finland (32767) or may be cloudcovered (32766).
-  
-  # data.all = fread(paste(regiondatapath, "data.proc.", r_no, ".txt", sep=""))
-  # data.all = fread(paste("data.proc.", r_no, ".txt",sep=""))
-  # dat = dat[id %in% data.all[, unique(id)]]
-  gc()
-  ## Prepare the same initial state for all harvest scenarios that are simulated in a loop below
-  data.sample = sample_data.f(sampleX, nSample)
-  if(rcpfile=="CurrClim") data.sample$id <- data.sample$CurrClimID
-  areas <- data.sample$area
-  totAreaSample <- sum(data.sample$area)
-  
-  clim = prep.climate.f(dat, data.sample, startingYear, nYears)
-  
-  Region = nfiareas[ID==r_no, Region]
-  
-  ## Second, continue now starting from soil SS
-  initPrebas = create_prebas_input.f(r_no, clim, data.sample, nYears = nYears,
-                   startingYear = startingYear,domSPrun=domSPrun)
-  
+    ## Loop regions -------------------------------------------------------
+    # for (r_no in regions) {
+    # print(date())
+    # print(paste("Region", r_no) )
+    # r_no=7
+    ## Load samples from regions; region-files include every 1000th pixel
+    ## Pixel data are from 16 m x 16 m cells, but all numbers are per unit area.
+    ## Model also produces per values  per hectar or m2.
+    ## Note also that some of the pixels are non-forest (not metsamaa, kitumaa, joutomaa)
+    ## or not inside Finland (32767) or may be cloudcovered (32766).
+    
+    # data.all = fread(paste(regiondatapath, "data.proc.", r_no, ".txt", sep=""))
+    # data.all = fread(paste("data.proc.", r_no, ".txt",sep=""))
+    # dat = dat[id %in% data.all[, unique(id)]]
+    gc()
+    ## Prepare the same initial state for all harvest scenarios that are simulated in a loop below
+    data.sample = sample_data.f(sampleX, nSample)
+    if(rcpfile=="CurrClim") data.sample$id <- data.sample$CurrClimID
+    areas <- data.sample$area
+    totAreaSample <- sum(data.sample$area)
+    
+    clim = prep.climate.f(dat, data.sample, startingYear, nYears)
+    
+    Region = nfiareas[ID==r_no, Region]
+    
+    ## Second, continue now starting from soil SS
+    initPrebas = create_prebas_input.f(r_no, clim, data.sample, nYears = nYears,
+                     startingYear = startingYear,domSPrun=domSPrun)
+    
   ###set parameters
   #    initPrebas$pCROBAS <- pCROBAS
   
