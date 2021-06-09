@@ -207,14 +207,14 @@ runModel <- function(sampleID){
           save(out,file = paste0("outputDT/forCent",r_no,"/testData.rdata"))
           rm(out);gc()
         } 
-        margin= 1:2#(length(dim(out$annual[,,varSel,]))-1)
+        marginX= 1:2#(length(dim(out$annual[,,varSel,]))-1)
         for (ij in 1:length(varSel)) {
           # print(varSel[ij])
           if(funX[ij]=="baWmean"){
             outX <- data.table(segID=sampleX$segID,baWmean(region,varSel[ij]))
           }
           if(funX[ij]=="sum"){
-            outX <- data.table(segID=sampleX$segID,apply(region$multiOut[,,varSel[ij],,1],margin,sum))
+            outX <- data.table(segID=sampleX$segID,apply(region$multiOut[,,varSel[ij],,1],marginX,sum))
           }
           ####test plot
           # print(outX)
@@ -733,11 +733,11 @@ createDT <- function(climate, management,variable, species, startingYear){
     VenergyWood <- rbind(VenergyWood,apply(out$energyWood[,,,1],1:2,sum))
     WenergyWood <- rbind(WenergyWood,apply(out$energyWood[,,,2],1:2,sum))
     
-    margin= 1:2#(length(dim(out$annual[,,variable,]))-1)
+    marginX= 1:2#(length(dim(out$annual[,,variable,]))-1)
     for (ij in variable) {
      varIndx <- match(varNames[ij],varNames[varSel])  
      assign(varNames[ij],data.table(rbind(eval(parse(text = varNames[ij])),
-                 apply(out$annual[,,varIndx,],margin,sum))))
+                 apply(out$annual[,,varIndx,],marginX,sum))))
     }    
     print(i)
   }
@@ -773,7 +773,7 @@ createDTbySp <- function(climate, management,variable, species, startingYear){
     
     load(paste0("output/",fileX))
     
-    margin= 1:2#(length(dim(out$annual[,,variable,]))-1)
+    marginX= 1:2#(length(dim(out$annual[,,variable,]))-1)
     for (ij in variable){
       assign(paste0(varNames[ij],1),
              data.table(rbind(eval(parse(text = paste0(varNames[ij],1))),

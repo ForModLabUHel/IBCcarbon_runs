@@ -2,7 +2,7 @@
   
 
 r_no <- regions <- 12
-sampleID <- 369
+sampleID <- 498
 manScen <- "Base"
 
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
@@ -18,12 +18,19 @@ nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
 set.seed(1)
 ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
 
-
 print(paste("start sample ID",sampleID))
 sampleX <- ops[[sampleID]]
-# ###check for NAS
-# load("/scratch/project_2000994/PREBASruns/finRuns/input/vecIds.rdata")
-# sampleX <- data.all[segID %in% vecIds]
+
+###check for NAS
+# load("/scratch/project_2000994/PREBASruns/finRuns/rasters/forCent12/NApoints/NApoints2017-2025.rdata")
+# rm(NA_points);gc()
+# sampleX <- data.all[segID %in% idx[1200:1210]]
+
+for(i in 1:504){
+  print(i)
+  sampleX <- ops[[i]]
+  print(which(sampleX$segID %in% idx))
+}
 
 sampleX[,area := N*16^2/10000]
 sampleX[,id:=climID]
@@ -85,7 +92,7 @@ rcpfile = rcps  # print(rcpfile)
   
   ## Second, continue now starting from soil SS
   initPrebas = create_prebas_input.f(r_no, clim, data.sample, nYears = nYears,
-                                     startingYear = startingYear,domSPrun=domSPrun)
+                   startingYear = startingYear,domSPrun=domSPrun)
   
   ###set parameters
   #    initPrebas$pCROBAS <- pCROBAS
