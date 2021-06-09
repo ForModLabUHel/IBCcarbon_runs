@@ -15,7 +15,7 @@ ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
 # fileX <- list.files(path= "/scratch/project_2000994/PREBASruns/finRuns/outputDT/forCent12/", pattern = "age")
 # sampleIDs <- which(!1:nSamples %in%  as.numeric(stri_extract_last(fileX, regex = "(\\d+)")))
 # print(sampleIDs)
-sampleIDs <- c(136,498)
+# sampleIDs <- c(136,498)
 mclapply(sampleIDs, function(jx) {
   runModel(jx)  ## Do nothing for 10 seconds
 }, mc.cores = nCores,mc.silent=FALSE)      ## Split this job across 10 cores
