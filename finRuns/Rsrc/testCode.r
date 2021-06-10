@@ -22,14 +22,14 @@ print(paste("start sample ID",sampleID))
 sampleX <- ops[[sampleID]]
 
 ###check for NAS
-load("/scratch/project_2000994/PREBASruns/finRuns/rasters/forCent12/NApoints/NApoints2017-2025.rdata")
-rm(NA_points);gc()
+# load("/scratch/project_2000994/PREBASruns/finRuns/rasters/forCent12/NApoints/NApoints2017-2025.rdata")
+# rm(NA_points);gc()
 # sampleX <- data.all[segID %in% idx[1200:1210]]
-for(i in 1:204){
-  print(i)
-  sampleX <- ops[[i]]
-  print(which(sampleX$segID %in% idx))
-}
+# for(i in 1:204){
+#   print(i)
+#   sampleX <- ops[[i]]
+#   print(which(sampleX$segID %in% idx))
+# }
 
   sampleX[,area := N*16^2/10000]
   sampleX[,id:=climID]
