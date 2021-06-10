@@ -1,5 +1,17 @@
 CSCrun=T
 
+library(raster)
+library(rgdal)
+library(data.table)
+library(devtools)
+library(plyr)
+# library(reshape2)
+library(parallel)
+library(ggplot2)
+library(abind)
+library(DescTools)
+require(sm)
+
 ###load packages in CSC project folder
 if(CSCrun){
   .libPaths(c("/projappl/project_2000994/project_rpackages", .libPaths()))
@@ -8,20 +20,8 @@ if(CSCrun){
 ###choose PREBAS version
 vPREBAS <- "master"   #### choose PREBAS version to run the model  "master" "v0.2.x"
 devtools::install_github("ForModLabUHel/Rprebasso", ref=vPREBAS)
- 
 
-library(raster)
-library(rgdal)
-library(data.table)
-library(devtools)
-library(plyr)
-# library(reshape2)
 library(Rprebasso)
-library(parallel)
-library(ggplot2)
-library(abind)
-library(DescTools)
-require(sm)
 
 # r_no = regions = 2  ### forest center ID
 nCores <- 6  ####  number of cores
