@@ -208,6 +208,7 @@ runModel <- function(sampleID){
           rm(out);gc()
         } 
         marginX= 1:2#(length(dim(out$annual[,,varSel,]))-1)
+        nas <- data.table()
         for (ij in 1:length(varSel)) {
           # print(varSel[ij])
           if(funX[ij]=="baWmean"){
@@ -225,6 +226,13 @@ runModel <- function(sampleID){
           p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
           pX <- merge(p1,p2)
           pX <- merge(pX,p3)
+          ##check for NAs
+          nax <- data.table(segID=unique(which(is.na(pX),arr.ind=T)[,1]))
+          if(nrow(nax)>0){
+            nax$var <- varNames[varSel[ij]]
+            nax$sampleID <- sampleID
+            nas <- rbind(nas,nax)
+          } 
           assign(varNames[varSel[ij]],pX)
           
           save(list=varNames[varSel[ij]],file=paste0("outputDT/forCent",r_no,"/",
@@ -233,7 +241,12 @@ runModel <- function(sampleID){
                                                      "sampleID",sampleID,".rdata"))
           rm(list=varNames[varSel[ij]]); gc()
         }
-        
+        # save NAs
+        if(nrow(nas)>0){
+          save(nas,file=paste0("NAs/NAs_forCent",r_no,"_","sampleID",sampleID,
+                               "_",harscen,"_",rcpfile,".rdata"))        
+        }
+          
        ####process and save special variales
 print(paste("start special vars",sampleID))
         specialVarProc(sampleX,region,r_no,harscen,rcpfile,sampleID,
