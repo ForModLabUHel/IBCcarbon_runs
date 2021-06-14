@@ -42,8 +42,8 @@ for(varX in varXs){
   writeRaster(rastX,filename = paste0("rasters/forCent",r_no,"/",
                                       varX,"_",min(per3),"-",max(per3),".tiff"),overwrite=T)
   hist(rastX, main = paste(varX,"per3"))
-  
-  file.remove(paste0(pathFiles,fileXs))
+ 
+  if(varX!="DeadWoodVolume")  file.remove(paste0(pathFiles,fileXs))
   print(varX)
 }
 dev.off()
