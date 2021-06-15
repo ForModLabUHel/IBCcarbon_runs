@@ -9,7 +9,6 @@ library(plyr)
 library(parallel)
 library(ggplot2)
 library(abind)
-library(DescTools)
 require(sm)
 
 ###load packages in CSC project folder
@@ -22,6 +21,7 @@ vPREBAS <- "master"   #### choose PREBAS version to run the model  "master" "v0.
 devtools::install_github("ForModLabUHel/Rprebasso", ref=vPREBAS)
 
 library(Rprebasso)
+library(DescTools)
 
 # r_no = regions = 2  ### forest center ID
 nCores <- 6  ####  number of cores
