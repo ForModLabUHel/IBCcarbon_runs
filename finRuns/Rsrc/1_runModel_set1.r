@@ -10,6 +10,7 @@ sampleIDs <- split(1:nSamples,             # Applying split() function
 set.seed(1)
 ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
 
+toMem <- ls()
 ###check and run missing sampleIDs 
 # library('stringi')
 # fileX <- list.files(path= "/scratch/project_2000994/PREBASruns/finRuns/outputDT/forCent12/", pattern = "age")

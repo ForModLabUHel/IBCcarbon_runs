@@ -147,14 +147,26 @@ runModel <- function(sampleID){
         # HarvLim1 <- rep(0,2)
         # save(initPrebas,HarvLim1,file=paste0("test1",harscen,".rdata"))
         # region <- regionPrebas(initPrebas)
+        ###run PREBAS
+        if(harscen!="Base"){
+          load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
+          initPrebas$runYasso <- rep(1,nSites)
+          initPrebas$soilC[,1,,,] <- initSoilC
+        }
+        
         region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLim1),minDharv = 1.)
         print(paste("runModel",sampleID))
-        initSoilC <- stXX_GV(region, 1)
-        print(paste("initSoilC",sampleID))
-        region <- yassoPREBASin(region,initSoilC)
+        ##calculate steady state carbon from prebas litter 
+        if(harscen=="Base"){
+          initSoilC <- stXX_GV(region, 1)
+          print(paste("initSoilC",sampleID))
+          save(initSoilCfile=paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
+          ###run yasso (starting from steady state) using PREBAS litter
+          region <- yassoPREBASin(region,initSoilC)
+          # out <- region$multiOut[,,,,1]
+        }
         print(paste("all runs done",sampleID))
-        # out <- region$multiOut[,,,,1]
-
+        
   #####start initialize deadWood volume
         manFor <-  which(region$ClCut==1)
         unmanFor <- which(region$ClCut==0)
@@ -253,12 +265,14 @@ print(paste("start special vars",sampleID))
                        colsOut1,colsOut2,colsOut3,areas,sampleForPlots)
         
         
-        rm(list=c("region")); gc()
+        # rm(list=c("region","initPrebas")); gc()
+        rm(list=setdiff(ls(), totMem))
         # rm(out); gc()
       }
     # } ###region loop
   }
   print(paste("end sample ID",sampleID))
+  return(initSoilC)
 }
 
 sample_data.f = function(data.all, nSample) {
