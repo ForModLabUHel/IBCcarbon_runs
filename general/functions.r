@@ -272,7 +272,6 @@ print(paste("start special vars",sampleID))
     # } ###region loop
   }
   print(paste("end sample ID",sampleID))
-  return(initSoilC)
 }
 
 sample_data.f = function(data.all, nSample) {
