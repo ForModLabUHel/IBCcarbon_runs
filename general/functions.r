@@ -266,12 +266,13 @@ print(paste("start special vars",sampleID))
         
         
         # rm(list=c("region","initPrebas")); gc()
-        rm(list=setdiff(ls(), c(toMem,"toMem")))
+        # rm(list=setdiff(ls(), c(toMem,"toMem")))
         # rm(out); gc()
       }
     # } ###region loop
   }
   print(paste("end sample ID",sampleID))
+  rm(list=setdiff(ls(), c(toMem,"toMem")))
 }
 
 sample_data.f = function(data.all, nSample) {
