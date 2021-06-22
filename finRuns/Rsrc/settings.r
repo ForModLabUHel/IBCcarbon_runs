@@ -68,7 +68,7 @@ year1harv=0 ###if 1 set harvLim for Low and MaxSust as 0.6 and 1.2 of HarvLim (B
 domSPrun = 0   ### 1 -> run only dominant layer
 startingYear = 2015
 nYears = 2051-startingYear
-harvestscenarios = "Base"#c("Low","MaxSust","NoHarv","Base")
+if(!exists("harvestscenarios")) harvestscenarios = "Base"#c("Low","MaxSust","NoHarv","Base")
 rcps = "CurrClim" #c("CanESM2.rcp45.rdata","CanESM2.rcp85.rdata")#c("CurrClim","CanESM2.rcp26.rdata")#,"CanESM2.rcp45.rdata","CanESM2.rcp85.rdata")
 
 nSitesRun = 20000  ###aproximative number of samples for set runs
