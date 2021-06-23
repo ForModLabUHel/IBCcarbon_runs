@@ -12,7 +12,7 @@ pdf(paste0("plots/histRast_",r_no,".pdf"))
 varXs <- c(varNames[varSel], specialVars)
 for(varX in varXs){
   # varX <- varXs[1]
-  fileXs <- list.files(path = paste0(pathtoken,pathFiles), pattern = paste0(varX,"_"))
+  fileXs <- list.files(path = paste0(pathtoken,pathFiles), pattern = paste0(varX,"_",harvestscenarios,"_",rcps))
   outX <- data.table()
   for(i in 1:length(fileXs)){
     load(paste0(pathFiles,fileXs[i]))
