@@ -150,7 +150,7 @@ runModel <- function(sampleID){
         ###run PREBAS
         if(harscen!="Base"){
           load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
-          initPrebas$runYasso <- rep(1,nSites)
+          initPrebas$yassoRun <- rep(1,initPrebas$nSites)
           initPrebas$soilC[,1,,,] <- initSoilC
         }
         
