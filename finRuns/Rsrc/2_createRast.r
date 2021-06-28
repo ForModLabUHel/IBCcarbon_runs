@@ -1,7 +1,7 @@
 # r_no <- regions <- 12
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
 source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
-
+rcpfile <- rcps
 pathFiles <- paste0("outputDT/forCent",r_no,"/")
 
 load(paste0("input/forCent_",r_no,"_IDsTab.rdata"))
