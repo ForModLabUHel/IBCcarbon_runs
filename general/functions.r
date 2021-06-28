@@ -103,10 +103,6 @@ runModel <- function(sampleID){
         # print(paste(i, (length(harvestscenarios)*length(rcps)*length(regions)), sep="/"))
         # harscen ="Base"
         
-        ## identify managed and unmanaged forests
-        manFor <-  which(initPrebas$ClCut==1)
-        unmanFor <- which(initPrebas$ClCut==0)
-        
         ## Assign harvesting quota for the region based on volume (in NFI startingYear) and MELA
         Region = nfiareas[ID==r_no, Region]
         if(harscen=="NoHarv"){
@@ -173,8 +169,9 @@ runModel <- function(sampleID){
         print(paste("all runs done",sampleID))
         
   #####start initialize deadWood volume
-        # manFor <-  which(region$ClCut==1)
-        # unmanFor <- which(region$ClCut==0)
+        ## identify managed and unmanaged forests
+        manFor <-  which(sampleX$cons==0)
+        unmanFor <- which(sampleX$cons==1)
         Dmort <- matrix(0,2,3)
         for(ikl in 1:3) Dmort[1,ikl] <- median(region$multiOut[manFor,,12,ikl,1][which(region$multiOut[manFor,,41,ikl,1]>0.,arr.ind = T)])
         if(length(unmanFor)>0) for(ikl in 1:3) Dmort[1,ikl] <- median(region$multiOut[unmanFor,,12,ikl,1][which(region$multiOut[unmanFor,,41,ikl,1]>0.,arr.ind = T)])
