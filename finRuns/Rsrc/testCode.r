@@ -118,7 +118,7 @@ if(rcpfile=="CurrClim"){
 
   
   # Loop management scenarios ------------------------------------------------
-  harscen ="Base"
+  harscen =harvestscenarios 
     # print(date())
     # print(harscen)
 # print(harscen)
@@ -173,7 +173,7 @@ if(year1harv==1){
 ###run PREBAS
 if(harscen!="Base"){
   load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
-  initPrebas$runYasso <- rep(1,nSites)
+  initPrebas$runYasso <- rep(1,initPrebas$nSites)
   initPrebas$soilC[,1,,,] <- initSoilC
 }
 
