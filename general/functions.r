@@ -102,9 +102,12 @@ runModel <- function(sampleID){
         i = i + 1
         # print(paste(i, (length(harvestscenarios)*length(rcps)*length(regions)), sep="/"))
         # harscen ="Base"
-        ## Assign harvesting quota for the region based on volume (in NFI startingYear) and MELA
+        
+        ## identify managed and unmanaged forests
         manFor <-  which(initPrebas$ClCut==1)
         unmanFor <- which(initPrebas$ClCut==0)
+        
+        ## Assign harvesting quota for the region based on volume (in NFI startingYear) and MELA
         Region = nfiareas[ID==r_no, Region]
         if(harscen=="NoHarv"){
           initPrebas$ClCut = initPrebas$defaultThin = rep(0,nSample)
