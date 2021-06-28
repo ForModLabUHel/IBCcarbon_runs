@@ -8,7 +8,7 @@ load(paste0("input/forCent_",r_no,"_IDsTab.rdata"))
 forCentIDsTab <- forCentIDsTab[segID!=0]
 setkey(forCentIDsTab,segID)
 pdf(paste0("plots/histRast_",r_no,"_",
-           harscen,"_",rcpfile,".pdf"))
+           harvestscenarios,"_",rcpfile,".pdf"))
 
 varXs <- c(varNames[varSel], specialVars)
 for(varX in varXs){
@@ -30,21 +30,21 @@ for(varX in varXs){
   crs(rastX) <- crsX
   writeRaster(rastX,filename = paste0("rasters/forCent",r_no,"/",
                                       varX,"_",min(per1),"-",max(per1),"_",
-                                      harscen,"_",rcpfile,".tiff"),overwrite=T)
+                                      harvestscenarios,"_",rcpfile,".tiff"),overwrite=T)
   hist(rastX, main = paste(varX,"per1"))
   
   rastX <- rasterFromXYZ(tabX[,.(x,y,per2)])
   crs(rastX) <- crsX
   writeRaster(rastX,filename = paste0("rasters/forCent",r_no,"/",
                                       varX,"_",min(per2),"-",max(per2),"_",
-                                      harscen,"_",rcpfile,".tiff"),overwrite=T)
+                                      harvestscenarios,"_",rcpfile,".tiff"),overwrite=T)
   hist(rastX, main = paste(varX,"per2"))
   
   rastX <- rasterFromXYZ(tabX[,.(x,y,per3)])
   crs(rastX) <- crsX
   writeRaster(rastX,filename = paste0("rasters/forCent",r_no,"/",
                           varX,"_",min(per3),"-",max(per3),"_",
-                          harscen,"_",rcpfile,".tiff"),overwrite=T)
+                          harvestscenarios,"_",rcpfile,".tiff"),overwrite=T)
   hist(rastX, main = paste(varX,"per3"))
  
   if(varX!="DeadWoodVolume")  file.remove(paste0(pathFiles,fileXs))
@@ -88,6 +88,6 @@ for(i in 1:3) {
   ids <- raster("/scratch/project_2000994/MVMIsegments/segment-IDs/la_seg2.img")
   idx <- unique(extract(ids,NA_points[,1:2]))
   savepath <- paste0("/scratch/project_2000994/PREBASruns/finRuns/rasters/forCent12/NApoints/NApoints",
-                     years[i],"_",harscen,"_",rcpfile, ".rdata")
+                     years[i],"_",harvestscenarios,"_",rcpfile, ".rdata")
   save(idx,NA_points, file=savepath)
 }
