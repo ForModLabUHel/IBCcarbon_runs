@@ -54,6 +54,7 @@ dev.off()
 
 rm(list=ls());gc()
 
+print("all raster created")
 
 print("checking data")
 years <- c("2017-2025", "2026-2033", "2034-2050")
@@ -81,13 +82,15 @@ for(i in 1:3) {
   
   # transform raster to points
   NEP_points <- rasterToPoints(is.na(NEP_raster))
+  idXs <- which(NEP_points[,3]==1)
   
-  # pick the points with strange NA values
-  NA_points <- NEP_points[which(NEP_points[,3]==1),]
-  
-  ids <- raster("/scratch/project_2000994/MVMIsegments/segment-IDs/la_seg2.img")
-  idx <- unique(extract(ids,NA_points[,1:2]))
-  savepath <- paste0("/scratch/project_2000994/PREBASruns/finRuns/rasters/forCent12/NApoints/NApoints",
-                     years[i],"_",harvestscenarios,"_",rcpfile, ".rdata")
-  save(idx,NA_points, file=savepath)
+  if(length(idXs)>0){
+    # pick the points with strange NA values
+    NA_points <- NEP_points[idXs,]  
+    ids <- raster("/scratch/project_2000994/MVMIsegments/segment-IDs/la_seg2.img")
+    idx <- unique(extract(ids,NA_points[,1:2]))
+    savepath <- paste0("/scratch/project_2000994/PREBASruns/finRuns/rasters/forCent12/NApoints/NApoints",
+                       years[i],"_",harvestscenarios,"_",rcpfile, ".rdata")
+    save(idx,NA_points, file=savepath)  
+  }
 }
