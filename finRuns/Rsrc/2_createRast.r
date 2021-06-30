@@ -7,6 +7,9 @@ pathFiles <- paste0("outputDT/forCent",r_no,"/")
 load(paste0("input/forCent_",r_no,"_IDsTab.rdata"))
 forCentIDsTab <- forCentIDsTab[segID!=0]
 setkey(forCentIDsTab,segID)
+
+nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
+
 pdf(paste0("plots/histRast_",r_no,"_",
            harvestscenarios,"_",rcpfile,".pdf"))
 
@@ -14,6 +17,8 @@ varXs <- c(varNames[varSel], specialVars)
 for(varX in varXs){
   # varX <- varXs[1]
   fileXs <- list.files(path = paste0(pathtoken,pathFiles), pattern = paste0(varX,"_",harvestscenarios,"_",rcps))
+  if(length(fileXs) != nSamples) stop(paste0(nSamples-nfiles," files missing"))
+
   outX <- data.table()
   for(i in 1:length(fileXs)){
     load(paste0(pathFiles,fileXs[i]))
