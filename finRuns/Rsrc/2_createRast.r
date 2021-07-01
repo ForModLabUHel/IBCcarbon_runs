@@ -17,7 +17,7 @@ varXs <- c(varNames[varSel], specialVars)
 for(varX in varXs){
   # varX <- varXs[1]
   fileXs <- list.files(path = paste0(pathtoken,pathFiles), pattern = paste0(varX,"_",harvestscenarios,"_",rcps))
-  if(length(fileXs) != nSamples) stop(paste0(nSamples-nfiles," files missing"))
+  if(length(fileXs) != nSamples) stop(paste0(nSamples-length(fileXs)," files missing"))
 
   outX <- data.table()
   for(i in 1:length(fileXs)){
