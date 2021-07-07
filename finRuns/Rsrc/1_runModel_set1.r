@@ -9,7 +9,7 @@ sampleIDs <- split(1:nSamples,             # Applying split() function
                    labels = FALSE))[[setX]]
 set.seed(1)
 ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
-
+# test
 toMem <- ls()
 ###check and run missing sampleIDs 
 # library('stringi')
