@@ -1008,3 +1008,19 @@ testPlot <- function(outX,titleX,areas){
       geom_point() + ggtitle(titleX)
     print(testP)
 }
+
+
+####Function to process NEP for drained peatlands (used in 2.1_procNep.r)
+processPeat <- function(peatXf, fertf, nppf, nepf, peatval, fertval) {
+  # mask out pixels where peatXf == peatval and fertx == fertval
+  drPeatNeg <- peatXf == peatval & fertf == fertval
+  drPeatNeg[drPeatNeg==0] <- NA
+  drPeatP1F1 <- mask(nppf, drPeatNeg)
+  if (fertval == 1) {
+    drPeat <- drPeat - 270
+  } else if (fertval == 2) {
+    drPeat <- drPeat + 70
+  }
+  return(merge(drPeat,nepf))
+}
+

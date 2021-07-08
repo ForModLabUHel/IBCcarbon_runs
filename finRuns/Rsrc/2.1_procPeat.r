@@ -41,32 +41,19 @@ for (i in 1:3) {
 }
 
 
-processPeat <- function(peatXf, fertf, nppf, nepf, peatval, fertval) {
-  # mask out pixels where peatXf == peatval and fertx == fertval
-  drPeatNeg <- peatXf == peatval & fertf == fertval
-  drPeatNeg[drPeatNeg==0] <- NA
-  drPeatP1F1 <- mask(nppf, drPeatNeg)
-  if (fertval == 1) {
-    drPeat <- drPeat - 270
-  } else if (fertval == 2) {
-    drPeat <- drPeat + 70
-  }
-  return(merge(drPeat,nepf))
-}
-
 
 ###example code: loading rasters on a local machine for testing
 ###npp and nep have been renamed accordingly
-load("D:/Forestry Work/R/8.7.21ex/test.rdata")
-fert <- raster("D:/Forestry Work/R/8.7.21ex/sitetype_2017-2025.tif")
-peatX <- raster("D:/Forestry Work/R/8.7.21ex/peatX.tif")
-for (i in 1:3) {
-  curr = paste0("per",i)
-  npp <- raster(paste0("D:/Forestry Work/R/8.7.21ex/npp-",curr,".tif"))
-  nep <- raster(paste0("D:/Forestry Work/R/8.7.21ex/NEP-",curr,".tif"))
-  nep1 = processPeat(peatX,fert,npp,nep,400,1)
-  nep2 = processPeat(peatX,fert,npp,nep1,400,2)
-  plot(density(nep, plot=FALSE),main=paste0("Local run of nepProcPeat-per",i))
-  lines(density(nep2, plot=FALSE), col = "red")
-  legend("topleft", legend=c("Preproc","proc"), col=c("black","red"), lty=c(1,1))
-}
+# load("D:/Forestry Work/R/8.7.21ex/test.rdata")
+# fert <- raster("D:/Forestry Work/R/8.7.21ex/sitetype_2017-2025.tif")
+# peatX <- raster("D:/Forestry Work/R/8.7.21ex/peatX.tif")
+# for (i in 1:3) {
+#   curr = paste0("per",i)
+#   npp <- raster(paste0("D:/Forestry Work/R/8.7.21ex/npp-",curr,".tif"))
+#   nep <- raster(paste0("D:/Forestry Work/R/8.7.21ex/NEP-",curr,".tif"))
+#   nep1 = processPeat(peatX,fert,npp,nep,400,1)
+#   nep2 = processPeat(peatX,fert,npp,nep1,400,2)
+#   plot(density(nep, plot=FALSE),main=paste0("Local run of nepProcPeat-per",i))
+#   lines(density(nep2, plot=FALSE), col = "red")
+#   legend("topleft", legend=c("Preproc","proc"), col=c("black","red"), lty=c(1,1))
+# }
