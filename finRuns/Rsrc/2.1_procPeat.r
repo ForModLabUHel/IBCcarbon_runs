@@ -19,30 +19,44 @@ npp=raster(paste0("rasters/forCent",r_no,"/",
 
 ####crop soil info raster to the region of interest 
 peatX <- crop(finPeats,npp)
+#writeRaster(peatX,filename = paste0("rasters/forCent",r_no,"/","/peatXtif"))
 
 ###load site type raster
 fert=raster(paste0("rasters/forCent",r_no,"/",
                   "sitetype_",min(per1),"-",max(per1),".tif"))/3
 
 
+
+example code: loading rasters on a local machine
+#load("D:/Forestry Work/R/8.7.21ex/test.rdata")
+#peatX <- raster("D:/Forestry Work/R/8.7.21ex/peatX.tif")
+#fert <- raster("D:/Forestry Work/R/8.7.21ex/sitetype_2017-2025.tif")
+#npp <- raster("D:/Forestry Work/R/8.7.21ex/npp_2017-2025_MaxSust_CurrClim.tif")
+#nep <- raster("D:/Forestry Work/R/8.7.21ex/NEP sp_2017-2025_MaxSust_CurrClim.tif")
+
+
+
 ####what needs to be developed for the 3 periods:
 #recalculate NEP for drained peatlands (400)
 1a. mask out the pixel where peatX == 400 and fert == 1
 example code:
-  ll <- peatX==400 & fert==1
-  ll[ll==0] <- NA
-  drPeat <- mask(npp, ll)
-  drPeat <- drPeat - 270
+drPeatNeg <- peatX == 400 & fert == 1
+drPeatNeg[drPeatNeg==0] <- NA
+drPeatP1F1 <- mask(npp, drPeatNeg)
+drPeatP1F1 <- drPeatP1F1 - 270
 
 2a. replace the NEP of those pixels with npp - 270
+nep1 <- merge(drPeatP1F1,nep)
+#overlap, default first layer (drPeatP1F1) overrides
 
-
+###fert = site type
 1b. mask out the pixel where peatX == 400 and fert == 2
 example code:
-  ll <- peatX==400 & fert==2
-  ll[ll==0] <- NA
-  drPeat <- mask(npp, ll)
-  drPeat <- drPeat + 70
+drPeatNeg <- peatX == 400 & fert == 2
+drPeatNeg[drPeatNeg==0] <- NA
+drPeatP1F2 <- mask(npp, drPeatNeg)
+drPeatP1F2 <- drPeatP1F2 + 70
 
 2b. replace the NEP of those pixels with npp + 70
-
+#nepProc will merge original NEP and newNEP for drained peatlands
+nep1 <- merge(drPeatP1F2,nep1) # same as before but now drPeatP1F2 and merging with the new nep1 from before
