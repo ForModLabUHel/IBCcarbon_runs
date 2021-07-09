@@ -60,42 +60,42 @@ dev.off()
 rm(list=ls());gc()
 
 print("all raster created")
-
-print("checking data")
-years <- c("2017-2025", "2026-2033", "2034-2050")
-
-
-for(i in 1:3) {
-  
-  GPPpath <- paste0("/scratch/project_2000994/PREBASruns/finRuns/rasters/forCent12/GPPspecies_", years[i], ".tif")
-  NEPpath <- paste0("/scratch/project_2000994/PREBASruns/finRuns/rasters/forCent12/NEP sp_", years[i], ".tif")
-  
-  # read in the rasters for GPP and NEP
-  GPP_raster <- raster(GPPpath)
-  NEP_raster <- raster(NEPpath)
-  
-  # change the non-NA values to 1
-  GPP_raster[!is.na(GPP_raster)] <- 1
-  
-  # change the NA values to 0
-  GPP_raster[is.na(GPP_raster)] <- 0
-  
-  # take from the NEP raster only the points that are not NA in the GPP raster
-  NEP_raster[!is.na(NEP_raster)] <- 1
-  # change the points to 0 that are 0 in GPP
-  NEP_raster[GPP_raster==0] <- 0
-  
-  # transform raster to points
-  NEP_points <- rasterToPoints(is.na(NEP_raster))
-  idXs <- which(NEP_points[,3]==1)
-  
-  if(length(idXs)>0){
-    # pick the points with strange NA values
-    NA_points <- NEP_points[idXs,]  
-    ids <- raster("/scratch/project_2000994/MVMIsegments/segment-IDs/la_seg2.img")
-    idx <- unique(extract(ids,NA_points[,1:2]))
-    savepath <- paste0("/scratch/project_2000994/PREBASruns/finRuns/rasters/forCent12/NApoints/NApoints",
-                       years[i],"_",harvestscenarios,"_",rcpfile, ".rdata")
-    save(idx,NA_points, file=savepath)  
-  }
-}
+# 
+# print("checking data")
+# years <- c("2017-2025", "2026-2033", "2034-2050")
+# 
+# 
+# for(i in 1:3) {
+#   
+#   GPPpath <- paste0("/scratch/project_2000994/PREBASruns/finRuns/rasters/forCent12/GPPspecies_", years[i], ".tif")
+#   NEPpath <- paste0("/scratch/project_2000994/PREBASruns/finRuns/rasters/forCent12/NEP sp_", years[i], ".tif")
+#   
+#   # read in the rasters for GPP and NEP
+#   GPP_raster <- raster(GPPpath)
+#   NEP_raster <- raster(NEPpath)
+#   
+#   # change the non-NA values to 1
+#   GPP_raster[!is.na(GPP_raster)] <- 1
+#   
+#   # change the NA values to 0
+#   GPP_raster[is.na(GPP_raster)] <- 0
+#   
+#   # take from the NEP raster only the points that are not NA in the GPP raster
+#   NEP_raster[!is.na(NEP_raster)] <- 1
+#   # change the points to 0 that are 0 in GPP
+#   NEP_raster[GPP_raster==0] <- 0
+#   
+#   # transform raster to points
+#   NEP_points <- rasterToPoints(is.na(NEP_raster))
+#   idXs <- which(NEP_points[,3]==1)
+#   
+#   if(length(idXs)>0){
+#     # pick the points with strange NA values
+#     NA_points <- NEP_points[idXs,]  
+#     ids <- raster("/scratch/project_2000994/MVMIsegments/segment-IDs/la_seg2.img")
+#     idx <- unique(extract(ids,NA_points[,1:2]))
+#     savepath <- paste0("/scratch/project_2000994/PREBASruns/finRuns/rasters/forCent12/NApoints/NApoints",
+#                        years[i],"_",harvestscenarios,"_",rcpfile, ".rdata")
+#     save(idx,NA_points, file=savepath)  
+#   }
+# }
