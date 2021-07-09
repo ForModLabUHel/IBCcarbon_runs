@@ -1,5 +1,5 @@
 ###load local settings  !!!! this needs to be commented out later
-source("/scratch/project_2000994/PREBASruns/finRuns/Rsrc/localSettings.r")
+#source("/scratch/project_2000994/PREBASruns/finRuns/Rsrc/localSettings.r")
 
 ####load general settings and data
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
