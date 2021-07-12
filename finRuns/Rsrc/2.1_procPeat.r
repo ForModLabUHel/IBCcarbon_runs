@@ -31,7 +31,7 @@ for (i in 1:3) {
                       harvestscenarios,"_",rcpfile,".tif"))
   #writeRaster(peatX,filename = paste0("rasters/forCent",r_no,"/","/peatXtif"))
   nep = raster(paste0("rasters/forCent",r_no,"/",
-                      "nep_",min(get(curr)),"-",max(get(curr)),"_",
+                      "NEP sp_",min(get(curr)),"-",max(get(curr)),"_",
                       harvestscenarios,"_",rcpfile,".tif"))
   nep = processPeat(peatX,fert,npp,nep,400,1)
   nep = processPeat(peatX,fert,npp,nep,400,2)
