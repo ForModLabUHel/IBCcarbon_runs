@@ -5,7 +5,7 @@
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
 source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
 rcpfile <- rcps
-pathFiles <- paste0("rasterS/forCent",r_no,"/")
+pathFiles <- paste0("rasters/forCent",r_no,"/")
 ####end load general settings and data
 
 
