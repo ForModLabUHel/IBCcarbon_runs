@@ -58,9 +58,6 @@ for(varX in varXs){
 }
 dev.off()
 
-rm(list=ls());gc()
-
-
 
 ###soilType raster
 print("creating site type raster")
@@ -77,6 +74,7 @@ crs(rastFert) <- crsX
 
 writeRaster(rastFert,filename = paste0("rasters/forCent",r_no,"/siteType.tiff"),overwrite=T)
 
+rm(list=ls());gc()
 
 
 print("all raster created")
