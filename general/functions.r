@@ -1015,7 +1015,7 @@ processPeat <- function(peatXf, fertf, nppf, nepf, peatval, fertval) {
   # mask out pixels where peatXf == peatval and fertx == fertval
   drPeatNeg <- peatXf == peatval & fertf == fertval
   drPeatNeg[drPeatNeg==0] <- NA
-  drPeatP1F1 <- mask(nppf, drPeatNeg)
+  drPeat <- mask(nppf, drPeatNeg)
   if (fertval == 1) {
     drPeat <- drPeat - 270
   } else if (fertval == 2) {
