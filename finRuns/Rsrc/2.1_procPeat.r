@@ -29,7 +29,7 @@ peatX <- crop(finPeats,npp)
 
 ###load site type raster
 fert=raster(paste0("rasters/forCent",r_no,"/",
-                   "sitetype.tif"))
+                   "siteType.tif"))
 
 
 for (i in 1:3) {
