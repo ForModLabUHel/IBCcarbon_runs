@@ -61,7 +61,9 @@ dev.off()
 rm(list=ls());gc()
 
 
+
 ###soilType raster
+print("creating site type raster")
 npp = raster(paste0("rasters/forCent",r_no,"/",
                     "npp_",min(per1),"-",max(per1),"_",
                     harvestscenarios,"_",rcpfile,".tif"))
