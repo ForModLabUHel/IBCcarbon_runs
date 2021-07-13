@@ -10,8 +10,16 @@ pathFiles <- paste0("rasters/forCent",r_no,"/")
 
 
 ####load soil information raster
-# pseudoptyp.img: Whole Finland, 100 = mineral soil, 400 = drained peatland, 700=other peatland, 0=non-forest
-finPeats <- raster("/scratch/project_2000994/MVMIsegments/segment-IDs/pseudopty.img")
+soilSyke <- TRUE  ####If TRUE uses Syke peatland database if FALSE uses luke database
+# luke database pseudoptyp.img: Whole Finland, 100 = mineral soil, 400 = drained peatland, 700=other peatland, 0=non-forest
+# syke database peatSyke16res.tif: 1 = Undrained peatland; 2 = Drained peatland; 3 = Peat extraction area 
+if(soilSyke){
+  finPeats <- raster("/scratch/project_2000994/MVMIsegments/segment-IDs/peatSyke16res.tif")
+  drPeatID <- 2  ### ID = 2 for syke database
+}else{
+  finPeats <- raster("/scratch/project_2000994/MVMIsegments/segment-IDs/pseudoptyp.img")
+  drPeatID <- 400  ### ID = 400 for luke database; 
+}
 
 ###load npp first outside loop to get peatX
 npp = raster(paste0("rasters/forCent",r_no,"/",
@@ -34,8 +42,8 @@ for (i in 1:3) {
   nep = raster(paste0("rasters/forCent",r_no,"/",
                       "NEP sp_",min(get(curr)),"-",max(get(curr)),"_",
                       harvestscenarios,"_",rcpfile,".tif"))
-  nep = processPeat(peatX,fert,npp,nep,400,1)
-  nep = processPeat(peatX,fert,npp,nep,400,2)
+  nep = processPeat(peatX,fert,npp,nep,drPeatID,1)
+  nep = processPeat(peatX,fert,npp,nep,drPeatID,2)
   writeRaster(nep,filename = paste0(pathFiles,
                                     "nepProcPeat_",min(get(curr)),"-",max(get(curr)),"_",
                                     harvestscenarios,"_",rcpfile,".tif"))
