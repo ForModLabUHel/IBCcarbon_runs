@@ -5,7 +5,7 @@
 ## ---------------------------------------------------------------------
 ## MAIN SCRIPT
 ## ---------------------------------------------------------------------
-runModel <- function(sampleID){
+runModel <- function(sampleID,sampleRun=FALSE){
   # print(date())
   print(paste("start sample ID",sampleID))
   sampleX <- ops[[sampleID]]
@@ -26,7 +26,8 @@ runModel <- function(sampleID){
   i = 0
   # load("/scratch/project_2000994/PREBASruns/metadata/initSoilCstst.rdata")
   # load("outSoil/InitSoilCstst_Base.rdata")
-  for(rcpfile in rcps) { ## ---------------------------------------------
+  rcpfile = rcps
+  # for(rcpfile in rcps) { ## ---------------------------------------------
     # print(rcpfile)
     if(rcpfile=="CurrClim"){
       load(paste(climatepath, rcpfile,".rdata", sep=""))  
@@ -96,7 +97,8 @@ runModel <- function(sampleID){
       
       
       # Loop management scenarios ------------------------------------------------
-      for(harscen in harvestscenarios) { ## MaxSust fails, others worked.
+      harscen = harvestscenarios
+      # for(harscen in harvestscenarios) { ## MaxSust fails, others worked.
         # print(date())
         # print(harscen)
         i = i + 1
@@ -213,6 +215,9 @@ runModel <- function(sampleID){
             aperm(replicate(length(unmanFor),deadVinitMan),c(3,1:2))
         }
         ####end initialize deadWood Volume
+        if(sampleRun){
+          return(region)
+        }else{
         
         ####create pdf for test plots
         if(sampleID==sampleForPlots){
@@ -267,13 +272,14 @@ print(paste("start special vars",sampleID))
         specialVarProc(sampleX,region,r_no,harscen,rcpfile,sampleID,
                        colsOut1,colsOut2,colsOut3,areas,sampleForPlots)
         
+        }
         
         # rm(list=c("region","initPrebas")); gc()
         # rm(list=setdiff(ls(), c(toMem,"toMem")))
         # rm(out); gc()
-      }
+      # }###harvest loop
     # } ###region loop
-  }
+  # }rcps loop
   print(paste("end sample ID",sampleID))
   rm(list=setdiff(ls(), c(toMem,"toMem")))
 }
