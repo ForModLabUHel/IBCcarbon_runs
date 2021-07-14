@@ -1,8 +1,3 @@
-sampleID=12
-r_no = regions = 1 ### forest center ID
-#sampleRun <- T
-nSetRuns = 10 #number of set runs
-
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
 source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
 
@@ -17,4 +12,4 @@ ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
 
 toMem <- ls()
 
-runModel(sampleID,sampleRun=T)
+sampleX <- runModel(sampleID,sampleRun=T)
