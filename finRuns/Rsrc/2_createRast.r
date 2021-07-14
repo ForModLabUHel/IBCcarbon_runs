@@ -10,6 +10,7 @@ setkey(forCentIDsTab,segID)
 
 nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
 
+
 pdf(paste0("plots/histRast_",r_no,"_",
            harvestscenarios,"_",rcpfile,".pdf"))
 
@@ -57,7 +58,24 @@ for(varX in varXs){
 }
 dev.off()
 
+
+###soilType raster
+print("creating site type raster")
+npp = raster(paste0("rasters/forCent",r_no,"/",
+                    "npp_",min(per1),"-",max(per1),"_",
+                    harvestscenarios,"_",rcpfile,".tif"))
+
+fertX <- data.all[,.(segID,fert)]
+setkey(fertX,segID)
+fertX <- merge(fertX,forCentIDsTab)
+rastFert <- rasterFromXYZ(fertX[,.(x,y,fert)])
+crs(rastFert) <- crsX
+# rastFert <- resample(rastFert, npp,method="ngb")
+
+writeRaster(rastFert,filename = paste0("rasters/forCent",r_no,"/siteType.tiff"),overwrite=T)
+
 rm(list=ls());gc()
+
 
 print("all raster created")
 # 
