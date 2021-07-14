@@ -1012,6 +1012,13 @@ testPlot <- function(outX,titleX,areas){
 
 ####Function to process NEP for drained peatlands (used in 2.1_procNep.r)
 processPeat <- function(peatXf, fertf, nppf, nepf, peatval, fertval) {
+  # rasters may be off by a couple pixels, resize:
+  if (any(dim(fertf) < dim(peatXf))) {peatXf <- crop(peatXf,fertf)} 
+  if (any(dim(peatXf) < dim(fertf))) {fertf <- crop(fertf,peatXf)}
+  if (any(dim(fertf) < dim(nppf))) {nppf <- crop(nppf,fertf)} 
+  if (any(dim(peatXf) < dim(nppf))) {nppf <- crop(nppf,peatXf)}
+  if (any(dim(fertf) < dim(nepf))) {nepf <- crop(nepf,fertf)} 
+  if (any(dim(peatXf) < dim(nepf))) {nepf <- crop(nepf,peatXf)})
   # mask out pixels where peatXf == peatval and fertx == fertval
   drPeatNeg <- peatXf == peatval & fertf == fertval
   drPeatNeg[drPeatNeg==0] <- NA
