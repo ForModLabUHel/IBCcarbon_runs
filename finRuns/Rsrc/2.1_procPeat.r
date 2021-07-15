@@ -48,6 +48,14 @@ for (i in 1:3) {
                                     harvestscenarios,"_",rcpfile,".tif"))
 }
 
+# procPeat outputs to rasters and plots
+Sys.chmod(list.dirs("rasters"), "0777",use_umask=FALSE)
+f <- list.files("rasters", all.files = TRUE, full.names = TRUE, recursive = TRUE)
+Sys.chmod(f, (file.info(f)$mode | "0777"),use_umask=FALSE)
+
+Sys.chmod(list.dirs("plots"), "0777",use_umask=FALSE)
+f <- list.files("plots", all.files = TRUE, full.names = TRUE, recursive = TRUE)
+Sys.chmod(f, (file.info(f)$mode | "0777"),use_umask=FALSE)
 
 
 ###example code: loading rasters on a local machine for testing
