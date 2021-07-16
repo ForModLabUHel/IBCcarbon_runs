@@ -47,6 +47,10 @@ save(data.all,file=paste0("input/data.all_forCent_",forCent,".rdata"))
 rm(list=ls());gc()
 
 
+# extract outputs to input
+Sys.chmod(list.dirs("input"), "0777",use_umask=FALSE)
+f <- list.files("input", all.files = TRUE, full.names = TRUE, recursive = TRUE)
+Sys.chmod(f, (file.info(f)$mode | "0777"),use_umask=FALSE)
 
 
 # # writeRaster(kokenIDs,filename = "kokenSegIds.tif")
