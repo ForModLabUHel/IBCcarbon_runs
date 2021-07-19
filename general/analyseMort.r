@@ -51,7 +51,7 @@ mixFor <- 0.8
 pMort2 <- function(modOut,ageClass, rangeYear=5,sp,pureFor,mixFor){
   endX <- rangeYear:dim(modOut)[2]
   startX <- endX-(rangeYear-1)
-  pMortX <- nData <- rep(0.,length(endX))
+  pMortX <- nSites <- rep(0.,length(endX))
   
   for(i in 1:length(startX)){
     ageX <-rowMeans(modOut[,startX[i]:endX[i],7,1,1])
@@ -68,9 +68,9 @@ pMort2 <- function(modOut,ageClass, rangeYear=5,sp,pureFor,mixFor){
     mortX <- data.table(which(modOut[selX,startX[i]:endX[i],42,,1]>0,arr.ind=T))
     nMort <- length(unique(mortX$site))
     pMortX[i] <- nMort/length(selX)
-    nData[i] <- length(selX)
+    nSites[i] <- length(selX)
   }
-  return(list(pMort=pMortX,nData=nData))
+  return(list(pMort=pMortX,nSites=nSites))
 }
 
 pMortX <- list()
