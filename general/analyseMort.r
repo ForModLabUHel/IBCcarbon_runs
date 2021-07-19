@@ -70,7 +70,7 @@ pMort2 <- function(modOut,ageClass, rangeYear=5,sp,pureFor,mixFor){
     pMortX[i] <- nMort/length(selX)
     nData[i] <- length(selX)
   }
-  return(list(pMort=pMortX,nData=selX))
+  return(list(pMort=pMortX,nData=nData))
 }
 
 pMortX <- list()
