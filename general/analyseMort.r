@@ -73,20 +73,20 @@ pMort2 <- function(modOut,ageClass, rangeYear=5,sp,pureFor,mixFor){
 }
 
 pMortX <- list()
-ageClass <- 31:40
+ageClass <- 71:90
 ##Pure Pine
-pMortX[[1]] <- pMort2(modOut,ageClass,sp=1, pureFor = 0.8, mixFor = 0.7)
+pMortX$pine <- pMort2(modOut,ageClass,sp=1, pureFor = 0.8, mixFor = 0.7)
 ##Pine Spruce
-pMortX[[2]] <- pMort2(modOut,ageClass,sp=1:2, pureFor = 0.8, mixFor = 0.7)
+pMortX$piSp <- pMort2(modOut,ageClass,sp=1:2, pureFor = 0.8, mixFor = 0.7)
 ##Spruce
-pMortX[[3]] <- pMort2(modOut,ageClass,sp=2, pureFor = 0.8, mixFor = 0.7)
+pMortX$spruce <- pMort2(modOut,ageClass,sp=2, pureFor = 0.8, mixFor = 0.7)
 ##Spruce deciduous
-pMortX[[4]] <- pMort2(modOut,ageClass,sp=2:3, pureFor = 0.8, mixFor = 0.7)
+pMortX$spDec <- pMort2(modOut,ageClass,sp=2:3, pureFor = 0.8, mixFor = 0.7)
 ##deciduous
-pMortX[[5]] <- pMort2(modOut,ageClass,sp=3, pureFor = 0.8, mixFor = 0.7)
+pMortX$dec <- pMort2(modOut,ageClass,sp=3, pureFor = 0.8, mixFor = 0.7)
 nameFor <- c("pine","piSp","spruce","spDec","decid")
 names(pMortX) <- nameFor
-yearsX <- 1:length(pMortX[[1]])
+yearsX <- (length(pMortX[[1]])/2):length(pMortX[[1]])
 barplot(c(mean(pMortX[[1]][yearsX]),mean(pMortX[[2]][yearsX]),
           mean(pMortX[[3]][yearsX]),mean(pMortX[[4]][yearsX]),
           mean(pMortX[[5]][yearsX])),ylim=c(0,1), main="ageClass40",
