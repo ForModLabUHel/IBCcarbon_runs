@@ -111,3 +111,47 @@ barplot(c(mean(pMortX[[1]][yearsX]),mean(pMortX[[2]][yearsX]),
           mean(pMortX[[3]][yearsX]),mean(pMortX[[4]][yearsX]),
           mean(pMortX[[5]][yearsX])),ylim=c(0,1), main="ageClass40",
         names = nameFor)
+
+#Analyze the number of sites with mortality based on age/species
+nMort3 <- function(modOut,ageClass, rangeYear=5,sp,pureFor,mixFor){
+  endX <- rangeYear:dim(modOut)[2]
+  startX <- endX-(rangeYear-1)
+  nMortX <- rep(0.,length(endX))
+  
+  for(i in 1:length(startX)){
+    ageX <-rowMeans(modOut[,startX[i]:endX[i],7,1,1])
+    pBA <- apply(modOut[,startX[i]:endX[i],13,,1],c(1,3),mean)
+    pBA <- pBA/rowSums(pBA)
+    if(length(sp)==1){
+      selX <- which(ageX %in% ageClass & pBA[,sp]>pureFor)
+    }else{
+      selX <- which(ageX %in% ageClass & rowSums(pBA[,sp])>mixFor &
+                      pBA[,1]<pureFor & pBA[,2]<pureFor)  
+    }
+    
+    # outX <- modOut[cX,,,,]
+    mortX <- data.table(which(modOut[selX,startX[i]:endX[i],42,,1]>0,arr.ind=T))
+    nMortX[i] <- length(unique(mortX$site))
+  }
+  return(nMortX)
+}
+
+nMortX <- list()
+ageClass <- 31:50
+##Pure Pine
+nMortX[[1]] <- length(which(nMort3(modOut,ageClass,sp=1, pureFor = 0.8, mixFor = 0.7)>0, arr.ind=T))
+##Pine Spruce
+nMortX[[2]] <- length(which(nMort3(modOut,ageClass,sp=1:2, pureFor = 0.8, mixFor = 0.7)>0, arr.ind=T))
+##Spruce
+nMortX[[3]] <- length(which(nMort3(modOut,ageClass,sp=2, pureFor = 0.8, mixFor = 0.7)>0, arr.ind=T))
+##Spruce deciduous
+nMortX[[4]] <- length(which(nMort3(modOut,ageClass,sp=2:3, pureFor = 0.8, mixFor = 0.7)>0, arr.ind=T))
+##deciduous
+nMortX[[5]] <- length(which(nMort3(modOut,ageClass,sp=3, pureFor = 0.8, mixFor = 0.7)>0, arr.ind=T))
+nameFor <- c("pine","piSp","spruce","spDec","decid")
+names(nMortX) <- nameFor
+yearsX <- 1:length(nMortX[[1]])
+barplot(c(mean(nMortX[[1]][yearsX]),mean(nMortX[[2]][yearsX]),
+          mean(nMortX[[3]][yearsX]),mean(nMortX[[4]][yearsX]),
+          mean(nMortX[[5]][yearsX])), ylim=c(0,40), main="ageClass40",
+        names = nameFor)
