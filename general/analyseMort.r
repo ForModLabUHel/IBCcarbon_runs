@@ -58,7 +58,7 @@ pMort2 <- function(modOut,ageClass, rangeYear=5,sp,pureFor,mixFor){
     pBA <- apply(modOut[,startX[i]:endX[i],13,,1],c(1,3),mean)
     pBA <- pBA/rowSums(pBA)
     if(length(sp)==1){
-      selX <- which(ageX %in% ageClass & pBA[,sp]>threshold)
+      selX <- which(ageX %in% ageClass & pBA[,sp]>pureFor)
     }else{
       selX <- which(ageX %in% ageClass & rowSums(pBA[,sp])>mixFor &
                       pBA[,1]<pureFor & pBA[,2]<pureFor)  
