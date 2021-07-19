@@ -51,7 +51,7 @@ mixFor <- 0.8
 pMort2 <- function(modOut,ageClass, rangeYear=5,sp,pureFor,mixFor){
   endX <- rangeYear:dim(modOut)[2]
   startX <- endX-(rangeYear-1)
-  pMortX <- rep(0.,length(endX))
+  pMortX <- nData <- rep(0.,length(endX))
   
   for(i in 1:length(startX)){
     ageX <-rowMeans(modOut[,startX[i]:endX[i],7,1,1])
@@ -68,12 +68,13 @@ pMort2 <- function(modOut,ageClass, rangeYear=5,sp,pureFor,mixFor){
     mortX <- data.table(which(modOut[selX,startX[i]:endX[i],42,,1]>0,arr.ind=T))
     nMort <- length(unique(mortX$site))
     pMortX[i] <- nMort/length(selX)
+    nData[i] <- length(selX)
   }
-  return(pMortX)
+  return(list(pMort=pMortX,nData=selX))
 }
 
 pMortX <- list()
-ageClass <- 71:90
+ageClass <- 31:50
 ##Pure Pine
 pMortX$pine <- pMort2(modOut,ageClass,sp=1, pureFor = 0.8, mixFor = 0.7)
 ##Pine Spruce
@@ -87,71 +88,8 @@ pMortX$dec <- pMort2(modOut,ageClass,sp=3, pureFor = 0.8, mixFor = 0.7)
 nameFor <- c("pine","piSp","spruce","spDec","decid")
 names(pMortX) <- nameFor
 yearsX <- (length(pMortX[[1]])/2):length(pMortX[[1]])
-barplot(c(mean(pMortX[[1]][yearsX]),mean(pMortX[[2]][yearsX]),
-          mean(pMortX[[3]][yearsX]),mean(pMortX[[4]][yearsX]),
-          mean(pMortX[[5]][yearsX])),ylim=c(0,1), main="ageClass40",
+barplot(c(mean(pMortX$pine$pMort[yearsX]),mean(pMortX$piSp$pMort[yearsX]),
+          mean(pMortX$spruce$pMort[yearsX]),mean(pMortX$spDec$pMort[yearsX]),
+          mean(pMortX$dec$pMort[yearsX])),ylim=c(0,1), main="ageClass40",
         names = nameFor)
 
-pMortX <- list()
-ageClass <- 71:90
-##Pure Pine
-pMortX[[1]] <- pMort2(modOut,ageClass,sp=1, pureFor = 0.8, mixFor = 0.8)
-##Pine Spruce
-pMortX[[2]] <- pMort2(modOut,ageClass,sp=1:2, pureFor = 0.8, mixFor = 0.7)
-##Spruce
-pMortX[[3]] <- pMort2(modOut,ageClass,sp=2, pureFor = 0.8, mixFor = 0.7)
-##Spruce deciduous
-pMortX[[4]] <- pMort2(modOut,ageClass,sp=2:3, pureFor = 0.8, mixFor = 0.7)
-##deciduous
-pMortX[[5]] <- pMort2(modOut,ageClass,sp=3, pureFor = 0.8, mixFor = 0.7)
-nameFor <- c("pine","piSp","spruce","spDec","decid")
-names(pMortX) <- nameFor
-yearsX <- 15:length(pMortX[[1]])
-barplot(c(mean(pMortX[[1]][yearsX]),mean(pMortX[[2]][yearsX]),
-          mean(pMortX[[3]][yearsX]),mean(pMortX[[4]][yearsX]),
-          mean(pMortX[[5]][yearsX])),ylim=c(0,1), main="ageClass40",
-        names = nameFor)
-
-#Analyze the number of sites with mortality based on age/species
-nMort3 <- function(modOut,ageClass, rangeYear=5,sp,pureFor,mixFor){
-  endX <- rangeYear:dim(modOut)[2]
-  startX <- endX-(rangeYear-1)
-  nMortX <- rep(0.,length(endX))
-  
-  for(i in 1:length(startX)){
-    ageX <-rowMeans(modOut[,startX[i]:endX[i],7,1,1])
-    pBA <- apply(modOut[,startX[i]:endX[i],13,,1],c(1,3),mean)
-    pBA <- pBA/rowSums(pBA)
-    if(length(sp)==1){
-      selX <- which(ageX %in% ageClass & pBA[,sp]>pureFor)
-    }else{
-      selX <- which(ageX %in% ageClass & rowSums(pBA[,sp])>mixFor &
-                      pBA[,1]<pureFor & pBA[,2]<pureFor)  
-    }
-    
-    # outX <- modOut[cX,,,,]
-    mortX <- data.table(which(modOut[selX,startX[i]:endX[i],42,,1]>0,arr.ind=T))
-    nMortX[i] <- length(unique(mortX$site))
-  }
-  return(nMortX)
-}
-
-nMortX <- list()
-ageClass <- 31:50
-##Pure Pine
-nMortX[[1]] <- length(which(nMort3(modOut,ageClass,sp=1, pureFor = 0.8, mixFor = 0.7)>0, arr.ind=T))
-##Pine Spruce
-nMortX[[2]] <- length(which(nMort3(modOut,ageClass,sp=1:2, pureFor = 0.8, mixFor = 0.7)>0, arr.ind=T))
-##Spruce
-nMortX[[3]] <- length(which(nMort3(modOut,ageClass,sp=2, pureFor = 0.8, mixFor = 0.7)>0, arr.ind=T))
-##Spruce deciduous
-nMortX[[4]] <- length(which(nMort3(modOut,ageClass,sp=2:3, pureFor = 0.8, mixFor = 0.7)>0, arr.ind=T))
-##deciduous
-nMortX[[5]] <- length(which(nMort3(modOut,ageClass,sp=3, pureFor = 0.8, mixFor = 0.7)>0, arr.ind=T))
-nameFor <- c("pine","piSp","spruce","spDec","decid")
-names(nMortX) <- nameFor
-yearsX <- 1:length(nMortX[[1]])
-barplot(c(mean(nMortX[[1]][yearsX]),mean(nMortX[[2]][yearsX]),
-          mean(nMortX[[3]][yearsX]),mean(nMortX[[4]][yearsX]),
-          mean(nMortX[[5]][yearsX])), ylim=c(0,40), main="ageClass40",
-        names = nameFor)
