@@ -87,7 +87,7 @@ pMortX$spDec <- pMort2(modOut,ageClass,sp=2:3, pureFor = 0.8, mixFor = 0.7)
 pMortX$dec <- pMort2(modOut,ageClass,sp=3, pureFor = 0.8, mixFor = 0.7)
 nameFor <- c("pine","piSp","spruce","spDec","decid")
 names(pMortX) <- nameFor
-yearsX <- (length(pMortX[[1]])/2):length(pMortX[[1]])
+yearsX <- 1:length(pMortX$pine$pMort)
 barplot(c(mean(pMortX$pine$pMort[yearsX]),mean(pMortX$piSp$pMort[yearsX]),
           mean(pMortX$spruce$pMort[yearsX]),mean(pMortX$spDec$pMort[yearsX]),
           mean(pMortX$dec$pMort[yearsX])),ylim=c(0,1), main="ageClass40",
