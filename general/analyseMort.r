@@ -108,7 +108,115 @@ barplot(c(mean(pMortX$pine$pMort[period3]),mean(pMortX$piSp$pMort[period3]),
           mean(pMortX$dec$pMort[period3])),ylim=c(0,1), main="ageClass40",
         names = nameFor)
 
+#set up age class and period for plotting
+period1  <- 1:9
+period2 <- 10:17
+period3 <- 18:32
+ageClass1 <- 31:50
+ageClass2 <- 51:70
+ageClass3 <- 71:90
+ageClass4 <- 111:130
+ageClass5 <- 131:150
+ageClass6 <- 151:200
 
+#run each ageclass for each pure/mixed stand 
+pMortX$pine1 <- pMort2(modOut,ageClass1,sp=1, pureFor = 0.8, mixFor = 0.7)
+pMortX$pine2 <- pMort2(modOut,ageClass2,sp=1, pureFor = 0.8, mixFor = 0.7)
+pMortX$pine3 <- pMort2(modOut,ageClass3,sp=1, pureFor = 0.8, mixFor = 0.7)
+pMortX$pine4 <- pMort2(modOut,ageClass4,sp=1, pureFor = 0.8, mixFor = 0.7)
+pMortX$pine5 <- pMort2(modOut,ageClass5,sp=1, pureFor = 0.8, mixFor = 0.7)
+pMortX$pine6 <- pMort2(modOut,ageClass6,sp=1, pureFor = 0.8, mixFor = 0.7)
+pMortX$piSp1 <- pMort2(modOut,ageClass1,sp=1:2, pureFor = 0.8, mixFor = 0.7)
+pMortX$piSp2 <- pMort2(modOut,ageClass2,sp=1:2, pureFor = 0.8, mixFor = 0.7)
+pMortX$piSp3 <- pMort2(modOut,ageClass3,sp=1:2, pureFor = 0.8, mixFor = 0.7)
+pMortX$piSp4 <- pMort2(modOut,ageClass4,sp=1:2, pureFor = 0.8, mixFor = 0.7)
+pMortX$piSp5 <- pMort2(modOut,ageClass5,sp=1:2, pureFor = 0.8, mixFor = 0.7)
+pMortX$piSp6 <- pMort2(modOut,ageClass6,sp=1:2, pureFor = 0.8, mixFor = 0.7)
+pMortX$spruce1 <- pMort2(modOut,ageClass1,sp=2, pureFor = 0.8, mixFor = 0.7)
+pMortX$spruce2 <- pMort2(modOut,ageClass2,sp=2, pureFor = 0.8, mixFor = 0.7)
+pMortX$spruce3 <- pMort2(modOut,ageClass3,sp=2, pureFor = 0.8, mixFor = 0.7)
+pMortX$spruce4 <- pMort2(modOut,ageClass4,sp=2, pureFor = 0.8, mixFor = 0.7)
+pMortX$spruce5 <- pMort2(modOut,ageClass5,sp=2, pureFor = 0.8, mixFor = 0.7)
+pMortX$spruce6 <- pMort2(modOut,ageClass6,sp=2, pureFor = 0.8, mixFor = 0.7)
+pMortX$spDec1 <- pMort2(modOut,ageClass1,sp=2:3, pureFor = 0.8, mixFor = 0.7)
+pMortX$spDec2 <- pMort2(modOut,ageClass2,sp=2:3, pureFor = 0.8, mixFor = 0.7)
+pMortX$spDec3 <- pMort2(modOut,ageClass3,sp=2:3, pureFor = 0.8, mixFor = 0.7)
+pMortX$spDec4 <- pMort2(modOut,ageClass4,sp=2:3, pureFor = 0.8, mixFor = 0.7)
+pMortX$spDec5 <- pMort2(modOut,ageClass5,sp=2:3, pureFor = 0.8, mixFor = 0.7)
+pMortX$spDec6 <- pMort2(modOut,ageClass6,sp=2:3, pureFor = 0.8, mixFor = 0.7)
+pMortX$dec1 <- pMort2(modOut,ageClass1,sp=3, pureFor = 0.8, mixFor = 0.7)
+pMortX$dec2 <- pMort2(modOut,ageClass2,sp=3, pureFor = 0.8, mixFor = 0.7)
+pMortX$dec3 <- pMort2(modOut,ageClass3,sp=3, pureFor = 0.8, mixFor = 0.7)
+pMortX$dec4 <- pMort2(modOut,ageClass4,sp=3, pureFor = 0.8, mixFor = 0.7)
+pMortX$dec5 <- pMort2(modOut,ageClass5,sp=3, pureFor = 0.8, mixFor = 0.7)
+pMortX$dec6 <- pMort2(modOut,ageClass6,sp=3, pureFor = 0.8, mixFor = 0.7)
+
+#dataframes for each period with the means of mortality for each age class
+df1 <- data.frame(Species=rep(c("Pine","Pine-spruce","Spruce","Spruce-deciduous","Deciduous"),6), 
+                 AgePeriod1=rep(c("40","60","80","120","140","160"),each=5),
+                 pMortality=c(mean(pMortX$pine1$pMort[period1]),mean(pMortX$piSp1$pMort[period1]),
+                              mean(pMortX$spruce1$pMort[period1]),mean(pMortX$spDec1$pMort[period1]),
+                              mean(pMortX$dec1$pMort[period1]),mean(pMortX$pine2$pMort[period1]),mean(pMortX$piSp2$pMort[period1]),
+                              mean(pMortX$spruce2$pMort[period1]),mean(pMortX$spDec2$pMort[period1]),
+                              mean(pMortX$dec2$pMort[period1]),mean(pMortX$pine3$pMort[period1]),mean(pMortX$piSp3$pMort[period1]),
+                              mean(pMortX$spruce3$pMort[period1]),mean(pMortX$spDec3$pMort[period1]),
+                              mean(pMortX$dec3$pMort[period1]),mean(pMortX$pine4$pMort[period1]),mean(pMortX$piSp4$pMort[period1]),
+                              mean(pMortX$spruce4$pMort[period1]),mean(pMortX$spDec4$pMort[period1]),
+                              mean(pMortX$dec4$pMort[period1]),mean(pMortX$pine5$pMort[period1]),mean(pMortX$piSp5$pMort[period1]),
+                              mean(pMortX$spruce5$pMort[period1]),mean(pMortX$spDec5$pMort[period1]),
+                              mean(pMortX$dec5$pMort[period1]),mean(pMortX$pine6$pMort[period1]),mean(pMortX$piSp6$pMort[period1]),
+                              mean(pMortX$spruce6$pMort[period1]),mean(pMortX$spDec6$pMort[period1]),
+                              mean(pMortX$dec6$pMort[period1])))
+
+df2 <- data.frame(Species=rep(c("Pine","Pine-spruce","Spruce","Spruce-deciduous","Deciduous"),6), 
+                  AgePeriod2=rep(c("40","60","80","120","140","160"),each=5),
+                  pMortality=c(mean(pMortX$pine1$pMort[period2]),mean(pMortX$piSp1$pMort[period2]),
+                               mean(pMortX$spruce1$pMort[period2]),mean(pMortX$spDec1$pMort[period2]),
+                               mean(pMortX$dec1$pMort[period2]),mean(pMortX$pine2$pMort[period2]),mean(pMortX$piSp2$pMort[period2]),
+                               mean(pMortX$spruce2$pMort[period2]),mean(pMortX$spDec2$pMort[period2]),
+                               mean(pMortX$dec2$pMort[period2]),mean(pMortX$pine3$pMort[period2]),mean(pMortX$piSp3$pMort[period2]),
+                               mean(pMortX$spruce3$pMort[period2]),mean(pMortX$spDec3$pMort[period2]),
+                               mean(pMortX$dec3$pMort[period2]),mean(pMortX$pine4$pMort[period2]),mean(pMortX$piSp4$pMort[period2]),
+                               mean(pMortX$spruce4$pMort[period2]),mean(pMortX$spDec4$pMort[period2]),
+                               mean(pMortX$dec4$pMort[period2]),mean(pMortX$pine5$pMort[period2]),mean(pMortX$piSp5$pMort[period2]),
+                               mean(pMortX$spruce5$pMort[period2]),mean(pMortX$spDec5$pMort[period2]),
+                               mean(pMortX$dec5$pMort[period2]),mean(pMortX$pine6$pMort[period2]),mean(pMortX$piSp6$pMort[period2]),
+                               mean(pMortX$spruce6$pMort[period2]),mean(pMortX$spDec6$pMort[period2]),
+                               mean(pMortX$dec6$pMort[period2])))
+
+df3 <- data.frame(Species=rep(c("Pine","Pine-spruce","Spruce","Spruce-deciduous","Deciduous"),6), 
+                  AgePeriod3=rep(c("40","60","80","120","140","160"),each=5),
+                  pMortality=c(mean(pMortX$pine1$pMort[period3]),mean(pMortX$piSp1$pMort[period3]),
+                               mean(pMortX$spruce1$pMort[period3]),mean(pMortX$spDec1$pMort[period3]),
+                               mean(pMortX$dec1$pMort[period3]),mean(pMortX$pine2$pMort[period3]),mean(pMortX$piSp2$pMort[period3]),
+                               mean(pMortX$spruce2$pMort[period3]),mean(pMortX$spDec2$pMort[period3]),
+                               mean(pMortX$dec2$pMort[period3]),mean(pMortX$pine3$pMort[period3]),mean(pMortX$piSp3$pMort[period3]),
+                               mean(pMortX$spruce3$pMort[period3]),mean(pMortX$spDec3$pMort[period3]),
+                               mean(pMortX$dec3$pMort[period3]),mean(pMortX$pine4$pMort[period3]),mean(pMortX$piSp4$pMort[period3]),
+                               mean(pMortX$spruce4$pMort[period3]),mean(pMortX$spDec4$pMort[period3]),
+                               mean(pMortX$dec4$pMort[period3]),mean(pMortX$pine5$pMort[period3]),mean(pMortX$piSp5$pMort[period3]),
+                               mean(pMortX$spruce5$pMort[period3]),mean(pMortX$spDec5$pMort[period3]),
+                               mean(pMortX$dec5$pMort[period3]),mean(pMortX$pine6$pMort[period3]),mean(pMortX$piSp6$pMort[period3]),
+                               mean(pMortX$spruce6$pMort[period3]),mean(pMortX$spDec6$pMort[period3]),
+                               mean(pMortX$dec6$pMort[period3])))
+
+#organize axis labels
+df1$AgePeriod1 <- factor(df1$AgePeriod1,levels=c("40","60","80","120","140","160"))
+df1$Species <- factor(df1$Species,levels=c("Pine","Pine-spruce","Spruce","Spruce-deciduous","Deciduous"))
+df2$AgePeriod2 <- factor(df2$AgePeriod2,levels=c("40","60","80","120","140","160"))
+df2$Species <- factor(df2$Species,levels=c("Pine","Pine-spruce","Spruce","Spruce-deciduous","Deciduous"))
+df3$AgePeriod3 <- factor(df3$AgePeriod3,levels=c("40","60","80","120","140","160"))
+df3$Species <- factor(df3$Species,levels=c("Pine","Pine-spruce","Spruce","Spruce-deciduous","Deciduous"))
+
+#plot the bar charts
+ggplot(data=df1, aes(x=AgePeriod1, y=pMortality, fill=Species)) + 
+  geom_bar(stat="identity", position=position_dodge()) 
+
+ggplot(data=df2, aes(x=AgePeriod2, y=pMortality, fill=Species)) +
+  geom_bar(stat="identity", position=position_dodge())
+
+ggplot(data=df3, aes(x=AgePeriod3, y=pMortality, fill=Species)) +
+  geom_bar(stat="identity", position=position_dodge())
 
 ###function to calculate the mortality probability along some variable classes
 # Arguments: 
