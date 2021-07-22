@@ -30,7 +30,7 @@ sampleForPlots <- 9999999
 # MinPeat-index, NEPdrPeat
 
 ###flag for settings the regions to consider
-regSets <- "forCent" ### "forCent", "maakunta"
+if(!exists("regSets")) regSets <- "forCent" ### "forCent", "maakunta"
 
 varOuts <- c("NEP sp","GPPspecies", "npp", "gross growth", 
              "soilC", "V", "age", "Wharvested", 
