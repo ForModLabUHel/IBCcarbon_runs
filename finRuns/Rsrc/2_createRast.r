@@ -5,8 +5,8 @@ rcpfile <- rcps
 pathFiles <- paste0("outputDT/forCent",r_no,"/")
 
 load(paste0("input/forCent_",r_no,"_IDsTab.rdata"))
-forCentIDsTab <- forCentIDsTab[segID!=0]
-setkey(forCentIDsTab,segID)
+data.IDs <- data.IDs[segID!=0]
+setkey(data.IDs,segID)
 
 nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
 
@@ -28,7 +28,7 @@ for(varX in varXs){
   
   setkey(outX,segID)
 
-  tabX <- merge(outX,forCentIDsTab)
+  tabX <- merge(outX,data.IDs)
 
   
   # can make a loop 
@@ -67,7 +67,7 @@ npp = raster(paste0("rasters/forCent",r_no,"/",
 
 fertX <- data.all[,.(segID,fert)]
 setkey(fertX,segID)
-fertX <- merge(fertX,forCentIDsTab)
+fertX <- merge(fertX,data.IDs)
 rastFert <- rasterFromXYZ(fertX[,.(x,y,fert)])
 crs(rastFert) <- crsX
 # rastFert <- resample(rastFert, npp,method="ngb")
