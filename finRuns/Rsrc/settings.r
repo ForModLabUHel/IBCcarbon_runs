@@ -29,6 +29,7 @@ sampleForPlots <- 9999999
 # Missing from varOuts: 
 # MinPeat-index, NEPdrPeat
 
+###flag for settings the regions to consider
 regSets <- "forCent" ### "forCent", "maakunta"
 
 varOuts <- c("NEP sp","GPPspecies", "npp", "gross growth", 
