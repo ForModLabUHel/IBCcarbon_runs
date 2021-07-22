@@ -29,6 +29,9 @@ sampleForPlots <- 9999999
 # Missing from varOuts: 
 # MinPeat-index, NEPdrPeat
 
+###flag for settings the regions to consider
+if(!exists("regSets")) regSets <- "forCent" ### "forCent", "maakunta"
+
 varOuts <- c("NEP sp","GPPspecies", "npp", "gross growth", 
              "soilC", "V", "age", "Wharvested", 
              "Litter_fol", "Litter_fr", 
@@ -85,8 +88,12 @@ colsOut2 = c(paste("V", simYear2, sep=""))
 colsOut3 = c(paste("V", simYear3, sep=""))
 
 
-
-load(paste0("input/data.all_forCent_",r_no,".rdata"))
+if(regSets=="forCent"){
+  load(paste0("input/forCent/data.all_forCent_",r_no,".rdata"))
+}else{
+  load(paste0("input/maakunta/data.all_maakunta_",r_no,".rdata"))
+  data.all$segID <- data.all$maakuntaID
+}
 
   cloudpixels = data.all[, sum(ba==32766)]
   nonforest = data.all[, sum(ba==32767)]
