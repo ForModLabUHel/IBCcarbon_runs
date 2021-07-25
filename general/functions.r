@@ -147,11 +147,13 @@ runModel <- function(sampleID,sampleRun=FALSE){
         }
           
         if(setRegs=="maakunta"){
-          HarvLim1 <- HarvLimMaak
+          HarvLim1 <- HarvLimMaak*1000*sum(areas)/sum(data.all$area)
           if(harscen == "Low"){ HarvLim1 <- HarvLimMaak * 0.6}
           if(harscen == "MaxSust"){HarvLim1 <- HarvLimMaak * 1.2}
         }
-        clcutArX <- clcutAr *  sum(areas)/sum(data.all$area)
+        
+        ###calculate clearcutting area for the sample
+        clcutArX <- clcutAr * sum(areas)/sum(data.all$area)
         # initPrebas$energyCut <- rep(0.,length(initPrebas$energyCut))
         # HarvLim1 <- rep(0,2)
         # save(initPrebas,HarvLim1,file=paste0("test1",harscen,".rdata"))
