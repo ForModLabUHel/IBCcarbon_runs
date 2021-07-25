@@ -1,7 +1,7 @@
 # for(sampleID in 1:73){
   
 
-r_no <- regions <- 12
+r_no <- regions <- 1
 sampleID <- 1#498 #136
 manScen <- "Base"
 
@@ -20,6 +20,34 @@ ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
 
 print(paste("start sample ID",sampleID))
 sampleX <- ops[[sampleID]]
+
+if(regSets=="maakunta"){
+  roundWoodTab <- fread("/scratch/project_2000994/PREBASruns/metadata/maakunta/roundWoodMaak.txt")
+  roundWood <- c(unlist(roundWoodTab[id==r_no,3:8]),
+      rep(unlist(roundWoodTab[id==r_no,9]),4),
+      rep(unlist(roundWoodTab[id==r_no,10]),10),
+      rep(unlist(roundWoodTab[id==r_no,11]),10),
+      rep(unlist(roundWoodTab[id==r_no,12]),10),
+      rep(unlist(roundWoodTab[id==r_no,13]),10)
+  )
+  energyWoodTab <- fread("/scratch/project_2000994/PREBASruns/metadata/maakunta/energyWoodMaak.txt")
+  energyWood <- c(unlist(energyWoodTab[id==r_no,3:8]),
+                 rep(unlist(energyWoodTab[id==r_no,9]),4),
+                 rep(unlist(energyWoodTab[id==r_no,10]),10),
+                 rep(unlist(energyWoodTab[id==r_no,11]),10),
+                 rep(unlist(energyWoodTab[id==r_no,12]),10),
+                 rep(unlist(energyWoodTab[id==r_no,13]),10)
+  )
+  clcutArTab <- fread("/scratch/project_2000994/PREBASruns/metadata/maakunta/clearcutAreasMaak.txt")
+  clcutAr <- c(unlist(clcutArTab[id==r_no,3:8]),
+                  rep(unlist(clcutArTab[id==r_no,9]),4),
+                  rep(unlist(clcutArTab[id==r_no,10]),10),
+                  rep(unlist(clcutArTab[id==r_no,11]),10),
+                  rep(unlist(clcutArTab[id==r_no,12]),10),
+                  rep(unlist(clcutArTab[id==r_no,13]),10)
+  )
+  HarvLimMaak <- cbind(roundWood,energyWood)
+}
 
 ###check for NAS
 # load("/scratch/project_2000994/PREBASruns/finRuns/rasters/forCent12/NApoints/NApoints2017-2025.rdata")
