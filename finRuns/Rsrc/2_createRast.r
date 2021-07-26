@@ -4,7 +4,13 @@ source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/maste
 rcpfile <- rcps
 pathFiles <- paste0("outputDT/forCent",r_no,"/")
 
-#load(paste0("input/forCent_",r_no,"_IDsTab.rdata"))
+if(regSets=="forCent"){
+  load(paste0("input/forCent_",r_no,"_IDsTab.rdata"))
+}else{
+  load(paste0("input/maakunta_",r_no,"_IDsTab.rdata"))
+  data.IDs$segID <- data.IDs$maakuntaID
+}
+
 data.IDs <- data.IDs[segID!=0]
 setkey(data.IDs,segID)
 
