@@ -146,7 +146,7 @@ runModel <- function(sampleID,sampleRun=FALSE){
           HarvLim1 <- cbind(roundWood,enWood)
         }
           
-        if(setRegs=="maakunta"){
+        if(regSets=="maakunta"){
           HarvLim1 <- HarvLimMaak*1000*sum(areas)/sum(data.all$area)
           if(harscen == "Low"){ HarvLim1 <- HarvLimMaak * 0.6}
           if(harscen == "MaxSust"){HarvLim1 <- HarvLimMaak * 1.2}
