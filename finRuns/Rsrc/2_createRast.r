@@ -5,9 +5,9 @@ rcpfile <- rcps
 pathFiles <- paste0("outputDT/forCent",r_no,"/")
 
 if(regSets=="forCent"){
-  load(paste0("input/forCent_",r_no,"_IDsTab.rdata"))
+  load(paste0("input/forCent/forCent_",r_no,"_IDsTab.rdata"))
 }else{
-  load(paste0("input/maakunta_",r_no,"_IDsTab.rdata"))
+  load(paste0("input/maakunta/maakunta_",r_no,"_IDsTab.rdata"))
   data.IDs$segID <- data.IDs$maakuntaID
 }
 
