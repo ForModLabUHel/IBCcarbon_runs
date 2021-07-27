@@ -3,7 +3,7 @@
 
 r_no <- regions <- 1
 sampleID <- 1#498 #136
-manScen <- "Base"
+harvestscenarios <- "Base"
 regSets = "maakunta"
 
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
