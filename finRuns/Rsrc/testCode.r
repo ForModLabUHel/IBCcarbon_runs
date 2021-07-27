@@ -2,7 +2,7 @@
   
 
 r_no <- regions <- 1
-sampleID <- 1#498 #136
+sampleID <- 21#498 #136
 harvestscenarios <- "Base"
 regSets = "maakunta"
 
