@@ -32,6 +32,7 @@ sampleForPlots <- 9999999
 ###flag for settings the regions to consider
 if(!exists("regSets")) regSets <- "forCent" ### "forCent", "maakunta"
 
+
 varOuts <- c("NEP sp","GPPspecies", "npp", "gross growth", 
              "soilC", "V", "age", "Wharvested", 
              "Litter_fol", "Litter_fr", 
@@ -141,3 +142,33 @@ nfiareas$drain_avg1990_2013 = c(65.45833333, 746.2083333, 5011.958333, 5870.9166
 bigregiondrain = nfiareas[, sum(drain_avg1990_2013), by = Region]
 colnames(bigregiondrain) = c('Area','1990-2013')
 rem = merge(rem, bigregiondrain)
+
+
+
+if(regSets=="maakunta"){
+  roundWoodTab <- fread("/scratch/project_2000994/PREBASruns/metadata/maakunta/roundWoodMaak.txt")
+  roundWood <- c(unlist(roundWoodTab[id==r_no,3:8]),
+                 rep(unlist(roundWoodTab[id==r_no,9]),4),
+                 rep(unlist(roundWoodTab[id==r_no,10]),10),
+                 rep(unlist(roundWoodTab[id==r_no,11]),10),
+                 rep(unlist(roundWoodTab[id==r_no,12]),10),
+                 rep(unlist(roundWoodTab[id==r_no,13]),10)
+  )
+  energyWoodTab <- fread("/scratch/project_2000994/PREBASruns/metadata/maakunta/energyWoodMaak.txt")
+  energyWood <- c(unlist(energyWoodTab[id==r_no,3:8]),
+                  rep(unlist(energyWoodTab[id==r_no,9]),4),
+                  rep(unlist(energyWoodTab[id==r_no,10]),10),
+                  rep(unlist(energyWoodTab[id==r_no,11]),10),
+                  rep(unlist(energyWoodTab[id==r_no,12]),10),
+                  rep(unlist(energyWoodTab[id==r_no,13]),10)
+  )
+  clcutArTab <- fread("/scratch/project_2000994/PREBASruns/metadata/maakunta/clearcutAreasMaak.txt")
+  clcutAr <- c(unlist(clcutArTab[id==r_no,3:8]),
+               rep(unlist(clcutArTab[id==r_no,9]),4),
+               rep(unlist(clcutArTab[id==r_no,10]),10),
+               rep(unlist(clcutArTab[id==r_no,11]),10),
+               rep(unlist(clcutArTab[id==r_no,12]),10),
+               rep(unlist(clcutArTab[id==r_no,13]),10)
+  )
+  HarvLimMaak <- cbind(roundWood,energyWood)
+}

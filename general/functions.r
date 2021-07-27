@@ -146,6 +146,15 @@ runModel <- function(sampleID,sampleRun=FALSE){
           HarvLim1 <- cbind(roundWood,enWood)
         }
           
+        if(regSets=="maakunta"){
+          HarvLim1 <- HarvLimMaak*1000*sum(areas)/sum(data.all$area)
+          if(harscen == "Low"){ HarvLim1 <- HarvLimMaak * 0.6}
+          if(harscen == "MaxSust"){HarvLim1 <- HarvLimMaak * 1.2}
+        }
+        
+        ###calculate clearcutting area for the sample
+        clcutArX <- clcutAr * sum(areas)/sum(data.all$area)
+        clcutArX <- clcutArX[1:nYears]
         # initPrebas$energyCut <- rep(0.,length(initPrebas$energyCut))
         # HarvLim1 <- rep(0,2)
         # save(initPrebas,HarvLim1,file=paste0("test1",harscen,".rdata"))
@@ -157,7 +166,8 @@ runModel <- function(sampleID,sampleRun=FALSE){
           initPrebas$soilC[,1,,,] <- initSoilC
         }
         
-        region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLim1),minDharv = 1.)
+        region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLim1),
+                               minDharv = 1.,clearcutAreas =clcutArX)
         print(paste("runModel",sampleID))
         ##calculate steady state carbon from prebas litter 
         if(harscen=="Base"){
