@@ -59,7 +59,6 @@ if(regSets=="maakunta"){
 #   sampleX <- ops[[i]]
 #   print(which(sampleX$segID %in% idx))
 # }
-
 print(paste("start sample ID",sampleID))
 sampleX <- ops[[sampleID]]
 sampleX[,area := N*16^2/10000]
@@ -77,8 +76,11 @@ nSample = nrow(sampleX)#200#nrow(data.all)
 
 ## ---------------------------------------------------------
 i = 0
-  # for(rcpfile in rcps) { ## ---------------------------------------------
-  rcpfile = rcps  # print(rcpfile)
+# load("/scratch/project_2000994/PREBASruns/metadata/initSoilCstst.rdata")
+# load("outSoil/InitSoilCstst_Base.rdata")
+rcpfile = rcps
+# for(rcpfile in rcps) { ## ---------------------------------------------
+# print(rcpfile)
 if(rcpfile=="CurrClim"){
   load(paste(climatepath, rcpfile,".rdata", sep=""))  
   #####process data considering only current climate###
@@ -122,10 +124,10 @@ Region = nfiareas[ID==r_no, Region]
 initPrebas = create_prebas_input.f(r_no, clim, data.sample, nYears = nYears,
                                    startingYear = startingYear,domSPrun=domSPrun)
 
+###set parameters
+#    initPrebas$pCROBAS <- pCROBAS
 
-  ###set parameters
-  #    initPrebas$pCROBAS <- pCROBAS
-  
+
 opsna <- which(is.na(initPrebas$multiInitVar))
 initPrebas$multiInitVar[opsna] <- 0.
 
@@ -145,15 +147,16 @@ if(rcpfile=="CurrClim"){
   initPrebas$weatherYasso <- initPrebas$weatherYasso[,resampleYear,]
 }
 
-  
-  # Loop management scenarios ------------------------------------------------
-  harscen =harvestscenarios 
-    # print(date())
-    # print(harscen)
+
+# Loop management scenarios ------------------------------------------------
+harscen = harvestscenarios
+# for(harscen in harvestscenarios) { ## MaxSust fails, others worked.
+# print(date())
 # print(harscen)
 i = i + 1
 # print(paste(i, (length(harvestscenarios)*length(rcps)*length(regions)), sep="/"))
 # harscen ="Base"
+
 ## Assign harvesting quota for the region based on volume (in NFI startingYear) and MELA
 Region = nfiareas[ID==r_no, Region]
 if(harscen=="NoHarv"){
@@ -195,6 +198,16 @@ if(year1harv==1){
   HarvLim1 <- cbind(roundWood,enWood)
 }
 
+if(regSets=="maakunta"){
+  HarvLim1 <- HarvLimMaak*1000*sum(areas)/sum(data.all$area)
+  if(harscen == "Low"){ HarvLim1 <- HarvLimMaak * 0.6}
+  if(harscen == "MaxSust"){HarvLim1 <- HarvLimMaak * 1.2}
+}
+
+###calculate clearcutting area for the sample
+clcutArX <- clcutAr * sum(areas)/sum(data.all$area)
+clcutArX <- clcutArX[1:nYears]
+
 # initPrebas$energyCut <- rep(0.,length(initPrebas$energyCut))
 # HarvLim1 <- rep(0,2)
 # save(initPrebas,HarvLim1,file=paste0("test1",harscen,".rdata"))
@@ -202,110 +215,26 @@ if(year1harv==1){
 ###run PREBAS
 if(harscen!="Base"){
   load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
-  initPrebas$runYasso <- rep(1,initPrebas$nSites)
+  initPrebas$yassoRun <- rep(1,initPrebas$nSites)
   initPrebas$soilC[,1,,,] <- initSoilC
 }
 
-region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLim1),minDharv = 1.)
-print(paste("runModel",sampleID))
-##calculate steady state carbon from prebas litter 
-if(harscen=="Base"){
-  initSoilC <- stXX_GV(region, 1)
-  print(paste("initSoilC",sampleID))
-  save(initSoilC,file=paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
-  ###run yasso (starting from steady state) using PREBAS litter
-  region <- yassoPREBASin(region,initSoilC)
-  # out <- region$multiOut[,,,,1]
-}
-print(paste("all runs done",sampleID))
+region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLim1),
+                       minDharv = 1.,clearcutAreas =clcutArX)
 
-#####start initialize deadWood volume
-manFor <-  which(region$ClCut==1)
-unmanFor <- which(region$ClCut==0)
-Dmort <- matrix(0,2,3)
-for(ikl in 1:3) Dmort[1,ikl] <- median(region$multiOut[manFor,,12,ikl,1][which(region$multiOut[manFor,,41,ikl,1]>0.,arr.ind = T)])
-if(length(unmanFor)>0) for(ikl in 1:3) Dmort[1,ikl] <- median(region$multiOut[unmanFor,,12,ikl,1][which(region$multiOut[unmanFor,,41,ikl,1]>0.,arr.ind = T)])
+####roundWood is totHarv
+###HarvLim1 defines the harvesting limits (matrix with 2 columns). 
+###HarvLim1[,1] is the target for roundWood, HarvLim[,2] is the target for EnergyWood
 
+####compare roundWood
+#compare harvest limts
+plot(region$totHarv)
+points(HarvLim1[,1],col=2,pch=20)
+##compare areas clearcutted
+plot(region$clearcutAreas[,2])
+points(region$clearcutAreas[,1],col=2,pch=20)
 
-pX <- pCROB[c(35:37,44),1:3]
-
-# Dmort <- 15   ###Diameter of dead trees
-species <- 1:3 ####species ID
-baPer <- matrix(0,2,3) ##### species Basal area
-
-totBAs <-apply(region$multiOut[,,13,,1],1:2,sum)
-totBAs <- array(rep(totBAs,3),dim=c(region$nSites,nYears,3))
-baPer[1,] <- apply(region$multiOut[manFor,,13,,1]/totBAs[manFor,,],3,mean,na.rm=T)
-baPer[2,] <- apply(region$multiOut[unmanFor,,13,,1]/totBAs[unmanFor,,],3,mean,na.rm=T)
-
-nSp <- length(species) ####number of Species
-deadVmanFor <- 5  ###initial dead Volume for managed forests
-deadVunmanFor <- 100  ###initial dead Volume for unmanaged forests
-
-###run model managed forests
-deadVinitMan <- matrix(0,(nYears),nSp) ####deadWood matrix (nrow=years; ncol=species)
-deadVinitX <- deadVmanFor * baPer[1,] ###choose between deadVmanFor and deadVunmanFor
-for(i in 1:nYears){
-  deadVinitMan[(i),] = deadVinitX * exp(-exp(pX[1,] + 
-                                               pX[2,]*i + pX[3,]*Dmort[1,] + mean(pX[4,])))
-} 
-region$multiOut[manFor,,8,,1] <- region$multiOut[manFor,,8,,1] + aperm(replicate(length(manFor),deadVinitMan),c(3,1:2))
-
-###run model unmanaged forests
-if(length(unmanFor)>0){
-  deadVinitUn <- matrix(0,(nYears),nSp) ####deadWood matrix (nrow=years; ncol=species)
-  deadVinitX <- deadVunmanFor * baPer[2,] ###choose between deadVmanFor and deadVunmanFor
-  for(i in 1:nYears){
-    deadVinitUn[(i),] = deadVinitX * exp(-exp(pX[1,] + 
-                                                pX[2,]*i + pX[3,]*Dmort[2,] + pX[4,]))
-  } 
-  region$multiOut[unmanFor,,8,,1] <- region$multiOut[unmanFor,,8,,1] +
-    aperm(replicate(length(unmanFor),deadVinitMan),c(3,1:2))
-}
-####end initialize deadWood Volume
-marginX= 1:2#(length(dim(out$annual[,,varSel,]))-1)
-nas <- data.table()
-for (ij in 1:length(varSel)) {
-  # print(varSel[ij])
-  if(funX[ij]=="baWmean"){
-    outX <- data.table(segID=sampleX$segID,baWmean(region,varSel[ij]))
-  }
-  if(funX[ij]=="sum"){
-    outX <- data.table(segID=sampleX$segID,apply(region$multiOut[,,varSel[ij],,1],marginX,sum))
-  }
-  ####test plot
-  # print(outX)
-  if(sampleID==sampleForPlots){testPlot(outX,varNames[varSel[ij]],areas)}
-  
-  p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
-  p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
-  p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
-  pX <- merge(p1,p2)
-  pX <- merge(pX,p3)
-  ##check for NAs
-  nax <- data.table(segID=unique(which(is.na(pX),arr.ind=T)[,1]))
-  if(nrow(nax)>0){
-    nax$var <- varNames[varSel[ij]]
-    nax$sampleID <- sampleID
-    nas <- rbind(nas,nax)
-  } 
-  assign(varNames[varSel[ij]],pX)
-  
-  save(list=varNames[varSel[ij]],file=paste0("outputDT/forCent",r_no,"/",
-                                             varNames[varSel[ij]],"_",
-                                             harscen,"_",rcpfile,"_",
-                                             "sampleID",sampleID,".rdata"))
-  rm(list=varNames[varSel[ij]]); gc()
-}
-# save NAs
-if(nrow(nas)>0){
-  save(nas,file=paste0("NAs/NAs_forCent",r_no,"_","sampleID",sampleID,
-                       "_",harscen,"_",rcpfile,".rdata"))        
-}
-
-####process and save special variales
-print(paste("start special vars",sampleID))
-specialVarProc(sampleX,region,r_no,harscen,rcpfile,sampleID,
-               colsOut1,colsOut2,colsOut3,areas,sampleForPlots)
-
-
+####compare energyWood
+enWood <- apply(region$multiEnergyWood[,,,1],2,sum)
+plot(enWood)
+points(HarvLim1[,2],col=2,pch=20)

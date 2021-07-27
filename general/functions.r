@@ -154,6 +154,7 @@ runModel <- function(sampleID,sampleRun=FALSE){
         
         ###calculate clearcutting area for the sample
         clcutArX <- clcutAr * sum(areas)/sum(data.all$area)
+        clcutArX <- clcutArX[1:nYears]
         # initPrebas$energyCut <- rep(0.,length(initPrebas$energyCut))
         # HarvLim1 <- rep(0,2)
         # save(initPrebas,HarvLim1,file=paste0("test1",harscen,".rdata"))
