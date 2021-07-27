@@ -106,51 +106,51 @@ runModel <- function(sampleID,sampleRun=FALSE){
         # harscen ="Base"
         
         ## Assign harvesting quota for the region based on volume (in NFI startingYear) and MELA
-        Region = nfiareas[ID==r_no, Region]
-        if(harscen=="NoHarv"){
-          initPrebas$ClCut = initPrebas$defaultThin = rep(0,nSample)
-          HarvLim1 = 0
-        }else if(harscen=="Tapio"){
-          HarvLim1 = 0
+        if(regSets!="maakunta"){
+          Region = nfiareas[ID==r_no, Region]
+          if(harscen=="NoHarv"){
+            initPrebas$ClCut = initPrebas$defaultThin = rep(0,nSample)
+            HarvLim1 = 0
+          }else if(harscen=="Tapio"){
+            HarvLim1 = 0
+          }else{
+            HarvLim0 = nfiareas[ID==r_no, VOL_fraction]*rem[Scenario == harscen & Area == Region, "1990-2013"]
+            HarvLim0  = (totAreaSample/1000) / nfiareas[ID == r_no, AREA] * 1e3 *HarvLim0
+            HarvLim = nfiareas[ID==r_no, VOL_fraction]*rem[Scenario == harscen & Area == Region, "2015-2024"]
+            HarvLim  = (totAreaSample/1000) / nfiareas[ID == r_no, AREA] * 1e3 *HarvLim
+            HarvLim1 <- rep(as.numeric(HarvLim),10)
+            HarvLim = nfiareas[ID==r_no, VOL_fraction]*rem[Scenario == harscen & Area == Region, "2025-2034"]
+            HarvLim  = (totAreaSample/1000) / nfiareas[ID == r_no, AREA] * 1e3 *HarvLim
+            HarvLim1 <- c(HarvLim1,rep(as.numeric(HarvLim),10))
+            HarvLim = nfiareas[ID==r_no, VOL_fraction]*rem[Scenario == harscen & Area == Region, "2035-2044"]
+            HarvLim  = (totAreaSample/1000) / nfiareas[ID == r_no, AREA] * 1e3 *HarvLim
+            HarvLim1 <- c(HarvLim1,rep(as.numeric(HarvLim),10))
+            HarvLim = nfiareas[ID==r_no, VOL_fraction]*rem[Scenario == harscen & Area == Region, "2045-2054"]
+            HarvLim  = (totAreaSample/1000) / nfiareas[ID == r_no, AREA] * 1e3 *HarvLim
+            HarvLim1 <- c(HarvLim1,rep(as.numeric(HarvLim),10))
+            HarvLim = nfiareas[ID==r_no, VOL_fraction]*rem[Scenario == harscen & Area == Region, "2055-2064"]
+            HarvLim  = (totAreaSample/1000) / nfiareas[ID == r_no, AREA] * 1e3 *HarvLim
+            HarvLim1 <- c(HarvLim1,rep(as.numeric(HarvLim),44))
+          }
+          ## In the model, harvests are always per hectar units. If 1000 pixels (nSample)
+          ## are simulated it corresponds to 1000 hectars, although pixels are only 16x16 m2.
+          ## Therefore, we need to apply the areal fraction of removals scenarios
+          ## nfiareas are in 1000 ha, model takes Harvlim in m3, while removals from Mela are 1000 m3
+          #      HarvLim  = (nSample/1000) / nfiareas[ID == r_no, AREA] * 1e3 *HarvLim
+          if(year1harv==1){
+            HarvLim1 <- HarvLimX
+            if(harscen == "Low"){ HarvLim1 <- HarvLimX * 0.6}
+            if(harscen == "MaxSust"){HarvLim1 <- HarvLimX * 1.2}
+          }else{
+            roundWood <- HarvLim1 * roundTotWoodRatio
+            enWood <- HarvLim1 - roundWood
+            HarvLim1 <- cbind(roundWood,enWood)
+          }
         }else{
-          HarvLim0 = nfiareas[ID==r_no, VOL_fraction]*rem[Scenario == harscen & Area == Region, "1990-2013"]
-          HarvLim0  = (totAreaSample/1000) / nfiareas[ID == r_no, AREA] * 1e3 *HarvLim0
-          HarvLim = nfiareas[ID==r_no, VOL_fraction]*rem[Scenario == harscen & Area == Region, "2015-2024"]
-          HarvLim  = (totAreaSample/1000) / nfiareas[ID == r_no, AREA] * 1e3 *HarvLim
-          HarvLim1 <- rep(as.numeric(HarvLim),10)
-          HarvLim = nfiareas[ID==r_no, VOL_fraction]*rem[Scenario == harscen & Area == Region, "2025-2034"]
-          HarvLim  = (totAreaSample/1000) / nfiareas[ID == r_no, AREA] * 1e3 *HarvLim
-          HarvLim1 <- c(HarvLim1,rep(as.numeric(HarvLim),10))
-          HarvLim = nfiareas[ID==r_no, VOL_fraction]*rem[Scenario == harscen & Area == Region, "2035-2044"]
-          HarvLim  = (totAreaSample/1000) / nfiareas[ID == r_no, AREA] * 1e3 *HarvLim
-          HarvLim1 <- c(HarvLim1,rep(as.numeric(HarvLim),10))
-          HarvLim = nfiareas[ID==r_no, VOL_fraction]*rem[Scenario == harscen & Area == Region, "2045-2054"]
-          HarvLim  = (totAreaSample/1000) / nfiareas[ID == r_no, AREA] * 1e3 *HarvLim
-          HarvLim1 <- c(HarvLim1,rep(as.numeric(HarvLim),10))
-          HarvLim = nfiareas[ID==r_no, VOL_fraction]*rem[Scenario == harscen & Area == Region, "2055-2064"]
-          HarvLim  = (totAreaSample/1000) / nfiareas[ID == r_no, AREA] * 1e3 *HarvLim
-          HarvLim1 <- c(HarvLim1,rep(as.numeric(HarvLim),44))
-        }
-        ## In the model, harvests are always per hectar units. If 1000 pixels (nSample)
-        ## are simulated it corresponds to 1000 hectars, although pixels are only 16x16 m2.
-        ## Therefore, we need to apply the areal fraction of removals scenarios
-        ## nfiareas are in 1000 ha, model takes Harvlim in m3, while removals from Mela are 1000 m3
-        #      HarvLim  = (nSample/1000) / nfiareas[ID == r_no, AREA] * 1e3 *HarvLim
-        if(year1harv==1){
-          HarvLim1 <- HarvLimX
-          if(harscen == "Low"){ HarvLim1 <- HarvLimX * 0.6}
-          if(harscen == "MaxSust"){HarvLim1 <- HarvLimX * 1.2}
-        }else{
-          roundWood <- HarvLim1 * roundTotWoodRatio
-          enWood <- HarvLim1 - roundWood
-          HarvLim1 <- cbind(roundWood,enWood)
-        }
-          
-        if(regSets=="maakunta"){
           HarvLim1 <- HarvLimMaak*1000*sum(areas)/sum(data.all$area)
           if(harscen == "Low"){ HarvLim1 <- HarvLimMaak * 0.6}
           if(harscen == "MaxSust"){HarvLim1 <- HarvLimMaak * 1.2}
-        }
+        }          
         
         ###calculate clearcutting area for the sample
         clcutArX <- clcutAr * sum(areas)/sum(data.all$area)
