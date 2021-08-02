@@ -169,8 +169,15 @@ runModel <- function(sampleID,sampleRun=FALSE){
           initPrebas$soilC[,1,,,] <- initSoilC
         }
         
-        region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLim1),
-                               minDharv = minDharvX,clearcutAreas =clcutArX)
+        ##Don't pass minDharvX if NA
+        if (is.na(minDharvX)) {
+          region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLim1),
+                                 clearcutAreas =clcutArX)
+        } else {
+          region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLim1),
+                                 minDharv = minDharvX,clearcutAreas =clcutArX)
+        }
+        
         print(paste("runModel",sampleID))
         ##calculate steady state carbon from prebas litter 
         if(harscen=="Base"){
