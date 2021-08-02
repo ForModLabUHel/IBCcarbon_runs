@@ -153,8 +153,11 @@ runModel <- function(sampleID,sampleRun=FALSE){
         }          
         
         ###calculate clearcutting area for the sample
-        clcutArX <- clcutAr * sum(areas)/sum(data.all$area)
-        clcutArX <- clcutArX[1:nYears]
+        if(!is.na(clcutArX)){
+          print("calculating clearcutting areas")
+          clcutArX <- clcutAr * sum(areas)/sum(data.all$area)
+          clcutArX <- clcutArX[1:nYears]
+        }
         # initPrebas$energyCut <- rep(0.,length(initPrebas$energyCut))
         # HarvLim1 <- rep(0,2)
         # save(initPrebas,HarvLim1,file=paste0("test1",harscen,".rdata"))
@@ -167,7 +170,7 @@ runModel <- function(sampleID,sampleRun=FALSE){
         }
         
         region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLim1),
-                               minDharv = 1.,clearcutAreas =clcutArX)
+                               minDharv = minDharvX,clearcutAreas =clcutArX)
         print(paste("runModel",sampleID))
         ##calculate steady state carbon from prebas litter 
         if(harscen=="Base"){

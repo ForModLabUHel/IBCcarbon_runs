@@ -31,7 +31,9 @@ sampleForPlots <- 9999999
 
 ###flag for settings the regions to consider
 if(!exists("regSets")) regSets <- "forCent" ### "forCent", "maakunta"
-
+if(!exists("minDharvX")) minDharvX <- 15 ### minimum DBH for clearcutting
+if(!exists("clcutArX") & regSets=="forCent") clcutArX <- NA
+if(!exists("clcutArX") & regSets=="maakunta") clcutArX <- 1
 
 varOuts <- c("NEP sp","GPPspecies", "npp", "gross growth", 
              "soilC", "V", "age", "Wharvested", 
