@@ -212,3 +212,18 @@ points(region$clearcutAreas[,1],col=2,pch=20)
 enWood <- apply(region$multiEnergyWood[,,,1],2,sum)
 plot(enWood)
 points(HarvLim1[,2],col=2,pch=20)
+
+
+####calculate thinned areas
+areaThin <- areaClcut <- volThin <- volClcut <- rep(NA,nYears)
+harvested <- apply(region$multiOut[,,37,,1],1:2,sum)
+vols <- apply(region$multiOut[,,30,,1],1:2,sum)
+clcuts <- data.table(which(harvested>0 & vols==0,arr.ind=T))
+thin <- data.table(which(harvested>0 & vols>0,arr.ind=T))
+setnames(clcuts,c("siteID","year"))
+setnames(thin,c("siteID","year"))
+
+for(i in 1:nYears) areaThin[i] <- sum(region$areas[thin[year==i]$siteID])
+for(i in 1:nYears) areaClcut[i] <- sum(region$areas[clcuts[year==i]$siteID])
+for(i in 1:nYears) volThin[i] <- sum(region$areas[thin[year==i]$siteID] * harvested[thin[year==i]$siteID,i])
+for(i in 1:nYears) volClcut[i] <- sum(region$areas[clcuts[year==i]$siteID] * harvested[clcuts[year==i]$siteID,i])
