@@ -173,4 +173,21 @@ if(regSets=="maakunta"){
                rep(unlist(clcutArTab[id==r_no,13]),10)
   )
   HarvLimMaak <- cbind(roundWood,energyWood)
+  thinArTab <- fread("/scratch/project_2000994/PREBASruns/metadata/maakunta/thinningAreasMaak.txt")
+  thinAr <- c(unlist(thinArTab[id==r_no,3:8]),
+               rep(unlist(thinArTab[id==r_no,9]),4),
+               rep(unlist(thinArTab[id==r_no,10]),10),
+               rep(unlist(thinArTab[id==r_no,11]),10),
+               rep(unlist(thinArTab[id==r_no,12]),10),
+               rep(unlist(thinArTab[id==r_no,13]),10)
+  )
+  noClcutArTab <- fread("/scratch/project_2000994/PREBASruns/metadata/maakunta/noClearcutAreasMaak.txt")
+  noClcutAr <- c(unlist(noClcutArTab[id==r_no,3:8]),
+              rep(unlist(noClcutArTab[id==r_no,9]),4),
+              rep(unlist(noClcutArTab[id==r_no,10]),10),
+              rep(unlist(noClcutArTab[id==r_no,11]),10),
+              rep(unlist(noClcutArTab[id==r_no,12]),10),
+              rep(unlist(noClcutArTab[id==r_no,13]),10)
+  )
+  
 }

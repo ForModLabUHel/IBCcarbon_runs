@@ -200,15 +200,45 @@ region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLim1),
 ###HarvLim1 defines the harvesting limits (matrix with 2 columns). 
 ###HarvLim1[,1] is the target for roundWood, HarvLim[,2] is the target for EnergyWood
 
+
+####calculate thinned areas
+areaThin <- areaClcut <- volThin <- volClcut <- rep(NA,nYears)
+harvested <- apply(region$multiOut[,,37,,1],1:2,sum)
+vols <- apply(region$multiOut[,,30,,1],1:2,sum)
+clcuts <- data.table(which(harvested>0 & vols==0,arr.ind=T))
+thin <- data.table(which(harvested>0 & vols>0,arr.ind=T))
+setnames(clcuts,c("siteID","year"))
+setnames(thin,c("siteID","year"))
+
+for(i in 1:nYears) areaThin[i] <- sum(region$areas[thin[year==i]$siteID])
+for(i in 1:nYears) areaClcut[i] <- sum(region$areas[clcuts[year==i]$siteID])
+for(i in 1:nYears) volThin[i] <- sum(region$areas[thin[year==i]$siteID] * harvested[thin[year==i]$siteID,i])
+for(i in 1:nYears) volClcut[i] <- sum(region$areas[clcuts[year==i]$siteID] * harvested[clcuts[year==i]$siteID,i])
+
+rescalFactor <- sum(data.all$area)/sum(sampleX$area)
+regThinarea <- areaThin*rescalFactor
+regClcutArea <- areaClcut*rescalFactor
+regRoundWood <- region$totHarv*rescalFactor
+regThinVol <- volThin*rescalFactor
+regClcutVol <- volClcut*rescalFactor
+
 ####compare roundWood
 #compare harvest limts
-plot(region$totHarv)
-points(HarvLim1[,1],col=2,pch=20)
-##compare areas clearcutted
-plot(region$clearcutAreas[,2])
-points(region$clearcutAreas[,1],col=2,pch=20)
-
+par(mfrow=c(3,2))
+ylim=range(regRoundWood,roundWood*1000)
+plot(regRoundWood,ylim=ylim, main="roundWood")
+points(roundWood*1000,col=2,pch=20)
 ####compare energyWood
 enWood <- apply(region$multiEnergyWood[,,,1],2,sum)
-plot(enWood)
-points(HarvLim1[,2],col=2,pch=20)
+plot(enWood * rescalFactor,main="energyWood")
+points(HarvLim1[,2] * rescalFactor,col=2,pch=20)
+##compare areas clearcutted
+plot(region$clearcutAreas[,2]*rescalFactor, main="area clearcuts")
+points(region$clearcutAreas[,1]*rescalFactor,col=2,pch=20)
+yrange <- range(regThinarea,thinAr)
+plot(regThinarea,ylim=yrange,main="area thinning")
+points(thinAr,pch=20,col=2)
+points(noClcutAr,pch=20,col=3)
+
+volumes <- rbind(regThinVol,regClcutVol)
+barplot(volumes,legend=T,main="volumes thin/clcut")
