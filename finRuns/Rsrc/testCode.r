@@ -5,8 +5,8 @@ r_no <- regions <- 1
 sampleID <- 1#498 #136
 harvestscenarios <- "Base"
 regSets = "maakunta"
-minDharvX <- 90
-compHarv=2
+minDharvX <- 15
+compHarv=2.
 thinFact=0.2
 
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
