@@ -193,8 +193,13 @@ if(harscen!="Base"){
   initPrebas$soilC[,1,,,] <- initSoilC
 }
 
+####save for testing
+# save(initPrebas,HarvLim1,minDharvX,clcutArX,
+#      sile="test.rdata")
+
 region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLim1),
-                       minDharv = minDharvX,clearcutAreas =clcutArX)
+                       minDharv = minDharvX,clearcutAreas =clcutArX,
+                       compHarv=2., thinFact=0.2)
 
 ####roundWood is totHarv
 ###HarvLim1 defines the harvesting limits (matrix with 2 columns). 
