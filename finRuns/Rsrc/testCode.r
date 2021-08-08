@@ -6,6 +6,8 @@ sampleID <- 1#498 #136
 harvestscenarios <- "Base"
 regSets = "maakunta"
 minDharvX <- 90
+compHarv=2
+thinFact=0.2
 
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
 source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
@@ -199,7 +201,7 @@ if(harscen!="Base"){
 
 region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLim1),
                        minDharv = minDharvX,clearcutAreas =clcutArX,
-                       compHarv=2., thinFact=0.2)
+                       compHarv=compHarvX, thinFact=thinFactX)
 
 ####roundWood is totHarv
 ###HarvLim1 defines the harvesting limits (matrix with 2 columns). 
