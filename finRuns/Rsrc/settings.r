@@ -32,6 +32,8 @@ sampleForPlots <- 9999999
 ###flag for settings the regions to consider
 if(!exists("regSets")) regSets <- "forCent" ### "forCent", "maakunta"
 if(!exists("minDharvX")) minDharvX <- 15 ### minimum DBH for clearcutting
+if(!exists("compHarvX")) compHarvX=2.
+if(!exists("thinFactX")) thinFactX=0.2
 if(!exists("clcutArX") & regSets=="forCent") clcutArX <- NA
 if(!exists("clcutArX") & regSets=="maakunta") clcutArX <- 1
 

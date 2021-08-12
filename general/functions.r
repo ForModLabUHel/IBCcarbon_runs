@@ -172,12 +172,13 @@ runModel <- function(sampleID,sampleRun=FALSE){
         ##Don't pass minDharvX if NA
         if (is.na(minDharvX)) {
           region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLim1),
-                                 clearcutAreas =clcutArX)
+                                 clearcutAreas =clcutArX,compHarv=compHarvX)
         } else {
           region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLim1),
-                                 minDharv = minDharvX,clearcutAreas =clcutArX)
+                                 minDharv = minDharvX,clearcutAreas =clcutArX,
+                                 compHarv=compHarvX)
         }
-        
+
         print(paste("runModel",sampleID))
         ##calculate steady state carbon from prebas litter 
         if(harscen=="Base"){
