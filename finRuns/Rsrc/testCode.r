@@ -7,7 +7,7 @@ harvestscenarios <- "Base"
 regSets = "maakunta"
 minDharvX <- 15
 compHarvX=0.
-thinFactX=0.2
+thinFactX=0.25
 
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
 source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
@@ -100,6 +100,8 @@ Region = nfiareas[ID==r_no, Region]
 initPrebas = create_prebas_input.f(r_no, clim, data.sample, nYears = nYears,
                                    startingYear = startingYear,domSPrun=domSPrun)
 
+siteV <- rowSums(initPrebas$multiOut[,1,30,,1])
+maakV <- sum(siteV*sampleX$area)/sum(sampleX$area)*sum(data.all$area)
 ###set parameters
 #    initPrebas$pCROBAS <- pCROBAS
 
@@ -251,6 +253,9 @@ for(i in 1:nYears){
 ggMeanAll[,ix] <- colSums(gg)
 
 }
+
+save(ggMeanAll,regThinarea,clcutAreaAll,regThinVolAll,regThinareaAll,
+     regClcutVolAll,enWoodAll,regRoundWoodAll,file= "...")
 
 ###plot #1
 ####compare roundWood
