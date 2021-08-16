@@ -254,7 +254,7 @@ ggMeanAll[,ix] <- colSums(gg)
 
 }
 
-save(ggMeanAll,regThinarea,clcutAreaAll,regThinVolAll,regThinareaAll,
+save(maakV,ggMeanAll,regThinarea,clcutAreaAll,regThinVolAll,regThinareaAll,
      regClcutVolAll,enWoodAll,regRoundWoodAll,file= "...")
 
 ###plot #1
