@@ -199,11 +199,12 @@ if(harscen!="Base"){
   initPrebas$soilC[,1,,,] <- initSoilC
 }
 
-####save for testing
-# save(initPrebas,HarvLim1,minDharvX,clcutArX,
-#      sile="test.rdata")
+
 HarvLimX <- HarvLim1[1:nYears,]
 
+####save for testing
+# save(initPrebas,HarvLimX,minDharvX,clcutArX,
+#      file="test.rdata")
 region0 <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
                         minDharv = minDharvX,clearcutAreas =clcutArX,
                         compHarv=0, thinFact=thinFactX)
