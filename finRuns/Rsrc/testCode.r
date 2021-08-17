@@ -205,15 +205,19 @@ HarvLimX <- HarvLim1[1:nYears,]
 ####save for testing
 # save(initPrebas,HarvLimX,minDharvX,clcutArX,
 #      file="test.rdata")
+print("initialized")
 region0 <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
                         minDharv = minDharvX,clearcutAreas =clcutArX,
                         compHarv=0, thinFact=thinFactX)
+print("region0 done")
 region1 <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
                         minDharv = minDharvX,clearcutAreas =clcutArX,
                         compHarv=1, thinFact=thinFactX)
+print("region1 done")
 region2 <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
                        minDharv = minDharvX,clearcutAreas =clcutArX,
                        compHarv=2, thinFact=thinFactX)
+print("region2 done")
 
 ####roundWood is totHarv
 ###HarvLim1 defines the harvesting limits (matrix with 2 columns). 
