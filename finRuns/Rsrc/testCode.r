@@ -12,6 +12,8 @@ thinFactX=0.25
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
 source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
 
+
+pTapio[,,,4] <- pTapio[,,,4] * 5
 # setX=1
 nSitesRun = 20000
 nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
@@ -24,7 +26,7 @@ ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
 
 print(paste("start sample ID",sampleID))
 sampleX <- ops[[sampleID]]
-
+pTapio
 
 ###check for NAS
 # load("/scratch/project_2000994/PREBASruns/finRuns/rasters/forCent12/NApoints/NApoints2017-2025.rdata")
