@@ -229,8 +229,10 @@ for(ix in 1:3){
 areaThin <- areaClcut <- volThin <- volClcut <- rep(NA,nYears)
 harvested <- apply(region$multiOut[,,37,,1],1:2,sum)
 vols <- apply(region$multiOut[,,30,,1],1:2,sum)
-clcuts <- data.table(which(harvested>0 & vols==0,arr.ind=T))
-thin <- data.table(which(harvested>0 & vols>0,arr.ind=T))
+clcuts1 <- data.table(which(harvested>0 & vols==0,arr.ind=T))
+clcuts <- data.table(which(region$multiOut[,,1,2,2]>0,arr.ind=T))
+thin1 <- data.table(which(harvested>0 & vols>0,arr.ind=T))
+thin <- data.table(which(region$multiOut[,,1,1,2]>0,arr.ind=T))
 setnames(clcuts,c("siteID","year"))
 setnames(thin,c("siteID","year"))
 
