@@ -169,12 +169,13 @@ runModel <- function(sampleID,sampleRun=FALSE){
           initPrebas$soilC[,1,,,] <- initSoilC
         }
         
+        HarvLimX <- HarvLim1[1:nYears,]
         ##Don't pass minDharvX if NA
         if (is.na(minDharvX)) {
-          region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLim1),
+          region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
                                  clearcutAreas =clcutArX,compHarv=compHarvX)
         } else {
-          region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLim1),
+          region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
                                  minDharv = minDharvX,clearcutAreas =clcutArX,
                                  compHarv=compHarvX)
         }
