@@ -1,5 +1,4 @@
-# for(sampleID in 1:73){
-  
+# devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/testCode.r")
 
 r_no <- regions <- 1
 sampleID <- 1#498 #136
