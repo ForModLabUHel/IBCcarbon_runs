@@ -213,7 +213,7 @@ region0 <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
 print("region0 done")
 region1 <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
                         minDharv = minDharvX,clearcutAreas =clcutArX,
-                        compHarv=2, thinFact=thinFactX)
+                        compHarv=1, thinFact=thinFactX)
 print("region1 done")
 region2 <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
                        minDharv = minDharvX,clearcutAreas =clcutArX,
