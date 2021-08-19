@@ -535,11 +535,15 @@ create_prebas_input.f = function(r_no, clim, data.sample, nYears, startingYear=0
   defaultThin=as.numeric(1-data.sample[, cons])
   energyCut <- ClCut <- as.numeric(1-data.sample[, cons])
   ## Set to match climate data years
+  ftTapioParX <- ifesle(exists(ftTapioParX),ftTapioParX,ftTapio)
+  tTapioParX <- ifesle(exists(tTapioParX),tTapioParX,tTapio)
   initPrebas <- InitMultiSite(nYearsMS = rep(nYears,nSites),siteInfo=siteInfo,
                               # litterSize = litterSize,#pAWEN = parsAWEN,
                               defaultThin=defaultThin,
                               ClCut = ClCut, areas =areas,
                               energyCut = energyCut, 
+                              ftTapioPar = ftTapioParX,
+                              tTapioPar = tTapioParX,
                               multiInitVar = as.array(initVar),
                               PAR = clim$PAR[, 1:(nYears*365)],
                               TAir=clim$TAir[, 1:(nYears*365)],

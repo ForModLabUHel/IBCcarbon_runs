@@ -15,8 +15,8 @@ source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/maste
 
 
 # pTapio[,,,4] <- pTapio[,,,4] * 5
-if(NoftTapio) ftTapio  <- ftTapio * 1e5
-if(NotTapio) tTapio  <- tTapio * 1e5
+if(NoftTapio) ftTapioParX  <- ftTapio * 1e5
+if(NotTapio) tTapioParX  <- tTapio * 1e5
 
 # setX=1
 nSitesRun = 20000
