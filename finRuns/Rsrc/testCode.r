@@ -13,6 +13,10 @@ source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/maste
 
 
 # pTapio[,,,4] <- pTapio[,,,4] * 5
+ftTapio[,1,,]  <- 99999
+ftTapio[,2,,]  <- 99999
+ftTapio[,3,,]  <- 99999
+
 # setX=1
 nSitesRun = 20000
 nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
