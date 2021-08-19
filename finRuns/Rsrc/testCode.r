@@ -7,7 +7,7 @@ regSets = "maakunta"
 minDharvX <- 15
 compHarvX=0.
 thinFactX=0.25
-NoftTapio = TRUE
+NoftTapio = FALSE
 
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
 source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
