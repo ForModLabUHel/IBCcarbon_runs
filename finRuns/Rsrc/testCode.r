@@ -8,6 +8,7 @@ minDharvX <- 15
 compHarvX=0.
 thinFactX=0.25
 NoftTapio = FALSE
+NotTapio = TRUE
 
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
 source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
@@ -15,6 +16,7 @@ source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/maste
 
 # pTapio[,,,4] <- pTapio[,,,4] * 5
 if(NoftTapio) ftTapio  <- ftTapio * 1e5
+if(NoftTapio) tTapio  <- tTapio * 1e5
 
 # setX=1
 nSitesRun = 20000
