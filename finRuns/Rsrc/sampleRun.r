@@ -14,4 +14,4 @@ ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
 
 toMem <- ls()
 
-sampleX <- runModel(sampleID,sampleRun=T,compH)
+sampleX <- runModel(sampleID,sampleRun=T)
