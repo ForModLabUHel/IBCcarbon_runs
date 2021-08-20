@@ -12,6 +12,11 @@ NoftTapio <- FALSE ##flag to switch off first thinning (TRUE) FALSE otherwise
 
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
 source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
+# load("test.rdata")
+# region2 <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
+#                         minDharv = minDharvX,clearcutAreas =clcutArX,
+#                         compHarv=3, thinFact=thinFactX)
+# plot(apply(region2$multiOut[930,,13,,1],1,sum))
 
 if(NoftTapio) ftTapioParX  <- ftTapio * 1e5  ##switch off first thinning
 if(NotTapio) tTapioParX  <- tTapio * 1e5  ##switch off precommercial thinning 
