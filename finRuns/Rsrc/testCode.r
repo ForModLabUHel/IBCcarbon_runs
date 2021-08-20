@@ -7,7 +7,7 @@ regSets = "maakunta"
 minDharvX <- 15
 compHarvX=0.
 thinFactX=0.25
-NotTapio <- TRUE##flag to switch off precommercial thinnings (TRUE) FALSE otherwise
+NotTapio <- FALSE##flag to switch off precommercial thinnings (TRUE) FALSE otherwise
 NoftTapio <- FALSE ##flag to switch off first thinning (TRUE) FALSE otherwise
 
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
@@ -330,7 +330,7 @@ plot1 <- function(){
   legend("bottomright",legend = c("noCom","clcut","thin","ref"),
          pch=c(20,20,20,1),col=c(2:4,1))
   ####compare energyWood
-  ylim=range(enWoodAll* rescalFactor,HarvLim1[,2] * rescalFactor)
+  ylim=range(enWoodAll* rescalFactor,HarvLimX[,2] * rescalFactor)
   plot(enWoodAll[,1] * rescalFactor,main="energyWood",col=2,pch=20,ylim=ylim)
   points(enWoodAll[,2] * rescalFactor,col=3,pch=20)
   points(enWoodAll[,3] * rescalFactor,col=4,pch=20)
