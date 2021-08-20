@@ -7,7 +7,7 @@ regSets = "maakunta"
 minDharvX <- 15
 compHarvX=0.
 thinFactX=0.25
-NotTapio <- TRUE##flag to switch off precommercial thinnings (TRUE) FALSE otherwise
+NotTapio <- FALSE##flag to switch off precommercial thinnings (TRUE) FALSE otherwise
 NoftTapio <- FALSE ##flag to switch off first thinning (TRUE) FALSE otherwise
 
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
@@ -228,6 +228,9 @@ ggMeanAll <- regThinarea <- clcutAreaAll <- regThinVolAll <- regThinareaAll <-
   regClcutVolAll<- enWoodAll <- regRoundWoodAll <- matrix(NA, nYears,3)
 rescalFactor <- sum(data.all$area)/sum(sampleX$area)
 
+regThinVolX <- array(NA,dim=c(dim(volThinX),3))
+regClcutVolX <- array(NA,dim=c(dim(volClcutX),3))
+
 for(ix in 1:3){
   region <- get(regX[ix])
 
@@ -280,10 +283,6 @@ for(i in 1:nYears){
   volClcutX[i,2] <- sum(region$areas[clcuts2[year==i]$siteID] * harvested[clcuts2[year==i]$siteID,i])
 } 
 
-for(i in 1:nYears) volThin[i] <- sum(region$areas[thin[year==i]$siteID] * harvested[thin[year==i]$siteID,i])
-for(i in 1:nYears) volClcut[i] <- sum(region$areas[clcuts[year==i]$siteID] * harvested[clcuts[year==i]$siteID,i])
-
-
 regThinarea <- areaThin*rescalFactor
 regClcutArea <- areaClcut*rescalFactor
 regRoundWood <- region$totHarv*rescalFactor
@@ -293,6 +292,14 @@ regThinareaAll[,ix] <- regThinarea
 regRoundWoodAll[,ix] <- regRoundWood
 enWoodAll[,ix] <- apply(region$multiEnergyWood[,,,1],2,sum)
 clcutAreaAll[,ix] <- region$clearcutAreas[,2]
+
+
+regThinareaX <- areaThinX*rescalFactor
+regClcutAreaX <- areaClcutX*rescalFactor
+regThinVolX[,,ix] <- volThinX*rescalFactor
+regClcutVolX[,,ix] <- volClcutX*rescalFactor
+# clcutAreaAll[,ix] <- region$clearcutAreas[,2]
+
 
 gg <- apply(region$multiOut[,,43,,1],1:2,sum)
 for(i in 1:nYears){
