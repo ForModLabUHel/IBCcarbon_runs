@@ -228,8 +228,8 @@ ggMeanAll <- regThinarea <- clcutAreaAll <- regThinVolAll <- regThinareaAll <-
   regClcutVolAll<- enWoodAll <- regRoundWoodAll <- matrix(NA, nYears,3)
 rescalFactor <- sum(data.all$area)/sum(sampleX$area)
 
-regThinVolX <- array(NA,dim=c(dim(volThinX),3))
-regClcutVolX <- array(NA,dim=c(dim(volClcutX),3))
+regThinVolX <- array(NA,dim=c(nYears,4,3))
+regClcutVolX <- array(NA,dim=c(nYears,2,3))
 
 for(ix in 1:3){
   region <- get(regX[ix])
