@@ -233,19 +233,56 @@ for(ix in 1:3){
 
 ####calculate thinned areas
 areaThin <- areaClcut <- volThin <- volClcut <- rep(NA,nYears)
+areaThinX <- volThinX <- matrix(NA,nYears,4)
+areaClcutX <- volClcutX <- matrix(NA,nYears,2)
+
 harvested <- apply(region$multiOut[,,37,,1],1:2,sum)
 vols <- apply(region$multiOut[,,30,,1],1:2,sum)
 clcutsOld <- data.table(which(harvested>0 & vols==0,arr.ind=T))
 clcuts <- data.table(which(region$multiOut[,,2,1,2]>0,arr.ind=T))
+clcuts1 <- data.table(which(region$multiOut[,,2,1,2]==1,arr.ind=T))
+clcuts2 <- data.table(which(region$multiOut[,,2,1,2]==20,arr.ind=T))
 thinOld <- data.table(which(harvested>0 & vols>0,arr.ind=T))
 thin <- data.table(which(region$multiOut[,,1,1,2]>0,arr.ind=T))
+thin1 <- data.table(which(region$multiOut[,,1,1,2]==1,arr.ind=T))
+thin2 <- data.table(which(region$multiOut[,,1,1,2]==2,arr.ind=T))
+thin3 <- data.table(which(region$multiOut[,,1,1,2]==3,arr.ind=T))
+thin4 <- data.table(which(region$multiOut[,,1,1,2]==4,arr.ind=T))
 setnames(clcuts,c("siteID","year"))
+setnames(clcuts1,c("siteID","year"))
+setnames(clcuts2,c("siteID","year"))
 setnames(thin,c("siteID","year"))
+setnames(thin1,c("siteID","year"))
+setnames(thin2,c("siteID","year"))
+setnames(thin3,c("siteID","year"))
+setnames(thin4,c("siteID","year"))
 
 for(i in 1:nYears) areaThin[i] <- sum(region$areas[thin[year==i]$siteID])
 for(i in 1:nYears) areaClcut[i] <- sum(region$areas[clcuts[year==i]$siteID])
 for(i in 1:nYears) volThin[i] <- sum(region$areas[thin[year==i]$siteID] * harvested[thin[year==i]$siteID,i])
 for(i in 1:nYears) volClcut[i] <- sum(region$areas[clcuts[year==i]$siteID] * harvested[clcuts[year==i]$siteID,i])
+
+for(i in 1:nYears){
+  areaThinX[i,1] <- sum(region$areas[thin1[year==i]$siteID])
+  areaThinX[i,2] <- sum(region$areas[thin2[year==i]$siteID])
+  areaThinX[i,3] <- sum(region$areas[thin3[year==i]$siteID])
+  areaThinX[i,4] <- sum(region$areas[thin4[year==i]$siteID])
+  
+  areaClcutX[i,1] <- sum(region$areas[clcuts1[year==i]$siteID])
+  areaClcutX[i,2] <- sum(region$areas[clcuts2[year==i]$siteID])
+  
+  volThinX[i,1] <- sum(region$areas[thin1[year==i]$siteID] * harvested[thin1[year==i]$siteID,i])
+  volThinX[i,2] <- sum(region$areas[thin2[year==i]$siteID] * harvested[thin2[year==i]$siteID,i])
+  volThinX[i,3] <- sum(region$areas[thin3[year==i]$siteID] * harvested[thin3[year==i]$siteID,i])
+  volThinX[i,4] <- sum(region$areas[thin4[year==i]$siteID] * harvested[thin4[year==i]$siteID,i])
+  
+  volClcutX[i,1] <- sum(region$areas[clcuts1[year==i]$siteID] * harvested[clcuts1[year==i]$siteID,i])
+  volClcutX[i,2] <- sum(region$areas[clcuts2[year==i]$siteID] * harvested[clcuts2[year==i]$siteID,i])
+} 
+
+for(i in 1:nYears) volThin[i] <- sum(region$areas[thin[year==i]$siteID] * harvested[thin[year==i]$siteID,i])
+for(i in 1:nYears) volClcut[i] <- sum(region$areas[clcuts[year==i]$siteID] * harvested[clcuts[year==i]$siteID,i])
+
 
 regThinarea <- areaThin*rescalFactor
 regClcutArea <- areaClcut*rescalFactor
