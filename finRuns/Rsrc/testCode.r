@@ -300,14 +300,14 @@ regClcutVolAll[,ix] <- volClcut*rescalFactor
 regThinareaAll[,ix] <- regThinarea
 regRoundWoodAll[,ix] <- regRoundWood
 enWoodAll[,ix] <- apply(region$multiEnergyWood[,,,1],2,sum)
-clcutAreaAll[,ix] <- region$clearcutAreas[,2]
+clcutAreaAll[,ix] <- region$cutAreas[,2]
 
 
 regThinareaX <- areaThinX*rescalFactor
 regClcutAreaX <- areaClcutX*rescalFactor
 regThinVolX[,,ix] <- volThinX*rescalFactor
 regClcutVolX[,,ix] <- volClcutX*rescalFactor
-# clcutAreaAll[,ix] <- region$clearcutAreas[,2]
+# clcutAreaAll[,ix] <- region$cutAreas[,2]
 
 
 gg <- apply(region$multiOut[,,43,,1],1:2,sum)
@@ -341,11 +341,11 @@ plot1 <- function(){
   points(HarvLim1[,2] * rescalFactor)
   ##compare areas clearcutted
   ylim=range(clcutAreaAll* rescalFactor,
-             region$clearcutAreas[,1]*rescalFactor)
+             region$cutAreas[,1]*rescalFactor)
   plot(clcutAreaAll[,1] * rescalFactor,main="area clearcuts",col=2,pch=20,ylim=ylim)
   points(clcutAreaAll[,2] * rescalFactor,col=3,pch=20)
   points(clcutAreaAll[,3] * rescalFactor,col=4,pch=20)
-  points(region$clearcutAreas[,1]*rescalFactor)
+  points(region$cutAreas[,1]*rescalFactor)
   
   yrange <- range(regThinareaAll,thinAr)
   plot(regThinareaAll[,1],ylim=yrange,main="area thinning",col=2,pch=20)
