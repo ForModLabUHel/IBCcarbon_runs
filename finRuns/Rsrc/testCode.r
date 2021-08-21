@@ -192,7 +192,11 @@ if(regSets!="maakunta"){
 
 ###calculate clearcutting area for the sample
 clcutArX <- clcutAr * sum(areas)/sum(data.all$area)
-clcutArX <- clcutArX[1:nYears]
+clcutArX <- cbind(clcutArX[1:nYears],0.)
+tendX <- matrix(c(1014,0),nYears,2,byrow = T)* sum(areas)/sum(data.all$area)
+fThinX <- matrix(c(2648,0),nYears,2,byrow = T)* sum(areas)/sum(data.all$area)
+cutArX <- cbind(clcutArX,tendX)
+cutArX <- cbind(cutArX,fThinX)
 
 # initPrebas$energyCut <- rep(0.,length(initPrebas$energyCut))
 # HarvLim1 <- rep(0,2)
@@ -213,15 +217,15 @@ HarvLimX <- HarvLim1[1:nYears,]
 #      file="test.rdata")
 print("initialized")
 region0 <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
-                        minDharv = minDharvX,clearcutAreas =clcutArX,
+                        minDharv = minDharvX,clearcutAreas =cutArX,
                         compHarv=0, thinFact=thinFactX)
 print("region0 done")
 region1 <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
-                        minDharv = minDharvX,clearcutAreas =clcutArX,
+                        minDharv = minDharvX,clearcutAreas =cutArX,
                         compHarv=1, thinFact=thinFactX)
 print("region1 done")
 region2 <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
-                       minDharv = minDharvX,clearcutAreas =clcutArX,
+                       minDharv = minDharvX,clearcutAreas =cutArX,
                        compHarv=3, thinFact=thinFactX)
 print("region2 done")
 
