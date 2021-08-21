@@ -237,8 +237,8 @@ ggMeanAll <- regThinarea <- clcutAreaAll <- regThinVolAll <- regThinareaAll <-
   regClcutVolAll<- enWoodAll <- regRoundWoodAll <- matrix(NA, nYears,3)
 rescalFactor <- sum(data.all$area)/sum(sampleX$area)
 
-regThinVolX <- array(NA,dim=c(nYears,4,3))
-regClcutVolX <- array(NA,dim=c(nYears,2,3))
+regThinAreaX <- regThinVolX <- array(NA,dim=c(nYears,4,3))
+regClcutAreaX <- regClcutVolX <- array(NA,dim=c(nYears,2,3))
 
 for(ix in 1:3){
   region <- get(regX[ix])
@@ -303,8 +303,8 @@ enWoodAll[,ix] <- apply(region$multiEnergyWood[,,,1],2,sum)
 clcutAreaAll[,ix] <- region$cutAreas[,2]
 
 
-regThinareaX <- areaThinX*rescalFactor
-regClcutAreaX <- areaClcutX*rescalFactor
+regThinAreaX[,,ix] <- areaThinX*rescalFactor
+regClcutAreaX[,,ix] <- areaClcutX*rescalFactor
 regThinVolX[,,ix] <- volThinX*rescalFactor
 regClcutVolX[,,ix] <- volClcutX*rescalFactor
 # clcutAreaAll[,ix] <- region$cutAreas[,2]
@@ -370,5 +370,26 @@ plot2 <- function(){
   barplot(volumes,main="volumes thin/clcut thinning",legend=c("thin","clcut"))
 }
 
+plot2 <- function(){
+  par(mfrow=c(3,1))
+  volumes <- rbind(regThinVolAll[,1],regClcutVolAll[,1])
+  barplot(volumes,main="volumes thin/clcut NOcomp",legend=c("thin","clcut"))
+  volumes <- rbind(regThinVolAll[,2],regClcutVolAll[,2])
+  barplot(volumes,main="volumes thin/clcut ClCut",legend=c("thin","clcut"))
+  volumes <- rbind(regThinVolAll[,3],regClcutVolAll[,3])
+  barplot(volumes,main="volumes thin/clcut thinning",legend=c("thin","clcut"))
+}
+
+plot3 <- function(){
+  par(mfrow=c(3,1))
+  volumes <- t(regThinAreaX[,,1])
+  barplot(volumes,main="thin areas NOcomp",legend=c("pre-com","firstT","thin","compThin"))
+  volumes <- t(regThinAreaX[,,2])
+  barplot(volumes,main="thin areas ClCutComp",legend=c("pre-com","firstT","thin","compThin"))
+  volumes <- t(regThinAreaX[,,3])
+  barplot(volumes,main="thin areas thinComp",legend=c("pre-com","firstT","thin","compThin"))
+}
+
 plot1()
 plot2()
+plot3()
