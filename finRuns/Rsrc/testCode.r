@@ -14,7 +14,7 @@ devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_
 source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
 # load("test.rdata")
 # region2 <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
-#                         minDharv = minDharvX,clearcutAreas =clcutArX,
+#                         minDharv = minDharvX,cutAreas =clcutArX,
 #                         compHarv=3, thinFact=thinFactX)
 # plot(apply(region2$multiOut[930,,13,,1],1,sum))
 
@@ -217,15 +217,15 @@ HarvLimX <- HarvLim1[1:nYears,]
 #      file="test.rdata")
 print("initialized")
 region0 <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
-                        minDharv = minDharvX,clearcutAreas =cutArX,
+                        minDharv = minDharvX,cutAreas =cutArX,
                         compHarv=0, thinFact=thinFactX)
 print("region0 done")
 region1 <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
-                        minDharv = minDharvX,clearcutAreas =cutArX,
+                        minDharv = minDharvX,cutAreas =cutArX,
                         compHarv=1, thinFact=thinFactX)
 print("region1 done")
 region2 <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
-                       minDharv = minDharvX,clearcutAreas =cutArX,
+                       minDharv = minDharvX,cutAreas =cutArX,
                        compHarv=3, thinFact=thinFactX)
 print("region2 done")
 
