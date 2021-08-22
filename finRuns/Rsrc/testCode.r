@@ -213,7 +213,7 @@ if(harscen!="Base"){
 HarvLimX <- HarvLim1[1:nYears,]
 
 ####save for testing
-# save(initPrebas,HarvLimX,minDharvX,clcutArX,
+# save(initPrebas,HarvLimX,minDharvX,cutArX,
 #      file="test.rdata")
 print("initialized")
 region0 <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
