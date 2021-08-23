@@ -10,6 +10,7 @@ library(parallel)
 library(ggplot2)
 library(abind)
 require(sm)
+library(readxl)
 
 ###load packages in CSC project folder
 if(CSCrun){
