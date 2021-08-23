@@ -392,6 +392,54 @@ plot3 <- function(){
   barplot(volumes,main="thin areas thinComp",legend=c("pre-com","firstT","thin","compThin"))
 }
 
+regStat <- function(modOut,varX, funX){
+  v0 <- apply(modOut$multiOut[,,varX,,1],1:2,funX)
+  v1 <- colSums(sweep(v0,1,areas,"*"))/sum(data.sample$area)
+  return(v1)
+}
+v0 <- regStat(region0,30,"sum")
+v1 <- regStat(region1,30,"sum")
+v2 <- regStat(region2,30,"sum")
+gpp0 <- regStat(region0,44,"sum")
+gpp1 <- regStat(region1,44,"sum")
+gpp2 <- regStat(region2,44,"sum")
+
+plot4 <- function(){
+  par(mfrow=c(3,2))
+  ylim=range(0.,region0$cutAreas[,3:4]*rescalFactor,
+             region1$cutAreas[,4]*rescalFactor,
+             region2$cutAreas[,4]*rescalFactor)
+  plot(region0$cutAreas[,3]*rescalFactor,ylim=ylim, 
+       main="pre-com areas",ylab="ha")
+  points(region0$cutAreas[,4]*rescalFactor,pch=20,col=2)
+  points(region1$cutAreas[,4]*rescalFactor,pch=20,col=3)
+  points(region2$cutAreas[,4]*rescalFactor,pch=20,col=4)
+  legend("bottomright",legend = c("noCom","clcut","thin","ref"),
+         pch=c(20,20,20,1),col=c(2:4,1))
+  
+  ylim=range(0.,region0$cutAreas[,5:6]*rescalFactor,
+             region1$cutAreas[,6]*rescalFactor,
+             region2$cutAreas[,6]*rescalFactor)
+  plot(region0$cutAreas[,5]*rescalFactor,ylim=ylim, 
+       main="1st thin areas",ylab="ha")
+  points(region0$cutAreas[,6]*rescalFactor,pch=20,col=2)
+  points(region1$cutAreas[,6]*rescalFactor,pch=20,col=3)
+  points(region2$cutAreas[,6]*rescalFactor,pch=20,col=4)
+  
+  ylim=range(0.,v0,v1,v2)
+  plot(v0,ylim=ylim, main="volume",ylab="m3/ha",pch=20,col=2)
+  points(v1,pch=20,col=3)
+  points(v2,pch=20,col=4)
+
+  ylim=range(0.,gpp0,gpp1,gpp2)
+  plot(gpp0,ylim=ylim, main="volume",ylab="m3/ha",pch=20,col=2)
+  points(gpp1,pch=20,col=3)
+  points(gpp2,pch=20,col=4)
+  
+  
+}
+
 plot1()
 plot2()
 plot3()
+plot4()
