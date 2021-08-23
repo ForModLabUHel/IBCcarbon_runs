@@ -193,8 +193,10 @@ if(regSets!="maakunta"){
 ###calculate clearcutting area for the sample
 clcutArX <- clcutAr * sum(areas)/sum(data.all$area)
 clcutArX <- cbind(clcutArX[1:nYears],0.)
-tendX <- matrix(c(1014,0),nYears,2,byrow = T)* sum(areas)/sum(data.all$area)
-fThinX <- matrix(c(2648,0),nYears,2,byrow = T)* sum(areas)/sum(data.all$area)
+tendX <- tendingAr * sum(areas)/sum(data.all$area)
+tendX <- cbind(tendX[1:nYears],0.)
+fThinX <- firstThinAr * sum(areas)/sum(data.all$area)
+fThinX <- cbind(fThinX[1:nYears],0.)
 cutArX <- cbind(clcutArX,tendX)
 cutArX <- cbind(cutArX,fThinX)
 
