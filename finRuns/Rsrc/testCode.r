@@ -1,6 +1,8 @@
 # devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/testCode.r")
-
-r_no <- regions <- 3
+for(klk in c(1,3:19,2)){
+  
+# klk <- 3
+r_no <- regions <- klk
 sampleID <- 1#498 #136
 harvestscenarios <- "Base"
 regSets = "maakunta"
@@ -454,7 +456,13 @@ plot4 <- function(){
   
 }
 
+pdf(paste0("plots_",klk,".pdf"))
 plot1()
 plot2()
 plot3()
 plot4()
+dev.off()
+print(klk)
+}
+
+# maakNam <- read.table("/scratch/project_2000994/PREBASruns/metadata/maakunta/maakunta_numbers.txt")
