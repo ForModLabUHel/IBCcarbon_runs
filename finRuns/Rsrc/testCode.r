@@ -463,6 +463,8 @@ plot3()
 plot4()
 dev.off()
 print(klk)
+rm(list=ls())
+gc()
 }
 
 # maakNam <- read.table("/scratch/project_2000994/PREBASruns/metadata/maakunta/maakunta_numbers.txt")
