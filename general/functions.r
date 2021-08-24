@@ -153,7 +153,7 @@ runModel <- function(sampleID,sampleRun=FALSE){
         }          
         
         ###calculate clearcutting area for the sample
-        if(!is.na(clcutArX)){
+        #if(!is.na(cutArX)){
           print("calculating clearcutting areas")
           clcutArX <- clcutAr * sum(areas)/sum(data.all$area)
           clcutArX <- cbind(clcutArX[1:nYears],0.)
@@ -163,9 +163,9 @@ runModel <- function(sampleID,sampleRun=FALSE){
           fThinX <- cbind(fThinX[1:nYears],0.)
           cutArX <- cbind(clcutArX,tendX)
           cutArX <- cbind(cutArX,fThinX)
-        }else{
-          cutArX <- NA
-        }
+        # }else{
+        #   cutArX <- NA
+        # }
         # initPrebas$energyCut <- rep(0.,length(initPrebas$energyCut))
         # HarvLim1 <- rep(0,2)
         # save(initPrebas,HarvLim1,file=paste0("test1",harscen,".rdata"))
@@ -181,10 +181,10 @@ runModel <- function(sampleID,sampleRun=FALSE){
         ##Don't pass minDharvX if NA
         if (is.na(minDharvX)) {
           region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
-                                 cutAreas =clcutArX,compHarv=compHarvX)
+                                 cutAreas =cutArX,compHarv=compHarvX)
         } else {
           region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
-                                 minDharv = minDharvX,cutAreas =clcutArX,
+                                 minDharv = minDharvX,cutAreas =cutArX,
                                  compHarv=compHarvX)
         }
 
