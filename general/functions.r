@@ -179,10 +179,10 @@ runModel <- function(sampleID,sampleRun=FALSE){
         ##Don't pass minDharvX if NA
         if (is.na(minDharvX)) {
           region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
-                                 clearcutAreas =clcutArX,compHarv=compHarvX)
+                                 cutAreas =clcutArX,compHarv=compHarvX)
         } else {
           region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
-                                 minDharv = minDharvX,clearcutAreas =clcutArX,
+                                 minDharv = minDharvX,cutAreas =clcutArX,
                                  compHarv=compHarvX)
         }
 
