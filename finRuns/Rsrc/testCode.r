@@ -1,6 +1,6 @@
 # devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/testCode.r")
 
-r_no <- regions <- 1
+r_no <- regions <- 3
 sampleID <- 1#498 #136
 harvestscenarios <- "Base"
 regSets = "maakunta"
