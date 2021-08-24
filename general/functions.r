@@ -163,6 +163,8 @@ runModel <- function(sampleID,sampleRun=FALSE){
           fThinX <- cbind(fThinX[1:nYears],0.)
           cutArX <- cbind(clcutArX,tendX)
           cutArX <- cbind(cutArX,fThinX)
+        }else{
+          cutArX <- NA
         }
         # initPrebas$energyCut <- rep(0.,length(initPrebas$energyCut))
         # HarvLim1 <- rep(0,2)
