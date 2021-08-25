@@ -1,5 +1,6 @@
 # devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/testCode.r")
-for(klk in c(1,3:19,2)){
+maaks <- c(1,3)#1:19 
+for(klk in maaks){
   
 # klk <- 3
 r_no <- regions <- klk
