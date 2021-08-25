@@ -5,21 +5,6 @@ library(Rprebasso)
 load("C:/Users/checcomi/Documents/research/IBC-carbon/sampleRuns/sample_12_reg1_Base_CurrClim.rdata")
 
 
-pMort <- function(modOut,ageClass, rangeYear=5){
-  endX <- rangeYear:dim(modOut)[2]
-  startX <- endX-(rangeYear-1)
-  pMortX <- rep(0.,length(endX))
-  
-  for(i in 1:length(startX)){
-    ageX <-rowMeans(modOut[,startX[i]:endX[i],7,1,1])
-    cX <- which(ageX %in% ageClass)
-    # outX <- modOut[cX,,,,]
-    mortX <- data.table(which(modOut[cX,startX[i]:endX[i],42,,1]>0,arr.ind=T))
-    nMort <- length(unique(mortX$site))
-    pMortX[i] <- nMort/length(cX)
-  }
-  return(pMortX)
-}
 
 
 pMort40 <- pMort(modOut,31:50)
@@ -40,38 +25,6 @@ sp=1
 pureFor <- 0.8
 mixFor <- 0.8
 
-###Function to calculate the probability of a mortality (pM) event occuring
-# Arguments: 
-# modOut = output array from a PREBAS multisite runs
-# rangeYear = number of years  for which to calculate pM
-# sp = species/layer for which to calculate pM it can be a vector for combinations of species
-# pureFor = proportion of Basal area to consider as pure stands
-# mixFor = it works only for mixed forests, it is the minimum proportion of basal area for the species of interest
-
-pMort2 <- function(modOut,ageClass, rangeYear=5,sp,pureFor,mixFor){
-  endX <- rangeYear:dim(modOut)[2]
-  startX <- endX-(rangeYear-1)
-  pMortX <- nSites <- rep(0.,length(endX))
-  
-  for(i in 1:length(startX)){
-    ageX <-rowMeans(modOut[,startX[i]:endX[i],7,1,1])
-    pBA <- apply(modOut[,startX[i]:endX[i],13,,1],c(1,3),mean)
-    pBA <- pBA/rowSums(pBA)
-    if(length(sp)==1){
-      selX <- which(ageX %in% ageClass & pBA[,sp]>pureFor)
-    }else{
-      selX <- which(ageX %in% ageClass & rowSums(pBA[,sp])>mixFor &
-                      pBA[,1]<pureFor & pBA[,2]<pureFor)  
-    }
-    
-    # outX <- modOut[cX,,,,]
-    mortX <- data.table(which(modOut[selX,startX[i]:endX[i],42,,1]>0,arr.ind=T))
-    nMort <- length(unique(mortX$site))
-    pMortX[i] <- nMort/length(selX)
-    nSites[i] <- length(selX)
-  }
-  return(list(pMort=pMortX,nSites=nSites))
-}
 
 pMortX <- list()
 ageClass <- 31:50
@@ -275,40 +228,6 @@ figure <- ggarrange(p1, p2, p3, labels = c("A","B","C"),
 
 annotate_figure(figure, top="No Harvest Scenerio")
 
-###function to calculate the mortality probability along some variable classes
-# Arguments: 
-# modOut = output array from a PREBAS multisite runs
-# rangeYear = number of years  for which to calculate pM
-# minX = minimum value for the variable class
-# maxX = maximum value for the variable class
-# stepX = class step
-# varX = variable ID of PREBAS output (see varNames)
-# funX = function to use to aggregate the data (mean or sum) mean for age and DBH, sum for BA, stemNumber
-pMortVarX <- function(modOut,minX,maxX,stepX,varX,funX,rangeYear=5){
-  endX <- rangeYear:dim(modOut)[2]
-  startX <- endX-(rangeYear-1)
-  seqX <- seq(minX,maxX,by=stepX)
-  nClass <- length(seqX)+1
-  pMortX <- nData <- matrix(0.,length(endX),nClass)
-  for(i in 1:length(startX)){
-    varXs<-apply(modOut[,startX[i]:endX[i],varX,,1],1:2,funX)
-    varXs <- rowMeans(varXs)
-    for(ij in 1:nClass){
-      if(ij==1) cX <- which(varXs <= seqX[ij])
-      if(ij>1 & ij<nClass) cX <- which(varXs <= seqX[ij] & varXs > seqX[ij-1])
-      if(ij==nClass) cX <- which(varXs > seqX[ij])
-    # outX <- modOut[cX,,,,]
-      if(length(cX)>0.){
-        mortX <- data.table(which(modOut[cX,startX[i]:endX[i],42,,1]>0,arr.ind=T))
-        nMort <- length(unique(mortX$site))
-        nData[i,ij] <- length(cX)
-        pMortX[i,ij] <- nMort/length(cX)
-      }
-    }
-  }
-  return(list(pMort=pMortX,nData=nData,classes=seqX))
-}
-
 
 Dmort <- pMortVarX(modOut,minX=10,maxX=45,stepX=5,varX=13,funX = "mean")
 plot(rowMeans(Dmort$pMort[period1,]))
@@ -329,71 +248,6 @@ plot(rowMeans(Nmort$pMort[period3,]))
 
 
 
-###function to calculate the mortality probability for species proportion
-# Arguments: 
-# modOut = output array from a PREBAS multisite runs
-# rangeYear = number of years  for which to calculate pM
-# minX = minimum species cover
-# maxX = maximum species cover
-# stepX = class step
-pMortSpecies <- function(modOut,minX=0.1,maxX=0.9,stepX=0.1,rangeYear=5){
-  endX <- rangeYear:dim(modOut)[2]
-  startX <- endX-(rangeYear-1)
-  seqX <- seq(minX,maxX,by=stepX)
-  nClass <- length(seqX)+1
-  pMortXpine <- nDataPine <- 
-    pMortXspruce <- nDataSpruce <- 
-    pMortXbirch <- nDataBirch <- matrix(0.,length(endX),nClass)
-  totBA <- apply(modOut[,,13,,1],1:2,sum)
-  pBApine <- modOut[,,13,1,1]/totBA
-  pBAspruce <- modOut[,,13,2,1]/totBA
-  pBAbirch <- modOut[,,13,3,1]/totBA
-  for(i in 1:length(startX)){
-    subPine <-rowMeans(pBApine[,startX[i]:endX[i]],na.rm=T)
-    subSpruce <-rowMeans(pBAspruce[,startX[i]:endX[i]],na.rm=T)
-    subBirch <-rowMeans(pBAbirch[,startX[i]:endX[i]],na.rm=T)
-    for(ij in 1:nClass){
-      if(ij==1){
-        cXpine <- which(subPine <= seqX[ij])
-        cXspruce <- which(subSpruce <= seqX[ij])
-        cXbirch <- which(subBirch <= seqX[ij])
-      } 
-      if(ij>1 & ij<nClass){
-        cXpine <- which(subPine <= seqX[ij] & subPine > seqX[ij-1])
-        cXspruce <- which(subSpruce <= seqX[ij] & subSpruce > seqX[ij-1])
-        cXbirch <- which(subBirch <= seqX[ij] & subBirch > seqX[ij-1])
-      } 
-      if(ij==nClass){
-        cXpine <- which(subPine > seqX[ij])
-        cXspruce <- which(subSpruce > seqX[ij])
-        cXbirch <- which(subBirch > seqX[ij])
-      } 
-      # outX <- modOut[cX,,,,]
-      if(length(cXpine)>0.){
-        mortX <- data.table(which(modOut[cXpine,startX[i]:endX[i],42,,1]>0,arr.ind=T))
-        nMort <- length(unique(mortX$site))
-        nDataPine[i,ij] <- length(cXpine)
-        pMortXpine[i,ij] <- nMort/length(cXpine)
-      }
-      if(length(cXspruce)>0.){
-        mortX <- data.table(which(modOut[cXspruce,startX[i]:endX[i],42,,1]>0,arr.ind=T))
-        nMort <- length(unique(mortX$site))
-        nDataSpruce[i,ij] <- length(cXspruce)
-        pMortXspruce[i,ij] <- nMort/length(cXspruce)
-      }
-      if(length(cXbirch)>0.){
-        mortX <- data.table(which(modOut[cXbirch,startX[i]:endX[i],42,,1]>0,arr.ind=T))
-        nMort <- length(unique(mortX$site))
-        nDataBirch[i,ij] <- length(cXbirch)
-        pMortXbirch[i,ij] <- nMort/length(cXbirch)
-      }
-    }
-  }
-  return(list(pMortPine=pMortXpine,nDataPine=nDataPine,
-              pMortSpruce=pMortXspruce,nDataSpruce=nDataSpruce,
-              pMortBirch=pMortXbirch,nDataBirch=nDataBirch))
-}
-
 pMortBYspec <- pMortSpecies(modOut,minX=0.1,maxX=0.9,stepX=0.1,rangeYear=5)
 plot(rowMeans(pMortBYspec$pMortPine[period1,]))
 plot(rowMeans(pMortBYspec$pMortPine[period2,]))
@@ -404,3 +258,19 @@ plot(rowMeans(pMortBYspec$pMortSpruce[period3,]))
 plot(rowMeans(pMortBYspec$pMortBirch[period1,]))
 plot(rowMeans(pMortBYspec$pMortBirch[period2,]))
 plot(rowMeans(pMortBYspec$pMortBirch[period3,]))
+
+
+period1=1:9
+period2=10:17
+period3=18:30
+
+
+baMortAge <- baMortVarX(modOut,minX=20,maxX=160,stepX=20,varX=7,funX = "max")
+barplot(rowMeans(baMortAge$baMort[period1,]))
+barplot(rowMeans(baMortAge$baMort[period2,]))
+barplot(rowMeans(baMortAge$baMort[period3,]))
+
+baMortD <- baMortVarX(modOut,minX=10,maxX=30,stepX=5,varX=12,funX = "mean")
+barplot(rowMeans(baMortAge$baMort[period1,]))
+barplot(rowMeans(baMortAge$baMort[period2,]))
+barplot(rowMeans(baMortAge$baMort[period3,]))
