@@ -27,6 +27,7 @@ library(DescTools)
 # r_no = regions = 2  ### forest center ID
 nCores <- 6  ####  number of cores
 sampleForPlots <- 9999999
+
 # Missing from varOuts: 
 # MinPeat-index, NEPdrPeat
 
@@ -37,6 +38,7 @@ if(!exists("compHarvX")) compHarvX=3.
 if(!exists("thinFactX")) thinFactX=0.2
 if(!exists("clcutArX") & regSets=="forCent") clcutArX <- NA
 if(!exists("clcutArX") & regSets=="maakunta") clcutArX <- 1
+if(!exists("HcFactor")) HcFactor = 1.
 
 varOuts <- c("NEP sp","GPPspecies", "npp", "gross growth", 
              "soilC", "V", "age", "Wharvested", 

@@ -8,6 +8,7 @@ harvestscenarios <- "Base"
 regSets = "maakunta"
 minDharvX <- 15
 compHarvX=0.
+HcFactor=1.2
 thinFactX=0.25
 NotTapio <- FALSE##flag to switch off precommercial thinnings (TRUE) FALSE otherwise
 NoftTapio <- FALSE ##flag to switch off first thinning (TRUE) FALSE otherwise
