@@ -457,7 +457,7 @@ plot4 <- function(){
   
 }
 
-pdf(paste0("plots_",klk,".pdf"))
+pdf(paste0("plots_",klk,"_HcF",HcFactor,".pdf"))
 plot1()
 plot2()
 plot3()
