@@ -1,7 +1,11 @@
 library(data.table)
 library(Rprebasso)
 
-load("~/Documents/2021 Summer/sample_5_reg7_Base_0_CurrClim.rdata")
+r_no <- 7
+devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
+devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
+
+load(paste0("~/Documents/2021 Summer/sample_5_reg",r_no,"_Base_0_CurrClim.rdata"))
 
 df11 <- data.frame(Species=rep(c("Pine(Mod)","Pine-spruce(Mod)","Spruce(Mod)","Spruce-deciduous(Mod)","Deciduous(Mod)"),6), 
                    AgePeriod=rep(c("40","60","80","120","140","160"),each=5),

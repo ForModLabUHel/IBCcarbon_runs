@@ -1147,7 +1147,7 @@ pMortVarX <- function(modOut,minX,maxX,stepX,varX,funX,rangeYear=5){
     for(ij in 1:nClass){
       if(ij==1) cX <- which(varXs <= seqX[ij])
       if(ij>1 & ij<nClass) cX <- which(varXs <= seqX[ij] & varXs > seqX[ij-1])
-      if(ij==nClass) cX <- which(varXs > seqX[ij])
+      if(ij==nClass) cX <- which(varXs > seqX[ij-1])
       # outX <- modOut[cX,,,,]
       if(length(cX)>0.){
         mortX <- data.table(which(modOut[cX,startX[i]:endX[i],42,,1]>0,arr.ind=T))
@@ -1175,30 +1175,34 @@ baMortVarX <- function(modOut,minX,maxX,stepX,varX,funX,rangeYear=5){
   nMort <- modOut[,2:nYears,42,,1]/modOut[,1:(nYears-1),30,,1]*modOut[,1:(nYears-1),17,,1]
   nMort[which(is.na(nMort))] <- 0.
   baMort <- nMort * modOut[,1:(nYears-1),35,,1]
+  baTot <- apply(modOut[,1:(nYears-1),13,,1],1:2,sum)
   
   endX <- rangeYear:(nYears-1)
   startX <- endX-(rangeYear-1)
   seqX <- seq(minX,maxX,by=stepX)
   nClass <- length(seqX)+1
-  baMortX <- nData <- matrix(0.,length(endX),nClass)
+  baTotX <- baMortX <- nData <- matrix(0.,length(endX),nClass)
   # oo <- modOut
   modOut <- modOut[,2:nYears,,,]
   for(i in 1:length(startX)){
-    varXs<-apply(modOut[,startX[i]:endX[i],varX,,1],1:2,max)
+    varXs<-apply(modOut[,startX[i]:endX[i],varX,,1],1:2,funX)
     varXs <- rowMeans(varXs)
     for(ij in 1:nClass){
       if(ij==1) cX <- which(varXs <= seqX[ij])
       if(ij>1 & ij<nClass) cX <- which(varXs <= seqX[ij] & varXs > seqX[ij-1])
-      if(ij==nClass) cX <- which(varXs > seqX[ij])
+      if(ij==nClass) cX <- which(varXs > seqX[ij-1])
       # outX <- modOut[cX,,,,]
       if(length(cX)>0.){
         baX <- sum(baMort[cX,startX[i]:endX[i],])/length(cX)
+        baTx <- sum(baTot[cX,startX[i]:endX[i]])/length(cX)
         nData[i,ij] <- length(cX)
         baMortX[i,ij] <- baX
+        baTotX[i,ij] <- baTx
       }
     }
   }
-  return(list(baMort=baMortX,nData=nData,classes=seqX))
+  return(list(baMort=baMortX,nData=nData,classes=seqX,
+              baTot=baTotX))
 }
 
 

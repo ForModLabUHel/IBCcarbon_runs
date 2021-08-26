@@ -270,7 +270,18 @@ barplot(rowMeans(baMortAge$baMort[period1,]))
 barplot(rowMeans(baMortAge$baMort[period2,]))
 barplot(rowMeans(baMortAge$baMort[period3,]))
 
-baMortD <- baMortVarX(modOut,minX=10,maxX=30,stepX=5,varX=12,funX = "mean")
+baMortD <- baMortVarX(modOut,minX=10,maxX=25,stepX=5,varX=12,funX = "mean")
 barplot(rowMeans(baMortAge$baMort[period1,]))
 barplot(rowMeans(baMortAge$baMort[period2,]))
 barplot(rowMeans(baMortAge$baMort[period3,]))
+
+baMortBA <- baMortVarX(modOut,minX=10,maxX=30,stepX=5,varX=13,funX = "sum")
+propBA <- baMortBA$baMort/baMortBA$baTot  
+barplot(rowMeans(propBA[period1,]))####fig6 A
+barplot(rowMeans(baMortAge$baMort[period1,]))####fig6 B
+
+###fig 6 C and D
+baMortBA <- baMortVarX(modOut,minX=10,maxX=30,stepX=5,varX=17,funX = "sum")
+propBA <- baMortBA$baMort/baMortBA$baTot  
+barplot(rowMeans(propBA[period1,]))####fig6 C
+barplot(rowMeans(baMortAge$baMort[period1,]))####fig6 D
