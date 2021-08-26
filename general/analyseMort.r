@@ -264,24 +264,137 @@ period1=1:9
 period2=10:17
 period3=18:30
 
+##fig 5A
+baMortAge <- baMortVarX(modOut,minX=20,maxX=240,stepX=20,varX=7,funX = "max")
 
-baMortAge <- baMortVarX(modOut,minX=20,maxX=160,stepX=20,varX=7,funX = "max")
-barplot(rowMeans(baMortAge$baMort[period1,]))
-barplot(rowMeans(baMortAge$baMort[period2,]))
-barplot(rowMeans(baMortAge$baMort[period3,]))
+df1 <- data.frame(Period=rep(c(1,2,3),each=13),
+                  Age=rep(c("<20","20-39","40-59","60-79","80-99","100-119","120-139","140-159","160-179","180-199","200-219","220-239",">240"),3),
+                  BasalArea=c(colMeans(baMortAge$baMort[period1,]),colMeans(baMortAge$baMort[period2,]),colMeans(baMortAge$baMort[period3,])),
+                  NSites=c(colMeans(baMortAge$nData[period1,]),colMeans(baMortAge$nData[period2,]),colMeans(baMortAge$nData[period3,])))
 
-baMortD <- baMortVarX(modOut,minX=10,maxX=25,stepX=5,varX=12,funX = "mean")
-barplot(rowMeans(baMortAge$baMort[period1,]))
-barplot(rowMeans(baMortAge$baMort[period2,]))
-barplot(rowMeans(baMortAge$baMort[period3,]))
+df11 <- data.frame(Period=rep(c("Mod"),13),
+                   Age=c("<20","20-39","40-59","60-79","80-99","100-119","120-139","140-159","160-179","180-199","200-219","220-239",">240"),
+                   BasalArea=c(1.273,1.04,1.36,1.61,1.58,1.55,1.52,1.55,1.49,1.43,1.66,1.49,1.83),
+                   NSites=c(227,763,1659,1872,1781,1650,1281,1022,454,168,63,9,18))
 
-baMortBA <- baMortVarX(modOut,minX=10,maxX=30,stepX=5,varX=13,funX = "sum")
-propBA <- baMortBA$baMort/baMortBA$baTot  
-barplot(rowMeans(propBA[period1,]))####fig6 A
-barplot(rowMeans(baMortAge$baMort[period1,]))####fig6 B
+df5A <- rbind(df1, df11)
+df5A$Age <- factor(df5A$Age,levels=c("<20","20-39","40-59","60-79","80-99","100-119","120-139","140-159","160-179","180-199","200-219","220-239",">240"))
+coeff5A <- ((max(df5A$NSites, na.rm=TRUE))/2)
+p5A <- ggplot(df5A, aes(x=Age)) +
+  geom_bar(aes(y=BasalArea, fill=Period), stat="identity", position=position_dodge()) +
+  geom_path(aes(y=NSites / coeff5A, group=Period, colour=Period), stat="identity") +
+  scale_y_continuous(name="Basal area of dead trees",sec.axis =sec_axis(~.*coeff5A, name="NSites")) +
+  theme(legend.position = "none") 
 
-###fig 6 C and D
-baMortBA <- baMortVarX(modOut,minX=10,maxX=30,stepX=5,varX=17,funX = "sum")
-propBA <- baMortBA$baMort/baMortBA$baTot  
-barplot(rowMeans(propBA[period1,]))####fig6 C
-barplot(rowMeans(baMortAge$baMort[period1,]))####fig6 D
+##fig 6A
+baMortBA <- baMortVarX(modOut,minX=10,maxX=45,stepX=5,varX=13,funX = "sum")
+propBA1 <- colMeans(baMortBA$baMort[period1,]/baMortBA$baTot[period1,])
+propBA2 <- colMeans(baMortBA$baMort[period2,]/baMortBA$baTot[period2,])
+propBA3 <- colMeans(baMortBA$baMort[period3,]/baMortBA$baTot[period3,])
+
+df2 <- data.frame(Period=rep(c(1,2,3),each=9),
+                  BasalArea=rep(c("<10","10-14","15-19","20-24","25-29","30-34","35-39","40-45",">45"),3),
+                  ProbBA=c(propBA1,propBA2,propBA3),
+                  NSites=c(colMeans(baMortBA$nData[period1,]),colMeans(baMortBA$nData[period2,]),colMeans(baMortBA$nData[period3,])))
+
+df21 <- data.frame(Period=rep(c("Mod"),9),
+                   BasalArea=c("<10","10-14","15-19","20-24","25-29","30-34","35-39","40-45",">45"),
+                   ProbBA=c(0.154,0.0897,0.0694,0.05958,0.05607,0.05327,0.053972,0.05607,NA),
+                   NSites=c(564,944,1463,1708,1753,1361,1046,702,NA))
+
+df6A <- rbind(df2, df21)
+df6A$BasalArea <- factor(df6A$BasalArea,levels=c("<10","10-14","15-19","20-24","25-29","30-34","35-39","40-45",">45"))
+coeff6A <- ((max(df6A$NSites, na.rm=TRUE))/0.2)
+p6A <- ggplot(df6A, aes(x=BasalArea)) +
+  geom_bar(aes(y=ProbBA, fill=Period), stat="identity", position=position_dodge()) +
+  geom_path(aes(y=NSites / coeff6A, group=Period, colour=Period), stat="identity") +
+  scale_y_continuous(name="Proportion of dead basal area",sec.axis =sec_axis(~.*coeff6A, name="NSites")) +
+  theme(legend.position = "none") 
+
+##fig 6B
+df3 <- data.frame(Period=rep(c(1,2,3),each=9),
+                  BasalArea=rep(c("<10","10-14","15-19","20-24","25-29","30-34","35-39","40-45",">45"),3),
+                  BaMort=c(colMeans(baMortBA$baMort[period1,]),colMeans(baMortBA$baMort[period2,]),colMeans(baMortBA$baMort[period3,])),
+                  NSites=c(colMeans(baMortBA$nData[period1,]),colMeans(baMortBA$nData[period2,]),colMeans(baMortBA$nData[period3,])))
+
+df31 <- data.frame(Period=rep(c("Mod"),9),
+                   BasalArea=c("<10","10-14","15-19","20-24","25-29","30-34","35-39","40-45",">45"),
+                   BaMort=c(0.966,1.076,1.185,1.317,1.507,1.705,1.976,2.334,NA),
+                   NSites=c(565,630,690,771,882,998,1157,1367,NA))
+
+df6B <- rbind(df3, df31)
+df6B$BasalArea <- factor(df6B$BasalArea,levels=c("<10","10-14","15-19","20-24","25-29","30-34","35-39","40-45",">45"))
+coeff6B <- ((max(df6B$NSites, na.rm=TRUE))/4.5)
+p6B <- ggplot(df6B, aes(x=BasalArea)) +
+  geom_bar(aes(y=BaMort, fill=Period), stat="identity", position=position_dodge()) +
+  geom_path(aes(y=NSites / coeff6B, group=Period, colour=Period), stat="identity") +
+  scale_y_continuous(name="Basal area of dead trees",sec.axis =sec_axis(~.*coeff6B, name="NSites")) +
+  theme(legend.position = "none") 
+
+##fig 6C
+baNmort <- baMortVarX(modOut,minX=200,maxX=1400,stepX=200,varX=17,funX = "sum")
+propNBA1 <- colMeans(baNmort$baMort[period1,]/baNmort$baTot[period1,])
+propNBA2 <- colMeans(baNmort$baMort[period2,]/baNmort$baTot[period2,])
+propNBA3 <- colMeans(baNmort$baMort[period3,]/baNmort$baTot[period3,])
+
+df4 <- data.frame(Period=rep(c("1","2","3"),each=8),
+                  StemNumber=rep(c("<200","200-399","400-599","600-799","800-999","1000-1119","1200-1399",">1400"),3),
+                  BaMort=c(propNBA1,propNBA2,propNBA3),
+                  NSites=c(colMeans(baNmort$nData[period1,]),colMeans(baNmort$nData[period2,]),colMeans(baNmort$nData[period3,])))
+
+df41 <- data.frame(Period=rep(c("Mod"),8),
+                   StemNumber=rep(c("<200","200-399","400-599","600-799","800-999","1000-1119","1200-1399",">1400"),3),
+                   BaMort=c(0.2401,0.129,0.0836,0.0639,0.0541,0.0484,0.0434,0.0409),
+                   NSites=c(26.5,97,123,117,68,38,23,22))
+
+df6C <- rbind(df4, df41)
+df6C$StemNumber <- factor(df6C$StemNumber,levels=c("<200","200-399","400-599","600-799","800-999","1000-1119","1200-1399",">1400"))
+coeff6C <- ((max(df6C$NSites, na.rm=TRUE))/0.25)
+p6C <- ggplot(df6C, aes(x=StemNumber)) +
+  geom_bar(aes(y=BaMort, fill=Period), stat="identity", position=position_dodge()) +
+  geom_path(aes(y=NSites / coeff6C, group=Period, colour=Period), stat="identity") +
+  scale_y_continuous(name="Proportion of dead basal area",sec.axis =sec_axis(~.*coeff6C, name="NSites")) +
+  theme(legend.position = "none") 
+
+##fig 6D
+df5 <- data.frame(Period=rep(c("1","2","3"),each=8),
+                  StemNumber=rep(c("<200","200-399","400-599","600-799","800-999","1000-1119","1200-1399",">1400"),3),
+                  BaMort=c(colMeans(baNmort$baMort[period1,]),colMeans(baNmort$baMort[period2,]),colMeans(baNmort$baMort[period3,])),
+                  NSites=c(colMeans(baNmort$nData[period1,]),colMeans(baNmort$nData[period2,]),colMeans(baNmort$nData[period3,])))
+
+df51 <- data.frame(Period=rep(c("Mod"),8),
+                  StemNumber=rep(c("<200","200-399","400-599","600-799","800-999","1000-1119","1200-1399",">1400"),3),
+                  BaMort=c(1.638,1.437,1.543,1.459,1.443,1.415,1.370,1.610),
+                  NSites=c(186,1085,2270,2675,1817,1134,729,890))
+
+df6D <- rbind(df5, df51)
+df6D$StemNumber <- factor(df6D$StemNumber,levels=c("<200","200-399","400-599","600-799","800-999","1000-1119","1200-1399",">1400"))
+coeff6D <- ((max(df6D$NSites, na.rm=TRUE))/2)
+p6D <- ggplot(df6D, aes(x=StemNumber)) +
+  geom_bar(aes(y=BaMort, fill=Period), stat="identity", position=position_dodge()) +
+  geom_path(aes(y=NSites / coeff6D, group=Period, colour=Period), stat="identity") +
+  scale_y_continuous(name="Basal area of dead trees",sec.axis =sec_axis(~.*coeff6D, name="NSites")) +
+  theme(legend.position = "none") 
+
+##Combine figure
+figure1 <- ggarrange(p5A, labels = c("5A"),
+                     hjust = -0.2, vjust = -0.25,
+                     common.legend = TRUE, legend = "right",
+                     nrow = 1, ncol=2)
+
+figure2 <- ggarrange(p6A,p6B, labels = c("6A","6B"), 
+                     hjust = -0.2, vjust = -0.25,
+                     common.legend = TRUE, legend = "right",
+                     nrow = 1, ncol=2)
+
+figure3 <- ggarrange(p6C,p6D, labels = c("6C","6D"), 
+                     hjust = -0.2, vjust = -0.25,
+                     common.legend = TRUE, legend = "right",
+                     nrow = 1, ncol=2)
+
+figure <- ggarrange(figure1,figure2,figure3,
+                     common.legend = FALSE, legend = "right",
+                     align = "h",
+                     nrow=3, ncol=1)
+
+annotate_figure(figure, top=text_grob("Uusimaa - Base(15) - Comp(3)",size=14))
