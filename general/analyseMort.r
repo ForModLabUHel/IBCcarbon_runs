@@ -262,7 +262,7 @@ plot(rowMeans(pMortBYspec$pMortBirch[period3,]))
 
 period1=1:9
 period2=10:17
-period3=18:30
+period3=18:28
 
 
 baMortAge <- baMortVarX(modOut,minX=20,maxX=160,stepX=20,varX=7,funX = "max")
@@ -278,10 +278,10 @@ barplot(rowMeans(baMortAge$baMort[period3,]))
 baMortBA <- baMortVarX(modOut,minX=10,maxX=30,stepX=5,varX=13,funX = "sum")
 propBA <- baMortBA$baMort/baMortBA$baTot  
 barplot(rowMeans(propBA[period1,]))####fig6 A
-barplot(rowMeans(baMortAge$baMort[period1,]))####fig6 B
+barplot(rowMeans(baMortBA$baMort[period1,]))####fig6 B
 
 ###fig 6 C and D
 baMortBA <- baMortVarX(modOut,minX=10,maxX=30,stepX=5,varX=17,funX = "sum")
 propBA <- baMortBA$baMort/baMortBA$baTot  
-barplot(rowMeans(propBA[period1,]))####fig6 C
-barplot(rowMeans(baMortAge$baMort[period1,]))####fig6 D
+barplot(rowMeans(propBA[period3,]))####fig6 C
+barplot(rowMeans(baMortBA$baMort[period3,]))####fig6 D
