@@ -246,7 +246,7 @@ runModel <- function(sampleID,sampleRun=FALSE){
         }
         ####end initialize deadWood Volume
         if(sampleRun){
-          return(region)
+          return(list(region = region,initPrebas=initPrebas))
         }else{
         
         ####create pdf for test plots
