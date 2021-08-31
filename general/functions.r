@@ -141,6 +141,7 @@ runModel <- function(sampleID,sampleRun=FALSE){
             HarvLim1 <- HarvLimX
             if(harscen == "Low"){ HarvLim1 <- HarvLimX * 0.6}
             if(harscen == "MaxSust"){HarvLim1 <- HarvLimX * 1.2}
+            if(harscen == "NoHarv"){HarvLim1 <- HarvLimX * 0.}
           }else{
             roundWood <- HarvLim1 * roundTotWoodRatio
             enWood <- HarvLim1 - roundWood
@@ -150,6 +151,7 @@ runModel <- function(sampleID,sampleRun=FALSE){
           HarvLim1 <- HarvLimMaak*1000*sum(areas)/sum(data.all$area)
           if(harscen == "Low"){ HarvLim1 <- HarvLimMaak * 0.6}
           if(harscen == "MaxSust"){HarvLim1 <- HarvLimMaak * 1.2}
+          if(harscen == "NoHarv"){HarvLim1 <- HarvLimMaak * 0.}
         }          
         
         ###calculate clearcutting area for the sample
