@@ -1,5 +1,6 @@
 # devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/testCode.r")
-maaks <- c(1,3)#1:19 
+maaks <- 1:19 
+ggCountry <- array(NA,dim=c(36,3,19))
 for(klk in maaks){
   
 # klk <- 3
@@ -360,10 +361,6 @@ plot1 <- function(){
   points(thinAr)
   points(noClcutAr,col=5)
   
-  yrange <- range(ggMeanAll)
-  plot(ggMeanAll[,1], main="gross growth",ylim=yrange,col=2,pch=20)
-  points(ggMeanAll[,2],col=3,pch=20)
-  points(ggMeanAll[,3],col=4,pch=20)
 }
 ###plot #2
 plot2 <- function(){
@@ -397,8 +394,8 @@ plot3 <- function(){
 }
 
 regStat <- function(modOut,varX, funX){
-  v0 <- apply(modOut$multiOut[,,varX,,1],1:2,funX)
-  v1 <- colSums(sweep(v0,1,areas,"*"))/sum(data.sample$area)
+  v0 <- apply(modOut$multiOut[,,varX,,1],1:2,funX,na.rm=T)
+  v1 <- colSums(sweep(v0,1,areas,"*"))/sum(data.sample$area,na.rm=T)
   return(v1)
 }
 v0 <- regStat(region0,30,"sum")
@@ -440,7 +437,9 @@ plot4 <- function(){
   plot(v0,ylim=ylim, main="volume",ylab="m3/ha",pch=20,col=2)
   points(v1,pch=20,col=3)
   points(v2,pch=20,col=4)
-
+  stats[regID==0,points(Vtot/ForLandTot,col=2)]
+  stats[regID==1,points(Vtot/ForLandTot,col=1)]
+  
   ylim=range(0.,gpp0,gpp1,gpp2)
   plot(gpp0,ylim=ylim, main="GPP",ylab="gC/m2",pch=20,col=2)
   points(gpp1,pch=20,col=3)
@@ -458,6 +457,77 @@ plot4 <- function(){
   
 }
 
+
+Ws0 <- regStat(region0,31,"sum")
+Ws1 <- regStat(region1,31,"sum")
+Ws2 <- regStat(region2,31,"sum")
+Wf0 <- regStat(region0,33,"sum")
+Wf1 <- regStat(region1,33,"sum")
+Wf2 <- regStat(region2,33,"sum")
+Wb0 <- regStat(region0,24,"sum")
+Wb1 <- regStat(region1,24,"sum")
+Wb2 <- regStat(region2,24,"sum")
+Wfb0 <- Wf0+Wb0
+Wfb1 <- Wf1+Wb1
+Wfb2 <- Wf2+Wb2
+Wcr0 <- regStat(region0,32,"sum")
+Wcr1 <- regStat(region1,32,"sum")
+Wcr2 <- regStat(region2,32,"sum")
+Wfr0 <- regStat(region0,25,"sum")
+Wfr1 <- regStat(region1,25,"sum")
+Wfr2 <- regStat(region2,25,"sum")
+Wtot0 <- Wfr0 + Wcr0 + Wfb0 + Ws0
+Wtot1 <- Wfr1 + Wcr1 + Wfb1 + Ws1
+Wtot2 <- Wfr2 + Wcr2 + Wfb2 + Ws2
+
+plot5 <- function(){
+  par(mfrow=c(3,2))
+
+  ylim=range(0.,v0,v1,v2)
+  plot(v0,ylim=ylim, main="volume",ylab="m3/ha",pch=20,col=2)
+  points(v1,pch=20,col=3)
+  points(v2,pch=20,col=4)
+  stats[regID==0,points(Vtot/ForLandTot,col=2)]
+  stats[regID==1,points(Vtot/ForLandTot,col=1)]
+  
+  yrange <- c(0,10)#range(ggMeanAll)
+  plot(ggMeanAll[,1], main="gross growth",ylim=yrange,col=2,pch=20)
+  points(ggMeanAll[,2],col=3,pch=20)
+  points(ggMeanAll[,3],col=4,pch=20)
+  stats[regID==0,points(IncrTot,col=2)]
+  stats[regID==1,points(IncrTot,col=1)]
+  
+  
+  ylim=range(0.,Wfb0,Wfb1,Wfb2,na.rm=T)
+  plot(Wfb0,ylim=ylim, main="Foliage + Branches",ylab="kgC/ha",pch=20,col=2)
+  points(Wfb1,pch=20,col=3)
+  points(Wfb2,pch=20,col=4)
+  stats[regID==0,points(WfbTot/ForLandTot,col=2)]
+  stats[regID==1,points(WfbTot/ForLandTot,col=1)]  
+
+  ylim=range(0.,Ws0,Ws1,Ws2,na.rm=T)
+  plot(Ws0,ylim=ylim, main="Ws",ylab="kgC/ha",pch=20,col=2)
+  points(Ws1,pch=20,col=3)
+  points(Ws2,pch=20,col=4)
+  stats[regID==0,points(WsTot/ForLandTot,col=2)]
+  stats[regID==1,points(WsTot/ForLandTot,col=1)]  
+  
+  ylim=range(0.,Wcr0,Wcr1,Wcr2,na.rm=T)
+  plot(Wcr0,ylim=ylim, main="Wcr",ylab="kgC/ha",pch=20,col=2)
+  points(Wcr1,pch=20,col=3)
+  points(Wcr2,pch=20,col=4)
+  stats[regID==0,points(WcrTot/ForLandTot,col=2)]
+  stats[regID==1,points(WcrTot/ForLandTot,col=1)]  
+  
+  ylim=range(0.,Wtot0,Wtot1,Wtot2,na.rm=T)
+  plot(Wtot0,ylim=ylim, main="Wtot",ylab="kgC/ha",pch=20,col=2)
+  points(Wtot1,pch=20,col=3)
+  points(Wtot2,pch=20,col=4)
+  stats[regID==0,points(WtotTot/ForLandTot,col=2)]
+  stats[regID==1,points(WtotTot/ForLandTot,col=1)]  
+
+}
+
 pdf(paste0("plots_",klk,"_HcF",HcFactor,".pdf"))
 plot1()
 plot2()
@@ -467,6 +537,9 @@ dev.off()
 print(klk)
 rm(list=ls())
 gc()
-}
 
+ggCountry[,,klk] <- ggMeanAll
+
+}
+save(ggCountry,file="ggCountry.rdata")
 # maakNam <- read.table("/scratch/project_2000994/PREBASruns/metadata/maakunta/maakunta_numbers.txt")
