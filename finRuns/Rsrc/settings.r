@@ -229,14 +229,14 @@ if(regSets=="maakunta"){
   ))
   stats <- data.table(read_excel(
     path = "/scratch/project_2000994/PREBASruns/metadata/maakunta/harvest.xlsx",
-    sheet="stats",col_types=c("text","numeric","text",rep("numeric",40)),na="NA"))
+    sheet="stats",col_types=c("text","numeric","numeric","text",rep("numeric",40)),na="NA"))
   ####converts data to model output units
   cFact <- 1e6 ####M m3 -> m3
-  stats[,names(stats)[4:8]:=.SD*cFact,.SDcols=4:8]  ####converts volume from Mm3 to m3
+  stats[,names(stats)[5:9]:=.SD*cFact,.SDcols=5:9]  ####converts volume from Mm3 to m3
   cFact <- 1e9/2 #### orginal units M t dryMatter -> kgC
-  stats[,names(stats)[10:29]:= .SD*cFact,.SDcols=10:29] ####converts biomasses
+  stats[,names(stats)[11:30]:= .SD*cFact,.SDcols=11:30] ####converts biomasses
   cFact <- 1e3 #### orginal units kha -> ha
-  stats[,names(stats)[37:43]:= .SD*cFact,.SDcols=37:43] ####converts areas
+  stats[,names(stats)[38:44]:= .SD*cFact,.SDcols=38:44] ####converts areas
   
   
 }
