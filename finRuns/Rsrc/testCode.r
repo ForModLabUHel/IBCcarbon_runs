@@ -1,5 +1,5 @@
 # devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/testCode.r")
-maaks <- 2:19 
+maaks <- 1:19 
 ggCountry <- array(NA,dim=c(36,3,19))
 for(klk in maaks){
   
@@ -10,7 +10,7 @@ harvestscenarios <- "Base"
 regSets = "maakunta"
 minDharvX <- 15
 compHarvX=0.
-HcFactor=1
+HcFactor=1.2
 thinFactX=0.25
 NotTapio <- FALSE##flag to switch off precommercial thinnings (TRUE) FALSE otherwise
 NoftTapio <- FALSE ##flag to switch off first thinning (TRUE) FALSE otherwise
