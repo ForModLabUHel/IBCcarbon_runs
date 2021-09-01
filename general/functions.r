@@ -5,7 +5,7 @@
 ## ---------------------------------------------------------------------
 ## MAIN SCRIPT
 ## ---------------------------------------------------------------------
-runModel <- function(sampleID,sampleRun=FALSE){
+runModel <- function(sampleID,sampleRun=FALSE,uncRun=FALSE,easyInit=FALSE){
   # print(date())
   print(paste("start sample ID",sampleID))
   sampleX <- ops[[sampleID]]
