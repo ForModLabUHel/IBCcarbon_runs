@@ -1,5 +1,5 @@
 # devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/testCode.r")
-maaks <- 1:19 
+maaks <- 2:19 
 ggCountry <- array(NA,dim=c(36,3,19))
 for(klk in maaks){
   
@@ -440,7 +440,7 @@ plot4 <- function(){
   points(v1,pch=20,col=3)
   points(v2,pch=20,col=4)
   stats[regID==0,points(Vtot/ForLandTot,col=2)]
-  stats[regID==1,points(Vtot/ForLandTot,col=1)]
+  stats[regID==r_no,points(Vtot/ForLandTot,col=1)]
   
   ylim=range(0.,gpp0,gpp1,gpp2)
   plot(gpp0,ylim=ylim, main="GPP",ylab="gC/m2",pch=20,col=2)
@@ -486,7 +486,7 @@ plot5 <- function(){
   par(mfrow=c(3,2))
 
   mreg <- as.numeric(stats[regID==0,Vtot/ForLandTot])
-  mcount <- as.numeric(stats[regID==1,Vtot/ForLandTot])
+  mcount <- as.numeric(stats[regID==r_no,Vtot/ForLandTot])
   ylim=range(0.,v0,v1,v2,mreg,mcount,na.rm=T)
   plot(v0,ylim=ylim, main="volume",ylab="m3/ha",pch=20,col=2)
   points(v1,pch=20,col=3)
@@ -495,49 +495,49 @@ plot5 <- function(){
   points(mcount,col=1)
   
   mreg <- as.numeric(stats[regID==0,IncrTot])
-  mcount <- as.numeric(stats[regID==1,IncrTot])
+  mcount <- as.numeric(stats[regID==r_no,IncrTot])
   yrange=range(ggMeanAll,mreg,mcount,na.rm=T)
   plot(ggMeanAll[,1], main="gross growth",ylim=yrange,col=2,pch=20)
   points(ggMeanAll[,2],col=3,pch=20)
   points(ggMeanAll[,3],col=4,pch=20)
   stats[regID==0,points(IncrTot,col=2)]
-  stats[regID==1,points(IncrTot,col=1)]
+  stats[regID==r_no,points(IncrTot,col=1)]
   
   mreg <- as.numeric(stats[regID==0,WfbTot/ForLandTot])
-  mcount <- as.numeric(stats[regID==1,WfbTot/ForLandTot])
+  mcount <- as.numeric(stats[regID==r_no,WfbTot/ForLandTot])
   ylim=range(Wfb0,Wfb1,Wfb2,mreg,mcount,na.rm=T)
   plot(Wfb0,ylim=ylim, main="Foliage + Branches",ylab="kgC/ha",pch=20,col=2)
   points(Wfb1,pch=20,col=3)
   points(Wfb2,pch=20,col=4)
   stats[regID==0,points(WfbTot/ForLandTot,col=2)]
-  stats[regID==1,points(WfbTot/ForLandTot,col=1)]  
+  stats[regID==r_no,points(WfbTot/ForLandTot,col=1)]  
 
   mreg <- as.numeric(stats[regID==0,WsTot/ForLandTot])
-  mcount <- as.numeric(stats[regID==1,WsTot/ForLandTot])
+  mcount <- as.numeric(stats[regID==r_no,WsTot/ForLandTot])
   ylim=range(Ws0,Ws1,Ws2,mreg,mcount,na.rm=T)
   plot(Ws0,ylim=ylim, main="Ws",ylab="kgC/ha",pch=20,col=2)
   points(Ws1,pch=20,col=3)
   points(Ws2,pch=20,col=4)
   stats[regID==0,points(WsTot/ForLandTot,col=2)]
-  stats[regID==1,points(WsTot/ForLandTot,col=1)]  
+  stats[regID==r_no,points(WsTot/ForLandTot,col=1)]  
   
   mreg <- as.numeric(stats[regID==0,WcrTot/ForLandTot])
-  mcount <- as.numeric(stats[regID==1,WcrTot/ForLandTot])
+  mcount <- as.numeric(stats[regID==r_no,WcrTot/ForLandTot])
   ylim=range(Wcr0,Wcr1,Wcr2,mreg,mcount,na.rm=T)
   plot(Wcr0,ylim=ylim, main="Wcr",ylab="kgC/ha",pch=20,col=2)
   points(Wcr1,pch=20,col=3)
   points(Wcr2,pch=20,col=4)
   stats[regID==0,points(WcrTot/ForLandTot,col=2)]
-  stats[regID==1,points(WcrTot/ForLandTot,col=1)]  
+  stats[regID==r_no,points(WcrTot/ForLandTot,col=1)]  
   
   mreg <- as.numeric(stats[regID==0,WtotTot/ForLandTot])
-  mcount <- as.numeric(stats[regID==1,WtotTot/ForLandTot])
+  mcount <- as.numeric(stats[regID==r_no,WtotTot/ForLandTot])
   ylim=range(Wtot0,Wtot1,Wtot2,mreg,mcount,na.rm=T)
   plot(Wtot0,ylim=ylim, main="Wtot",ylab="kgC/ha",pch=20,col=2)
   points(Wtot1,pch=20,col=3)
   points(Wtot2,pch=20,col=4)
   stats[regID==0,points(WtotTot/ForLandTot,col=2)]
-  stats[regID==1,points(WtotTot/ForLandTot,col=1)]  
+  stats[regID==r_no,points(WtotTot/ForLandTot,col=1)]  
 
 }
 
