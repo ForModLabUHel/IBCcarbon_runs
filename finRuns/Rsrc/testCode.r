@@ -533,12 +533,15 @@ plot1()
 plot2()
 plot3()
 plot4()
+plot5()
 dev.off()
 print(klk)
+
+ggCountry[,,klk] <- ggMeanAll
+
 rm(list=ls())
 gc()
 
-ggCountry[,,klk] <- ggMeanAll
 
 }
 save(ggCountry,file="ggCountry.rdata")
