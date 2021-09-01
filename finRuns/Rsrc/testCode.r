@@ -487,8 +487,8 @@ plot5 <- function(){
 
   mreg <- as.numeric(stats[regID==0,Vtot/ForLandTot])
   mcount <- as.numeric(stats[regID==1,Vtot/ForLandTot])
-  ylim=range(0.,v0,v1,v2,mreg,mcount)
-  plot(v0,ylizm=ylim, main="volume",ylab="m3/ha",pch=20,col=2)
+  ylim=range(0.,v0,v1,v2,mreg,mcount,na.rm=T)
+  plot(v0,ylim=ylim, main="volume",ylab="m3/ha",pch=20,col=2)
   points(v1,pch=20,col=3)
   points(v2,pch=20,col=4)
   points(mreg,col=2)
@@ -496,8 +496,7 @@ plot5 <- function(){
   
   mreg <- as.numeric(stats[regID==0,IncrTot])
   mcount <- as.numeric(stats[regID==1,IncrTot])
-  yrange=range(ggMeanAll,mreg,mcount)
-  # yrange <- c(0,10)#range(ggMeanAll)
+  yrange=range(ggMeanAll,mreg,mcount,na.rm=T)
   plot(ggMeanAll[,1], main="gross growth",ylim=yrange,col=2,pch=20)
   points(ggMeanAll[,2],col=3,pch=20)
   points(ggMeanAll[,3],col=4,pch=20)
@@ -506,7 +505,6 @@ plot5 <- function(){
   
   mreg <- as.numeric(stats[regID==0,WfbTot/ForLandTot])
   mcount <- as.numeric(stats[regID==1,WfbTot/ForLandTot])
-  # yrange=range(v0,v1,v2,mreg,mcount)
   ylim=range(Wfb0,Wfb1,Wfb2,mreg,mcount,na.rm=T)
   plot(Wfb0,ylim=ylim, main="Foliage + Branches",ylab="kgC/ha",pch=20,col=2)
   points(Wfb1,pch=20,col=3)
