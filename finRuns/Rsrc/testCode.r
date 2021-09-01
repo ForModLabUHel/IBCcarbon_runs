@@ -328,6 +328,8 @@ ggMeanAll[,ix] <- colSums(gg)
 save(maakV,ggMeanAll,regThinarea,clcutAreaAll,regThinVolAll,regThinareaAll,
      regClcutVolAll,enWoodAll,regRoundWoodAll,file= "...")
 
+SDIinit <- reinekeMSinit(initPrebas$multiInitVar)
+
 ###plot #1
 ####compare roundWood
 #compare harvest limts
@@ -361,6 +363,7 @@ plot1 <- function(){
   points(thinAr)
   points(noClcutAr,col=5)
   
+  hist(SDIinit)
 }
 ###plot #2
 plot2 <- function(){
