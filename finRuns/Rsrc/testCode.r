@@ -13,8 +13,9 @@ regSets = "maakunta"
 minDharvX <- 15
 compHarvX=0.
 thinFactX=0.25
-HcFactor = 0.8 ##1, 0.8, 1.2
-baFact = 1.10  ##1, 1.1, 1.1
+HcFactor = 1    ##1, 0.8, 1.2, 0.8, 1.2
+baFact = 1.0    ##1, 1.1, 1.1,  1,   1
+dbhFact = 1.0   ##1,  1 ,   1, 1.1, 1.1
 NotTapio <- FALSE##flag to switch off precommercial thinnings (TRUE) FALSE otherwise
 NoftTapio <- FALSE ##flag to switch off first thinning (TRUE) FALSE otherwise
 
@@ -27,6 +28,7 @@ source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/maste
 # plot(apply(region2$multiOut[930,,13,,1],1,sum))
 
 data.all$ba = data.all$ba * baFact
+data.all$dbh = data.all$dbh * dbhFact
 if(NoftTapio) ftTapioParX  <- ftTapio * 1e5  ##switch off first thinning
 if(NotTapio) tTapioParX  <- tTapio * 1e5  ##switch off precommercial thinning 
 
@@ -545,7 +547,7 @@ plot5 <- function(){
 
 }
 
-pdf(paste0("plots_",klk,"_HcF",HcFactor,"_baF",baFact,".pdf"))
+pdf(paste0("plots_",klk,"_HcF",HcFactor,"_baF",baFact,"_dbhF",dbhFact,".pdf"))
 plot1()
 plot2()
 plot3()
@@ -562,5 +564,5 @@ gc()
 
 
 }
-save(ggCountry,file=paste0("ggCountry","_HcF",HcFactor,"_baF",baFact,".rdata"))
+save(ggCountry,file=paste0("ggCountry","_HcF",HcFactor,"_baF",baFact,"_dbhF",dbhFact,".rdata"))
 # maakNam <- read.table("/scratch/project_2000994/PREBASruns/metadata/maakunta/maakunta_numbers.txt")
