@@ -12,7 +12,7 @@ minDharvX <- 15
 compHarvX=0.
 HcFactor=0.8
 thinFactX=0.25
-baFact = 1.05
+baFact = 1.0
 NotTapio <- FALSE##flag to switch off precommercial thinnings (TRUE) FALSE otherwise
 NoftTapio <- FALSE ##flag to switch off first thinning (TRUE) FALSE otherwise
 
@@ -326,8 +326,8 @@ ggMeanAll[,ix] <- colSums(gg)
 
 }
 
-save(maakV,ggMeanAll,regThinarea,clcutAreaAll,regThinVolAll,regThinareaAll,
-     regClcutVolAll,enWoodAll,regRoundWoodAll,file= "...")
+# save(maakV,ggMeanAll,regThinarea,clcutAreaAll,regThinVolAll,regThinareaAll,
+#      regClcutVolAll,enWoodAll,regRoundWoodAll,file= "...")
 
 SDIinit <- reinekeMSinit(initPrebas$multiInitVar)
 
@@ -543,7 +543,7 @@ plot5 <- function(){
 
 }
 
-pdf(paste0("plots_",klk,"_HcF",HcFactor,".pdf"))
+pdf(paste0("plots_",klk,"_HcF",HcFactor,"_baF",baFact,".pdf"))
 plot1()
 plot2()
 plot3()
@@ -560,5 +560,5 @@ gc()
 
 
 }
-save(ggCountry,file=paste0("ggCountry_HcFact",HcFactor,".rdata"))
+save(ggCountry,file=paste0("ggCountry","_HcF",HcFactor,"_baF",baFact,".rdata"))
 # maakNam <- read.table("/scratch/project_2000994/PREBASruns/metadata/maakunta/maakunta_numbers.txt")
