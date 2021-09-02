@@ -13,8 +13,8 @@ regSets = "maakunta"
 minDharvX <- 15
 compHarvX=0.
 thinFactX=0.25
-HcFactor = 0.8 ##1, 0.8
-baFact = 1.10  ##1, 1.1
+HcFactor = 0.8 ##1, 0.8, 1.2
+baFact = 1.10  ##1, 1.1, 1.1
 NotTapio <- FALSE##flag to switch off precommercial thinnings (TRUE) FALSE otherwise
 NoftTapio <- FALSE ##flag to switch off first thinning (TRUE) FALSE otherwise
 
