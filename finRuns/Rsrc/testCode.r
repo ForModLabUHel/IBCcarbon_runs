@@ -560,5 +560,5 @@ gc()
 
 
 }
-save(ggCountry,file=paste0("ggCountry_HcFact",HcFactor".rdata"))
+save(ggCountry,file=paste0("ggCountry_HcFact",HcFactor,".rdata"))
 # maakNam <- read.table("/scratch/project_2000994/PREBASruns/metadata/maakunta/maakunta_numbers.txt")
