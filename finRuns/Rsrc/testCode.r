@@ -12,7 +12,7 @@ minDharvX <- 15
 compHarvX=0.
 HcFactor=0.8
 thinFactX=0.25
-baFact = 1.
+baFact = 1.05
 NotTapio <- FALSE##flag to switch off precommercial thinnings (TRUE) FALSE otherwise
 NoftTapio <- FALSE ##flag to switch off first thinning (TRUE) FALSE otherwise
 
@@ -560,5 +560,5 @@ gc()
 
 
 }
-save(ggCountry,file="ggCountry.rdata")
+save(ggCountry,file=paste0("ggCountry_HcFact",HcFactor".rdata"))
 # maakNam <- read.table("/scratch/project_2000994/PREBASruns/metadata/maakunta/maakunta_numbers.txt")
