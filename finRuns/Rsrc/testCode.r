@@ -12,6 +12,7 @@ minDharvX <- 15
 compHarvX=0.
 HcFactor=0.8
 thinFactX=0.25
+baFact = 1.
 NotTapio <- FALSE##flag to switch off precommercial thinnings (TRUE) FALSE otherwise
 NoftTapio <- FALSE ##flag to switch off first thinning (TRUE) FALSE otherwise
 
@@ -23,6 +24,7 @@ source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/maste
 #                         compHarv=3, thinFact=thinFactX)
 # plot(apply(region2$multiOut[930,,13,,1],1,sum))
 
+data.all$ba = data.all$ba * baFact
 if(NoftTapio) ftTapioParX  <- ftTapio * 1e5  ##switch off first thinning
 if(NotTapio) tTapioParX  <- tTapio * 1e5  ##switch off precommercial thinning 
 

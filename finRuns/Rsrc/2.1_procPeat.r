@@ -21,17 +21,19 @@ if(soilSyke){
   drPeatID <- 400  ### ID = 400 for luke database; 
 }
 
+##!!###step to reduce the size of the peat raster 
 ###load npp first outside loop to get peatX
 npp = raster(paste0("rasters/forCent",r_no,"/",
                     "npp_",min(per1),"-",max(per1),"_",
                     harvestscenarios,"_",rcpfile,".tif"))
 peatX <- crop(finPeats,npp)
+##!!## end
 
 ###load site type raster
 fert=raster(paste0("rasters/forCent",r_no,"/",
                    "siteType.tif"))
 
-
+#####Loop along periods
 for (i in 1:3) {
   curr = paste0("per",i)
   npp = raster(paste0("rasters/forCent",r_no,"/",
