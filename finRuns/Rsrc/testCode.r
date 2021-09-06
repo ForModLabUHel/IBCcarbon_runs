@@ -1,7 +1,6 @@
 # devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/testCode.r")
 maaks <- 1:19 
 ggCountry <- array(NA,dim=c(36,3,19))
-HcF <- 
 
 for(klk in maaks){
   
