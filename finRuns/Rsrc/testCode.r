@@ -474,18 +474,21 @@ Wf2 <- regStat(region2,33,"sum")
 Wb0 <- regStat(region0,24,"sum")
 Wb1 <- regStat(region1,24,"sum")
 Wb2 <- regStat(region2,24,"sum")
-Wfb0 <- Wf0+Wb0
-Wfb1 <- Wf1+Wb1
-Wfb2 <- Wf2+Wb2
+Wdb0 <- regStat(region0,51,"sum")
+Wdb1 <- regStat(region1,51,"sum")
+Wdb2 <- regStat(region2,51,"sum")
+Wfb0 <- Wf0+Wb0+Wdb0
+Wfb1 <- Wf1+Wb1+Wdb1
+Wfb2 <- Wf2+Wb2+Wdb2
 Wcr0 <- regStat(region0,32,"sum")
 Wcr1 <- regStat(region1,32,"sum")
 Wcr2 <- regStat(region2,32,"sum")
 Wfr0 <- regStat(region0,25,"sum")
 Wfr1 <- regStat(region1,25,"sum")
 Wfr2 <- regStat(region2,25,"sum")
-Wtot0 <- Wfr0 + Wcr0 + Wfb0 + Ws0
-Wtot1 <- Wfr1 + Wcr1 + Wfb1 + Ws1
-Wtot2 <- Wfr2 + Wcr2 + Wfb2 + Ws2
+Wtot0 <- Wfr0 + Wcr0 + Wfb0 + Ws0+Wdb0
+Wtot1 <- Wfr1 + Wcr1 + Wfb1 + Ws1+Wdb1
+Wtot2 <- Wfr2 + Wcr2 + Wfb2 + Ws2+Wdb2
 
 plot5 <- function(){
   par(mfrow=c(3,2))
