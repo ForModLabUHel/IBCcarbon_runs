@@ -549,7 +549,11 @@ plot5 <- function(){
 
 }
 
-pdf(paste0("plots_",klk,"_HcF",HcFactor,"_baF",baFact,"_dbhF",dbhFact,".pdf"))
+save(Ws0, Ws1, Ws2, Wf0, Wf1, Wf2, Wb0, Wb1, Wb2,
+     Wdb0, Wdb1, Wdb2, Wfb0, Wfb1, Wfb2, Wcr0, Wcr1, Wcr2,
+     Wfr0, Wfr1, Wfr2, Wtot0, Wtot1, Wtot2,
+    file=paste0("testPlotsData/reg_",klk,"_HcF",HcFactor,"_baF",baFact,"_dbhF",dbhFact,".rdata"))
+pdf(paste0("testPlotsData/plots_",klk,"_HcF",HcFactor,"_baF",baFact,"_dbhF",dbhFact,".pdf"))
 plot1()
 plot2()
 plot3()
@@ -566,5 +570,5 @@ gc()
 
 
 }
-save(ggCountry,file=paste0("ggCountry","_HcF",HcFactor,"_baF",baFact,"_dbhF",dbhFact,".rdata"))
+save(ggCountry,file=paste0("testPlotsData/ggCountry","_HcF",HcFactor,"_baF",baFact,"_dbhF",dbhFact,".rdata"))
 # maakNam <- read.table("/scratch/project_2000994/PREBASruns/metadata/maakunta/maakunta_numbers.txt")
