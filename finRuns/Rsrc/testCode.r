@@ -13,6 +13,8 @@ if(!exists("NotTapio")) NotTapio <- FALSE##flag to switch off precommercial thin
 if(!exists("NoftTapio")) NoftTapio <- FALSE ##flag to switch off first thinning (TRUE) FALSE otherwise
 if(!exists("ggCountry")) ggCountry <- array(NA,dim=c(36,3,19))
 
+noRmList <- ls()
+
 for(klk in maaks){
   
 # klk <- 3
