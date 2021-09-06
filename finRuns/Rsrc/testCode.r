@@ -1,23 +1,24 @@
 # devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/testCode.r")
-maaks <- 1:19 
+if(!exists("maaks")) maaks <- 1:19 
+if(!exists("sampleID")) sampleID <- 1#498 #136
+if(!exists("harvestscenarios")) harvestscenarios <- "Base"
+if(!exists("regSets")) regSets = "maakunta"
+if(!exists("minDharvX")) minDharvX <- 15
+if(!exists("compHarvX")) compHarvX=0.
+if(!exists("thinFactX")) thinFactX=0.25
+if(!exists("HcFactor")) HcFactor = 1    ##1, 0.8, 1.2, 0.8, 1.2
+if(!exists("baFact")) baFact = 1.0    ##1, 1.1, 1.1,  1,   1
+if(!exists("dbhFact")) dbhFact = 1.0   ##1,  1 ,   1, 1.1, 1.1
+if(!exists("NotTapio")) NotTapio <- FALSE##flag to switch off precommercial thinnings (TRUE) FALSE otherwise
+if(!exists("NoftTapio")) NoftTapio <- FALSE ##flag to switch off first thinning (TRUE) FALSE otherwise
+
 ggCountry <- array(NA,dim=c(36,3,19))
 
 for(klk in maaks){
   
 # klk <- 3
 r_no <- regions <- klk
-sampleID <- 1#498 #136
-harvestscenarios <- "Base"
-regSets = "maakunta"
-minDharvX <- 15
-compHarvX=0.
-thinFactX=0.25
-HcFactor = 1    ##1, 0.8, 1.2, 0.8, 1.2
-baFact = 1.0    ##1, 1.1, 1.1,  1,   1
-dbhFact = 1.0   ##1,  1 ,   1, 1.1, 1.1
-NotTapio <- FALSE##flag to switch off precommercial thinnings (TRUE) FALSE otherwise
-NoftTapio <- FALSE ##flag to switch off first thinning (TRUE) FALSE otherwise
-
+  
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
 source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
 # load("test.rdata")
