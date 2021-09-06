@@ -11,8 +11,7 @@ if(!exists("baFact")) baFact = 1.0    ##1, 1.1, 1.1,  1,   1
 if(!exists("dbhFact")) dbhFact = 1.0   ##1,  1 ,   1, 1.1, 1.1
 if(!exists("NotTapio")) NotTapio <- FALSE##flag to switch off precommercial thinnings (TRUE) FALSE otherwise
 if(!exists("NoftTapio")) NoftTapio <- FALSE ##flag to switch off first thinning (TRUE) FALSE otherwise
-
-ggCountry <- array(NA,dim=c(36,3,19))
+if(!exists("ggCountry")) ggCountry <- array(NA,dim=c(36,3,19))
 
 for(klk in maaks){
   
@@ -566,7 +565,7 @@ print(klk)
 ggCountry[,,klk] <- ggMeanAll
 ls()
 # rm(list=ls())
-rm(list=ls()[-which(ls()=="ggCountry")])
+rm(list=ls()[-which(ls()%in%noRmList)])
 gc()
 
 
