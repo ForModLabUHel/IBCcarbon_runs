@@ -240,3 +240,6 @@ if(regSets=="maakunta"){
   
   
 }
+
+regIDs <- stats[4:22,3:4]
+setkey(regIDs,regID)
