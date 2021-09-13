@@ -38,7 +38,15 @@ if(!exists("compHarvX")) compHarvX=3.
 if(!exists("thinFactX")) thinFactX=0.2
 if(!exists("clcutArX") & regSets=="forCent") clcutArX <- NA
 if(!exists("clcutArX") & regSets=="maakunta") clcutArX <- 1
-if(!exists("HcFactor")) HcFactor = 1.
+####Hcmodel bias for all maakunta regions
+HcFactorAll <- c(1.2,0.8,0.8,1.2,1.2,0.8,1.2,1.2,0.8,
+                 0.8,1.2,0.8,0.8,1.2,0.8,1.2,0.8,1.2,1.2)
+if(!exists("HcFactor") & regSets=="maakunta") HcFactor = HcFactorAll[r_no]
+if(!exists("HcFactor") & regSets=="forCent") HcFactor = 1.
+
+###reduce krein parameter in order to increase mortality
+pCrobasX <- pCROB
+pCrobasX[17,1:3] <- pCROB[17,1:3]*0.7
 
 varOuts <- c("NEP sp","GPPspecies", "npp", "gross growth", 
              "soilC", "V", "age", "Wharvested", 

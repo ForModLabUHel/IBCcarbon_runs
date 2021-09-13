@@ -6,9 +6,7 @@ if(!exists("regSets")) regSets = "maakunta"
 if(!exists("minDharvX")) minDharvX <- 15
 if(!exists("compHarvX")) compHarvX=0.
 if(!exists("thinFactX")) thinFactX=0.25
-if(!exists("HcFactor")) HcFactor = 1    ##1, 0.8, 1.2, 0.8, 1.2
-if(!exists("baFact")) baFact = 1.0    ##1, 1.1, 1.1,  1,   1
-if(!exists("dbhFact")) dbhFact = 1.0   ##1,  1 ,   1, 1.1, 1.1
+#if(!exists("HcFactor")) HcFactor = 1    ##1, 0.8, 1.2, 0.8, 1.2
 if(!exists("NotTapio")) NotTapio <- FALSE##flag to switch off precommercial thinnings (TRUE) FALSE otherwise
 if(!exists("NoftTapio")) NoftTapio <- FALSE ##flag to switch off first thinning (TRUE) FALSE otherwise
 if(!exists("ggCountry")) ggCountry <- array(NA,dim=c(36,3,19))
@@ -28,8 +26,6 @@ source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/maste
 #                         compHarv=3, thinFact=thinFactX)
 # plot(apply(region2$multiOut[930,,13,,1],1,sum))
 
-data.all$ba = data.all$ba * baFact
-data.all$dbh = data.all$dbh * dbhFact
 if(NoftTapio) ftTapioParX  <- ftTapio * 1e5  ##switch off first thinning
 if(NotTapio) tTapioParX  <- tTapio * 1e5  ##switch off precommercial thinning 
 

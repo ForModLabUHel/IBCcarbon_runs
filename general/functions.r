@@ -555,6 +555,7 @@ create_prebas_input.f = function(r_no, clim, data.sample, nYears, startingYear=0
   initVar[,6,] <- aaply(initVar,1,findHcNAs,pHcM)[,6,]*HcFactor
   initPrebas <- InitMultiSite(nYearsMS = rep(nYears,nSites),siteInfo=siteInfo,
                               # litterSize = litterSize,#pAWEN = parsAWEN,
+                              pCROBAS = pCrobasX,
                               defaultThin=defaultThin,
                               ClCut = ClCut, areas =areas,
                               energyCut = energyCut, 
