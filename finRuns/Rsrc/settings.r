@@ -32,7 +32,7 @@ sampleForPlots <- 9999999
 # MinPeat-index, NEPdrPeat
 
 ###flag for settings the regions to consider
-if(!exists("regSets")) regSets <- "forCent" ### "forCent", "maakunta"
+if(!exists("regSets")) regSets <- "maakunta" ### "forCent", "maakunta"
 if(!exists("minDharvX")) minDharvX <- 15 ### minimum DBH for clearcutting
 if(!exists("compHarvX")) compHarvX=3.
 if(!exists("thinFactX")) thinFactX=0.2
