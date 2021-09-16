@@ -1211,7 +1211,7 @@ baMortVarX <- function(modOut,minX,maxX,stepX,varX,funX,rangeYear=5){
       # outX <- modOut[cX,,,,]
       if(length(cX)>0.){
         baX <- sum(baMort[cX,startX[i]:endX[i],])/length(cX)
-        baTx <- sum(baTot[cX,startX[i]:endX[i]])/length(cX)
+        baTx <- sum(baTot[cX,startX[i]:endX[i]])/rangeYear/length(cX)
         nData[i,ij] <- length(cX)
         baMortX[i,ij] <- baX
         baTotX[i,ij] <- baTx
