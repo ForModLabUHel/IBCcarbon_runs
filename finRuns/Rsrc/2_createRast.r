@@ -59,7 +59,7 @@ for(varX in varXs){
                           harvestscenarios,"_",rcpfile,".tiff"),overwrite=T)
   hist(rastX, main = paste(varX,"per3"))
  
-  if(varX!="DeadWoodVolume")  file.remove(paste0(pathFiles,fileXs))
+  # if(varX!="DeadWoodVolume")  file.remove(paste0(pathFiles,fileXs))
   print(varX)
 }
 dev.off()
