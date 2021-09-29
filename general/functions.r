@@ -217,7 +217,7 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
           manDeadW <- initDeadW(region,manFor,yearsDeadW)
           save(unmanDeadW,manDeadW,file=paste0("input/maakunta/deadWVss/forCent",
                                             r_no,"_deadWVss.rdata"))
-          stop("deadWood volume at steady state saved")
+          return()
         }else{
           load(paste0("input/maakunta/deadWVss/forCent",
                       r_no,"_deadWVss.rdata"))
