@@ -19,14 +19,15 @@ yearsDeadW <- 21:50
 for(klk in maaks){
   
 # klk <- 4
-r_no <- regions <- klk
+  r_no <- regions <- klk
+    
+  devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
+  source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
   
-devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
-source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
-
-nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
-set.seed(1)
-ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
-toMem <- ls()
-
-runModel(sampleID,ststDeadW=T)
+  nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
+  set.seed(1)
+  ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
+  toMem <- ls()
+  
+  runModel(sampleID,ststDeadW=T)
+}
