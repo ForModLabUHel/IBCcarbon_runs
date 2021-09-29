@@ -60,6 +60,7 @@ for(varX in varXs){
   hist(rastX, main = paste(varX,"per3"))
  
   # if(varX!="DeadWoodVolume")  file.remove(paste0(pathFiles,fileXs))
+  file.remove(paste0(pathFiles,fileXs))
   print(varX)
 }
 dev.off()
