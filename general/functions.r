@@ -215,12 +215,12 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
         if(ststDeadW){
           unmanDeadW <- initDeadW(region,unmanFor,yearsDeadW)
           manDeadW <- initDeadW(region,manFor,yearsDeadW)
-          save(unmanDeadW,manDeadW,file=paste0("input/maakunta/deadWVss/forCent",
-                                            r_no,"_deadWVss.rdata"))
+          save(unmanDeadW,manDeadW,file=paste0("initDeadWVss/reg",
+                                            r_no,"_deadWV.rdata"))
           return("deadWood volume at steady state saved")
         }else{
-          load(paste0("input/maakunta/deadWVss/forCent",
-                      r_no,"_deadWVss.rdata"))
+          load(paste0("initDeadWVss/reg",
+                      r_no,"_deadWV.rdata"))
           region$multiOut[manFor,,8,,1] <- region$multiOut[manFor,,8,,1] + 
             aperm(replicate(length(manFor),(unmanDeadW$ssDeadW[1:nYears,])),c(3,1:2))
         }
