@@ -224,18 +224,7 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
           region$multiOut[manFor,,8,,1] <- region$multiOut[manFor,,8,,1] + 
             aperm(replicate(length(manFor),(unmanDeadW$ssDeadW[1:nYears,])),c(3,1:2))
         }
-        
-        ###run model unmanaged forests
-        if(length(unmanFor)>0){
-          deadVinitUn <- matrix(0,(nYears),nSp) ####deadWood matrix (nrow=years; ncol=species)
-          deadVinitX <- deadVunmanFor * baPer[2,] ###choose between deadVmanFor and deadVunmanFor
-          for(i in 1:nYears){
-            deadVinitUn[(i),] = deadVinitX * exp(-exp(pX[1,] + 
-                          pX[2,]*i + pX[3,]*Dmort[2,] + pX[4,]))
-          } 
-          region$multiOut[unmanFor,,8,,1] <- region$multiOut[unmanFor,,8,,1] +
-            aperm(replicate(length(unmanFor),deadVinitMan),c(3,1:2))
-        }
+      
         ####end initialize deadWood Volume
         if(sampleRun){
           return(list(region = region,initPrebas=initPrebas))
