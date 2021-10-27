@@ -48,8 +48,8 @@ if(!exists("HcFactor") & regSets=="forCent") HcFactor = 1.
 pCrobasX <- pCROB
 pCrobasX[17,1:3] <- pCROB[17,1:3]*0.7
 
-varOuts <- c("NEP sp","GPPspecies", "npp", "gross growth", 
-             "soilC", "V", "age", "Wharvested", 
+varOuts <- c("NEP","GPPtrees", "npp", "grossGrowth", 
+             "soilC", "V", "age", "WroundWood", 
              "Litter_fol", "Litter_fr", 
              "Litter_fWoody", "Litter_cWoody",
              "DeadWoodVolume", "D", "BA", "H")
