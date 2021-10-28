@@ -49,12 +49,12 @@ pCrobasX <- pCROB
 pCrobasX[17,1:3] <- pCROB[17,1:3]*0.7
 
 varOuts <- c("NEP","GPPtrees", "npp", "grossGrowth", 
-             "soilC", "V", "age", "WroundWood", 
+             "soilC", "V", "age", "WroundWood","VroundWood",
              "Litter_fol", "Litter_fr", 
              "Litter_fWoody", "Litter_cWoody",
              "DeadWoodVolume", "D", "BA", "H")
 varSel <- match(varOuts,varNames)
-specialVars <- c("domSpecies","domAge","Vdec","WenergyWood","Wtot")
+specialVars <- c("domSpecies","domAge","Vdec","VenergyWood","WenergyWood","Wtot","GVgpp")
 
 #varSel <- c(7,8,9,11:13,17:18,22,24:33,37:39,41:46)   #### variables IDs to be stored
 

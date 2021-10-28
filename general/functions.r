@@ -995,6 +995,28 @@ specialVarProc <- function(sampleX,region,r_no,harscen,rcpfile,sampleID,
   save(WenergyWood,file=paste0("outputDT/forCent",r_no,"/WenergyWood_",
                         harscen,"_",rcpfile,"_",
                         "sampleID",sampleID,".rdata"))
+  ####VenergyWood
+  outX <- data.table(segID=sampleX$segID,apply(region$multiEnergyWood[,,,1],1:2,sum))
+  if(sampleID==sampleForPlots){testPlot(outX,"VenergyWood",areas)}
+  p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
+  p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
+  p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
+  pX <- merge(p1,p2)
+  VenergyWood <- merge(pX,p3)
+  save(VenergyWood,file=paste0("outputDT/forCent",r_no,
+                    "/VenergyWood_",harscen,"_",rcpfile,"_",
+                               "sampleID",sampleID,".rdata"))
+  ####VenergyWood
+  outX <- data.table(segID=sampleX$segID,region$GVout[,,3])
+  if(sampleID==sampleForPlots){testPlot(outX,"GVgpp",areas)}
+  p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
+  p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
+  p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
+  pX <- merge(p1,p2)
+  GVgpp <- merge(pX,p3)
+  save(GVgpp,file=paste0("outputDT/forCent",r_no,
+                               "/GVgpp_",harscen,"_",rcpfile,"_",
+                               "sampleID",sampleID,".rdata"))
   ####Wtot
   outX <- data.table(segID=sampleX$segID,apply(region$multiOut[,,c(24,25,31,32,33),,1],1:2,sum))
   if(sampleID==sampleForPlots){testPlot(outX,"Wtot",areas)}
