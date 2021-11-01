@@ -26,7 +26,7 @@ library(DescTools)
 
 # r_no = regions = 2  ### forest center ID
 nCores <- 6  ####  number of cores
-sampleForPlots <- 9999999
+sampleForPlots <- 1
 
 # Missing from varOuts: 
 # MinPeat-index, NEPdrPeat
