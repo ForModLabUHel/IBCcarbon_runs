@@ -179,11 +179,11 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
         # save(initPrebas,HarvLim1,file=paste0("test1",harscen,".rdata"))
         # region <- regionPrebas(initPrebas)
         ###run PREBAS
-        if(harscen!="Base"){
+        # if(harscen!="Base"){
           load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
           initPrebas$yassoRun <- rep(1,initPrebas$nSites)
           initPrebas$soilC[,1,,,] <- initSoilC
-        }
+        # }
         
         HarvLimX <- HarvLim1[1:nYears,]
         ##Don't pass minDharvX if NA
