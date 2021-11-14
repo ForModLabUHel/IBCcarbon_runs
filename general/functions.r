@@ -198,14 +198,14 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
 
         print(paste("runModel",sampleID))
         ##calculate steady state carbon from prebas litter 
-        if(harscen=="Base"){
-          initSoilC <- stXX_GV(region, 1)
-          print(paste("initSoilC",sampleID))
-          save(initSoilC,file=paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
-          ###run yasso (starting from steady state) using PREBAS litter
-          region <- yassoPREBASin(region,initSoilC)
-          # out <- region$multiOut[,,,,1]
-        }
+        # if(harscen=="Base"){
+        #   initSoilC <- stXX_GV(region, 1)
+        #   print(paste("initSoilC",sampleID))
+        #   save(initSoilC,file=paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
+        #   ###run yasso (starting from steady state) using PREBAS litter
+        #   region <- yassoPREBASin(region,initSoilC)
+        #   # out <- region$multiOut[,,,,1]
+        # }
         print(paste("all runs done",sampleID))
         
   #####start initialize deadWood volume
