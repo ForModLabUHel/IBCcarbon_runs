@@ -97,12 +97,12 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
       
   ##here mix years for weather inputs for Curr Climate
   if(rcpfile=="CurrClim"){
-        set.seed(10)
-        resampleYear <- sample(1:nYears,nYears)
-        initPrebas$ETSy <- initPrebas$ETSy[,resampleYear]
-        initPrebas$P0y <- initPrebas$P0y[,resampleYear,]
-        initPrebas$weather <- initPrebas$weather[,resampleYear,,]
-        initPrebas$weatherYasso <- initPrebas$weatherYasso[,resampleYear,]
+    set.seed(10)
+    resampleYear <- sample(1:nYears,nYears)
+    initPrebas$ETSy <- initPrebas$ETSy[,resampleYear]
+    initPrebas$P0y <- initPrebas$P0y[,resampleYear,]
+    initPrebas$weather <- initPrebas$weather[,resampleYear,,]
+    initPrebas$weatherYasso <- initPrebas$weatherYasso[,resampleYear,]
   }
       
       
@@ -117,216 +117,215 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
         
   ## Assign harvesting quota for the region based on volume (in NFI startingYear) and MELA
   if(regSets!="maakunta"){
-      Region = nfiareas[ID==r_no, Region]
-      if(harscen=="NoHarv"){
+    Region = nfiareas[ID==r_no, Region]
+    if(harscen=="NoHarv"){
+      initPrebas$ClCut = initPrebas$defaultThin = rep(0,nSample)
+      HarvLim1 = 0
+    }else if(harscen=="Tapio"){
+      HarvLim1 = 0
+    }else{
+      HarvLim0 = nfiareas[ID==r_no, VOL_fraction]*rem[Scenario == harscen & Area == Region, "1990-2013"]
+      HarvLim0  = (totAreaSample/1000) / nfiareas[ID == r_no, AREA] * 1e3 *HarvLim0
+      HarvLim = nfiareas[ID==r_no, VOL_fraction]*rem[Scenario == harscen & Area == Region, "2015-2024"]
+      HarvLim  = (totAreaSample/1000) / nfiareas[ID == r_no, AREA] * 1e3 *HarvLim
+      HarvLim1 <- rep(as.numeric(HarvLim),10)
+      HarvLim = nfiareas[ID==r_no, VOL_fraction]*rem[Scenario == harscen & Area == Region, "2025-2034"]
+      HarvLim  = (totAreaSample/1000) / nfiareas[ID == r_no, AREA] * 1e3 *HarvLim
+      HarvLim1 <- c(HarvLim1,rep(as.numeric(HarvLim),10))
+      HarvLim = nfiareas[ID==r_no, VOL_fraction]*rem[Scenario == harscen & Area == Region, "2035-2044"]
+      HarvLim  = (totAreaSample/1000) / nfiareas[ID == r_no, AREA] * 1e3 *HarvLim
+      HarvLim1 <- c(HarvLim1,rep(as.numeric(HarvLim),10))
+      HarvLim = nfiareas[ID==r_no, VOL_fraction]*rem[Scenario == harscen & Area == Region, "2045-2054"]
+      HarvLim  = (totAreaSample/1000) / nfiareas[ID == r_no, AREA] * 1e3 *HarvLim
+      HarvLim1 <- c(HarvLim1,rep(as.numeric(HarvLim),10))
+      HarvLim = nfiareas[ID==r_no, VOL_fraction]*rem[Scenario == harscen & Area == Region, "2055-2064"]
+      HarvLim  = (totAreaSample/1000) / nfiareas[ID == r_no, AREA] * 1e3 *HarvLim
+      HarvLim1 <- c(HarvLim1,rep(as.numeric(HarvLim),44))
+    }
+    ## In the model, harvests are always per hectar units. If 1000 pixels (nSample)
+    ## are simulated it corresponds to 1000 hectars, although pixels are only 16x16 m2.
+    ## Therefore, we need to apply the areal fraction of removals scenarios
+    ## nfiareas are in 1000 ha, model takes Harvlim in m3, while removals from Mela are 1000 m3
+    #      HarvLim  = (nSample/1000) / nfiareas[ID == r_no, AREA] * 1e3 *HarvLim
+    if(year1harv==1){
+      HarvLim1 <- HarvLimX
+      if(harscen == "Low"){ HarvLim1 <- HarvLimX * 0.6}
+      if(harscen == "MaxSust"){HarvLim1 <- HarvLimX * 1.2}
+      if(harscen == "NoHarv"){
+        HarvLim1 <- HarvLimX * 0.
         initPrebas$ClCut = initPrebas$defaultThin = rep(0,nSample)
-        HarvLim1 = 0
-      }else if(harscen=="Tapio"){
-        HarvLim1 = 0
-      }else{
-        HarvLim0 = nfiareas[ID==r_no, VOL_fraction]*rem[Scenario == harscen & Area == Region, "1990-2013"]
-        HarvLim0  = (totAreaSample/1000) / nfiareas[ID == r_no, AREA] * 1e3 *HarvLim0
-        HarvLim = nfiareas[ID==r_no, VOL_fraction]*rem[Scenario == harscen & Area == Region, "2015-2024"]
-        HarvLim  = (totAreaSample/1000) / nfiareas[ID == r_no, AREA] * 1e3 *HarvLim
-        HarvLim1 <- rep(as.numeric(HarvLim),10)
-        HarvLim = nfiareas[ID==r_no, VOL_fraction]*rem[Scenario == harscen & Area == Region, "2025-2034"]
-        HarvLim  = (totAreaSample/1000) / nfiareas[ID == r_no, AREA] * 1e3 *HarvLim
-        HarvLim1 <- c(HarvLim1,rep(as.numeric(HarvLim),10))
-        HarvLim = nfiareas[ID==r_no, VOL_fraction]*rem[Scenario == harscen & Area == Region, "2035-2044"]
-        HarvLim  = (totAreaSample/1000) / nfiareas[ID == r_no, AREA] * 1e3 *HarvLim
-        HarvLim1 <- c(HarvLim1,rep(as.numeric(HarvLim),10))
-        HarvLim = nfiareas[ID==r_no, VOL_fraction]*rem[Scenario == harscen & Area == Region, "2045-2054"]
-        HarvLim  = (totAreaSample/1000) / nfiareas[ID == r_no, AREA] * 1e3 *HarvLim
-        HarvLim1 <- c(HarvLim1,rep(as.numeric(HarvLim),10))
-        HarvLim = nfiareas[ID==r_no, VOL_fraction]*rem[Scenario == harscen & Area == Region, "2055-2064"]
-        HarvLim  = (totAreaSample/1000) / nfiareas[ID == r_no, AREA] * 1e3 *HarvLim
-        HarvLim1 <- c(HarvLim1,rep(as.numeric(HarvLim),44))
-      }
-      ## In the model, harvests are always per hectar units. If 1000 pixels (nSample)
-      ## are simulated it corresponds to 1000 hectars, although pixels are only 16x16 m2.
-      ## Therefore, we need to apply the areal fraction of removals scenarios
-      ## nfiareas are in 1000 ha, model takes Harvlim in m3, while removals from Mela are 1000 m3
-      #      HarvLim  = (nSample/1000) / nfiareas[ID == r_no, AREA] * 1e3 *HarvLim
-      if(year1harv==1){
-        HarvLim1 <- HarvLimX
-        if(harscen == "Low"){ HarvLim1 <- HarvLimX * 0.6}
-        if(harscen == "MaxSust"){HarvLim1 <- HarvLimX * 1.2}
-        if(harscen == "NoHarv"){
-          HarvLim1 <- HarvLimX * 0.
-          initPrebas$ClCut = initPrebas$defaultThin = rep(0,nSample)
-        }
-      }else{
-        roundWood <- HarvLim1 * roundTotWoodRatio
-        enWood <- HarvLim1 - roundWood
-        HarvLim1 <- cbind(roundWood,enWood)
       }
     }else{
-      HarvLim1 <- HarvLimMaak*1000*sum(areas)/sum(data.all$area)
-      if(harscen == "Low"){ HarvLim1 <- HarvLim1 * 0.6}
-      if(harscen == "MaxSust"){HarvLim1 <- HarvLim1 * 1.2}
-      if(harscen == "NoHarv"){HarvLim1 <- HarvLim1 * 0.
-        initPrebas$ClCut = initPrebas$defaultThin = rep(0,nSample)
-      }
-    }          
-        
-    ###calculate clearcutting area for the sample
-    #if(!is.na(cutArX)){
-    print("calculating clearcutting areas")
-    clcutArX <- clcutAr * sum(areas)/sum(data.all$area)
-    clcutArX <- cbind(clcutArX[1:nYears],0.)
-    tendX <- tendingAr * sum(areas)/sum(data.all$area)
-    tendX <- cbind(tendX[1:nYears],0.)
-    fThinX <- firstThinAr * sum(areas)/sum(data.all$area)
-    fThinX <- cbind(fThinX[1:nYears],0.)
-    cutArX <- cbind(clcutArX,tendX)
-    cutArX <- cbind(cutArX,fThinX)
-    # }else{
-    #   cutArX <- NA
-    # } 
-    # initPrebas$energyCut <- rep(0.,length(initPrebas$energyCut))
-    # HarvLim1 <- rep(0,2)
-    # save(initPrebas,HarvLim1,file=paste0("test1",harscen,".rdata"))
-    # region <- regionPrebas(initPrebas)
-    ###run PREBAS
-    if(harscen!="Base"){
-      load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
-      initPrebas$yassoRun <- rep(1,initPrebas$nSites)
-      initPrebas$soilC[,1,,,] <- initSoilC
+      roundWood <- HarvLim1 * roundTotWoodRatio
+      enWood <- HarvLim1 - roundWood
+      HarvLim1 <- cbind(roundWood,enWood)
     }
-        
-    HarvLimX <- HarvLim1[1:nYears,]
-    ##Don't pass minDharvX if NA
-    if (is.na(minDharvX)) {
-      region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
-                             cutAreas =cutArX,compHarv=compHarvX)
-    } else {
-      region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
-                             minDharv = minDharvX,cutAreas =cutArX,
-                             compHarv=compHarvX)
+  }else{
+    HarvLim1 <- HarvLimMaak*1000*sum(areas)/sum(data.all$area)
+    if(harscen == "Low"){ HarvLim1 <- HarvLim1 * 0.6}
+    if(harscen == "MaxSust"){HarvLim1 <- HarvLim1 * 1.2}
+    if(harscen == "NoHarv"){HarvLim1 <- HarvLim1 * 0.
+      initPrebas$ClCut = initPrebas$defaultThin = rep(0,nSample)
     }
+  }          
+        
+  ###calculate clearcutting area for the sample
+  #if(!is.na(cutArX)){
+  print("calculating clearcutting areas")
+  clcutArX <- clcutAr * sum(areas)/sum(data.all$area)
+  clcutArX <- cbind(clcutArX[1:nYears],0.)
+  tendX <- tendingAr * sum(areas)/sum(data.all$area)
+  tendX <- cbind(tendX[1:nYears],0.)
+  fThinX <- firstThinAr * sum(areas)/sum(data.all$area)
+  fThinX <- cbind(fThinX[1:nYears],0.)
+  cutArX <- cbind(clcutArX,tendX)
+  cutArX <- cbind(cutArX,fThinX)
+  # }else{
+  #   cutArX <- NA
+  # } 
+  # initPrebas$energyCut <- rep(0.,length(initPrebas$energyCut))
+  # HarvLim1 <- rep(0,2)
+  # save(initPrebas,HarvLim1,file=paste0("test1",harscen,".rdata"))
+  # region <- regionPrebas(initPrebas)
+  ###run PREBAS
+  if(harscen!="Base"){
+    load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
+    initPrebas$yassoRun <- rep(1,initPrebas$nSites)
+    initPrebas$soilC[,1,,,] <- initSoilC
+  }
+        
+  HarvLimX <- HarvLim1[1:nYears,]
+  ##Don't pass minDharvX if NA
+  if (is.na(minDharvX)) {
+    region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
+                           cutAreas =cutArX,compHarv=compHarvX)
+  } else {
+    region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
+                           minDharv = minDharvX,cutAreas =cutArX,
+                           compHarv=compHarvX)
+  }
 
-    print(paste("runModel",sampleID))
-    ##calculate steady state carbon from prebas litter 
-    if(harscen=="Base"){
-      initSoilC <- stXX_GV(region, 1)
-      print(paste("initSoilC",sampleID))
-      save(initSoilC,file=paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
-      ###run yasso (starting from steady state) using PREBAS litter
-      region <- yassoPREBASin(region,initSoilC)
-      # out <- region$multiOut[,,,,1]
-    }
-    print(paste("all runs done",sampleID))
+  print(paste("runModel",sampleID))
+  ##calculate steady state carbon from prebas litter 
+  if(harscen=="Base"){
+    initSoilC <- stXX_GV(region, 1)
+    print(paste("initSoilC",sampleID))
+    save(initSoilC,file=paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
+    ###run yasso (starting from steady state) using PREBAS litter
+    region <- yassoPREBASin(region,initSoilC)
+    # out <- region$multiOut[,,,,1]
+  }
+  print(paste("all runs done",sampleID))
         
-    #####start initialize deadWood volume
-    ## identify managed and unmanaged forests
-    manFor <-  which(sampleX$cons==0)
-    unmanFor <- which(sampleX$cons==1)
-    if(ststDeadW){
-      unmanDeadW <- initDeadW(region,unmanFor,yearsDeadW)
-      manDeadW <- initDeadW(region,manFor,yearsDeadW)
-      save(unmanDeadW,manDeadW,file=paste0("initDeadWVss/reg",
-                                        r_no,"_deadWV.rdata"))
-      return("deadWood volume at steady state saved")
-    }else{
-      load(paste0("initDeadWVss/reg",
-                  r_no,"_deadWV.rdata"))
-      region$multiOut[manFor,,8,,1] <- region$multiOut[manFor,,8,,1] + 
-        aperm(replicate(length(manFor),(manDeadW$ssDeadW[1:nYears,])),c(3,1:2))
-      region$multiOut[unmanFor,,8,,1] <- region$multiOut[unmanFor,,8,,1] + 
-        aperm(replicate(length(unmanFor),(unmanDeadW$ssDeadW[1:nYears,])),c(3,1:2))
-    }
+  #####start initialize deadWood volume
+  ## identify managed and unmanaged forests
+  manFor <-  which(sampleX$cons==0)
+  unmanFor <- which(sampleX$cons==1)
+  if(ststDeadW){
+    unmanDeadW <- initDeadW(region,unmanFor,yearsDeadW)
+    manDeadW <- initDeadW(region,manFor,yearsDeadW)
+    save(unmanDeadW,manDeadW,file=paste0("initDeadWVss/reg",
+                                      r_no,"_deadWV.rdata"))
+    return("deadWood volume at steady state saved")
+  }else{
+    load(paste0("initDeadWVss/reg",
+                r_no,"_deadWV.rdata"))
+    region$multiOut[manFor,,8,,1] <- region$multiOut[manFor,,8,,1] + 
+      aperm(replicate(length(manFor),(manDeadW$ssDeadW[1:nYears,])),c(3,1:2))
+    region$multiOut[unmanFor,,8,,1] <- region$multiOut[unmanFor,,8,,1] + 
+      aperm(replicate(length(unmanFor),(unmanDeadW$ssDeadW[1:nYears,])),c(3,1:2))
+  }
       
-    ####end initialize deadWood Volume
-    if(sampleRun){
-      return(list(region = region,initPrebas=initPrebas))
-    }else{
-        
-      ####create pdf for test plots
-      if(sampleID==sampleForPlots  & !uncRun){
-        pdf(paste0("plots/testPlots_",r_no,"_",
+  ####end initialize deadWood Volume
+  if(sampleRun){
+    return(list(region = region,initPrebas=initPrebas))
+  }else{
+     ####create pdf for test plots 
+    if(sampleID==sampleForPlots & !uncRun){
+      pdf(paste0("plots/testPlots_",r_no,"_",
                    harscen,"_",rcpfile,".pdf"))
-        out <- region$multiOut
-        save(out,file = paste0("outputDT/forCent",r_no,"/testData.rdata"))
-        rm(out);gc()
-      } 
-      marginX= 1:2#(length(dim(out$annual[,,varSel,]))-1)
-      nas <- data.table()
-      outSums <- data.table() # uncertainty Run totals
+      out <- region$multiOut
+      save(out,file = paste0("outputDT/forCent",r_no,"/testData.rdata"))
+      rm(out);gc()
+    } 
+    marginX= 1:2#(length(dim(out$annual[,,varSel,]))-1)
+    nas <- data.table()
+    outSums <- data.table() # uncertainty Run totals
       
-      for (ij in 1:length(varSel)) {
-        # print(varSel[ij])
-        if(funX[ij]=="baWmean"){
-          outX <- data.table(segID=sampleX$segID,baWmean(region,varSel[ij]))
-        }
-        if(funX[ij]=="sum"){
-          outX <- data.table(segID=sampleX$segID,apply(region$multiOut[,,varSel[ij],,1],marginX,sum))
-        }
-        ####test plot
-        # print(outX)
-        if(sampleID==sampleForPlots){testPlot(outX,varNames[varSel[ij]],areas)}
-          
-        p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
-        p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
-        p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
-        if(!uncRun){
-          pX <- merge(p1,p2)
-          pX <- merge(pX,p3)
-        } else {
-          pX <- data.table(p1,p2[,2],p3[,2]) # can be the same segment multiple times
-        }
-        ##check for NAs
-        nax <- data.table(segID=unique(which(is.na(pX),arr.ind=T)[,1]))
-        if(nrow(nax)>0){
-          nax$var <- varNames[varSel[ij]]
-          nax$sampleID <- sampleID
-          nas <- rbind(nas,nax)
-        } 
-        if(uncRun){
-          outSums <- rbind(outSums, data.table(vari = varNames[varSel[ij]], 
-                                               iter = sampleID, 
-                                               per1 = cA*sum(pX[,2]), 
-                                               per2 = cA*sum(pX[,3]), 
-                                               per3 = cA*sum(pX[,4])))
-          #outSums <- rbind(outSums, cbind(data.table(vari = varNames[varSel[ij]], 
-          #                                     cA = cA, iter = sampleID), pX) )
-        } else {
-          
-          assign(varNames[varSel[ij]],pX)
-          
-          save(list=varNames[varSel[ij]],file=paste0("outputDT/forCent",r_no,"/",
-                                                     varNames[varSel[ij]],"_",
-                                                       harscen,"_",rcpfile,"_",
-                                                     "sampleID",sampleID,".rdata"))
-          rm(list=varNames[varSel[ij]]); gc()
-        }
-        # save NAs
-        if(nrow(nas)>0){
-          save(nas,file=paste0("NAs/NAs_forCent",r_no,"_","sampleID",sampleID,
-                               "_",harscen,"_",rcpfile,".rdata"))        
-        }
-          
-       ####process and save special variales
-        if(!uncRun){
-          
-          print(paste("start special vars",sampleID))
-          specialVarProc(sampleX,region,r_no,harscen,rcpfile,sampleID,
-                       colsOut1,colsOut2,colsOut3,areas,sampleForPlots)
-        }
+    for (ij in 1:length(varSel)) {
+      # print(varSel[ij])
+      if(funX[ij]=="baWmean"){
+        outX <- data.table(segID=sampleX$segID,baWmean(region,varSel[ij]))
       }
+      if(funX[ij]=="sum"){
+        outX <- data.table(segID=sampleX$segID,apply(region$multiOut[,,varSel[ij],,1],marginX,sum))
+      }
+      ####test plot
+      # print(outX)
+      if(sampleID==sampleForPlots){testPlot(outX,varNames[varSel[ij]],areas)}
+          
+      p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
+      p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
+      p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
+      if(!uncRun){
+        pX <- merge(p1,p2)
+        pX <- merge(pX,p3)
+      } else {
+        pX <- data.table(p1,p2[,2],p3[,2]) # can be the same segment multiple times
+      }
+      ##check for NAs
+      nax <- data.table(segID=unique(which(is.na(pX),arr.ind=T)[,1]))
+      if(nrow(nax)>0){
+        nax$var <- varNames[varSel[ij]]
+        nax$sampleID <- sampleID
+        nas <- rbind(nas,nax)
+      } 
+      if(uncRun){
+        outSums <- rbind(outSums, data.table(vari = varNames[varSel[ij]], 
+                                             iter = sampleID, 
+                                             per1 = cA*sum(pX[,2]), 
+                                             per2 = cA*sum(pX[,3]), 
+                                             per3 = cA*sum(pX[,4])))
+        #outSums <- rbind(outSums, cbind(data.table(vari = varNames[varSel[ij]], 
+        #                                     cA = cA, iter = sampleID), pX) )
+      } else {
+          
+        assign(varNames[varSel[ij]],pX)
+          
+        save(list=varNames[varSel[ij]],file=paste0("outputDT/forCent",r_no,"/",
+                                                   varNames[varSel[ij]],"_",
+                                                     harscen,"_",rcpfile,"_",
+                                                   "sampleID",sampleID,".rdata"))
+        rm(list=varNames[varSel[ij]]); gc()
+      }
+      # save NAs
+      if(nrow(nas)>0){
+        save(nas,file=paste0("NAs/NAs_forCent",r_no,"_","sampleID",sampleID,
+                             "_",harscen,"_",rcpfile,".rdata"))        
+      }
+          
+      ####process and save special variales
+      if(!uncRun){
+          
+        print(paste("start special vars",sampleID))
+        specialVarProc(sampleX,region,r_no,harscen,rcpfile,sampleID,
+                     colsOut1,colsOut2,colsOut3,areas,sampleForPlots)
+      }
+    }
         
-        # rm(list=c("region","initPrebas")); gc()
-        # rm(list=setdiff(ls(), c(toMem,"toMem")))
-        # rm(out); gc()
-      # }###harvest loop
+    # rm(list=c("region","initPrebas")); gc()
+    # rm(list=setdiff(ls(), c(toMem,"toMem")))
+    # rm(out); gc()
+    # }###harvest loop
     # } ###region loop
-  # }rcps loop
-  print(paste("end sample ID",sampleID))
-  rm(list=setdiff(ls(), c(toMem,"toMem", "outSums")))
+    # }rcps loop
+    print(paste("end sample ID",sampleID))
+    rm(list=setdiff(ls(), c(toMem,"toMem", "outSums")))
   
-  #print(uncRun)
-  if(uncRun) print(outSums)
-  outSums # Output for uncertainty analysis, empty table if not uncRun
-  
+    #print(uncRun)
+    if(uncRun) print(outSums)
+    outSums # Output for uncertainty analysis, empty table if not uncRun
+  }
 }
 
 sample_data.f = function(data.all, nSample) {
