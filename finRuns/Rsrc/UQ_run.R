@@ -44,6 +44,7 @@ for(r_no in r_nos){
   #sampleRun <- FALSE
   set.seed(10)
   uncRun <- TRUE
+  uncPCrobas <- TRUE
   #uncRun <- FALSE
   #nSitesRun <- 100
   
@@ -55,13 +56,23 @@ for(r_no in r_nos){
     areas <- areas/area_total
     #hist(areas)
     print(paste0("Sample size ",nSitesRunr," segments"))
-    opsInd <- list(); #matrix(0, nSitesRun, nSamples) 
+    opsInd <- list() #matrix(0, nSitesRun, nSamples) 
+    pCROBASr <- list()
     for(ij in 1:nSamplesr){ 
       #opsInd[,ij] <- sample(1:nrow(data.all), nSitesRun, replace = FALSE, prob = areas)
       #opsInd[,ij] <- sample(1:nrow(data.all), nSitesRun, replace = TRUE, prob = areas)
       opsInd[[ij]] <- sample(1:nrow(data.all), nSitesRunr, replace = TRUE, prob = areas)
+      if(uncPCrobas){
+        pCROBASr[[ij]] <- pCROB + matrix(rnorm(nrow(pCROB)*ncol(pCROB),mean=0,sd=1), 
+                               nrow(pCROB), ncol(pCROB)) *pCROB*0.05
+      } else {
+        pCROBASr[[ij]] <- pCROB
+      }
+      }
+        #sample(1:nrow(data.all), nSitesRunr, replace = TRUE, prob = areas)
     }
     save(opsInd,file=paste0("Rsrc/virpiSbatch/results/opsInd_reg",r_no,".rdata")) 
+    save(pCROBASr,file=paste0("Rsrc/virpiSbatch/results/pCrobas_reg",r_no,".rdata")) 
   } else {
     setX=1
     nSamples <- ceiling(dim(data.all)[1]/nSitesRun)

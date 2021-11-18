@@ -22,19 +22,8 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
   sampleX[,id:=climID]
   HarvLimX <- harvestLims * sum(sampleX$area)/sum(data.all$area)
   nSample = nrow(sampleX)#200#nrow(data.all)
-  ## Loop management scenarios
-  # harvestscenarios = c("Policy", "MaxSust", "Base","Low","Tapio","NoHarv") ## noharv must be the last element otherwise cons area are ignored
-  # WRITEREGIONDATA = TRUE
-  
-  # climatepath = "/scratch/project_2000994/RCP/"
-  
-  # regionsummaries = data.table()
-  
-  
   ## ---------------------------------------------------------
   i = 0
-  # load("/scratch/project_2000994/PREBASruns/metadata/initSoilCstst.rdata")
-  # load("outSoil/InitSoilCstst_Base.rdata")
   if(!uncRun){
     rcpfile = rcps
     # for(rcpfile in rcps) { ## ---------------------------------------------
@@ -83,8 +72,9 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
                                          startingYear = startingYear,domSPrun=domSPrun)
       
   ###set parameters
-  #    initPrebas$pCROBAS <- pCROBAS
-      
+  if(uncRun){
+    initPrebas$pCROBAS <- pCROBASr[[sampleID]]
+  }
       
   opsna <- which(is.na(initPrebas$multiInitVar))
   initPrebas$multiInitVar[opsna] <- 0.
