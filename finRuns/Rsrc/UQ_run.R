@@ -68,7 +68,6 @@ for(r_no in r_nos){
       } else {
         pCROBASr[[ij]] <- pCROB
       }
-      }
         #sample(1:nrow(data.all), nSitesRunr, replace = TRUE, prob = areas)
     }
     save(opsInd,file=paste0("Rsrc/virpiSbatch/results/opsInd_reg",r_no,".rdata")) 
