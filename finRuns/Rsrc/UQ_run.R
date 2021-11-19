@@ -32,7 +32,7 @@ for(r_no in r_nos){
   print(paste("start region",r_no,"- set size",nSitesRun,"- no of samples", nSamplesr))
   
   # Give new set of outputs ------------------------------------------------
-  varOuts <- c("NEP","V","npp","VroundWood")
+  varOuts <- c("NEP","V","npp","VroundWood") # Wtot!
   #  cS <- c(-16^2*44/(12*(10^12)), 0.16^2,16^2, 16^2, 0.16^2) # multipliers for tot.sums
   cS <- c(-100^2*44/12, 1, 100^2, 1) # multipliers for tot.sums
   
