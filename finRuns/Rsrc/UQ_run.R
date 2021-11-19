@@ -43,8 +43,6 @@ for(r_no in r_nos){
   
   #sampleRun <- FALSE
   set.seed(10)
-  uncRun <- TRUE
-  uncPCrobas <- TRUE
   #uncRun <- FALSE
   #nSitesRun <- 100
   
@@ -161,7 +159,7 @@ for(r_no in r_nos){
     x <- sampleOutput[[j]]
     x[,3:5] <- x[,3:5]*units_hist[j]
     varNams <- x[1,"vari"]
-    png(file = paste0("/scratch/project_2000994/PREBASruns/finRuns/Rsrc/virpiSbatch/figures/results_regionID",r_no,"_",nSitesRunr,"_",varNams,".png"))
+    png(file = paste0("/scratch/project_2000994/PREBASruns/finRuns/Rsrc/virpiSbatch/figures/results_regionID",r_no,"_",nSitesRunr,"_uncpar",uncPCrobas,"_",varNams,".png"))
     xlims <- c(min(x[,3:5]),max(x[,3:5]))
     xlims[1] <- xlims[1]*(1-0.1*sign(xlims[1]))
     xlims[2] <- xlims[2]*(1+0.1*sign(xlims[2]))
