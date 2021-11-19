@@ -68,8 +68,10 @@ for(r_no in r_nos){
       }
         #sample(1:nrow(data.all), nSitesRunr, replace = TRUE, prob = areas)
     }
-    save(opsInd,file=paste0("Rsrc/virpiSbatch/results/opsInd_reg",r_no,".rdata")) 
-    save(pCROBASr,file=paste0("Rsrc/virpiSbatch/results/pCrobas_reg",r_no,".rdata")) 
+  #  save(opsInd,file=paste0("Rsrc/virpiSbatch/results/opsInd_reg",r_no,".rdata")) 
+  #  save(pCROBASr,file=paste0("Rsrc/virpiSbatch/results/pCrobas_reg",r_no,".rdata")) 
+    save(opsInd,file=paste0("uncRuns/opsInd_reg",r_no,".rdata")) 
+    save(pCROBASr,file=paste0("uncRuns/pCrobas_reg",r_no,".rdata")) 
   } else {
     setX=1
     nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
@@ -123,7 +125,8 @@ for(r_no in r_nos){
     print(paste0("Run time for ",nParRuns," samples of size ", nSitesRunr," = ",timeRun))
     print("End running...")
     
-    save(sampleXs,file=paste0("Rsrc/virpiSbatch/results/samplex_",r_no,".rdata")) 
+  #  save(sampleXs,file=paste0("Rsrc/virpiSbatch/results/samplex_",r_no,".rdata")) 
+    save(sampleXs,file=paste0("uncRuns/samplex_",r_no,".rdata")) 
     
     m <- nrow(sampleXs[[1]])
     n <- length(sampleXs)
@@ -144,7 +147,8 @@ for(r_no in r_nos){
       }
     }
     
-    save(sampleOutput,file=paste0("Rsrc/virpiSbatch/results/samplexout",r_no,"samplesize",nSitesRunr,".rdata")) 
+#    save(sampleOutput,file=paste0("Rsrc/virpiSbatch/results/samplexout",r_no,"samplesize",nSitesRunr,".rdata")) 
+    save(sampleOutput,file=paste0("uncRuns/samplexout",r_no,"samplesize",nSitesRunr,".rdata")) 
     
   }
   #source("postprocessResults.R")
@@ -159,7 +163,8 @@ for(r_no in r_nos){
     x <- sampleOutput[[j]]
     x[,3:5] <- x[,3:5]*units_hist[j]
     varNams <- x[1,"vari"]
-    png(file = paste0("/scratch/project_2000994/PREBASruns/finRuns/Rsrc/virpiSbatch/figures/results_regionID",r_no,"_",nSitesRunr,"_uncpar",uncPCrobas,"_",varNams,".png"))
+    #png(file = paste0("/scratch/project_2000994/PREBASruns/finRuns/Rsrc/virpiSbatch/figures/results_regionID",r_no,"_",nSitesRunr,"_uncpar",uncPCrobas,"_",varNams,".png"))
+    png(file = paste0("uncRuns/hists_regionID",r_no,"_",nSitesRunr,"_uncpar",uncPCrobas,"_",varNams,".png"))
     xlims <- c(min(x[,3:5]),max(x[,3:5]))
     xlims[1] <- xlims[1]*(1-0.1*sign(xlims[1]))
     xlims[2] <- xlims[2]*(1+0.1*sign(xlims[2]))
