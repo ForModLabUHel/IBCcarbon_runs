@@ -7,7 +7,7 @@ rcpfile="CurrClim"
 
 ststDeadW<-FALSE
 #regSets<-"maakunta"
-source("/scratch/project_2000994/PREBASruns/finRuns/Rsrc/virpiSbatch/localSettings.r")
+source("localSettings.r")
 #nSitesRun <- nSitesRunr
 #nSamples <- nSamplesr
 
@@ -115,8 +115,7 @@ for(r_no in r_nos){
     print(paste0("Start running iter ",nii,"/",niter,"..."))
     startRun <- Sys.time() 
     #sampleXs <- lapply(sampleIDs[1:4], function(jx) {
-    #  runModelUQ(jx,  ## Do nothing for 10 seconds
-    #  uncRun = TRUE, ststDeadW=FALSE)})      
+    #  runModel(jx, uncRun = TRUE, ststDeadW=FALSE)})      
     sampleXs <- mclapply(sampleIDs[(1+(nii-1)*nParRuns):(nii*nParRuns)], function(jx) {
       runModel(jx,  ## Do nothing for 10 seconds
                uncRun = uncRun)}, 
