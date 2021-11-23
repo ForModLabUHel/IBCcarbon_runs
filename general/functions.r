@@ -13,7 +13,7 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
     sampleX <- data.all[opsInd[[sampleID]],] # choose random set of nSitesRun segments -- TEST / VJ!
     area_tot <- sum(data.all$area) # ha
     sampleX[,area := 16^2/10000] 
-    area_sample <- sum(sampleX$area) # ha
+    #area_sample <- sum(sampleX$area) # ha
     cA <- area_tot/nrow(sampleX) #area_sample  
   } else {
     sampleX <- ops[[sampleID]]
@@ -22,19 +22,8 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
   sampleX[,id:=climID]
   HarvLimX <- harvestLims * sum(sampleX$area)/sum(data.all$area)
   nSample = nrow(sampleX)#200#nrow(data.all)
-  ## Loop management scenarios
-  # harvestscenarios = c("Policy", "MaxSust", "Base","Low","Tapio","NoHarv") ## noharv must be the last element otherwise cons area are ignored
-  # WRITEREGIONDATA = TRUE
-  
-  # climatepath = "/scratch/project_2000994/RCP/"
-  
-  # regionsummaries = data.table()
-  
-  
   ## ---------------------------------------------------------
   i = 0
-  # load("/scratch/project_2000994/PREBASruns/metadata/initSoilCstst.rdata")
-  # load("outSoil/InitSoilCstst_Base.rdata")
   if(!uncRun){
     rcpfile = rcps
     # for(rcpfile in rcps) { ## ---------------------------------------------
@@ -78,12 +67,13 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
       
   Region = nfiareas[ID==r_no, Region]
 
+  ###set parameters
+  if(uncRun){
+    pCrobasX <- pCROBASr[[sampleID]]
+  }
   ## Second, continue now starting from soil SS
   initPrebas = create_prebas_input.f(r_no, clim, data.sample, nYears = nYears,
                                          startingYear = startingYear,domSPrun=domSPrun)
-      
-  ###set parameters
-  #    initPrebas$pCROBAS <- pCROBAS
       
       
   opsna <- which(is.na(initPrebas$multiInitVar))
@@ -98,6 +88,8 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
   ##here mix years for weather inputs for Curr Climate
   if(rcpfile=="CurrClim"){
     set.seed(10)
+    if(uncRun) set.seed(sample(1:nSamplesr,1))
+
     resampleYear <- sample(1:nYears,nYears)
     initPrebas$ETSy <- initPrebas$ETSy[,resampleYear]
     initPrebas$P0y <- initPrebas$P0y[,resampleYear,]
@@ -189,7 +181,11 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
   # region <- regionPrebas(initPrebas)
   ###run PREBAS
   if(harscen!="Base"){
-    load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
+    if(!uncRun){
+      load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
+    }else {
+      load(paste0("initSoilCunc/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
+    }
     initPrebas$yassoRun <- rep(1,initPrebas$nSites)
     initPrebas$soilC[,1,,,] <- initSoilC
   }
@@ -210,7 +206,11 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
   if(harscen=="Base"){
     initSoilC <- stXX_GV(region, 1)
     print(paste("initSoilC",sampleID))
-    save(initSoilC,file=paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
+    if(!uncRun){
+      save(initSoilC,file=paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
+    } else {
+      save(initSoilC,file=paste0("initSoilCunc/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
+    }
     ###run yasso (starting from steady state) using PREBAS litter
     region <- yassoPREBASin(region,initSoilC)
     # out <- region$multiOut[,,,,1]
@@ -323,8 +323,10 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
     rm(list=setdiff(ls(), c(toMem,"toMem", "outSums")))
   
     #print(uncRun)
-    if(uncRun) print(outSums)
-    outSums # Output for uncertainty analysis, empty table if not uncRun
+    if(uncRun){ 
+      print(outSums)
+      return(outSums) # Output for uncertainty analysis, empty table if not uncRun
+    }
   }
 }
 
