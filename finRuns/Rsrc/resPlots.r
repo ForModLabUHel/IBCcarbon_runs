@@ -71,7 +71,14 @@ mean3$Drange <- factor(mean3$Drange, levels = c("0-10","10-15","15-20",
                                               "20-25","25-30",">30"))
 setkey(mean3,Drange)
 
-
+par(mfrow=c(1,1))
+plot(mean1$V1, col=2, type='l',ylim=c(0,2),ylab="Vmort",xlab="Dclass",
+     xaxt = "n")
+lines(mean2$V1, col=3)
+lines(mean3$V1, col=4)
+legend("topleft",c("17-25","26-33","33-50"),col=2:4,lty=1)
+axis(1, at=1:6, labels=c("0-10","10-15","15-20",
+                          "20-25","25-30",">30"))
 
 png(filename = "NEPboxplot.png")
 par(mfrow=c(2,2))
