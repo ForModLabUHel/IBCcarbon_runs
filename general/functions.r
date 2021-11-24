@@ -97,8 +97,12 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
       
   ##here mix years for weather inputs for Curr Climate
   if(rcpfile=="CurrClim"){
-    set.seed(10)
-    resampleYear <- sample(1:nYears,nYears)
+    if(uncRun){
+      resampleYear <- sample(1:nYears,nYears,replace=T)
+    }else{
+      set.seed(10)
+      resampleYear <- sample(1:nYears,nYears)
+    } 
     initPrebas$ETSy <- initPrebas$ETSy[,resampleYear]
     initPrebas$P0y <- initPrebas$P0y[,resampleYear,]
     initPrebas$weather <- initPrebas$weather[,resampleYear,,]

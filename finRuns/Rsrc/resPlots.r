@@ -1,22 +1,75 @@
+library(dplyr)
+library(data.table)
 library(raster)
 library(Rprebasso)
 r_no <- 4
-varID <- 46
-varX <- varNames[46]
+varID <- 42
+varX <- varNames[varID]
 periods <- c("2017-2025", "2026-2033","2034-2050")
 harvScen <- "Base"
 climScen <- "CurrClim"
 pathX <- "/scratch/project_2000994/PREBASruns/finRuns/rasters/"
 
-rast1 <- raster(paste0(pathX,"forCent",r_no,"/",varX,"_",periods[1],"_",harvScen,"_",climScen,".tif"))
-rast2 <- raster("/scratch/project_2000994/PREBASruns/finRuns/rasters/forCent4/NEP_2026-2033_Base_CurrClim.tif")
-rast3 <- raster("/scratch/project_2000994/PREBASruns/finRuns/rasters/forCent4/NEP_2034-2050_Base_CurrClim.tif")
+
+
+mort1 <- raster(paste0(pathX,"forCent",r_no,"/",varX,"_",periods[1],"_",harvScen,"_",climScen,".tif"))
+mort2 <- raster(paste0(pathX,"forCent",r_no,"/",varX,"_",periods[2],"_",harvScen,"_",climScen,".tif"))
+mort3 <- raster(paste0(pathX,"forCent",r_no,"/",varX,"_",periods[3],"_",harvScen,"_",climScen,".tif"))
+
+
+varID <- 12
+varX <- varNames[varID]
+
+D1 <- raster(paste0(pathX,"forCent",r_no,"/",varX,"_",periods[1],"_",harvScen,"_",climScen,".tif"))
+D2 <- raster(paste0(pathX,"forCent",r_no,"/",varX,"_",periods[2],"_",harvScen,"_",climScen,".tif"))
+D3 <- raster(paste0(pathX,"forCent",r_no,"/",varX,"_",periods[3],"_",harvScen,"_",climScen,".tif"))
+
+
+par(mfrow=c(2,2))
+plot(D1,mort1,pch=".",main="period 1",ylab="Vmort",xlab="D")
+plot(D2,mort2,pch=".",main="period 2",ylab="Vmort",xlab="D")
+plot(D3,mort3,pch=".",main="period 3",ylab="Vmort",xlab="D")
+
+
+mort1tab <- data.table(rasterToPoints(mort1) )
+D1tab <- data.table(rasterToPoints(D1) )
+tab1 <- merge(mort1tab,D1tab)
+tab1[, Drange := cut(D_2017.2025_Base_CurrClim, 
+                     breaks = c(-1,10,15,20,25,30,999), 
+                     labels = c("0-10","10-15","15-20",
+                                "20-25","25-30",">30"))]
+mean1 <- tab1[,mean(Vmort_2017.2025_Base_CurrClim,na.rm=T),by=Drange]
+mean1$Drange <- factor(mean1$Drange, levels = c("0-10","10-15","15-20",
+                                                "20-25","25-30",">30"))
+setkey(mean1,Drange)
 
 
 
+mort2tab <- data.table(rasterToPoints(mort2) )
+D2tab <- data.table(rasterToPoints(D2) )
+tab2 <- merge(mort2tab,D2tab)
+tab2[, Drange := cut(D_2026.2033_Base_CurrClim, 
+                     breaks = c(-1,10,15,20,25,30,999), 
+                     labels = c("0-10","10-15","15-20",
+                                "20-25","25-30",">30"))]
+mean2 <- tab2[,mean(Vmort_2026.2033_Base_CurrClim,na.rm=T),by=Drange]
+mean2$Drange <- factor(mean2$Drange, levels = c("0-10","10-15","15-20",
+                                                "20-25","25-30",">30"))
+setkey(mean2,Drange)
 
 
 
+mort3tab <- data.table(rasterToPoints(mort3) )
+D3tab <- data.table(rasterToPoints(D3) )
+tab3 <- merge(mort3tab,D3tab)
+tab3[, Drange := cut(D_2034.2050_Base_CurrClim, 
+                     breaks = c(-1,10,15,20,25,30,999), 
+                     labels = c("0-10","10-15","15-20",
+                                "20-25","25-30",">30"))]
+mean3 <- tab3[,mean(Vmort_2034.2050_Base_CurrClim,na.rm=T),by=Drange]
+mean3$Drange <- factor(mean3$Drange, levels = c("0-10","10-15","15-20",
+                                              "20-25","25-30",">30"))
+setkey(mean3,Drange)
 
 
 
