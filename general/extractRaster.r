@@ -10,7 +10,7 @@ library(sp)
 library(sf)
 
 ###FUNCTION FOR EXTRACTING DATA FROM AREAS IN MAAKUNTA REGIONS BASED ON PERIOD, HARVEST, & CLIMATE SCENARIOS
-    ##shapex is the raster of the area you would like to extract data from
+    ##areax is the raster of the area you would like to extract data from
     ##pathdata is the directory of files
     ##VARx is the variable of data to extract (Soil Carbon, Wood Harvested, etc.)
     ##periodx is the period of time for the scenario (2017-2025, 2026-2033, 2034-2050)
@@ -18,7 +18,7 @@ library(sf)
     ##climscenx is the climate scenario (CurrClim)
 
 ##Extraction Function
-extractraster <- function(shapex, pathdata, VARx, periodx, harvscenx, climscenx){
+extractraster <- function(areax, pathdata, VARx, periodx, harvscenx, climscenx){
 
     ##Set the path
     setwd(pathdata)
@@ -27,7 +27,7 @@ extractraster <- function(shapex, pathdata, VARx, periodx, harvscenx, climscenx)
     con <- shapefile("/scratch/project_2000994/PREBASruns/ZonUnc/Testmaps/SuomenMaakuntajako_2021_10k.shp")
 
     ##Crop the country raster to just the desired area
-    crop <- crop(con, shapex)
+    crop <- crop(con, areax)
 
     ##Extract vector of region IDs present in the desired area
     regs <- c(crop$maakID)
@@ -49,7 +49,12 @@ extractraster <- function(shapex, pathdata, VARx, periodx, harvscenx, climscenx)
         }
     
     ##The region raster is cropped to the desired area
-    crop1 <- mask(crop(rast1, shapex),shapex)
+    if(class(areax) %in% c("raster","RasterLayer")){
+        crop1 <- crop(rast1, areax)
+    }else{
+        crop1 <- mask(crop(rast1, areax),areax)    
+    }
+    
     
     ##Save the new raster for that particular area
     writeRaster(crop1, paste0("outRast/", VARx,"_",periodx,"_",harvscenx,"_",climscenx,".tif"),overwrite=T)
@@ -66,13 +71,13 @@ VAR <- c("WenergyWood","Wharvested","Wtot","soilC")
 periods <- c("2017-2025", "2034-2050")
 
 ##Desired Area
-shapex <- shapefile("/scratch/project_2000994/PREBASruns/ZonUnc/Testmaps/EVO/hyperlentoehdotus.shp")
+areax <- shapefile("/scratch/project_2000994/PREBASruns/ZonUnc/Testmaps/EVO/hyperlentoehdotus.shp")
 
 ###RUN FUNCTION
 ##Loop to input multiple variables and periods into the function
 for(i in 1:length(VAR)){
     for(j in 1:length(periods)){
-        extractraster(shapex, pathdata, VAR[i], periods[j], "Base", "CurrClim")
+        extractraster(areax, pathdata, VAR[i], periods[j], "Base", "CurrClim")
     }
 }
 
