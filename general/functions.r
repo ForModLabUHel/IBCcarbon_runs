@@ -307,14 +307,14 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
       }
           
       ####process and save special variales
-      if(!uncRun){
-          
-        print(paste("start special vars",sampleID))
-        specialVarProc(sampleX,region,r_no,harscen,rcpfile,sampleID,
-                     colsOut1,colsOut2,colsOut3,areas,sampleForPlots)
-      }
     }
-        
+    if(!uncRun){
+      
+      print(paste("start special vars",sampleID))
+      specialVarProc(sampleX,region,r_no,harscen,rcpfile,sampleID,
+                     colsOut1,colsOut2,colsOut3,areas,sampleForPlots)
+    }
+    
     # rm(list=c("region","initPrebas")); gc()
     # rm(list=setdiff(ls(), c(toMem,"toMem")))
     # rm(out); gc()
@@ -325,10 +325,10 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
     rm(list=setdiff(ls(), c(toMem,"toMem", "outSums")))
   
     #print(uncRun)
-    if(uncRun){ 
-      print(outSums)
-      return(outSums) # Output for uncertainty analysis, empty table if not uncRun
-    }
+    # if(uncRun){ 
+    #   print(outSums)
+    #   return(outSums) # Output for uncertainty analysis, empty table if not uncRun
+    # }
   }
 }
 
