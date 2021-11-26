@@ -17,7 +17,8 @@ UQanalysis <- "True"
 ##### From GitHub
 
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
-source_url("https://raw.githubusercontent.com/virpi-j/IBCcarbon_runs/master/general/functions.r")
+source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
+#source_url("https://raw.githubusercontent.com/virpi-j/IBCcarbon_runs/master/general/functions.r")
 #source_url("https://raw.githubusercontent.com/virpi-j/UQ_runs/main/functions.R")
 #source_url("https://raw.githubusercontent.com/virpi-j/UQ_runs/main/functions.R")
 
@@ -56,13 +57,16 @@ for(r_no in r_nos){
     print(paste0("Sample size ",nSitesRunr," segments"))
     opsInd <- list() #matrix(0, nSitesRun, nSamples) 
     pCROBASr <- list()
+    
     for(ij in 1:nSamplesr){ 
       #opsInd[,ij] <- sample(1:nrow(data.all), nSitesRun, replace = FALSE, prob = areas)
       #opsInd[,ij] <- sample(1:nrow(data.all), nSitesRun, replace = TRUE, prob = areas)
       opsInd[[ij]] <- sample(1:nrow(data.all), nSitesRunr, replace = TRUE, prob = areas)
       if(uncPCrobas){
-        pCROBASr[[ij]] <- pCROB + matrix(rnorm(nrow(pCROB)*ncol(pCROB),mean=0,sd=1), 
-                               nrow(pCROB), ncol(pCROB)) *pCROB*0.05
+        load("input/pCROBASr.rdata")
+        
+        #pCROBASr[[ij]] <- pCROB + matrix(rnorm(nrow(pCROB)*ncol(pCROB),mean=0,sd=1), 
+        #                       nrow(pCROB), ncol(pCROB)) *pCROB*0.05
       } else {
         pCROBASr[[ij]] <- pCROB
       }
@@ -125,7 +129,7 @@ for(r_no in r_nos){
     print("End running...")
     
   #  save(sampleXs,file=paste0("Rsrc/virpiSbatch/results/samplex_",r_no,".rdata")) 
-    save(sampleXs,file=paste0("uncRuns/samplex_",r_no,".rdata")) 
+  #  save(sampleXs,file=paste0("uncRuns/samplex_",r_no,".rdata")) 
     
     m <- nrow(sampleXs[[1]])
     n <- length(sampleXs)
@@ -156,6 +160,7 @@ for(r_no in r_nos){
   m <- length(sampleOutput)
   n <- nrow(sampleOutput[[1]])
   units_hist <- c(10^-12,10^-6,1,10^-6)
+  units_hist_label <- c("Tg CO2eq","10^6 m3","g C","10^6 m3") 
   
   #par(mfrow=c(m,3))
   for(j in 1:m){
@@ -171,7 +176,9 @@ for(r_no in r_nos){
     for(per in 1:3){
 #      hist(x[,2+per,with=FALSE], main = paste0("period",per), xlab = varNams, xlim = xlims)  
       hist(as.matrix(x[, paste0("per", per), with = FALSE]),
-           main = paste0("period",per), xlab = varNams, xlim = xlims)  
+           main = paste0("period",per), 
+           xlab = paste0(varNams," [",units_hist_label[j],"]"),
+           xlim = xlims)  
     }
     dev.off()
     #print(colMeans(x[,3:5]))
