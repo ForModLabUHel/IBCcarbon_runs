@@ -1320,3 +1320,96 @@ pMortSpecies <- function(modOut,minX=0.1,maxX=0.9,stepX=0.1,rangeYear=5){
               pMortSpruce=pMortXspruce,nDataSpruce=nDataSpruce,
               pMortBirch=pMortXbirch,nDataBirch=nDataBirch))
 }
+
+
+#### function to calculate the new parameters of the ClearCuts
+#### increasing the rotation length
+#### out=multi prebas run output
+calNewDclcut <- function(out,
+                         ClCut_pine,
+                         ClCut_spruce,
+                         ClCut_birch,
+                         fact=0.25){
+  newClCut_pine <- ClCut_pine
+  newClCut_spruce <- ClCut_spruce 
+  newClCut_birch <- ClCut_birch
+  
+  nSites <- dim(out$multiOut)[1]
+  ETSmean = round(mean(out$multiOut[,,5,1,1]))
+  domSp <- rep(NA,nSites)
+  domX <- apply(out$multiOut[,,13,,1],1:2, which.max)
+  domPos <- apply(domX,1,FUN=function(x) which.max(table(x)))
+  for(i in 1:nSites) domSp[i] <- out$multiOut[i,1,4,domPos[i],1]
+  siteType <- out$siteInfo[,3]
+  
+  sitesP3 <- which(siteType<=3 & domSp==1)
+  sitesP4 <- which(siteType==4 & domSp==1)
+  sitesP5 <- which(siteType>=5 & domSp==1)
+  sitesSP2 <- which(siteType<=2 & domSp==2)
+  sitesSP3 <- which(siteType>=3 & domSp==2)
+  sitesB2 <- which(siteType<=2 & domSp==3)
+  sitesB3 <- which(siteType>=3 & domSp==3)
+  
+  pdf(paste0(pathX,"ClCutplots_maak",r_no,".pdf"))
+  for(j in 1:7){
+    sites <- get(spSite[j])
+    spX <- spXs[j]
+    dClcut <- get(tabX[j])[indX[j],c(1,3)]
+    aClcut <- get(tabX[j])[indX[j],c(2,4)]
+    
+    dataX <- data.table(age=as.vector(out$multiOut[sites,,7,spX,1]),
+                        d=as.vector(out$multiOut[sites,,12,spX,1]))
+    
+    dataX <- dataX[age>0. & d>0]
+    
+    fitMod = nlsLM(d ~ a*(1-exp(b*age))^c,
+                   start = list(a = 60,b=-0.07,c=1.185),
+                   data = dataX)
+    
+    modD <- data.table(age=seq(0,300,0.5))    
+    modD$d=predict(fitMod, list(age = modD$age))
+    
+    px <- coef(fitMod)
+    a=px[1];b=px[2];c=px[3]
+    # 
+    dd=dClcut
+    aa= log(1-(dd/a)^(1/c))/b
+    if(any(is.na(aa))) aa[is.na(aa)] <- aClcut[is.na(aa)]
+    predict(fitMod, list(age = aa))
+    
+    age2 <- (1+fact) * aa
+    d2 <- predict(fitMod, list(age = age2))
+    d2
+    
+    dataX[,plot(age,d,pch='.',ylim=c(0,45),xlim=c(0,300))]
+    lines(modD$age,modD$d,col=4)
+    points(aa,dd,col=3,pch=c(1,20))
+    points(age2,d2,col=2,pch=c(1,20))
+    abline(v=aClcut,col=3,lty=1:2)
+    abline(v=aClcut*1.25,col=2,lty=1:2)
+    legend("bottomright",cex=0.8,
+           pch=c(1,1,1,20,1,NA),
+           legend=c("standard","+25%",
+                    "ETs<1000","ETS>1000",
+                    "D","age"),
+           col= c(3,2,1,1,1,1),
+           lty=c(NA,NA,NA,NA,NA,1)
+    )
+    legend("topleft",cex=0.5,
+           c(paste0("ETSmean = ",ETSmean))
+    )
+    
+    if(tabX[j]=="ClCut_pine") newClCut_pine[indX[j],c(1,3)] <- d2
+    if(tabX[j]=="ClCut_spruce") newClCut_spruce[indX[j],c(1,3)] <- d2
+    if(tabX[j]=="ClCut_birch") newClCut_birch[indX[j],c(1,3)] <- d2
+    
+    print(j)
+  }
+  dev.off()
+  newClCut_pine[,c(2,4)] <- ClCut_pine[,c(2,4)]*(1+fact)
+  newClCut_spruce[,c(2,4)] <- ClCut_spruce[,c(2,4)]*(1+fact)
+  newClCut_birch[,c(2,4)] <- ClCut_birch[,c(2,4)]*(1+fact)
+  return(list(ClCut_pine=newClCut_pine,
+              ClCut_spruce=newClCut_spruce,
+              ClCut_birch=newClCut_birch))
+}
