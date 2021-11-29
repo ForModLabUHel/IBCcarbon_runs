@@ -35,10 +35,7 @@ for(r_no in 1:19){
                          ClCut_spruce,
                          ClCut_birch,
                          fact=factRotLength)
-  ClCut_pine=pClCut$ClCut_pine
-  ClCut_spruce=pClCut$ClCut_spruce
-  ClCut_birch=pClCut$ClCut_birch
-  save(ClCut_pine,ClCut_spruce,ClCut_birch,
+  save(pClCut,
        file=paste0(pathX,"ClCutplots_maak",r_no,".rdata"))
   
 }
