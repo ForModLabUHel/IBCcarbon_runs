@@ -2,9 +2,11 @@ library(minpack.lm)
 
 factRotLength = 0.25
 sampleID = 3 ###12 45    ####for region 13 take 3 and 6; region 12 sampleID c(23,440); region 11 sampleID c(23,150)
-# r_no = regions = 4 ### forest center ID (metakeskus) 1:15
+toMem <- ls()
 
 for(r_no in 1:19){
+  
+# r_no = regions = 4 ### forest center ID (metakeskus) 1:15
   regSets <- "maakunta"
   nSetRuns = 10 #number of set runs
   harvestscenarios= "Base"		##management scenarios it can be  ### c("Low","MaxSust","NoHarv","Base")
@@ -37,5 +39,6 @@ for(r_no in 1:19){
                          fact=factRotLength)
   save(pClCut,
        file=paste0(pathX,"ClCutplots_maak",r_no,".rdata"))
-  
+ 
+  rm(list=setdiff(ls(), toMem));gc()
 }
