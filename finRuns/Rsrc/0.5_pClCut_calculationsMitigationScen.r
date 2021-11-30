@@ -2,7 +2,7 @@ library(minpack.lm)
 
 factRotLength = 0.25
 sampleID = 3 ###12 45    ####for region 13 take 3 and 6; region 12 sampleID c(23,440); region 11 sampleID c(23,150)
-toMem <- 
+toMem <- ls()
 
 for(r_no in 1:19){
   
