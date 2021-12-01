@@ -193,6 +193,12 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
   }
         
   HarvLimX <- HarvLim1[1:nYears,]
+  if(harscen=="Mitigation"){
+    compHarvX=0.
+    HarvLimX[,2]=0.
+    region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
+                           cutAreas =cutArX,compHarv=compHarvX,ageMitigScen = ageMitigScenX)
+  }
   ##Don't pass minDharvX if NA
   if (is.na(minDharvX)) {
     region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
@@ -380,7 +386,12 @@ create_prebas_input.f = function(r_no, clim, data.sample, nYears, startingYear=0
   #domSPrun=0 initialize model for mixed forests according to data inputs 
   #domSPrun=1 initialize model only for dominant species 
   nSites <- nrow(data.sample)
-  
+  if(harvestscenarios=="Mitigation"){
+    load(paste0("input/",regSets,"/pClCut_mitigation/ClCutplots_maak",r_no,".rdata"))
+    ClCut_pine <- pClCut$ClCut_pine
+    ClCut_spruce <- pClCut$ClCut_spruce
+    ClCut_birch <- pClCut$ClCut_birch
+  }
   ###site Info matrix. nrow = nSites, cols: 1 = siteID; 2 = climID; 3=site type;
   ###4 = nLayers; 5 = nSpecies;
   ###6=SWinit;   7 = CWinit; 8 = SOGinit; 9 = Sinit
