@@ -72,6 +72,12 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
     pCrobasX <- pCROBASr[[sampleID]]
   }
   ## Second, continue now starting from soil SS
+  if(harvestscenarios=="Mitigation"){
+    load(paste0("input/",regSets,"/pClCut_mitigation/ClCutplots_maak",r_no,".rdata"))
+    ClCut_pine <- pClCut$ClCut_pine
+    ClCut_spruce <- pClCut$ClCut_spruce
+    ClCut_birch <- pClCut$ClCut_birch
+  }
   initPrebas = create_prebas_input.f(r_no, clim, data.sample, nYears = nYears,
                                          startingYear = startingYear,domSPrun=domSPrun)
       
@@ -386,12 +392,6 @@ create_prebas_input.f = function(r_no, clim, data.sample, nYears, startingYear=0
   #domSPrun=0 initialize model for mixed forests according to data inputs 
   #domSPrun=1 initialize model only for dominant species 
   nSites <- nrow(data.sample)
-  if(harvestscenarios=="Mitigation"){
-    load(paste0("input/",regSets,"/pClCut_mitigation/ClCutplots_maak",r_no,".rdata"))
-    ClCut_pine <- pClCut$ClCut_pine
-    ClCut_spruce <- pClCut$ClCut_spruce
-    ClCut_birch <- pClCut$ClCut_birch
-  }
   ###site Info matrix. nrow = nSites, cols: 1 = siteID; 2 = climID; 3=site type;
   ###4 = nLayers; 5 = nSpecies;
   ###6=SWinit;   7 = CWinit; 8 = SOGinit; 9 = Sinit
