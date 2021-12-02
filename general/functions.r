@@ -200,7 +200,7 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
     ClcutX <- updatePclcut(initPrebas,pClCut)
     initPrebas$inDclct <- ClcutX$inDclct
     initPrebas$inAclct <- ClcutX$inAclct
-    initPrebas$thinInt <- rep(nSites,thinIntX)
+    initPrebas$thinInt <- rep(initPrebas$nSites,thinIntX)
     region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
                            cutAreas =cutArX,compHarv=compHarvX,
                            ageMitigScen = ageMitigScenX)
