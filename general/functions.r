@@ -194,13 +194,13 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
         
   HarvLimX <- HarvLim1[1:nYears,]
   if(harscen=="Mitigation"){
-    # compHarvX=0.
+    compHarvX=3.
     HarvLimX[,2]=0.
     load(paste0("input/",regSets,"/pClCut_mitigation/ClCutplots_maak",r_no,".rdata"))
     ClcutX <- updatePclcut(initPrebas,pClCut)
     initPrebas$inDclct <- ClcutX$inDclct
     initPrebas$inAclct <- ClcutX$inAclct
-    initPrebas$thinInt <- rep(initPrebas$nSites,thinIntX)
+    initPrebas$thinInt <- rep(thinIntX,initPrebas$nSites)
     region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
                            cutAreas =cutArX,compHarv=compHarvX,
                            ageMitigScen = ageMitigScenX)
