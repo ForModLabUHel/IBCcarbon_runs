@@ -194,7 +194,7 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
         
   HarvLimX <- HarvLim1[1:nYears,]
   if(harscen=="Mitigation"){
-    compHarvX=3.
+    # compHarvX=3.
     HarvLimX[,2]=0.
     load(paste0("input/",regSets,"/pClCut_mitigation/ClCutplots_maak",r_no,".rdata"))
     ClcutX <- updatePclcut(initPrebas,pClCut)
