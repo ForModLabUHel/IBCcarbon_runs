@@ -72,12 +72,6 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
     pCrobasX <- pCROBASr[[sampleID]]
   }
   ## Second, continue now starting from soil SS
-  if(harvestscenarios=="Mitigation"){
-    load(paste0("input/",regSets,"/pClCut_mitigation/ClCutplots_maak",r_no,".rdata"))
-    ClCut_pine <- pClCut$ClCut_pine
-    ClCut_spruce <- pClCut$ClCut_spruce
-    ClCut_birch <- pClCut$ClCut_birch
-  }
   initPrebas = create_prebas_input.f(r_no, clim, data.sample, nYears = nYears,
                                          startingYear = startingYear,domSPrun=domSPrun)
       
@@ -200,10 +194,16 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
         
   HarvLimX <- HarvLim1[1:nYears,]
   if(harscen=="Mitigation"){
-    compHarvX=0.
+    # compHarvX=0.
     HarvLimX[,2]=0.
+    load(paste0("input/",regSets,"/pClCut_mitigation/ClCutplots_maak",r_no,".rdata"))
+    ClcutX <- updatePclcut(initPrebas,pClCut)
+    initPrebas$inDclct <- ClcutX$inDclct
+    initPrebas$inAclct <- ClcutX$inAclct
+    initPrebas$thinInt <- rep(nSites,thinIntX)
     region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
-                           cutAreas =cutArX,compHarv=compHarvX,ageMitigScen = ageMitigScenX)
+                           cutAreas =cutArX,compHarv=compHarvX,
+                           ageMitigScen = ageMitigScenX)
   }
   ##Don't pass minDharvX if NA
   if (is.na(minDharvX)) {
@@ -1423,4 +1423,29 @@ calNewDclcut <- function(out,
   return(list(ClCut_pine=newClCut_pine,
               ClCut_spruce=newClCut_spruce,
               ClCut_birch=newClCut_birch))
+}
+
+updatePclcut <- function(initPrebas,pClCut){
+  nSites <- initPrebas$nSites
+  ClCut <- initPrebas$ClCut
+  inDclct <- initPrebas$inDclct
+  ETSmean <- rowMeans(initPrebas$ETSy)
+  ETSthres <- 1000
+  climIDs <- initPrebas$siteInfo[,2]
+  siteType <- initPrebas$siteInfo[,3]
+  inDclct <- initPrebas$inDclct
+  inAclct <- initPrebas$inAclct
+  for(i in 1: nSites){
+    if(ClCut[i]==1) inDclct[i,] <-
+        c(ClCutD_Pine(ETSmean[climIDs[i]],ETSthres,siteType[i],pClcut= pClCut$ClCut_pine),
+          ClCutD_Spruce(ETSmean[climIDs[i]],ETSthres,siteType[i],pClcut= pClCut$ClCut_spruce),
+          ClCutD_Birch(ETSmean[climIDs[i]],ETSthres,siteType[i],pClcut= pClCut$ClCut_birch),
+          0,0,0,0,0,0,0)  ###"fasy","pipi","eugl","rops","popu",'eugrur','piab(DE)')
+    if(ClCut[i]==1) inAclct[i,] <-
+        c(ClCutA_Pine(ETSmean[climIDs[i]],ETSthres,siteType[i],pClcut= pClCut$ClCut_pine),
+          ClCutA_Spruce(ETSmean[climIDs[i]],ETSthres,siteType[i],pClcut= pClCut$ClCut_spruce),
+          ClCutA_Birch(ETSmean[climIDs[i]],ETSthres,siteType[i],pClcut= pClCut$ClCut_birch),
+          80,50,13,30,50,13,120)  ###"fasy","pipi","eugl","rops","popu",'eugrur','piab(DE)')
+  }
+  return(list(inDclct=inDclct,inAclct=inAclct))
 }
