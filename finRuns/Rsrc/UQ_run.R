@@ -160,8 +160,9 @@ for(r_no in r_nos){
   m <- length(sampleOutput)
   n <- nrow(sampleOutput[[1]])
   units_hist <- c(10^-12,10^-6,1,10^-6)
-  units_hist_label <- c("Tg CO2eq","10^6 m3","g C","10^6 m3") 
-  
+  units_hist_label <- c("NEE [Tg CO2eq]","V [10^6 m3]",
+                        "npp [gC]","VroundWood [10^6 m3]") 
+
   #par(mfrow=c(m,3))
   for(j in 1:m){
     x <- sampleOutput[[j]]
@@ -174,10 +175,9 @@ for(r_no in r_nos){
     xlims[2] <- xlims[2]*(1+0.1*sign(xlims[2]))
     par(mfrow=c(3,1))
     for(per in 1:3){
-#      hist(x[,2+per,with=FALSE], main = paste0("period",per), xlab = varNams, xlim = xlims)  
       hist(as.matrix(x[, paste0("per", per), with = FALSE]),
            main = paste0("period",per), 
-           xlab = paste0(varNams," [",units_hist_label[j],"]"),
+           xlab = units_hist_label[j],
            xlim = xlims)  
     }
     dev.off()
