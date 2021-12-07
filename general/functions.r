@@ -1321,11 +1321,11 @@ pMortSpecies <- function(modOut,minX=0.1,maxX=0.9,stepX=0.1,rangeYear=5){
               pMortBirch=pMortXbirch,nDataBirch=nDataBirch))
 }
 
-distr_correction <- function(Y,Xtrue,Xdiscr){
+distr_correction <- function(Y,Xtrue,Xdiscr=FALSE){
   # y is the matrix of new sample - observations in lines, variables in columns
   # x is the matrix of the measured values = truth
   X <- Xtrue[sample(1:nrow(Xtrue),nrow(Xtrue),replace = TRUE),]
-  
+  if(length())
   m <- ncol(X)
   n <- nrow(X)
   ny <- nrow(Y)
@@ -1344,7 +1344,7 @@ distr_correction <- function(Y,Xtrue,Xdiscr){
       cdf[i] <- sum(X[,j] <= xu[i]) # count the sample values less than 
       # given value,
     }
-    cdf <- cdf/n # cdf goes from 0 to 1, here are the inner points
+    cdf <- cdf/(n+1) # cdf goes from 0 to 1, here are the inner points
     
     r <- matrix(ny,1)
     for(i in 1:nrow(Y)){
