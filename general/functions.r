@@ -1325,7 +1325,6 @@ distr_correction <- function(Y,Xtrue,Xdiscr=FALSE){
   # y is the matrix of new sample - observations in lines, variables in columns
   # x is the matrix of the measured values = truth
   X <- Xtrue[sample(1:nrow(Xtrue),nrow(Xtrue),replace = TRUE),]
-  if(length())
   m <- ncol(X)
   n <- nrow(X)
   ny <- nrow(Y)
