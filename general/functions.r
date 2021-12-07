@@ -1351,7 +1351,7 @@ distr_correction <- function(Y,Xtrue,Xdiscr=FALSE){
       r[i] <- sum(Y[,j]<=Y[i,j])/ny # Define the eCDF of each observation 
     }
     # use discr. or cont. inverse cdf to generate new sample
-    if(Xdiscr[j]){ # discrete values 
+    if(Xdiscr[j] | length(Xdiscr)<m){ # discrete values 
       #interp <- approx(c(0,cdf), c(xu,max(xu)+1), r, method = "constant", yleft = xu[1], 
       #                 yright = xu[length(xu)], rule = 2:1)
       interp <- approx(c(0,cdf,1), c(min(xu),xu,max(xu)+1), r, method = "constant", yleft = xu[1], 
