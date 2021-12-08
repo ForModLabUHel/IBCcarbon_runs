@@ -138,7 +138,7 @@ for(r_no in r_nos){
     toMem <- ls()
     print(paste0("Start running iter ",nii,"/",niter,"..."))
     startRun <- Sys.time() 
-    sampleX <- runModel(sampleID,sampleRun=F, uncRun = uncRun)
+    #sampleX <- runModel(sampleID,sampleRun=F, uncRun = uncRun)
     # #sampleXs <- lapply(sampleIDs[1:4], function(jx) {
     #  runModel(jx, uncRun = TRUE, ststDeadW=FALSE)})      
     sampleXs <- mclapply(sampleIDs[(1+(nii-1)*nParRuns):(nii*nParRuns)], function(jx) {
