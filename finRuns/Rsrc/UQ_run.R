@@ -57,7 +57,7 @@ for(r_no in r_nos){
     areas <- data.all$area
     areas <- areas/area_total
     #hist(areas)
-    print(paste0("Sample size ",nSitesRunr," segments"))
+    print(paste0("Sample size ",nSitesRunr," pixels"))
     if(!loadUnc){
       opsInd <- list() #matrix(0, nSitesRun, nSamples) 
       pCROBASr <- list()
@@ -127,7 +127,7 @@ for(r_no in r_nos){
   
   
   if(testRun){
-    if(loadRun){
+    if(loadUnc){
       load(paste0("uncRuns/opsInd_reg",r_no,".rdata")) 
     }
     toMem <- ls()
