@@ -17,11 +17,8 @@ UQanalysis <- "True"
 ##### From GitHub
 
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
-source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
-#source_url("https://raw.githubusercontent.com/virpi-j/IBCcarbon_runs/master/general/functions.r")
-#source_url("https://raw.githubusercontent.com/virpi-j/UQ_runs/main/functions.R")
-#source_url("https://raw.githubusercontent.com/virpi-j/UQ_runs/main/functions.R")
-
+#source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
+source_url("https://raw.githubusercontent.com/virpi-j/IBCcarbon_runs/master/general/functions.r")
 
 for(r_no in r_nos){
   regions_no <- r_no
@@ -45,7 +42,13 @@ for(r_no in r_nos){
   #sampleRun <- FALSE
   set.seed(10)
   #uncRun <- FALSE
-  #nSitesRun <- 100
+  #nSitesRun <- 10
+  if(uncInput){
+    load(url("https://raw.githubusercontent.com/ForModLabUHel/satRuns/master/data/inputUncer.rdata"))
+    C <- chol(errData$all$sigmaFSVda)
+    X <- cbind(data.all$ba, data.all$dbh, data.all$h, data.all$pine, data.all$spruce, data.all$birch)
+    mx <- ncol(X)
+  }
   
   #----------------------------------------------------------------------------
   if(uncRun){ 
@@ -57,25 +60,32 @@ for(r_no in r_nos){
     print(paste0("Sample size ",nSitesRunr," segments"))
     opsInd <- list() #matrix(0, nSitesRun, nSamples) 
     pCROBASr <- list()
-    
+    inputr <- list()
+    resampleYears <-  t(matrix(1:nYears,nYears,nSamplesr))
     for(ij in 1:nSamplesr){ 
       #opsInd[,ij] <- sample(1:nrow(data.all), nSitesRun, replace = FALSE, prob = areas)
       #opsInd[,ij] <- sample(1:nrow(data.all), nSitesRun, replace = TRUE, prob = areas)
       opsInd[[ij]] <- sample(1:nrow(data.all), nSitesRunr, replace = TRUE, prob = areas)
       if(uncPCrobas){
         load("input/pCROBASr.rdata")
-        
         #pCROBASr[[ij]] <- pCROB + matrix(rnorm(nrow(pCROB)*ncol(pCROB),mean=0,sd=1), 
         #                       nrow(pCROB), ncol(pCROB)) *pCROB*0.05
       } else {
         pCROBASr[[ij]] <- pCROB
       }
+      if(uncInput){
+        Y <- X[opsInd[[ij]],] + matrix(rnorm(nSitesRunr*mx),nSitesRunr,mx)%*%C
+        inputr[[ij]] <- distr_correction(Y,X[opsInd[[ij]],])
+      } else {inputr[[ij]] <- X}
+      if(uncClim){
+        resampleYears[ij,] <- sample(1:nYears,nYears,replace=T)
+      }
         #sample(1:nrow(data.all), nSitesRunr, replace = TRUE, prob = areas)
     }
   #  save(opsInd,file=paste0("Rsrc/virpiSbatch/results/opsInd_reg",r_no,".rdata")) 
   #  save(pCROBASr,file=paste0("Rsrc/virpiSbatch/results/pCrobas_reg",r_no,".rdata")) 
-    save(opsInd,file=paste0("uncRuns/opsInd_reg",r_no,".rdata")) 
-    save(pCROBASr,file=paste0("uncRuns/pCrobas_reg",r_no,".rdata")) 
+    save(opsInd,pCROBASr,inputr,resampleYears,file=paste0("uncRuns/opsInd_reg",r_no,".rdata")) 
+    #save(pCROBASr,file=paste0("uncRuns/pCrobas_reg",r_no,".rdata")) 
   } else {
     setX=1
     nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
@@ -114,11 +124,16 @@ for(r_no in r_nos){
   
   sampleOutput <- list()
   
+  toMem <- ls()
+  startRun <- Sys.time() 
+  sampleX <- runModel(sampleID,sampleRun=F, uncRun = uncRun)
+  
   for(nii in 1:niter){
     toMem <- ls()
     print(paste0("Start running iter ",nii,"/",niter,"..."))
     startRun <- Sys.time() 
-    #sampleXs <- lapply(sampleIDs[1:4], function(jx) {
+    sampleX <- runModel(sampleID,sampleRun=F, uncRun = uncRun)
+    # #sampleXs <- lapply(sampleIDs[1:4], function(jx) {
     #  runModel(jx, uncRun = TRUE, ststDeadW=FALSE)})      
     sampleXs <- mclapply(sampleIDs[(1+(nii-1)*nParRuns):(nii*nParRuns)], function(jx) {
       runModel(jx,  ## Do nothing for 10 seconds

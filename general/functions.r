@@ -3,10 +3,10 @@
 ## FUNCTIONS
 ## ---------------------------------------------------------------------
 ## ---------------------------------------------------------------------
-## MAIN SCRIPT
+## MAIN SCRIPT: uncRun for random segments, uncSeg for random values for segments
 ## ---------------------------------------------------------------------
 runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
-                     uncRun=FALSE,easyInit=FALSE){
+                     uncRun=FALSE,uncSeg=FALSE,easyInit=FALSE){
   # print(date())
   print(paste("start sample ID",sampleID))
   if(uncRun){
@@ -14,7 +14,11 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
     area_tot <- sum(data.all$area) # ha
     sampleX[,area := 16^2/10000] 
     #area_sample <- sum(sampleX$area) # ha
-    cA <- area_tot/nrow(sampleX) #area_sample  
+    cA <- area_tot/nrow(sampleX) #area_sample
+    xinput <- inputr[[sampleID]]
+    sampleX[,':='(ba=xinput[,1],dbh=xinput[,2],
+                  h=xinput[,3],pine=xinput[,4],
+                  spruce=xinput[,5],birch=xinput[,6])]  
   } else {
     sampleX <- ops[[sampleID]]
     sampleX[,area := N*16^2/10000] 
@@ -22,6 +26,7 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
   sampleX[,id:=climID]
   HarvLimX <- harvestLims * sum(sampleX$area)/sum(data.all$area)
   nSample = nrow(sampleX)#200#nrow(data.all)
+
   ## ---------------------------------------------------------
   i = 0
   if(!uncRun){
@@ -88,7 +93,8 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
   ##here mix years for weather inputs for Curr Climate
   if(rcpfile=="CurrClim"){
     if(uncRun){
-      resampleYear <- sample(1:nYears,nYears,replace=T)
+      resampleYear <- resampleYears[sampleID,] 
+      #sample(1:nYears,nYears,replace=T)
     }else{
       set.seed(10)
       resampleYear <- sample(1:nYears,nYears)
