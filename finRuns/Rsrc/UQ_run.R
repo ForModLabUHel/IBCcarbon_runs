@@ -124,10 +124,13 @@ for(r_no in r_nos){
   
   sampleOutput <- list()
   
+  testRun <- TRUE
+  
+  if(testRun){
   toMem <- ls()
   startRun <- Sys.time() 
   sampleX <- runModel(sampleID,sampleRun=F, uncRun = uncRun)
-  
+  } else {
   for(nii in 1:niter){
     toMem <- ls()
     print(paste0("Start running iter ",nii,"/",niter,"..."))
@@ -199,6 +202,7 @@ for(r_no in r_nos){
     #print(colMeans(x[,3:5]))
   }
   print("histograms made")
+  }
   setwd("Rsrc/virpiSbatch/")
   
 }
