@@ -58,34 +58,35 @@ for(r_no in r_nos){
     areas <- areas/area_total
     #hist(areas)
     print(paste0("Sample size ",nSitesRunr," segments"))
-    opsInd <- list() #matrix(0, nSitesRun, nSamples) 
-    pCROBASr <- list()
-    inputr <- list()
-    resampleYears <-  t(matrix(1:nYears,nYears,nSamplesr))
-    for(ij in 1:nSamplesr){ 
-      #opsInd[,ij] <- sample(1:nrow(data.all), nSitesRun, replace = FALSE, prob = areas)
-      #opsInd[,ij] <- sample(1:nrow(data.all), nSitesRun, replace = TRUE, prob = areas)
-      opsInd[[ij]] <- sample(1:nrow(data.all), nSitesRunr, replace = TRUE, prob = areas)
-      if(uncPCrobas){
-        load("input/pCROBASr.rdata")
-        #pCROBASr[[ij]] <- pCROB + matrix(rnorm(nrow(pCROB)*ncol(pCROB),mean=0,sd=1), 
-        #                       nrow(pCROB), ncol(pCROB)) *pCROB*0.05
-      } else {
-        pCROBASr[[ij]] <- pCROB
+    if(!loadUnc){
+      opsInd <- list() #matrix(0, nSitesRun, nSamples) 
+      pCROBASr <- list()
+      inputr <- list()
+      resampleYears <-  t(matrix(1:nYears,nYears,nSamplesr))
+      for(ij in 1:nSamplesr){ 
+        #opsInd[,ij] <- sample(1:nrow(data.all), nSitesRun, replace = FALSE, prob = areas)
+        #opsInd[,ij] <- sample(1:nrow(data.all), nSitesRun, replace = TRUE, prob = areas)
+        opsInd[[ij]] <- sample(1:nrow(data.all), nSitesRunr, replace = TRUE, prob = areas)
+        if(uncPCrobas){
+          load("input/pCROBASr.rdata")
+          #pCROBASr[[ij]] <- pCROB + matrix(rnorm(nrow(pCROB)*ncol(pCROB),mean=0,sd=1), 
+          #                       nrow(pCROB), ncol(pCROB)) *pCROB*0.05
+        } else {
+          pCROBASr[[ij]] <- pCROB
+        }
+        if(uncInput){
+          Y <- X[opsInd[[ij]],] + matrix(rnorm(nSitesRunr*mx),nSitesRunr,mx)%*%C
+          inputr[[ij]] <- distr_correction(Y,X[opsInd[[ij]],])
+        } else {inputr[[ij]] <- X}
+        if(uncClim){
+          resampleYears[ij,] <- sample(1:nYears,nYears,replace=T)
+        }
+          #sample(1:nrow(data.all), nSitesRunr, replace = TRUE, prob = areas)
       }
-      if(uncInput){
-        Y <- X[opsInd[[ij]],] + matrix(rnorm(nSitesRunr*mx),nSitesRunr,mx)%*%C
-        inputr[[ij]] <- distr_correction(Y,X[opsInd[[ij]],])
-      } else {inputr[[ij]] <- X}
-      if(uncClim){
-        resampleYears[ij,] <- sample(1:nYears,nYears,replace=T)
-      }
-        #sample(1:nrow(data.all), nSitesRunr, replace = TRUE, prob = areas)
+        #  save(opsInd,file=paste0("Rsrc/virpiSbatch/results/opsInd_reg",r_no,".rdata")) 
+      #  save(pCROBASr,file=paste0("Rsrc/virpiSbatch/results/pCrobas_reg",r_no,".rdata")) 
+      save(opsInd,pCROBASr,inputr,resampleYears,file=paste0("uncRuns/opsInd_reg",r_no,".rdata")) 
     }
-  #  save(opsInd,file=paste0("Rsrc/virpiSbatch/results/opsInd_reg",r_no,".rdata")) 
-  #  save(pCROBASr,file=paste0("Rsrc/virpiSbatch/results/pCrobas_reg",r_no,".rdata")) 
-    save(opsInd,pCROBASr,inputr,resampleYears,file=paste0("uncRuns/opsInd_reg",r_no,".rdata")) 
-    #save(pCROBASr,file=paste0("uncRuns/pCrobas_reg",r_no,".rdata")) 
   } else {
     setX=1
     nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
@@ -124,12 +125,14 @@ for(r_no in r_nos){
   
   sampleOutput <- list()
   
-  testRun <- TRUE
   
   if(testRun){
-  toMem <- ls()
-  startRun <- Sys.time() 
-  sampleX <- runModel(sampleID,sampleRun=F, uncRun = uncRun)
+    if(loadRun){
+      load(paste0("uncRuns/opsInd_reg",r_no,".rdata")) 
+    }
+    toMem <- ls()
+    startRun <- Sys.time() 
+    sampleX <- runModel(sampleID,sampleRun=F, uncRun = uncRun)
   } else {
   for(nii in 1:niter){
     toMem <- ls()
