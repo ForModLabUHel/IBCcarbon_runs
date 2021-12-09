@@ -160,12 +160,12 @@ for(r_no in r_nos){
       par(mfrow=c(3,1))
       for(per in 1:3){
         if(per==1 & length(xnas)>0){
-          hist(as.matrix(x[, paste0("per", per)], with = FALSE]),
+          hist(as.matrix(x[, paste0("per", per), with = FALSE]),
              main = paste0("period",per," nas: sampleIDs ",xnas), 
              xlab = units_hist_label[indj],
              xlim = xlims)  
         } else {
-          hist(as.matrix(x[, paste0("per", per)], with = FALSE]),
+          hist(as.matrix(x[, paste0("per", per), with = FALSE]),
             main = paste0("period",per), 
             xlab = units_hist_label[indj],
             xlim = xlims)  
