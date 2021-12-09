@@ -13,8 +13,7 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
     sampleX <- data.all[opsInd[[sampleID]],] # choose random set of nSitesRun segments -- TEST / VJ!
     area_tot <- sum(data.all$area) # ha
     sampleX[,area := 16^2/10000] 
-    #area_sample <- sum(sampleX$area) # ha
-    cA <- area_tot/nrow(sampleX) #area_sample
+    cA <- 1/nrow(sampleX) #area_tot/nrow(sampleX) 
     xinput <- inputr[[sampleID]]
     sampleX[,':='(fert=str[[sampleID]],ba=xinput[,1],dbh=xinput[,2],
                   h=xinput[,3],pine=xinput[,4],
