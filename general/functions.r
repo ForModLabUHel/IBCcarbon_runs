@@ -16,7 +16,7 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
     #area_sample <- sum(sampleX$area) # ha
     cA <- area_tot/nrow(sampleX) #area_sample
     xinput <- inputr[[sampleID]]
-    sampleX[,':='(ba=xinput[,1],dbh=xinput[,2],
+    sampleX[,':='(fert=str[[sampleID]],ba=xinput[,1],dbh=xinput[,2],
                   h=xinput[,3],pine=xinput[,4],
                   spruce=xinput[,5],birch=xinput[,6])]  
   } else {

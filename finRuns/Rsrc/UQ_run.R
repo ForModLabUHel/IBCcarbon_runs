@@ -1,6 +1,9 @@
 rm(list=ls())
 sampleID <- 4
 rcpfile="CurrClim"
+library(data.table)
+library(devtools)
+library(MASS)
 
 ststDeadW<-FALSE
 source("localSettings.r")
@@ -48,6 +51,7 @@ for(r_no in r_nos){
       opsInd <- list() #matrix(0, nSitesRun, nSamples) 
       pCROBASr <- list()
       inputr <- list()
+      str <- list()
       resampleYears <-  t(matrix(1:nYears,nYears,nSamplesr))
       for(ij in 1:nSamplesr){ 
         #opsInd[,ij] <- sample(1:nrow(data.all), nSitesRun, replace = FALSE, prob = areas)
@@ -62,11 +66,33 @@ for(r_no in r_nos){
           Y <- X[opsInd[[ij]],] + matrix(rnorm(nSitesRunr*mx),nSitesRunr,mx)%*%C
           inputr[[ij]] <- distr_correction(Y,X[opsInd[[ij]],])
         } else {inputr[[ij]] <- X}
+        if(uncSiteType){
+          ###load the fittet probit models to estimate the Site fertility class
+          load(url("https://raw.githubusercontent.com/ForModLabUHel/satRuns/master/data/step.probit.rdata"))
+          ####generate sample input data
+          dataSample <- data.table(st=data.all$fert[opsInd[[ij]]],
+                                   H=inputr[[ij]][,3],
+                                   D=inputr[[ij]][,2],
+                                   BAtot=inputr[[ij]][,1],
+                                   BApPer=inputr[[ij]][,4]
+          )
+          #X <- cbind(data.all$ba, data.all$dbh, data.all$h, data.all$pine, data.all$spruce, data.all$birch)
+          ##select the model (all is the most generic)
+          modX <- step.probit[["all"]]
+          ###run model -> returns the probability for each site type so you can sample using that probability
+          ###model inputs:
+          # st = site type
+          # H = average height
+          # D = average dbh
+          #BAtot = total basal area
+          #BApPer = % of pine basal area
+          str[[ij]] <- max.col(predict(modX,type='p',dataSample))
+        } else { str[[ij]] <- data.all$fert[opsInd[[ij]]]}
         if(uncClim){
           resampleYears[ij,] <- sample(1:nYears,nYears,replace=T)
         }
       }
-      save(opsInd,pCROBASr,inputr,resampleYears,file=paste0("uncRuns/opsInd_reg",r_no,".rdata")) 
+      save(opsInd,pCROBASr,inputr,resampleYears,str,file=paste0("uncRuns/opsInd_reg",r_no,".rdata")) 
     }
   } else { # if(uncRun)
     setX=1
