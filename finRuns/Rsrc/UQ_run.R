@@ -25,7 +25,7 @@ for(r_no in r_nos){
   
   # Give new set of outputs ------------------------------------------------
   varOuts <- c("NEP","V","npp","VroundWood") # Wtot!
-  cS <- c(-100^2*44/12, 1, 100^2, 1) # multipliers for tot.sums
+  cS <- c(-100^2*44/12, 1, 1, 1) # multipliers of areas (&NEE C->CO2eq) for tot.sums
   
   varSel <- match(varOuts,varNames)
   funX <- rep("sum",length(varSel))
@@ -169,7 +169,7 @@ for(r_no in r_nos){
     print("make histograms...")
     m <- length(sampleOutput)
     n <- nrow(sampleOutput[[1]])
-    units_hist <- area_total*c(10^-12,10^-6,1,10^-6)
+    units_hist <- c(area_total*10^-12,1,1,area_total*10^-6)
     units_hist_label <- c("NEE [Tg CO2eq]","V [m3 ha-1]",
                         "npp [gC m-2]","VroundWood [10^6 m3]") 
 
@@ -178,7 +178,7 @@ for(r_no in r_nos){
       varNams <- x[1,"vari"]
       xnas <- which(is.na(x[,3]))
       x <- x[which(!is.na(x[,3])),]
-      if(indj==1 | indj ==4) x[,3:5] <- x[,3:5]*cs[indj]*units_hist[indj]
+      x[,3:5] <- x[,3:5]*cs[indj]*units_hist[indj]
       png(file = paste0("uncRuns/hists_regionID",r_no,"_",nSitesRunr,"_uncpar",uncPCrobas,"_",varNams,".png"))
       xlims <- c(min(x[,3:5]),max(x[,3:5]))
       xlims[1] <- xlims[1]*(1-0.1*sign(xlims[1]))
