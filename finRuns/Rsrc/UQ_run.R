@@ -163,7 +163,7 @@ for(r_no in r_nos){
     
       save(sampleOutput,file=paste0("uncRuns/samplexout",r_no,
               "samplesize",nSitesRunr,
-              "_pr",uncPcrobas,"_Xr",uncInput,
+              "_pr",uncPCrobas,"_Xr",uncInput,
               "_Cr",uncClim,"_str",uncSiteType,".rdata")) 
     }
 
@@ -182,7 +182,7 @@ for(r_no in r_nos){
       x[,3:5] <- x[,3:5]*units_hist[indj]
       png(file = paste0("uncRuns/hists_regionID",r_no,"_",varNams,
                         "_",nSitesRunr,
-                        "_pr",uncPcrobas,"_Xr",uncInput,
+                        "_pr",uncPCrobas,"_Xr",uncInput,
                         "_Cr",uncClim,"_str",uncSiteType,".png"))
       xlims <- c(min(x[,3:5]),max(x[,3:5]))
       xlims[1] <- xlims[1]*(1-0.1*sign(xlims[1]))
