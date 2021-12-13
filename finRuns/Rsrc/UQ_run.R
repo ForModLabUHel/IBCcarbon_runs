@@ -59,7 +59,6 @@ if(!uncSeg){ # sample pixel indices
   
 if(uncRun & !loadUnc){
   pCROBASr <- list()
-  inputr <- list()
   str <- list()
   resampleYears <-  t(matrix(1:nYears,nYears,nSamplesr))
   for(ij in 1:nSamplesr){ 
@@ -70,11 +69,11 @@ if(uncRun & !loadUnc){
     }
     if(uncInput){
       X <- ops[[ij]]
-      X <- cbind(X$ba, X$dbh, X$h, X$pine, X$spruce, X$birch)
+      X <- cbind(X$ba, X$dbh, X$h/10, X$pine, X$spruce, X$birch) # h as decimeters in data.all -> convert to meters as in cov matrix C
       mx <- ncol(X)
       Y <- X + matrix(rnorm(nrow(X)*mx),nrow(X),mx)%*%C
       X <- distr_correction(Y,X)
-      ops[[ij]][,':=' (ba=X[,1],dbh=X[,2],h=X[,3],pine=X[,4],spruce=X[,5],birch=X[,6])]
+      ops[[ij]][,':=' (ba=X[,1],dbh=X[,2],h=X[,3]*10,pine=X[,4],spruce=X[,5],birch=X[,6])] # the height converted back to meters
     } 
     if(uncSiteType){
       ###load the fittet probit models to estimate the Site fertility class
@@ -96,7 +95,12 @@ if(uncRun & !loadUnc){
       # D = average dbh
       #BAtot = total basal area
       #BApPer = % of pine basal area
-      str <- max.col(predict(modX,type='p',dataSample))
+      probs <- predict(modX,type='p',dataSample)
+      str <- matrix(0,nrow(ops[[ij]]),1)
+      for(ri in 1:nrow(ops[[ij]])){
+        str[ri] <- sample(1:5,1,prob = probs[ri,])
+      }
+      
       ops[[ij]][,fert:=str]
     }
     if(uncClim){

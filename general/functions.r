@@ -11,7 +11,7 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
   print(paste("start sample ID",sampleID))
   
   sampleX <- ops[[sampleID]]
-  if(uncRun){
+  if(uncRun & !uncSeg){
     area_tot <- sum(data.all$area) # ha
     sampleX[,area := 16^2/10000] 
     cA <- 1/nrow(sampleX) #area_tot/nrow(sampleX) 
@@ -270,7 +270,7 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
       p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
       p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
       p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
-      if(!uncRun & !uncSeg){
+      if(!uncRun | uncSeg){
         pX <- merge(p1,p2)
         pX <- merge(pX,p3)
       } else {
@@ -308,8 +308,7 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
       }
           
       ####process and save special variales
-      if(!uncRun & !uncSeg){
-          
+      if(!uncRun | uncSeg){
         print(paste("start special vars",sampleID))
         specialVarProc(sampleX,region,r_no,harscen,rcpfile,sampleID,
                      colsOut1,colsOut2,colsOut3,areas,sampleForPlots)
