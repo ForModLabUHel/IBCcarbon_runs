@@ -9,17 +9,13 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
                      uncRun=FALSE,uncSeg=FALSE,easyInit=FALSE){
   # print(date())
   print(paste("start sample ID",sampleID))
+  
+  sampleX <- ops[[sampleID]]
   if(uncRun){
-    sampleX <- data.all[opsInd[[sampleID]],] # choose random set of nSitesRun segments -- TEST / VJ!
     area_tot <- sum(data.all$area) # ha
     sampleX[,area := 16^2/10000] 
     cA <- 1/nrow(sampleX) #area_tot/nrow(sampleX) 
-    xinput <- inputr[[sampleID]]
-    sampleX[,':='(fert=str[[sampleID]],ba=xinput[,1],dbh=xinput[,2],
-                  h=xinput[,3],pine=xinput[,4],
-                  spruce=xinput[,5],birch=xinput[,6])]  
   } else {
-    sampleX <- ops[[sampleID]]
     sampleX[,area := N*16^2/10000] 
   }
   sampleX[,id:=climID]
