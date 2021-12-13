@@ -270,7 +270,7 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
       p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
       p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
       p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
-      if(!uncRun){
+      if(!uncRun & !uncSeg){
         pX <- merge(p1,p2)
         pX <- merge(pX,p3)
       } else {
@@ -283,7 +283,7 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
         nax$sampleID <- sampleID
         nas <- rbind(nas,nax)
       } 
-      if(uncRun){
+      if(uncRun & !uncSeg){
         outSums <- rbind(outSums, data.table(vari = varNames[varSel[ij]], 
                                              iter = sampleID, 
                                              per1 = cA*sum(pX[,2]), 
@@ -308,7 +308,7 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
       }
           
       ####process and save special variales
-      if(!uncRun){
+      if(!uncRun & !uncSeg){
           
         print(paste("start special vars",sampleID))
         specialVarProc(sampleX,region,r_no,harscen,rcpfile,sampleID,
@@ -326,7 +326,7 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
     rm(list=setdiff(ls(), c(toMem,"toMem", "outSums")))
   
     #print(uncRun)
-    if(uncRun){ 
+    if(uncRun & !uncSeg){ 
       print(outSums)
       return(outSums) # Output for uncertainty analysis, empty table if not uncRun
     }
