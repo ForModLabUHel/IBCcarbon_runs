@@ -169,6 +169,7 @@ if(testRun){ # if needed to test an individual sample
       }
       
       save(sampleOutput,file=paste0("uncRuns/samplexout",r_no,
+              "_",harvscen,"_",                                    
               "samplesize",nSitesRunr,
               "_pr",uncPCrobas,"_Xr",uncInput,
               "_Cr",uncClim,"_str",uncSiteType,".rdata")) 
@@ -187,7 +188,7 @@ if(testRun){ # if needed to test an individual sample
         x <- x[which(!is.na(x[,3])),]
         x[,3:5] <- x[,3:5]*units_hist[indj]
         png(file = paste0("uncRuns/hists_regionID",r_no,"_",varNams,
-                        "_",nSitesRunr,
+                        "_",nSitesRunr,"_",harvscen,"_",
                         "_pr",uncPCrobas,"_Xr",uncInput,
                         "_Cr",uncClim,"_str",uncSiteType,".png"))
         xlims <- c(min(x[,3:5]),max(x[,3:5]))
@@ -197,12 +198,13 @@ if(testRun){ # if needed to test an individual sample
         for(per in 1:3){
           if(per==1 & length(xnas)>0){
             hist(as.matrix(x[, paste0("per", per), with = FALSE]),
-               main = paste0("period",per," nas: sampleIDs ",xnas), 
+               main = paste0("region",r_no,"_",harvscen,"_",
+               "period",per," nas: sampleIDs ",xnas), 
                xlab = units_hist_label[indj],
                xlim = xlims)  
           } else {
             hist(as.matrix(x[, paste0("per", per), with = FALSE]),
-              main = paste0("period",per), 
+              main = paste0("region",r_no,"_",harvscen,"_period",per), 
               xlab = units_hist_label[indj],
               xlim = xlims)  
           }
