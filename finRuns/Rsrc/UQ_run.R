@@ -136,6 +136,9 @@ if(testRun){ # if needed to test an individual sample
   startRun <- Sys.time() 
   sampleX <- runModel(sampleID,sampleRun=F, uncRun = uncRun)
 } else {
+  if(loadUnc){ # if needed to load previous sample
+    load(paste0("uncRuns/opsInd_reg",r_no,"_uncSeg",uncSeg,".rdata")) 
+  }
   for(nii in 1:niter){
     toMem <- ls()
     print(paste0("Start running iter ",nii,"/",niter,"..."))
