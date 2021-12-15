@@ -1562,9 +1562,5 @@ updatePclcut <- function(initPrebas,pClCut){
           80,50,13,30,50,13,120)  ###"fasy","pipi","eugl","rops","popu",'eugrur','piab(DE)')
   }
   return(list(inDclct=inDclct,inAclct=inAclct))
-<<<<<<< HEAD
 }
 
-=======
-}
->>>>>>> d6fd5a167899c97c460435f7445a2d5402b757b3
