@@ -3,25 +3,25 @@
 ## FUNCTIONS
 ## ---------------------------------------------------------------------
 ## ---------------------------------------------------------------------
-## MAIN SCRIPT
+## MAIN SCRIPT: uncRun for random segments, uncSeg for random values for segments
 ## ---------------------------------------------------------------------
 runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
-                     uncRun=FALSE,easyInit=FALSE){
+                     uncRun=FALSE,uncSeg=FALSE,easyInit=FALSE){
   # print(date())
   print(paste("start sample ID",sampleID))
-  if(uncRun){
-    sampleX <- data.all[opsInd[[sampleID]],] # choose random set of nSitesRun segments -- TEST / VJ!
+  
+  sampleX <- ops[[sampleID]]
+  if(uncRun & !uncSeg){
     area_tot <- sum(data.all$area) # ha
     sampleX[,area := 16^2/10000] 
-    #area_sample <- sum(sampleX$area) # ha
-    cA <- area_tot/nrow(sampleX) #area_sample  
+    cA <- 1/nrow(sampleX) #area_tot/nrow(sampleX) 
   } else {
-    sampleX <- ops[[sampleID]]
     sampleX[,area := N*16^2/10000] 
   }
   sampleX[,id:=climID]
   HarvLimX <- harvestLims * sum(sampleX$area)/sum(data.all$area)
   nSample = nrow(sampleX)#200#nrow(data.all)
+
   ## ---------------------------------------------------------
   i = 0
   if(!uncRun){
@@ -88,7 +88,8 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
   ##here mix years for weather inputs for Curr Climate
   if(rcpfile=="CurrClim"){
     if(uncRun){
-      resampleYear <- sample(1:nYears,nYears,replace=T)
+      resampleYear <- resampleYears[sampleID,] 
+      #sample(1:nYears,nYears,replace=T)
     }else{
       set.seed(10)
       resampleYear <- sample(1:nYears,nYears)
@@ -285,7 +286,7 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
       p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
       p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
       p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
-      if(!uncRun){
+      if(!uncRun | uncSeg){
         pX <- merge(p1,p2)
         pX <- merge(pX,p3)
       } else {
@@ -298,7 +299,7 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
         nax$sampleID <- sampleID
         nas <- rbind(nas,nax)
       } 
-      if(uncRun){
+      if(uncRun & !uncSeg){
         outSums <- rbind(outSums, data.table(vari = varNames[varSel[ij]], 
                                              iter = sampleID, 
                                              per1 = cA*sum(pX[,2]), 
@@ -323,11 +324,9 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
       }
           
       ####process and save special variales
-    }
-    if(!uncRun){
-      
-      print(paste("start special vars",sampleID))
-      specialVarProc(sampleX,region,r_no,harscen,rcpfile,sampleID,
+      if(!uncRun | uncSeg){
+        print(paste("start special vars",sampleID))
+        specialVarProc(sampleX,region,r_no,harscen,rcpfile,sampleID,
                      colsOut1,colsOut2,colsOut3,areas,sampleForPlots)
     }
     
@@ -339,9 +338,9 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
     # }rcps loop
     print(paste("end sample ID",sampleID))
     rm(list=setdiff(ls(), c(toMem,"toMem", "outSums","uncRun"))); gc()
-   
-    print(uncRun)
-    if(uncRun){
+  
+    #print(uncRun)
+    if(uncRun & !uncSeg){ 
       print(outSums)
       return(outSums) # Output for uncertainty analysis, empty table if not uncRun
     }
@@ -1336,6 +1335,50 @@ pMortSpecies <- function(modOut,minX=0.1,maxX=0.9,stepX=0.1,rangeYear=5){
               pMortBirch=pMortXbirch,nDataBirch=nDataBirch))
 }
 
+distr_correction <- function(Y,Xtrue,Xdiscr=FALSE){
+  # y is the matrix of new sample - observations in lines, variables in columns
+  # x is the matrix of the measured values = truth
+  X <- Xtrue[sample(1:nrow(Xtrue),nrow(Xtrue),replace = TRUE),]
+  m <- ncol(X)
+  n <- nrow(X)
+  ny <- nrow(Y)
+  
+  # Create cdf for each marginal distr. and use it to generate 
+  # ny random variables from that distribution:
+  Ynew <- matrix(0,nrow=ny,ncol=m)
+  
+  # Do post-processing variable by variable
+  for(j in 1:m){
+    xu <- unique(X[,j]) # choose the unique values in sample
+    xu <- xu[order(xu)] # and sort them from smallest to biggest
+    # create empirical cdf:
+    cdf <- matrix(0,length(xu),1) # empty matrix
+    for(i in 1:length(xu)){
+      cdf[i] <- sum(X[,j] <= xu[i]) # count the sample values less than 
+      # given value,
+    }
+    cdf <- cdf/(n+1) # cdf goes from 0 to 1, here are the inner points
+    
+    r <- matrix(ny,1)
+    for(i in 1:nrow(Y)){
+      r[i] <- sum(Y[,j]<=Y[i,j])/ny # Define the eCDF of each observation 
+    }
+    # use discr. or cont. inverse cdf to generate new sample
+    if(Xdiscr[j] | length(Xdiscr)<m){ # discrete values 
+      #interp <- approx(c(0,cdf), c(xu,max(xu)+1), r, method = "constant", yleft = xu[1], 
+      #                 yright = xu[length(xu)], rule = 2:1)
+      interp <- approx(c(0,cdf,1), c(min(xu),xu,max(xu)+1), r, method = "constant", yleft = xu[1], 
+                       yright = xu[length(xu)], rule = 2:1)
+    } else { # continuous values 
+      #interp <- approx(c(0,cdf), c(xu,max(xu)+1), r, yleft = xu[1], 
+      #                 yright = xu[length(xu)], rule = 2:1)
+      interp <- approx(c(0,cdf,1), c(min(xu),xu,max(xu)*1.01), r, yleft = xu[1], 
+                       yright = xu[length(xu)], rule = 2:1)
+    }
+    Ynew[,j] <- interp$y
+  }
+  return(Ynew)
+}
 
 #### function to calculate the new parameters of the ClearCuts
 #### increasing the rotation length
