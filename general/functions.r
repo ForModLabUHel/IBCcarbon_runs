@@ -328,6 +328,7 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
         print(paste("start special vars",sampleID))
         specialVarProc(sampleX,region,r_no,harscen,rcpfile,sampleID,
                      colsOut1,colsOut2,colsOut3,areas,sampleForPlots)
+      }
     }
     
     # rm(list=c("region","initPrebas")); gc()
