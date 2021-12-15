@@ -21,7 +21,11 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
   sampleX[,id:=climID]
   HarvLimX <- harvestLims * sum(sampleX$area)/sum(data.all$area)
   nSample = nrow(sampleX)#200#nrow(data.all)
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> d6fd5a167899c97c460435f7445a2d5402b757b3
   ## ---------------------------------------------------------
   i = 0
   if(!uncRun){
@@ -338,10 +342,16 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
     # }rcps loop
     print(paste("end sample ID",sampleID))
     rm(list=setdiff(ls(), c(toMem,"toMem", "outSums","uncRun"))); gc()
-    
+
     #print(uncRun)
     if(uncRun & !uncSeg){ 
       # print(outSums)
+=======
+  
+    #print(uncRun)
+    if(uncRun & !uncSeg){ 
+      print(outSums)
+>>>>>>> d6fd5a167899c97c460435f7445a2d5402b757b3
       return(outSums) # Output for uncertainty analysis, empty table if not uncRun
     }
   }
@@ -1403,6 +1413,50 @@ pMortSpecies <- function(modOut,minX=0.1,maxX=0.9,stepX=0.1,rangeYear=5){
               pMortBirch=pMortXbirch,nDataBirch=nDataBirch))
 }
 
+distr_correction <- function(Y,Xtrue,Xdiscr=FALSE){
+  # y is the matrix of new sample - observations in lines, variables in columns
+  # x is the matrix of the measured values = truth
+  X <- Xtrue[sample(1:nrow(Xtrue),nrow(Xtrue),replace = TRUE),]
+  m <- ncol(X)
+  n <- nrow(X)
+  ny <- nrow(Y)
+  
+  # Create cdf for each marginal distr. and use it to generate 
+  # ny random variables from that distribution:
+  Ynew <- matrix(0,nrow=ny,ncol=m)
+  
+  # Do post-processing variable by variable
+  for(j in 1:m){
+    xu <- unique(X[,j]) # choose the unique values in sample
+    xu <- xu[order(xu)] # and sort them from smallest to biggest
+    # create empirical cdf:
+    cdf <- matrix(0,length(xu),1) # empty matrix
+    for(i in 1:length(xu)){
+      cdf[i] <- sum(X[,j] <= xu[i]) # count the sample values less than 
+      # given value,
+    }
+    cdf <- cdf/(n+1) # cdf goes from 0 to 1, here are the inner points
+    
+    r <- matrix(ny,1)
+    for(i in 1:nrow(Y)){
+      r[i] <- sum(Y[,j]<=Y[i,j])/ny # Define the eCDF of each observation 
+    }
+    # use discr. or cont. inverse cdf to generate new sample
+    if(Xdiscr[j] | length(Xdiscr)<m){ # discrete values 
+      #interp <- approx(c(0,cdf), c(xu,max(xu)+1), r, method = "constant", yleft = xu[1], 
+      #                 yright = xu[length(xu)], rule = 2:1)
+      interp <- approx(c(0,cdf,1), c(min(xu),xu,max(xu)+1), r, method = "constant", yleft = xu[1], 
+                       yright = xu[length(xu)], rule = 2:1)
+    } else { # continuous values 
+      #interp <- approx(c(0,cdf), c(xu,max(xu)+1), r, yleft = xu[1], 
+      #                 yright = xu[length(xu)], rule = 2:1)
+      interp <- approx(c(0,cdf,1), c(min(xu),xu,max(xu)*1.01), r, yleft = xu[1], 
+                       yright = xu[length(xu)], rule = 2:1)
+    }
+    Ynew[,j] <- interp$y
+  }
+  return(Ynew)
+}
 
 #### function to calculate the new parameters of the ClearCuts
 #### increasing the rotation length
@@ -1519,5 +1573,9 @@ updatePclcut <- function(initPrebas,pClCut){
           80,50,13,30,50,13,120)  ###"fasy","pipi","eugl","rops","popu",'eugrur','piab(DE)')
   }
   return(list(inDclct=inDclct,inAclct=inAclct))
+<<<<<<< HEAD
 }
 
+=======
+}
+>>>>>>> d6fd5a167899c97c460435f7445a2d5402b757b3
