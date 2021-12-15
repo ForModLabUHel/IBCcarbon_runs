@@ -21,11 +21,6 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
   sampleX[,id:=climID]
   HarvLimX <- harvestLims * sum(sampleX$area)/sum(data.all$area)
   nSample = nrow(sampleX)#200#nrow(data.all)
-<<<<<<< HEAD
-  
-=======
-
->>>>>>> d6fd5a167899c97c460435f7445a2d5402b757b3
   ## ---------------------------------------------------------
   i = 0
   if(!uncRun){
@@ -345,13 +340,7 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
 
     #print(uncRun)
     if(uncRun & !uncSeg){ 
-      # print(outSums)
-=======
-  
-    #print(uncRun)
-    if(uncRun & !uncSeg){ 
       print(outSums)
->>>>>>> d6fd5a167899c97c460435f7445a2d5402b757b3
       return(outSums) # Output for uncertainty analysis, empty table if not uncRun
     }
   }
