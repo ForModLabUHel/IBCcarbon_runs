@@ -216,7 +216,6 @@ if(testRun){ # if needed to test an individual sample
           }
         }
         dev.off()
-        #print(colMeans(x[,3:5]))
       }
       print("histograms made")
     }
