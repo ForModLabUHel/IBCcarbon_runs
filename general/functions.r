@@ -200,6 +200,7 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
       compHarvX=3.
     }
     HarvLimX[,2]=0.
+    initPrebas$energyCut <- rep(0,length(initPrebas$energyCut))
     load(paste0("input/",regSets,"/pClCut_mitigation/ClCutplots_maak",r_no,".rdata"))
     ClcutX <- updatePclcut(initPrebas,pClCut)
     initPrebas$inDclct <- ClcutX$inDclct
@@ -1089,7 +1090,6 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),sampleX,
   nYears <-  max(region$nYears)
   nSites <-  max(region$nSites)
   
-  
   for (ij in 1:length(varSel)) {
     # print(varSel[ij])
     if(funX[ij]=="baWmean"){
@@ -1115,19 +1115,16 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),sampleX,
       #                         harscen,"_",rcpfile,"_",
       #                         "sampleID",sampleID,".rdata"))
       ####VenergyWood
-      outX <- data.table(segID=sampleX$segID,apply(region$multiEnergyWood[,,,1],1:2,sum))
-      if(sampleID==sampleForPlots){testPlot(outX,"VenergyWood",areas)}
-      p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
-      p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
-      p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
-      pX <- merge(p1,p2)
-      VenergyWood <- merge(pX,p3)
-      save(VenergyWood,file=paste0("outputDT/forCent",r_no,
-                                   "/VenergyWood_",harscen,"_",rcpfile,"_",
-                                   "sampleID",sampleID,".rdata"))
+      outX <- colMeans(apply(region$multiEnergyWood[,,,1],1:2,sum))
+      outX <- c(mean(outX[simYear1]),mean(outX[simYear2]),mean(outX[simYear3]))
+      names(outX) <- paste0("p",1:3)
+      VenergyWood <- outX
+      # save(VenergyWood,file=paste0("outputDT/forCent",r_no,
+      #                              "/VenergyWood_",harscen,"_",rcpfile,"_",
+      #                              "sampleID",sampleID,".rdata"))
       ####GVbiomass
   outX <- data.table(segID=sampleX$segID,region$GVout[,,4])
-  if(sampleID==sampleForPlots){testPlot(outX,"GVgpp",areas)}
+  
   p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
   p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
   p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
@@ -1137,19 +1134,15 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),sampleX,
                          "/GVgpp_",harscen,"_",rcpfile,"_",
                          "sampleID",sampleID,".rdata"))
   ####Wtot trees
-  outX <- data.table(segID=sampleX$segID,apply(region$multiOut[,,c(24,25,31,32,33),,1],1:2,sum))
-  if(sampleID==sampleForPlots){testPlot(outX,"Wtot",areas)}
-  p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
-  p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
-  p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
-  pX <- merge(p1,p2)
-  Wtot <- merge(pX,p3)
-  save(Wtot,file=paste0("outputDT/forCent",r_no,"/Wtot_",
-                        harscen,"_",rcpfile,"_",
-                        "sampleID",sampleID,".rdata"))
-  rm(domSpecies,domAge,Vdec,WenergyWood,Wtot,pX,p1,p2,p3); gc()
-  if(sampleID==sampleForPlots){dev.off()}
-  
+  outX <- colMeans(apply(region$multiOut[,,c(24,25,31,32,33),,1],1:2,sum))
+  outX <- c(mean(outX[simYear1]),mean(outX[simYear2]),mean(outX[simYear3]))
+  names(outX) <- paste0("p",1:3)
+  Wtot <- outX
+  # save(Wtot,file=paste0("outputDT/forCent",r_no,"/Wtot_",
+  #                       harscen,"_",rcpfile,"_",
+  #                       "sampleID",sampleID,".rdata"))
+  # rm(domSpecies,domAge,Vdec,WenergyWood,Wtot,pX,p1,p2,p3); gc()
+  # if(sampleID==sampleForPlots){dev.off()}
 } 
 
 
