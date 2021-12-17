@@ -191,7 +191,7 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
     initPrebas$yassoRun <- rep(1,initPrebas$nSites)
     initPrebas$soilC[,1,,,] <- initSoilC
   }
-  
+  print(harscen)
   HarvLimX <- HarvLim1[1:nYears,]
   if(harscen %in% c("Mitigation","MitigationNoAdH")){
     if(harscen=="MitigationNoAdH"){
@@ -209,15 +209,16 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
     region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
                            cutAreas =cutArX,compHarv=compHarvX,
                            ageMitigScen = ageMitigScenX)
-  }
-  ##Don't pass minDharvX if NA
-  if (is.na(minDharvX)) {
-    region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
-                           cutAreas =cutArX,compHarv=compHarvX)
-  } else {
-    region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
-                           minDharv = minDharvX,cutAreas =cutArX,
-                           compHarv=compHarvX)
+  }else{
+    ##Don't pass minDharvX if NA
+    if (is.na(minDharvX)) {
+      region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
+                             cutAreas =cutArX,compHarv=compHarvX)
+    } else {
+      region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
+                             minDharv = minDharvX,cutAreas =cutArX,
+                             compHarv=compHarvX)
+    }
   }
   
   print(paste("runModel",sampleID))
