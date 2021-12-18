@@ -337,14 +337,14 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
     # }###harvest loop
     # } ###region loop
     # }rcps loop
+    print(paste("end sample ID",sampleID))
+    rm(list=setdiff(ls(), c(toMem,"toMem", "outSums","uncRun","uncSeg"))); gc()
 
     #print(uncRun)
     if(uncRun & !uncSeg){ 
       print(outSums)
       return(outSums) # Output for uncertainty analysis, empty table if not uncRun
     }
-    print(paste("end sample ID",sampleID))
-    rm(list=setdiff(ls(), c(toMem,"toMem"))); gc()
   }
 }
 
