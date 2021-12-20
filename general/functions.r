@@ -1069,6 +1069,17 @@ specialVarProc <- function(sampleX,region,r_no,harscen,rcpfile,sampleID,
   save(GVgpp,file=paste0("outputDT/forCent",r_no,
                                "/GVgpp_",harscen,"_",rcpfile,"_",
                                "sampleID",sampleID,".rdata"))
+  ####GVw
+  outX <- data.table(segID=sampleX$segID,region$GVout[,,4])
+  if(sampleID==sampleForPlots){testPlot(outX,"GVw",areas)}
+  p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
+  p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
+  p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
+  pX <- merge(p1,p2)
+  GVw <- merge(pX,p3)
+  save(GVw,file=paste0("outputDT/forCent",r_no,
+                         "/GVw_",harscen,"_",rcpfile,"_",
+                         "sampleID",sampleID,".rdata"))
   ####Wtot
   outX <- data.table(segID=sampleX$segID,apply(region$multiOut[,,c(24,25,31,32,33),,1],1:2,sum))
   if(sampleID==sampleForPlots){testPlot(outX,"Wtot",areas)}
