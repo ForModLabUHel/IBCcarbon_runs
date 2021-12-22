@@ -1135,16 +1135,14 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),sampleX,
       #                              "/VenergyWood_",harscen,"_",rcpfile,"_",
       #                              "sampleID",sampleID,".rdata"))
       ####GVbiomass
-  outX <- data.table(segID=sampleX$segID,region$GVout[,,4])
-  
-  p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
-  p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
-  p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
-  pX <- merge(p1,p2)
-  GVgpp <- merge(pX,p3)
-  save(GVgpp,file=paste0("outputDT/forCent",r_no,
-                         "/GVgpp_",harscen,"_",rcpfile,"_",
-                         "sampleID",sampleID,".rdata"))
+  outX <- colMeans(region$GVout[,,4])
+  GVw <- c(mean(outX[simYear1]),
+           mean(outX[simYear2]),
+           mean(outX[simYear3]))
+  names(GVw) <- paste0("p",1:3)
+  # save(GVgpp,file=paste0("outputDT/forCent",r_no,
+  #                        "/GVgpp_",harscen,"_",rcpfile,"_",
+  #                        "sampleID",sampleID,".rdata"))
   ####Wtot trees
   outX <- colMeans(apply(region$multiOut[,,c(24,25,31,32,33),,1],1:2,sum))
   outX <- c(mean(outX[simYear1]),mean(outX[simYear2]),mean(outX[simYear3]))
