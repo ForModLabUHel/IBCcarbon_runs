@@ -103,6 +103,9 @@ if(uncRun & !loadUnc){
       
       ops[[ij]][,fert:=str]
     }
+    if(uncAge){
+      ops[[ij]][,age:=ops[[ij]]$age*(1+rage*rnorm(nrow(ops[[ij]])))]
+    }
     if(uncClim){
       resampleYears[ij,] <- sample(1:nYears,nYears,replace=T)
     }
@@ -174,7 +177,7 @@ if(testRun){ # if needed to test an individual sample
       save(sampleOutput,file=paste0("uncRuns/samplexout",r_no,
               "_",harvscen,"_",                                    
               "samplesize",nSitesRunr,
-              "_pr",uncPCrobas,"_Xr",uncInput,
+              "_pr",uncPCrobas,"_Xr",uncInput,"_ager",uncAge,
               "_Cr",uncClim,"_str",uncSiteType,".rdata")) 
       
       print("make histograms...")
@@ -192,7 +195,7 @@ if(testRun){ # if needed to test an individual sample
         x[,3:5] <- x[,3:5]*units_hist[indj]
         png(file = paste0("uncRuns/hists_regionID",r_no,"_",varNams,
                         "_",nSitesRunr,"_",harvscen,"_",
-                        "_pr",uncPCrobas,"_Xr",uncInput,
+                        "_pr",uncPCrobas,"_Xr",uncInput,"_ager",uncAge,
                         "_Cr",uncClim,"_str",uncSiteType,".png"))
         xlims <- c(min(x[,3:5]),max(x[,3:5]))
         xlims[1] <- xlims[1]*(1-0.1*sign(xlims[1]))
@@ -213,7 +216,6 @@ if(testRun){ # if needed to test an individual sample
           }
         }
         dev.off()
-        #print(colMeans(x[,3:5]))
       }
       print("histograms made")
     }
