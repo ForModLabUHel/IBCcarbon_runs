@@ -1097,8 +1097,8 @@ specialVarProc <- function(sampleX,region,r_no,harscen,rcpfile,sampleID,
 } 
 
 UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),sampleX,
-                       region,r_no,harscen,rcpfile,sampleID,
-                           colsOut1,colsOut2,colsOut3,areas,sampleForPlots){
+                        region,r_no,harscen,rcpfile,sampleID,
+                        colsOut1,colsOut2,colsOut3,areas,sampleForPlots){
   nYears <-  max(region$nYears)
   nSites <-  max(region$nSites)
   
