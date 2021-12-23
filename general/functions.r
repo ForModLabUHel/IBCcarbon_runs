@@ -5,8 +5,14 @@
 ## ---------------------------------------------------------------------
 ## MAIN SCRIPT: uncRun for random segments, uncSeg for random values for segments
 ## ---------------------------------------------------------------------
-runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
-                     uncRun=FALSE,uncSeg=FALSE,easyInit=FALSE){
+runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
+  # outType determines the type of output:
+  # dTabs -> standard run, mod outputs saved as data.tables 
+  # sampleRun-> test run reports the mod out and initPrebas as objects
+  # ststDeadW -> initialize the dead Wood volume;
+  # uncRun -> reports the output table for the regional uncertainty run
+  # uncSeg -> reports the output table for the segment uncertainty run
+  
   # print(date())
   print(paste("start sample ID",sampleID))
   
@@ -241,7 +247,7 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
   ## identify managed and unmanaged forests
   manFor <-  which(sampleX$cons==0)
   unmanFor <- which(sampleX$cons==1)
-  if(ststDeadW){
+  if(outType=="ststDeadW"){
     unmanDeadW <- initDeadW(region,unmanFor,yearsDeadW)
     manDeadW <- initDeadW(region,manFor,yearsDeadW)
     save(unmanDeadW,manDeadW,file=paste0("initDeadWVss/reg",
@@ -257,81 +263,16 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
   }
   ####end initialize deadWood Volume
   
-  if(sampleRun){
-    return(list(region = region,initPrebas=initPrebas))
-  }else{
-    ####create pdf for test plots 
-    if(sampleID==sampleForPlots & !uncRun){
-      pdf(paste0("plots/testPlots_",r_no,"_",
-                 harscen,"_",rcpfile,".pdf"))
-      out <- region$multiOut
-      save(out,file = paste0("outputDT/forCent",r_no,"/testData.rdata"))
-      rm(out);gc()
-    } 
-    marginX= 1:2#(length(dim(out$annual[,,varSel,]))-1)
-    nas <- data.table()
-    outSums <- data.table() # uncertainty Run totals
-    
-    for (ij in 1:length(varSel)) {
-      # print(varSel[ij])
-      if(funX[ij]=="baWmean"){
-        outX <- data.table(segID=sampleX$segID,baWmean(region,varSel[ij]))
-      }
-      if(funX[ij]=="sum"){
-        outX <- data.table(segID=sampleX$segID,apply(region$multiOut[,,varSel[ij],,1],marginX,sum))
-      }
-      ####test plot
-      # print(outX)
-      if(sampleID==sampleForPlots){testPlot(outX,varNames[varSel[ij]],areas)}
-      
-      p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
-      p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
-      p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
-      if(!uncRun | uncSeg){
-        pX <- merge(p1,p2)
-        pX <- merge(pX,p3)
-      } else {
-        pX <- data.table(p1,p2[,2],p3[,2]) # can be the same segment multiple times
-      }
-      ##check for NAs
-      nax <- data.table(segID=unique(which(is.na(pX),arr.ind=T)[,1]))
-      if(nrow(nax)>0){
-        nax$var <- varNames[varSel[ij]]
-        nax$sampleID <- sampleID
-        nas <- rbind(nas,nax)
-      } 
-      if(uncRun & !uncSeg){
-        outSums <- rbind(outSums, data.table(vari = varNames[varSel[ij]], 
-                                             iter = sampleID, 
-                                             per1 = cA*sum(pX[,2]), 
-                                             per2 = cA*sum(pX[,3]), 
-                                             per3 = cA*sum(pX[,4])))
-        #outSums <- rbind(outSums, cbind(data.table(vari = varNames[varSel[ij]], 
-        #                                     cA = cA, iter = sampleID), pX) )
-      } else {
-        
-        assign(varNames[varSel[ij]],pX)
-        
-        save(list=varNames[varSel[ij]],file=paste0("outputDT/forCent",r_no,"/",
-                                                   varNames[varSel[ij]],"_",
-                                                   harscen,"_",rcpfile,"_",
-                                                   "sampleID",sampleID,".rdata"))
-        rm(list=varNames[varSel[ij]]); gc()
-      }
-      # save NAs
-      if(nrow(nas)>0){
-        save(nas,file=paste0("NAs/NAs_forCent",r_no,"_","sampleID",sampleID,
-                             "_",harscen,"_",rcpfile,".rdata"))        
-      }
-    }
-    ####process and save special variales
-    if(!uncRun | uncSeg){
-      print(paste("start special vars",sampleID))
-      specialVarProc(sampleX,region,r_no,harscen,rcpfile,sampleID,
-                     colsOut1,colsOut2,colsOut3,areas,sampleForPlots)
-    }
-    
-    # rm(list=c("region","initPrebas")); gc()
+  if(outType=="sampleRun") return(list(region = region,initPrebas=initPrebas))
+  if(outType=="dTabs"){
+    runModOut()
+    return("all outs saved")  
+  } 
+  if(outType=="uncRun"){
+    uncTab <- UncOutProc(varSel=c(46,39,30,37), funX=rep("sum",4))
+    return(uncTab)
+  } 
+  # rm(list=c("region","initPrebas")); gc()
     # rm(list=setdiff(ls(), c(toMem,"toMem")))
     # rm(out); gc()
     # }###harvest loop
@@ -341,11 +282,64 @@ runModel <- function(sampleID,sampleRun=FALSE,ststDeadW=FALSE,
     rm(list=setdiff(ls(), c(toMem,"toMem", "outSums","uncRun","uncSeg"))); gc()
 
     #print(uncRun)
-    if(uncRun & !uncSeg){ 
-      print(outSums)
-      return(outSums) # Output for uncertainty analysis, empty table if not uncRun
+  # }
+}
+
+runModOut <- function(){
+  ####create pdf for test plots 
+  if(sampleID==sampleForPlots & !uncRun){
+    pdf(paste0("plots/testPlots_",r_no,"_",
+               harscen,"_",rcpfile,".pdf"))
+    out <- region$multiOut
+    save(out,file = paste0("outputDT/forCent",r_no,"/testData.rdata"))
+    rm(out);gc()
+  } 
+  marginX= 1:2#(length(dim(out$annual[,,varSel,]))-1)
+  nas <- data.table()
+
+  for (ij in 1:length(varSel)) {
+    # print(varSel[ij])
+    if(funX[ij]=="baWmean"){
+      outX <- data.table(segID=sampleX$segID,baWmean(region,varSel[ij]))
+    }
+    if(funX[ij]=="sum"){
+      outX <- data.table(segID=sampleX$segID,apply(region$multiOut[,,varSel[ij],,1],marginX,sum))
+    }
+    ####test plot
+    # print(outX)
+    if(sampleID==sampleForPlots){testPlot(outX,varNames[varSel[ij]],areas)}
+    
+    p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
+    p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
+    p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
+
+    pX <- data.table(p1,p2[,2],p3[,2]) # can be the same segment multiple times
+    
+    ##check for NAs
+    nax <- data.table(segID=unique(which(is.na(pX),arr.ind=T)[,1]))
+    if(nrow(nax)>0){
+      nax$var <- varNames[varSel[ij]]
+      nax$sampleID <- sampleID
+      nas <- rbind(nas,nax)
+    } 
+
+    assign(varNames[varSel[ij]],pX)
+      
+    save(list=varNames[varSel[ij]],file=paste0("outputDT/forCent",r_no,"/",
+                                               varNames[varSel[ij]],"_",
+                                               harscen,"_",rcpfile,"_",
+                                               "sampleID",sampleID,".rdata"))
+    rm(list=varNames[varSel[ij]]); gc()
+    # save NAs
+    if(nrow(nas)>0){
+      save(nas,file=paste0("NAs/NAs_forCent",r_no,"_","sampleID",sampleID,
+                           "_",harscen,"_",rcpfile,".rdata"))        
     }
   }
+  ####process and save special variales
+  print(paste("start special vars",sampleID))
+  specialVarProc(sampleX,region,r_no,harscen,rcpfile,sampleID,
+           colsOut1,colsOut2,colsOut3,areas,sampleForPlots)
 }
 
 sample_data.f = function(data.all, nSample) {
@@ -1096,13 +1090,13 @@ specialVarProc <- function(sampleX,region,r_no,harscen,rcpfile,sampleID,
   
 } 
 
-UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),sampleX,
-                        region,r_no,harscen,rcpfile,sampleID,
-                        colsOut1,colsOut2,colsOut3,areas,sampleForPlots){
+UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4)){
   nYears <-  max(region$nYears)
   nSites <-  max(region$nSites)
-  
-  for (ij in 1:length(varSel)) {
+  nVarSel <- length(varSel)
+  varsX <- rep(NA,(nVarSel+4))
+  xx <- matrix(NA,(nVarSel+4),3)
+  for (ij in 1:nVarSel) {
     # print(varSel[ij])
     if(funX[ij]=="baWmean"){
       outX <- colMeans(baWmean(region,varSel[ij]))
@@ -1113,46 +1107,61 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),sampleX,
     ####test plot
     # print(outX)
     outX <- c(mean(outX[simYear1]),mean(outX[simYear2]),mean(outX[simYear3]))
-    names(outX) <- paste0("p",1:3)
-    assign(varNames[varSel[ij]],outX)
+    # names(outX) <- paste0("p",1:3)
+    varsX[ij] <- varNames[varSel[ij]]
+    xx[ij,1:3] <- outX
+    # assign(varNames[varSel[ij]],outX)
   }
   
   ####process and save special variables: 
       ###age
-      age <- c(mean(region$multiOut[,simYear1,7,1,1]),
+      outX <- c(mean(region$multiOut[,simYear1,7,1,1]),
           mean(region$multiOut[,simYear2,7,1,1]),
           mean(region$multiOut[,simYear3,7,1,1]))
-      names(age) <- paste0("age",1:3)
+      # names(age) <- paste0("age",1:3)
+      varsX[(nVarSel+1)] <- "age"
+      xx[(nVarSel+1),1:3] <- outX
       # save(domAge,file=paste0("outputDT/forCent",r_no,"/domAge_",
       #                         harscen,"_",rcpfile,"_",
       #                         "sampleID",sampleID,".rdata"))
       ####VenergyWood
       outX <- colMeans(apply(region$multiEnergyWood[,,,1],1:2,sum))
       outX <- c(mean(outX[simYear1]),mean(outX[simYear2]),mean(outX[simYear3]))
-      names(outX) <- paste0("p",1:3)
-      VenergyWood <- outX
+      xx[(nVarSel+2),1:3] <- outX
+      varsX[(nVarSel+2)] <- "VenergyWood"
+      # names(outX) <- paste0("p",1:3)
+      # VenergyWood <- outX
       # save(VenergyWood,file=paste0("outputDT/forCent",r_no,
       #                              "/VenergyWood_",harscen,"_",rcpfile,"_",
       #                              "sampleID",sampleID,".rdata"))
       ####GVbiomass
   outX <- colMeans(region$GVout[,,4])
-  GVw <- c(mean(outX[simYear1]),
+  outX <- c(mean(outX[simYear1]),
            mean(outX[simYear2]),
            mean(outX[simYear3]))
-  names(GVw) <- paste0("p",1:3)
+  xx[(nVarSel+3),1:3] <- outX
+  varsX[(nVarSel+3)] <- "wGV"
+  # names(GVw) <- paste0("p",1:3)
   # save(GVgpp,file=paste0("outputDT/forCent",r_no,
   #                        "/GVgpp_",harscen,"_",rcpfile,"_",
   #                        "sampleID",sampleID,".rdata"))
   ####Wtot trees
   outX <- colMeans(apply(region$multiOut[,,c(24,25,31,32,33),,1],1:2,sum))
   outX <- c(mean(outX[simYear1]),mean(outX[simYear2]),mean(outX[simYear3]))
-  names(outX) <- paste0("p",1:3)
-  Wtot <- outX
+  # names(outX) <- paste0("p",1:3)
+  # Wtot <- outX
+  xx[(nVarSel+4),1:3] <- outX
+  varsX[(nVarSel+4)] <- "Wtot"
   # save(Wtot,file=paste0("outputDT/forCent",r_no,"/Wtot_",
   #                       harscen,"_",rcpfile,"_",
   #                       "sampleID",sampleID,".rdata"))
   # rm(domSpecies,domAge,Vdec,WenergyWood,Wtot,pX,p1,p2,p3); gc()
   # if(sampleID==sampleForPlots){dev.off()}
+  outX <- data.table(t(xx))
+  names(outX) <- varsX
+  outX[,periods:=paste0('p',1:3)]
+  
+  return(outX)
 } 
 
 

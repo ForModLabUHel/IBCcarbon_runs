@@ -29,7 +29,7 @@ for(klk in maaks){
   ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
   toMem <- ls()
   
-  runModel(sampleID,ststDeadW=T)
+  runModel(sampleID,outType="ststDeadW")
 }
 
 Sys.chmod(list.dirs("initDeadWVss"), "0744",use_umask=FALSE)
