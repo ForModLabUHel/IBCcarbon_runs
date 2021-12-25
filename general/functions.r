@@ -11,7 +11,7 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   # sampleRun-> test run reports the mod out and initPrebas as objects
   # ststDeadW -> initialize the dead Wood volume;
   # uncRun -> reports the output table for the regional uncertainty run
-  # uncSeg -> reports the output table for the segment uncertainty run
+  # uncSeg -> reports the list of output table for the segment uncertainty run
   
   # print(date())
   print(paste("start sample ID",sampleID))
@@ -272,6 +272,10 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
     uncTab <- UncOutProc(varSel=c(46,39,30,37), funX=rep("sum",4))
     return(uncTab)
   } 
+  if(outType=="uncSeg"){
+    uncSegTab <- UncOutProcSeg(varSel=c(46,39,30,37), funX=rep("sum",4))
+    return(uncSegTab)
+  }
   # rm(list=c("region","initPrebas")); gc()
     # rm(list=setdiff(ls(), c(toMem,"toMem")))
     # rm(out); gc()
@@ -341,6 +345,77 @@ runModOut <- function(){
   specialVarProc(sampleX,region,r_no,harscen,rcpfile,sampleID,
            colsOut1,colsOut2,colsOut3,areas,sampleForPlots)
 }
+
+
+UncOutProcSeg <- function(varSel=c(46,39,30,37), funX=rep("sum",4)){
+  nYears <-  max(region$nYears)
+  nSites <-  max(region$nSites)
+  nVarSel <- length(varSel)
+  varsX <- list()
+  for (ij in 1:length(varSel)) {
+    # print(varSel[ij])
+    if(funX[ij]=="baWmean"){
+      outX <- data.table(segID=sampleX$segID,baWmean(region,varSel[ij]))
+    }
+    if(funX[ij]=="sum"){
+      outX <- data.table(segID=sampleX$segID,apply(region$multiOut[,,varSel[ij],,1],marginX,sum))
+    }
+    ####test plot
+    # print(outX)
+    if(sampleID==sampleForPlots){testPlot(outX,varNames[varSel[ij]],areas)}
+    
+    p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
+    p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
+    p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
+    
+    pX <- data.table(p1,p2[,2],p3[,2]) # can be the same segment multiple times
+    
+    varsX[[ij]] <- pX
+    
+  }
+  
+  ####process and save special variables: 
+  ###age
+  per1 <- apply(region$multiOut[,simYear1,7,1,1],1,mean)
+  per2 <- apply(region$multiOut[,simYear2,7,1,1],1,mean)
+  per3 <- apply(region$multiOut[,simYear3,7,1,1],1,mean)
+  pX <- data.table(segID=sampleX$segID,per1=per1,per2=per2,per3=per3)
+  varsX[[(ij+1)]] <- pX
+  
+  ####VenergyWood
+  outX <- data.table(segID=sampleX$segID,apply(region$multiEnergyWood[,,,1],1:2,sum))
+  p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
+  p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
+  p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
+  pX <- merge(p1,p2)
+  pX <- merge(pX,p3)
+  varsX[[(ij+2)]] <- pX
+
+  ####GVw
+  outX <- data.table(segID=sampleX$segID,region$GVout[,,4])
+  if(sampleID==sampleForPlots){testPlot(outX,"GVw",areas)}
+  p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
+  p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
+  p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
+  pX <- merge(p1,p2)
+  pX <- merge(pX,p3)
+  varsX[[(ij+3)]] <- pX
+
+  ####Wtot
+  outX <- data.table(segID=sampleX$segID,apply(region$multiOut[,,c(24,25,31,32,33),,1],1:2,sum))
+  if(sampleID==sampleForPlots){testPlot(outX,"Wtot",areas)}
+  p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
+  p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
+  p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
+  pX <- merge(p1,p2)
+  pX <- merge(pX,p3)
+  varsX[[(ij+4)]] <- pX
+
+  outX <- varsX
+  names(outX) <- c(varNames[varSel],"age","VenergyWood","GVw","Wtot")
+  return(outX)
+} 
+
 
 sample_data.f = function(data.all, nSample) {
   cloudpixels = data.all[, sum(ba==32766)]
