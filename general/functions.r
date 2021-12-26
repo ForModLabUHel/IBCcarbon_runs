@@ -266,7 +266,7 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   
   if(outType=="testRun") return(list(region = region,initPrebas=initPrebas))
   if(outType=="dTabs"){
-    runModOut(sampleID, sampleX,modOut,r_no,harscen,rcpfile,areas,
+    runModOut(sampleID, sampleX,region,r_no,harscen,rcpfile,areas,
               colsOut1,colsOut2,colsOut3,varSel,sampleForPlots)
     return("all outs saved")  
   } 
