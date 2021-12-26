@@ -274,7 +274,8 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
     return(uncTab)
   } 
   if(outType=="uncSeg"){
-    uncSegTab <- UncOutProcSeg(varSel=c(46,39,30,37), funX=rep("sum",4),modOut=region)
+    uncSegTab <- UncOutProcSeg(varSel=c(46,39,30,37), funX=rep("sum",4),
+                          modOut=region,sampleX,colsOut1,colsOut2,colsOut3)
     return(uncSegTab)
   }
   # rm(list=c("region","initPrebas")); gc()
