@@ -293,7 +293,7 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
 
 runModOut <- function(){
   ####create pdf for test plots 
-  if(sampleID==sampleForPlots & !uncRun){
+  if(sampleID==sampleForPlots){
     pdf(paste0("plots/testPlots_",r_no,"_",
                harscen,"_",rcpfile,".pdf"))
     out <- region$multiOut
