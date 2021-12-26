@@ -16,3 +16,4 @@ ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
 toMem <- ls()
 
 sampleX <- runModel(sampleID,outType="sampleRun")
+# sampleX <- runModel(sampleID,outType="uncSeg")
