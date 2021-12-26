@@ -266,7 +266,8 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   
   if(outType=="testRun") return(list(region = region,initPrebas=initPrebas))
   if(outType=="dTabs"){
-    runModOut()
+    runModOut(sampleID, sampleX,modOut,r_no,harscen,rcpfile,areas,
+              colsOut1,colsOut2,colsOut3,varSel,sampleForPlots)
     return("all outs saved")  
   } 
   if(outType=="uncRun"){
@@ -291,12 +292,13 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   # }
 }
 
-runModOut <- function(){
+runModOut <- function(sampleID, sampleX,modOut,r_no,harscen,rcpfile,areas,
+                      colsOut1,colsOut2,colsOut3,varSel,sampleForPlots){
   ####create pdf for test plots 
   if(sampleID==sampleForPlots){
     pdf(paste0("plots/testPlots_",r_no,"_",
                harscen,"_",rcpfile,".pdf"))
-    out <- region$multiOut
+    out <- modOut$multiOut
     save(out,file = paste0("outputDT/forCent",r_no,"/testData.rdata"))
     rm(out);gc()
   } 
@@ -306,10 +308,10 @@ runModOut <- function(){
   for (ij in 1:length(varSel)) {
     # print(varSel[ij])
     if(funX[ij]=="baWmean"){
-      outX <- data.table(segID=sampleX$segID,baWmean(region,varSel[ij]))
+      outX <- data.table(segID=sampleX$segID,baWmean(modOut,varSel[ij]))
     }
     if(funX[ij]=="sum"){
-      outX <- data.table(segID=sampleX$segID,apply(region$multiOut[,,varSel[ij],,1],marginX,sum))
+      outX <- data.table(segID=sampleX$segID,apply(modOut$multiOut[,,varSel[ij],,1],marginX,sum))
     }
     ####test plot
     # print(outX)
@@ -344,7 +346,7 @@ runModOut <- function(){
   }
   ####process and save special variales
   print(paste("start special vars",sampleID))
-  specialVarProc(sampleX,region,r_no,harscen,rcpfile,sampleID,
+  specialVarProc(sampleX,modOut,r_no,harscen,rcpfile,sampleID,
            colsOut1,colsOut2,colsOut3,areas,sampleForPlots)
 }
 
