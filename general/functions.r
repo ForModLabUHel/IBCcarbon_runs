@@ -8,7 +8,7 @@
 runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   # outType determines the type of output:
   # dTabs -> standard run, mod outputs saved as data.tables 
-  # sampleRun-> test run reports the mod out and initPrebas as objects
+  # testRun-> test run reports the mod out and initPrebas as objects
   # ststDeadW -> initialize the dead Wood volume;
   # uncRun -> reports the output table for the regional uncertainty run
   # uncSeg -> reports the list of output table for the segment uncertainty run
@@ -264,7 +264,7 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   }
   ####end initialize deadWood Volume
   
-  if(outType=="sampleRun") return(list(region = region,initPrebas=initPrebas))
+  if(outType=="testRun") return(list(region = region,initPrebas=initPrebas))
   if(outType=="dTabs"){
     runModOut()
     return("all outs saved")  
