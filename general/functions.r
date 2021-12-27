@@ -286,7 +286,7 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
     # } ###region loop
     # }rcps loop
     print(paste("end sample ID",sampleID))
-    rm(list=setdiff(ls(), c(toMem,"toMem", "outSums","uncRun","uncSeg"))); gc()
+    rm(list=setdiff(ls(), c(toMem,"toMem"))); gc()
 
     #print(uncRun)
   # }
