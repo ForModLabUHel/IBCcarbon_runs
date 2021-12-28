@@ -15,6 +15,7 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   
   # print(date())
   print(paste("start sample ID",sampleID))
+  harscen = harvestscenarios
   
   sampleX <- ops[[sampleID]]
   if(outType=="uncRun"){
@@ -79,7 +80,8 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   }
   ## Second, continue now starting from soil SS
   initPrebas = create_prebas_input.f(r_no, clim, data.sample, nYears = nYears,
-                                     startingYear = startingYear,domSPrun=domSPrun)
+                                     startingYear = startingYear,domSPrun=domSPrun,
+                                     harv=harscen)
   
   
   opsna <- which(is.na(initPrebas$multiInitVar))
@@ -108,7 +110,6 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   
   
   # Loop management scenarios ------------------------------------------------
-  harscen = harvestscenarios
   # for(harscen in harvestscenarios) { ## MaxSust fails, others worked.
   # print(date())
   # print(harscen)
@@ -463,7 +464,9 @@ sample_data.f = function(data.all, nSample) {
 
 
 # StartingYear = climate data that detrermines simulation period must have year greater than this.
-create_prebas_input.f = function(r_no, clim, data.sample, nYears, startingYear=0,domSPrun=0) { # dat = climscendataset
+create_prebas_input.f = function(r_no, clim, data.sample, nYears,
+                                 startingYear=0,domSPrun=0,
+                                 harv) { # dat = climscendataset
   #domSPrun=0 initialize model for mixed forests according to data inputs 
   #domSPrun=1 initialize model only for dominant species 
   nSites <- nrow(data.sample)
@@ -593,33 +596,28 @@ create_prebas_input.f = function(r_no, clim, data.sample, nYears, startingYear=0
   
   # initVar[,6,] <- as.numeric(data.sample[,hc])
   
-  ###check which BA ==0. and set to 0 the rest of the variables
-  NoPine <- which(initVar[,5,1]==0.)
-  NoSpruce <- which(initVar[,5,2]==0.)
-  NoDecid <- which(initVar[,5,3]==0.)
-  
-  siteInfo[NoPine,8] <- siteInfo[NoPine,8] - 1
-  siteInfo[NoSpruce,8] <- siteInfo[NoSpruce,8] - 1
-  siteInfo[NoDecid,8] <- siteInfo[NoDecid,8] - 1
-  
-  #siteInfo[NoPine,4] <- siteInfo[NoPine,4] - 1
-  #siteInfo[NoSpruce,4] <- siteInfo[NoSpruce,4] - 1
-  #siteInfo[NoDecid,4] <- siteInfo[NoDecid,4] - 1
-  initVar[NoPine,3:6,1] <- 0.
-  initVar[NoSpruce,3:6,2] <- 0.
-  initVar[NoDecid,3:6,3] <- 0.
-  initVar[NoSpruce,,2] <- initVar[NoSpruce,,3]
-  initVar[NoPine,,1:2] <- initVar[NoPine,,2:3]
-  
-  nLay1 <- which(siteInfo[,8]==1)
-  nLay2 <- which(siteInfo[,8]==2)
-  initVar[nLay1,3:6,2:3] <- 0
-  initVar[nLay2,3:6,3] <- 0
-  # initVar[which(initVar[,5,1]==0.),,1] <- initVar[which(initVar[,5,1]==0.),,2]
-  # initVar[which(initVar[,5,1]==0.),,2] <- initVar[which(initVar[,5,1]==0.),,3]
-  # initVar[which(initVar[,5,1]==0.),1,3] <- 1
-  # initVar[which(initVar[,5,1]==0.),3:6,3] <- 0
-  
+  if(!harv %in% c("adapt","protect")){
+    ###check which BA ==0. and set to 0 the rest of the variable
+    NoPine <- which(initVar[,5,1]==0.)
+    NoSpruce <- which(initVar[,5,2]==0.)
+    NoDecid <- which(initVar[,5,3]==0.)
+    
+    siteInfo[NoPine,8] <- siteInfo[NoPine,8] - 1
+    siteInfo[NoSpruce,8] <- siteInfo[NoSpruce,8] - 1
+    siteInfo[NoDecid,8] <- siteInfo[NoDecid,8] - 1
+    
+    initVar[NoPine,3:6,1] <- 0.
+    initVar[NoSpruce,3:6,2] <- 0.
+    initVar[NoDecid,3:6,3] <- 0.
+    initVar[NoSpruce,,2] <- initVar[NoSpruce,,3]
+    initVar[NoPine,,1:2] <- initVar[NoPine,,2:3]
+    
+    nLay1 <- which(siteInfo[,8]==1)
+    nLay2 <- which(siteInfo[,8]==2)
+    initVar[nLay1,c(1,3:6),2:3] <- 0
+    initVar[nLay2,c(1,3:6),3] <- 0
+  }
+
   if (FALSE) {
     dat = dat[id %in% data.sample[, unique(id)]]
     
