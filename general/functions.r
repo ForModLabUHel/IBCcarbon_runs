@@ -87,6 +87,27 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   opsna <- which(is.na(initPrebas$multiInitVar))
   initPrebas$multiInitVar[opsna] <- 0.
   
+  if(harscen %in% c("adapt","protect")){
+    sitesXs <- which(initPrebas$siteInfo[,3]>3)
+    jj <- which(initPrebas$initCLcutRatio[sitesXs,2]>0.)
+    initPrebas$initCLcutRatio[sitesXs[jj],2] <- 0.
+    
+    sitesXs <- which(initPrebas$siteInfo[,3]<3)
+    jj <- which(initPrebas$initCLcutRatio[sitesXs,1]>0.)
+    initPrebas$initCLcutRatio[sitesXs[jj],1] <- 0.
+    
+    xx <- 1/rowSums(initPrebas$initCLcutRatio)
+    initPrebas$initCLcutRatio <- sweep(initPrebas$initCLcutRatio,MARGIN = 1,xx, `*`)
+    jj <- which(is.na(rowSums(initPrebas$initCLcutRatio)))
+    initPrebas$initCLcutRatio[jj,] <- 0.
+    initPrebas$initCLcutRatio[jj,3] <- 1
+    jj <- which(initPrebas$initCLcutRatio[,3]<0.2)
+    xx <- 1-(0.2 - initPrebas$initCLcutRatio[jj,3])
+    initPrebas$initCLcutRatio[jj,1:2] <- 
+      sweep(initPrebas$initCLcutRatio[jj,1:2],MARGIN=1,xx, `*`)
+    initPrebas$initCLcutRatio[jj,3] <- 0.2
+  }
+  
   # initSoil <- aperm(initPrebas$soilC,c(3:5,1,2))
   # initSoil[,,1,,1] <- initSoilCstst[[r_no]]
   # initSoil <- aperm(initSoil,c(4,5,1:3))
@@ -596,8 +617,27 @@ create_prebas_input.f = function(r_no, clim, data.sample, nYears,
   
   # initVar[,6,] <- as.numeric(data.sample[,hc])
   
-  if(!harv %in% c("adapt","protect")){
+  if(harv %in% c("adapt","protect")){
     ###check which BA ==0. and set to 0 the rest of the variable
+    NoPine <- which(initVar[,5,1]==0.)
+    NoSpruce <- which(initVar[,5,2]==0.)
+    NoDecid <- which(initVar[,5,3]==0.)
+    
+    # siteInfo[NoPine,8] <- siteInfo[NoPine,8] - 1
+    # siteInfo[NoSpruce,8] <- siteInfo[NoSpruce,8] - 1
+    # siteInfo[NoDecid,8] <- siteInfo[NoDecid,8] - 1
+    
+    initVar[NoPine,3:6,1] <- 0.
+    initVar[NoSpruce,3:6,2] <- 0.
+    initVar[NoDecid,3:6,3] <- 0.
+    # initVar[NoSpruce,,2] <- initVar[NoSpruce,,3]
+    # initVar[NoPine,,1:2] <- initVar[NoPine,,2:3]
+    
+    # nLay1 <- which(siteInfo[,8]==1)
+    # nLay2 <- which(siteInfo[,8]==2)
+    # initVar[nLay1,c(1,3:6),2:3] <- 0
+    # initVar[nLay2,c(1,3:6),3] <- 0
+  }else{
     NoPine <- which(initVar[,5,1]==0.)
     NoSpruce <- which(initVar[,5,2]==0.)
     NoDecid <- which(initVar[,5,3]==0.)
