@@ -222,7 +222,23 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   }
   print(harscen)
   HarvLimX <- HarvLim1[1:nYears,]
-  if(harscen %in% c("Mitigation","MitigationNoAdH")){
+  
+  if(harscen %in% c("adapt","adaptNoAdH")){
+    if(harscen=="adaptNoAdH"){
+      compHarvX=0.
+    }else{
+      compHarvX=3.
+    }
+    # HarvLimX[,2]=0.
+    # initPrebas$energyCut <- rep(0,length(initPrebas$energyCut))
+    load(paste0("input/",regSets,"/pClCut_adapt/ClCutplots_maak",r_no,".rdata"))
+    ClcutX <- updatePclcut(initPrebas,pClCut)
+    initPrebas$inDclct <- ClcutX$inDclct
+    initPrebas$inAclct <- ClcutX$inAclct
+    # initPrebas$thinInt <- rep(thinIntX,initPrebas$nSites)
+    region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
+                           cutAreas =cutArX,compHarv=compHarvX)
+  }else if(harscen %in% c("Mitigation","MitigationNoAdH")){
     if(harscen=="MitigationNoAdH"){
       compHarvX=0.
     }else{
