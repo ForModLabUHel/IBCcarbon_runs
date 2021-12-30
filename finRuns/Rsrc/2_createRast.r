@@ -20,7 +20,8 @@ nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
 pdf(paste0("plots/histRast_",r_no,"_",
            harvestscenarios,"_",rcpfile,".pdf"))
 
-varXs <- c(varNames[varSel], specialVars)
+if(!exists("varXs")) varXs <- c(varNames[varSel], specialVars)
+
 for(varX in varXs){
   # varX <- varXs[1]
   fileXs <- list.files(path = paste0(pathtoken,pathFiles), pattern = paste0(varX,"_",harvestscenarios,"_",rcps))
