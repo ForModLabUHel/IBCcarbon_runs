@@ -140,7 +140,7 @@ if(testRun){ # if needed to test an individual sample
   }
   toMem <- ls()
   startRun <- Sys.time() 
-  sampleX <- runModel(sampleID,sampleRun=F, uncRun = uncRun)
+  sampleX <- runModel(sampleID,outType="uncRun")
 } else {
   if(loadUnc){ # if needed to load previous sample
     load(paste0("uncRuns/opsInd_reg",r_no,"_uncSeg",uncSeg,".rdata")) 
@@ -151,9 +151,9 @@ if(testRun){ # if needed to test an individual sample
     startRun <- Sys.time() 
     #sampleX <- runModel(sampleID,sampleRun=F, uncRun = uncRun)
     # #sampleXs <- lapply(sampleIDs[1:4], function(jx) {
-    #  runModel(jx, uncRun = TRUE, ststDeadW=FALSE)})      
+    #  runModel(jx, outType="uncRun")})      
     sampleXs <- mclapply(sampleIDs[(1+(nii-1)*nParRuns):(nii*nParRuns)], function(jx) {
-          runModel(jx, uncRun = uncRun)}, 
+          runModel(jx, outType="uncRun")}, 
           mc.cores = nCores,mc.silent=FALSE)      ## Split this job across 10 cores
     timeRun <- Sys.time() - startRun
     print(paste0("Run time for ",nParRuns," samples of size ", nSitesRunr," = ",timeRun))
