@@ -1645,7 +1645,11 @@ calNewDclcut <- function(out,
     if(any(is.na(aa))) aa[is.na(aa)] <- aClcut[is.na(aa)]
     predict(fitMod, list(age = aa))
     
-    age2 <- (1+fact) * aa
+    if(fact<2 & fact>0.){
+      age2 <- (1+fact) * aa
+    }else{
+      age2 <- aa + fact 
+    } 
     d2 <- predict(fitMod, list(age = age2))
     d2
     
