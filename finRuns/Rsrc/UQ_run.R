@@ -59,11 +59,14 @@ if(!uncSeg){ # sample pixel indices
   
 if(uncRun & !loadUnc){
   pCROBASr <- list()
-  str <- list()
+  if(uncPCrobas){
+    load("input/pCROBASr.rdata")
+    pdim <- nrow(pCROBASr[[1]])
+  }
   resampleYears <-  t(matrix(1:nYears,nYears,nSamplesr))
   for(ij in 1:nSamplesr){ 
     if(uncPCrobas){
-      load("input/pCROBASr.rdata")
+      pCROBASr[[ij]] <- rbind(pCROBASr[[ij]],pCROB[(pdim+1):(pdim+3),])
     }else {
       pCROBASr[[ij]] <- pCROB
     }
