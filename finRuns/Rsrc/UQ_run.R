@@ -162,7 +162,7 @@ if(testRun){ # if needed to test an individual sample
     timeRun <- Sys.time() - startRun
  
     if(!uncSeg){
-      m <- nrow(sampleXs[[1]])
+      m <- ncol(sampleXs[[1]])
       n <- length(sampleXs)
       varNams <- names(sampleXs[[1]])
       #varNams <-  sampleXs[[1]][,"vari"]
@@ -190,6 +190,7 @@ if(testRun){ # if needed to test an individual sample
       
       print("make histograms...")
       m <- length(sampleOutput)
+      print(paste(m,"variables"))
       n <- nrow(sampleOutput[[1]])
       #varNams: "NEP" "soilC" 
       #"V" "VroundWood" "age"        
