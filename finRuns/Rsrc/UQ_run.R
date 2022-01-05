@@ -63,6 +63,10 @@ if(uncRun & !loadUnc){
     load("input/pCROBASr.rdata")
     pdim <- nrow(pCROBASr[[1]])
   }
+  if(uncSiteType){
+    ###load the fittet probit models to estimate the Site fertility class
+    load(url("https://raw.githubusercontent.com/ForModLabUHel/satRuns/master/data/step.probit.rdata"))
+  }
   resampleYears <-  t(matrix(1:nYears,nYears,nSamplesr))
   for(ij in 1:nSamplesr){ 
     if(uncPCrobas){
@@ -80,7 +84,7 @@ if(uncRun & !loadUnc){
     } 
     if(uncSiteType){
       ###load the fittet probit models to estimate the Site fertility class
-      load(url("https://raw.githubusercontent.com/ForModLabUHel/satRuns/master/data/step.probit.rdata"))
+      #load(url("https://raw.githubusercontent.com/ForModLabUHel/satRuns/master/data/step.probit.rdata"))
       ####generate sample input data
       dataSample <- data.table(st=ops[[ij]]$fert,
                                H=ops[[ij]]$h,
