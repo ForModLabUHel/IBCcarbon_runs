@@ -160,19 +160,20 @@ if(testRun){ # if needed to test an individual sample
           runModel(jx, outType="uncRun")}, 
           mc.cores = nCores,mc.silent=FALSE)      ## Split this job across 10 cores
     timeRun <- Sys.time() - startRun
-    print(paste0("Run time for ",nParRuns," samples of size ", nSitesRunr," = ",timeRun))
-    print("End running...")
-    
+ 
     if(!uncSeg){
       m <- nrow(sampleXs[[1]])
       n <- length(sampleXs)
-      varNams <-  sampleXs[[1]][,"vari"]
+      varNams <- names(sampleXs[[1]])
+      #varNams <-  sampleXs[[1]][,"vari"]
       # g /m2 /year -> -44/12*16^2/10^12
       for(j in 1:m){
         x <- data.frame()
         for(k in 1:n){
-          x <- rbind(x, sampleXs[[k]][j,])
+          x <- rbind(x, t(sampleXs[[k]][,j,with=FALSE]))
+          #rownames(x)[k] <- paste0(varNams[j],k)
         }
+        names(x) <- sampleXs[[1]]$periods
         #x[,3:5] <- x[,3:5]*cS[j]
         if(nii == 1){
           sampleOutput[[j]] <- x
@@ -190,33 +191,41 @@ if(testRun){ # if needed to test an individual sample
       print("make histograms...")
       m <- length(sampleOutput)
       n <- nrow(sampleOutput[[1]])
-      units_hist <- c(-area_total*100^2*44/12*10^-12,1,1,area_total*10^-6)
-      units_hist_label <- c("NEE [Tg CO2eq]","V [m3 ha-1]",
-                        "npp [gC m-2]","VroundWood [10^6 m3]") 
+      #varNams: "NEP" "soilC" 
+      #"V" "VroundWood" "age"        
+      #"VenergyWood" "wGV" 
+      #"Wtot" "periods"   
+      units_hist <- c(-area_total*100^2*44/12*10^-12,1,
+                      1,area_total*10^-6, 1,
+                      area_total*10^-6, 1, 1, 1)
+      units_hist_label <- c("NEE [Tg CO2eq]", "mean soilC [kgC ha-1]",
+              "mean V [m3 ha-1]", "Tot. Vroundwood [10^6 m3]","mean age [years]",
+              "tot. VenergyWood [10^6 m3]","mean GV biomass [kgC ha-1]",
+              "mean tree biomass [kgC ha-1]") 
 
-      for(indj in 1:m){
+      for(indj in 1:(m-1)){
         x <- sampleOutput[[indj]]
-        varNams <- x[1,"vari"]
-        xnas <- which(is.na(x[,3]))
-        x <- x[which(!is.na(x[,3])),]
-        x[,3:5] <- x[,3:5]*units_hist[indj]
+        varNams <- rownames(x)[1]
+        xnas <- which(is.na(x[,1]))
+        x <- x[which(!is.na(x[,1])),]
+        x <- x*units_hist[indj]
         png(file = paste0("uncRuns/hists_regionID",r_no,"_",varNams,
                         "_",nSitesRunr,"_",harvscen,"_",
                         "_pr",uncPCrobas,"_Xr",uncInput,"_ager",uncAge,
                         "_Cr",uncClim,"_str",uncSiteType,".png"))
-        xlims <- c(min(x[,3:5]),max(x[,3:5]))
+        xlims <- c(min(x),max(x))
         xlims[1] <- xlims[1]*(1-0.1*sign(xlims[1]))
         xlims[2] <- xlims[2]*(1+0.1*sign(xlims[2]))
         par(mfrow=c(3,1))
         for(per in 1:3){
           if(per==1 & length(xnas)>0){
-            hist(as.matrix(x[, paste0("per", per), with = FALSE]),
+            hist(as.matrix(x[, paste0("p", per)]),#, with = FALSE]),
                main = paste0("region",r_no,"_",harvscen,"_",
                "period",per," nas: sampleIDs ",xnas), 
                xlab = units_hist_label[indj],
                xlim = xlims)  
           } else {
-            hist(as.matrix(x[, paste0("per", per), with = FALSE]),
+            hist(as.matrix(x[, paste0("p", per)]),#, with = FALSE]),
               main = paste0("region",r_no,"_",harvscen,"_period",per), 
               xlab = units_hist_label[indj],
               xlim = xlims)  
@@ -226,6 +235,8 @@ if(testRun){ # if needed to test an individual sample
       }
       print("histograms made")
     }
-  }
+      print(paste0("Run time for ",nParRuns," samples of size ", nSitesRunr," = ",timeRun))
+    print("End running...")
+   }
 }
 setwd("Rsrc/virpiSbatch/")
