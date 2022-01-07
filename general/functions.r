@@ -30,8 +30,9 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   nSample = nrow(sampleX)#200#nrow(data.all)
   ## ---------------------------------------------------------
   i = 0
-  if(outType != "uncRun"){
-    rcpfile = rcps
+  #if(outType != "uncRun"){
+  if(outType %in% c("uncRun","uncSeg")){
+      rcpfile = rcps
     # for(rcpfile in rcps) { ## ---------------------------------------------
     # print(rcpfile)
     if(rcpfile=="CurrClim"){
@@ -75,7 +76,7 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   
   ###set parameters
   # if(outType %in% c("uncRun","uncSeg")){
-  if(outType %in% c("uncRun")){
+  if(outType %in% c("uncRun","uncSeg")){
     pCrobasX <- pCROBASr[[sampleID]]
   }
   ## Second, continue now starting from soil SS
@@ -116,7 +117,8 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   
   ##here mix years for weather inputs for Curr Climate
   if(rcpfile=="CurrClim"){
-    if(outType=="uncRun"){
+    #if(outType=="uncRun"){
+    if(outType %in% c("uncRun","uncSeg")){
       resampleYear <- resampleYears[sampleID,] 
       #sample(1:nYears,nYears,replace=T)
     }else{
