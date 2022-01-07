@@ -54,7 +54,7 @@ if(!uncSeg){ # sample pixel indices
                      cut(seq_along(1:nSamples),
                          10,#nSetRuns,
                          labels = FALSE))[[setX]]
-  ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
+  ops_orig <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
 }
   
 if(uncRun & !loadUnc){
@@ -80,44 +80,43 @@ if(uncRun & !loadUnc){
     }else {
       pCROBASr[[ij]] <- pCROB
     }
-    if(uncInput){
-      X <- ops[[ij]]
-      X <- cbind(X$ba, X$dbh, X$h/10, X$pine, X$spruce, X$birch) # h as decimeters in data.all -> convert to meters as in cov matrix C
-      mx <- ncol(X)
-      Y <- X + matrix(rnorm(nrow(X)*mx),nrow(X),mx)%*%C
-      X <- distr_correction(Y,X)
-      ops[[ij]][,':=' (ba=X[,1],dbh=X[,2],h=X[,3]*10,pine=X[,4],spruce=X[,5],birch=X[,6])] # the height converted back to meters
-    } 
-    if(uncSiteType){
-      ###load the fittet probit models to estimate the Site fertility class
-      #load(url("https://raw.githubusercontent.com/ForModLabUHel/satRuns/master/data/step.probit.rdata"))
-      ####generate sample input data
-      dataSample <- data.table(st=ops[[ij]]$fert,
+    if(!uncSeg){
+     if(uncInput){
+       X <- ops[[ij]]
+       X <- cbind(X$ba, X$dbh, X$h/10, X$pine, X$spruce, X$birch) # h as decimeters in data.all -> convert to meters as in cov matrix C
+       mx <- ncol(X)
+       Y <- X + matrix(rnorm(nrow(X)*mx),nrow(X),mx)%*%C
+       X <- distr_correction(Y,X)
+       ops[[ij]][,':=' (ba=X[,1],dbh=X[,2],h=X[,3]*10,pine=X[,4],spruce=X[,5],birch=X[,6])] # the height converted back to meters
+     } 
+     if(uncSiteType){
+       ###load the fittet probit models to estimate the Site fertility class
+       #load(url("https://raw.githubusercontent.com/ForModLabUHel/satRuns/master/data/step.probit.rdata"))
+       ####generate sample input data
+       dataSample <- data.table(st=ops[[ij]]$fert,
                                H=ops[[ij]]$h,
                                D=ops[[ij]]$dbh,
                                BAtot=ops[[ij]]$ba,
                                BApPer=ops[[ij]]$pine
-      )
-      #X <- cbind(data.all$ba, data.all$dbh, data.all$h, data.all$pine, data.all$spruce, data.all$birch)
-      ##select the model (all is the most generic)
-      modX <- step.probit[["all"]]
-      ###run model -> returns the probability for each site type so you can sample using that probability
-      ###model inputs:
-      # st = site type
-      # H = average height
-      # D = average dbh
-      #BAtot = total basal area
-      #BApPer = % of pine basal area
-      probs <- predict(modX,type='p',dataSample)
-      str <- matrix(0,nrow(ops[[ij]]),1)
-      for(ri in 1:nrow(ops[[ij]])){
-        str[ri] <- sample(1:5,1,prob = probs[ri,])
-      }
-      
-      ops[[ij]][,fert:=str]
-    }
-    if(uncAge){
-      ops[[ij]][,age:=ops[[ij]]$age*(1+rage*rnorm(nrow(ops[[ij]])))]
+       )
+       modX <- step.probit[["all"]]
+       ###run model -> returns the probability for each site type so you can sample using that probability
+       ###model inputs:
+       # st = site type
+       # H = average height
+       # D = average dbh
+       #BAtot = total basal area
+       #BApPer = % of pine basal area
+       probs <- predict(modX,type='p',dataSample)
+       str <- matrix(0,nrow(ops[[ij]]),1)
+       for(ri in 1:nrow(ops[[ij]])){
+         str[ri] <- sample(1:5,1,prob = probs[ri,])
+       }
+       ops[[ij]][,fert:=str]
+     } 
+     if(uncAge){
+       ops[[ij]][,age:=ops[[ij]]$age*(1+rage*rnorm(nrow(ops[[ij]])))]
+     }
     }
   }
   if(!uncSeg){
@@ -161,6 +160,43 @@ if(testRun){ # if needed to test an individual sample
     if(uncSeg){
       resampleYear<-matrix(resampleYears1[nii,], nrow=length(sampleIDs), 
                            ncol=length(resampleYears1[nii,]), byrow=TRUE)
+      ops<-ops_orig
+      if(uncInput){
+        X <- ops[[ij]]
+        X <- cbind(X$ba, X$dbh, X$h/10, X$pine, X$spruce, X$birch) # h as decimeters in data.all -> convert to meters as in cov matrix C
+        mx <- ncol(X)
+        Y <- X + matrix(rnorm(nrow(X)*mx),nrow(X),mx)%*%C
+        X <- distr_correction(Y,X)
+        ops[[ij]][,':=' (ba=X[,1],dbh=X[,2],h=X[,3]*10,pine=X[,4],spruce=X[,5],birch=X[,6])] # the height converted back to meters
+      } 
+      if(uncSiteType){
+        ###load the fittet probit models to estimate the Site fertility class
+        #load(url("https://raw.githubusercontent.com/ForModLabUHel/satRuns/master/data/step.probit.rdata"))
+        ####generate sample input data
+        dataSample <- data.table(st=ops[[ij]]$fert,
+                                 H=ops[[ij]]$h,
+                                 D=ops[[ij]]$dbh,
+                                 BAtot=ops[[ij]]$ba,
+                                 BApPer=ops[[ij]]$pine
+        )
+        modX <- step.probit[["all"]]
+        ###run model -> returns the probability for each site type so you can sample using that probability
+        ###model inputs:
+        # st = site type
+        # H = average height
+        # D = average dbh
+        #BAtot = total basal area
+        #BApPer = % of pine basal area
+        probs <- predict(modX,type='p',dataSample)
+        str <- matrix(0,nrow(ops[[ij]]),1)
+        for(ri in 1:nrow(ops[[ij]])){
+          str[ri] <- sample(1:5,1,prob = probs[ri,])
+        }
+        ops[[ij]][,fert:=str]
+      } 
+      if(uncAge){
+        ops[[ij]][,age:=ops[[ij]]$age*(1+rage*rnorm(nrow(ops[[ij]])))]
+      }
     }
     startRun <- Sys.time() 
     #sampleXs <- lapply(sampleIDs[1:4], function(jx) { runModel(jx, outType="uncRun")})      
