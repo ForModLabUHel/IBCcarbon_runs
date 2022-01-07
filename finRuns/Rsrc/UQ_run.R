@@ -52,7 +52,7 @@ if(!uncSeg){ # sample pixel indices
   nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
   sampleIDs <- split(1:nSamples,             # Applying split() function
                      cut(seq_along(1:nSamples),
-                         nSetRuns,
+                         10,#nSetRuns,
                          labels = FALSE))[[setX]]
   ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
 }
@@ -68,7 +68,13 @@ if(uncRun & !loadUnc){
     load(url("https://raw.githubusercontent.com/ForModLabUHel/satRuns/master/data/step.probit.rdata"))
   }
   resampleYears <-  t(matrix(1:nYears,nYears,nSamplesr))
-  for(ij in 1:nSamplesr){ 
+  if(uncClim){ # weather for iterations
+    for(ij in nSamplesr){
+      resampleYears[ij,] <- sample(1:nYears,nYears,replace=T)
+    }
+    if(uncSeg) resampleYears1 <- resampleYears
+  }
+  for(ij in sampleIDs){ 
     if(uncPCrobas){
       pCROBASr[[ij]] <- rbind(pCROBASr[[ij]],pCROB[(pdim+1):(pdim+3),])
     }else {
@@ -113,19 +119,16 @@ if(uncRun & !loadUnc){
     if(uncAge){
       ops[[ij]][,age:=ops[[ij]]$age*(1+rage*rnorm(nrow(ops[[ij]])))]
     }
-    if(uncClim){
-      resampleYears[ij,] <- sample(1:nYears,nYears,replace=T)
-    }
   }
-  save(opsInd,pCROBASr,ops,resampleYears,file=paste0("uncRuns/opsInd_reg",r_no,"_uncSeg",uncSeg,".rdata")) 
+  if(!uncSeg){
+    save(opsInd,pCROBASr,ops,resampleYears,file=paste0("uncRuns/opsInd_reg",r_no,"_uncSeg",uncSeg,".rdata")) 
+  }
 }
   
-  
+# load weather data  
 rcpfile = rcps
-# for(rcpfile in rcps) { ## ---------------------------------------------
 if(rcpfile=="CurrClim"){
   load(paste(climatepath, rcpfile,".rdata", sep=""))  
-  #####process data considering only current climate###
   maxRday <- max(dat$rday)
   xday <- c(dat$rday,(dat$rday+maxRday),(dat$rday+maxRday*2))
   dat = rbind(dat,dat,dat)
@@ -134,8 +137,11 @@ if(rcpfile=="CurrClim"){
   load(paste(climatepath, rcpfile,".rdata", sep=""))  
 }
 ##
-niter <- ceiling(nSamplesr/nParRuns)
-  
+if(!uncSeg){
+  niter <- ceiling(nSamplesr/nParRuns)
+} else {
+  niter <- nSamplesr
+}
 sampleOutput <- list()
   
 if(testRun){ # if needed to test an individual sample
@@ -152,10 +158,13 @@ if(testRun){ # if needed to test an individual sample
   for(nii in 1:niter){
     toMem <- ls()
     print(paste0("Start running iter ",nii,"/",niter,"..."))
+    if(uncSeg){
+      resampleYear<-matrix(resampleYears1[nii,], nrow=length(sampleIDs), 
+                           ncol=length(resampleYears1[nii,]), byrow=TRUE)
+    }
     startRun <- Sys.time() 
     #sampleX <- runModel(sampleID,sampleRun=F, uncRun = uncRun)
-    # #sampleXs <- lapply(sampleIDs[1:4], function(jx) {
-    #  runModel(jx, outType="uncRun")})      
+    # sampleXs <- lapply(sampleIDs[1:4], function(jx) { runModel(jx, outType="uncRun")})      
     sampleXs <- mclapply(sampleIDs[(1+(nii-1)*nParRuns):(nii*nParRuns)], function(jx) {
           runModel(jx, outType="uncRun")}, 
           mc.cores = nCores,mc.silent=FALSE)      ## Split this job across 10 cores
@@ -235,9 +244,13 @@ if(testRun){ # if needed to test an individual sample
         dev.off()
       }
       print("histograms made")
+    } else { # if uncSeg
+      
     }
-      print(paste0("Run time for ",nParRuns," samples of size ", nSitesRunr," = ",timeRun))
+    print(paste0("Run time for ",nParRuns," samples of size ", nSitesRunr," = ",timeRun))
     print("End running...")
+     
+    
    }
 }
 setwd("Rsrc/virpiSbatch/")
