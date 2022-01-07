@@ -163,8 +163,7 @@ if(testRun){ # if needed to test an individual sample
                            ncol=length(resampleYears1[nii,]), byrow=TRUE)
     }
     startRun <- Sys.time() 
-    #sampleX <- runModel(sampleID,sampleRun=F, uncRun = uncRun)
-    # sampleXs <- lapply(sampleIDs[1:4], function(jx) { runModel(jx, outType="uncRun")})      
+    #sampleXs <- lapply(sampleIDs[1:4], function(jx) { runModel(jx, outType="uncRun")})      
     sampleXs <- mclapply(sampleIDs[(1+(nii-1)*nParRuns):(nii*nParRuns)], function(jx) {
           runModel(jx, outType="uncRun")}, 
           mc.cores = nCores,mc.silent=FALSE)      ## Split this job across 10 cores

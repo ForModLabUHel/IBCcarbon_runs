@@ -273,7 +273,8 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   if(harscen=="Base"){
     initSoilC <- stXX_GV(region, 1)
     print(paste("initSoilC",sampleID))
-    if(outType!="uncRun"){
+    #if(outType!="uncRun"){
+    if(outType %in% c("uncRun","uncSeg")){
       save(initSoilC,file=paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
     } else {
       save(initSoilC,file=paste0("initSoilCunc/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
