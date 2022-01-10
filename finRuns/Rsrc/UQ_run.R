@@ -7,7 +7,8 @@ library(MASS)
 
 ststDeadW<-FALSE
 source("localSettings.r")
-
+outType <- "uncRun"
+if(uncSeg) outType <- "uncSeg"
 ##### From GitHub
 
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
@@ -199,11 +200,17 @@ if(testRun){ # if needed to test an individual sample
       }
     }
     startRun <- Sys.time() 
-    #sampleXs <- lapply(sampleIDs[1:4], function(jx) { runModel(jx, outType="uncRun")})      
+    #sampleXs <- lapply(sampleIDs[1:3], function(jx) { runModel(jx, outType=outType)})      
     #sampleXs <- mclapply(sampleIDs[(1+(nii-1)*nParRuns):(nii*nParRuns)], function(jx) {
-    sampleXs <- mclapply(sampleIDs, function(jx) {
-          runModel(jx, outType="uncRun")}, 
+    if(uncSeg){
+      sampleXs <- mclapply(sampleIDs, function(jx) {
+        runModel(jx, outType=outType)}, 
+        mc.cores = nCores,mc.silent=FALSE)      ## Split this job across 10 cores
+    } else {
+      sampleXs <- mclapply(sampleIDs[(1+(nii-1)*nParRuns):(nii*nParRuns)], function(jx) {
+          runModel(jx, outType=outType)}, 
           mc.cores = nCores,mc.silent=FALSE)      ## Split this job across 10 cores
+    }
     timeRun <- Sys.time() - startRun
  
     if(!uncSeg){
@@ -283,14 +290,14 @@ if(testRun){ # if needed to test an individual sample
     } else { # if uncSeg
       n <- length(sampleXs)
       varNams <- names(sampleXs[[1]])
-      for(j in 1:(length(varNams)-1){
+      for(j in 1:(length(varNams)-1)){
         x <- data.frame()
         for(k in 1:n){
           x <- rbind(x, sampleXs[[k]][[j]])
           #rownames(x)[k] <- paste0(varNams[j],k)
         }
+        names(x)<-sampleXs[[k]]$periods
         if(nii==1){
-          names(x)<-sampleXs[[k]]$periods
           sampleOutput[[j]] <- x
           names(sampleOutput)[j]<-varNams[j]
         } else {
