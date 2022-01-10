@@ -290,18 +290,17 @@ if(testRun){ # if needed to test an individual sample
     } else { # if uncSeg
       n <- length(sampleXs)
       varNams <- names(sampleXs[[1]])
-      for(j in 1:(length(varNams)-1)){
+      for(j in 1:length(varNams)){
         x <- data.frame()
         for(k in 1:n){
           x <- rbind(x, sampleXs[[k]][[j]])
           #rownames(x)[k] <- paste0(varNams[j],k)
         }
-        names(x)<-sampleXs[[k]]$periods
         if(nii==1){
           sampleOutput[[j]] <- x
           names(sampleOutput)[j]<-varNams[j]
         } else {
-          sampleOutput[[j]] <- cbind(sampleOutput[[j]], x)
+          sampleOutput[[j]] <- cbind(sampleOutput[[j]], x[,2:4])
         }
       }
       save(sampleOutput,file=paste0("uncRuns/samplexout_uncSeg_",r_no,
