@@ -306,7 +306,7 @@ if(testRun){ # if needed to test an individual sample
           sampleOutput[[j]] <- cbind(sampleOutput[[j]], x[,2:4])
         }
       }
-      save(sampleOutput,file=paste0("uncRuns/samplexout_uncSeg_",r_no,
+      save(sampleOutput,file=paste0("uncRuns/segRuns/samplexout_uncSeg_",r_no,
                                     "set",setX,"_",harvscen,                                    
                                     "_pr",uncPCrobas,"_Xr",uncInput,"_ager",uncAge,
                                     "_Cr",uncClim,"_str",uncSiteType,".rdata")) 
