@@ -307,7 +307,7 @@ if(testRun){ # if needed to test an individual sample
         }
       }
       save(sampleOutput,file=paste0("uncRuns/samplexout_uncSeg_",r_no,
-                                    "set",setX,"_",harvscen,"_",                                    
+                                    "set",setX,"_",harvscen,                                    
                                     "_pr",uncPCrobas,"_Xr",uncInput,"_ager",uncAge,
                                     "_Cr",uncClim,"_str",uncSiteType,".rdata")) 
 
