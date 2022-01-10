@@ -293,7 +293,7 @@ if(testRun){ # if needed to test an individual sample
           sampleOutput[[j]] <- x
           names(sampleOutput)[j]<-varNams[j]
         } else {
-          sampleOutput[[j]] <- cbind(sampleOutput[[j]], x[,2:4])
+          sampleOutput[[j]] <- cbind(sampleOutput[[j]], x)
         }
       }
       save(sampleOutput,file=paste0("uncRuns/samplexout_uncSeg_",r_no,
