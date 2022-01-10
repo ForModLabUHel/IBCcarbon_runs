@@ -283,13 +283,14 @@ if(testRun){ # if needed to test an individual sample
     } else { # if uncSeg
       n <- length(sampleXs)
       varNams <- names(sampleXs[[1]])
-      for(j in 1:length(varNams)){
+      for(j in 1:(length(varNams)-1){
         x <- data.frame()
         for(k in 1:n){
           x <- rbind(x, sampleXs[[k]][[j]])
           #rownames(x)[k] <- paste0(varNams[j],k)
         }
         if(nii==1){
+          names(x)<-sampleXs[[k]]$periods
           sampleOutput[[j]] <- x
           names(sampleOutput)[j]<-varNams[j]
         } else {
