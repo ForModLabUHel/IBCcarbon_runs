@@ -270,11 +270,12 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   if(harscen=="Base"){
     initSoilC <- stXX_GV(region, 1)
     print(paste("initSoilC",sampleID))
-    #if(outType!="uncRun"){
-    if(!outType %in% c("uncRun","uncSeg")){
-      save(initSoilC,file=paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
-    } else {
-      save(initSoilC,file=paste0("initSoilCunc/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
+    if(outType!="testRun"){
+      if(!outType %in% c("uncRun","uncSeg")){
+        save(initSoilC,file=paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
+      } else {
+        save(initSoilC,file=paste0("initSoilCunc/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
+      }
     }
     ###run yasso (starting from steady state) using PREBAS litter
     region <- yassoPREBASin(region,initSoilC)
@@ -670,8 +671,8 @@ create_prebas_input.f = function(r_no, clim, data.sample, nYears,
     
     nLay1 <- which(siteInfo[,8]==1)
     nLay2 <- which(siteInfo[,8]==2)
-    initVar[nLay1,c(1,3:6),2:3] <- 0
-    initVar[nLay2,c(1,3:6),3] <- 0
+    initVar[nLay1,3:6,2:3] <- 0
+    initVar[nLay2,3:6,3] <- 0
   }
 
   if (FALSE) {
