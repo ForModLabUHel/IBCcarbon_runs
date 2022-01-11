@@ -1678,9 +1678,15 @@ calNewDclcut <- function(out,
     print(j)
   }
   dev.off()
-  newClCut_pine[,c(2,4)] <- ClCut_pine[,c(2,4)]*(1+fact)
-  newClCut_spruce[,c(2,4)] <- ClCut_spruce[,c(2,4)]*(1+fact)
-  newClCut_birch[,c(2,4)] <- ClCut_birch[,c(2,4)]*(1+fact)
+  if(fact<2 & fact>0.){
+    newClCut_pine[,c(2,4)] <- ClCut_pine[,c(2,4)]*(1+fact)
+    newClCut_spruce[,c(2,4)] <- ClCut_spruce[,c(2,4)]*(1+fact)
+    newClCut_birch[,c(2,4)] <- ClCut_birch[,c(2,4)]*(1+fact)
+  }else{
+    newClCut_pine[,c(2,4)] <- ClCut_pine[,c(2,4)]+fact
+    newClCut_spruce[,c(2,4)] <- ClCut_spruce[,c(2,4)]+fact
+    newClCut_birch[,c(2,4)] <- ClCut_birch[,c(2,4)]+fact
+  } 
   return(list(ClCut_pine=newClCut_pine,
               ClCut_spruce=newClCut_spruce,
               ClCut_birch=newClCut_birch))
