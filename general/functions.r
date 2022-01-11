@@ -33,7 +33,7 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   rcpfile = rcps
   load(paste(climatepath, rcpfile,".rdata", sep=""))  
   #if(outType != "uncRun"){
-  if(outType %in% c("uncRun","uncSeg")){
+  if(!outType %in% c("uncRun","uncSeg")){
     if(rcpfile=="CurrClim"){
       #####process data considering only current climate###
       # dat <- dat[rday %in% 1:10958] #uncomment to select some years (10958 needs to be modified)
