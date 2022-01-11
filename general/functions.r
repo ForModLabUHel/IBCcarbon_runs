@@ -82,6 +82,9 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   opsna <- which(is.na(initPrebas$multiInitVar))
   initPrebas$multiInitVar[opsna] <- 0.
   
+  ### for adapt and protect scenario, 
+  ### do not replant pine in sitetypes 1 and 2
+  ### do not replant spruce in sitetypes higher than 3
   if(harscen %in% c("adapt","protect")){
     sitesXs <- which(initPrebas$siteInfo[,3]>3)
     jj <- which(initPrebas$initCLcutRatio[sitesXs,2]>0.)
@@ -268,7 +271,7 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
     initSoilC <- stXX_GV(region, 1)
     print(paste("initSoilC",sampleID))
     #if(outType!="uncRun"){
-    if(outType %in% c("uncRun","uncSeg")){
+    if(!outType %in% c("uncRun","uncSeg")){
       save(initSoilC,file=paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
     } else {
       save(initSoilC,file=paste0("initSoilCunc/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
