@@ -31,18 +31,33 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   ## ---------------------------------------------------------
   i = 0
   rcpfile = rcps
-  load(paste(climatepath, rcpfile,".rdata", sep=""))  
+  #load(paste(climatepath, rcpfile,".rdata", sep=""))  
   #if(outType != "uncRun"){
-  if(!outType %in% c("uncRun","uncSeg")){
+  if(!outType %in% c( "uncRun", "uncSeg") ){
+    rcpfile = rcps
+    # for(rcpfile in rcps) { ## ---------------------------------------------
+    # print(rcpfile)
     if(rcpfile=="CurrClim"){
+      load(paste(climatepath, rcpfile,".rdata", sep="")) 
       #####process data considering only current climate###
       # dat <- dat[rday %in% 1:10958] #uncomment to select some years (10958 needs to be modified)
       maxRday <- max(dat$rday)
       xday <- c(dat$rday,(dat$rday+maxRday),(dat$rday+maxRday*2))
       dat = rbind(dat,dat,dat)
       dat[,rday:=xday]
+    } else{
+      load(paste(climatepath, rcpfile,".rdata", sep="")) 
     }
+    # load("C:/Users/minunno/Documents/research/lukeDB/example #2/CanESM2.rcp45.rdata")
   }
+  #if(!outType %in% c("uncRun","uncSeg")){
+  #  if(rcpfile=="CurrClim"){
+  #    maxRday <- max(dat$rday)
+  #    xday <- c(dat$rday,(dat$rday+maxRday),(dat$rday+maxRday*2))
+  #    dat = rbind(dat,dat,dat)
+  #    dat[,rday:=xday]
+  #  }
+  #}
   ## Loop regions -------------------------------------------------------
   # for (r_no in regions) {
   # print(date())
@@ -211,10 +226,10 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   # region <- regionPrebas(initPrebas)
   ###run PREBAS
   if(harscen!="Base"){
-    if(outType!="uncRun"){
+    if(!outType %in% c("uncRun","uncSeg")){
       load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
     }else {
-      load(paste0("initSoilCunc/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
+      load(paste0("initSoilCunc/forCent",r_no,"/initSoilC_",outType,"_",sampleID,".rdata"))
     }
     initPrebas$yassoRun <- rep(1,initPrebas$nSites)
     initPrebas$soilC[,1,,,] <- initSoilC
@@ -274,7 +289,7 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
       if(!outType %in% c("uncRun","uncSeg")){
         save(initSoilC,file=paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
       } else {
-        save(initSoilC,file=paste0("initSoilCunc/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
+        save(initSoilC,file=paste0("initSoilCunc/forCent",r_no,"/initSoilC_",outType,"_",sampleID,".rdata"))
       }
     }
     ###run yasso (starting from steady state) using PREBAS litter
