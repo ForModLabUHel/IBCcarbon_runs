@@ -1,6 +1,7 @@
 library(minpack.lm)
 
 factRotLength = -10
+factFert = -20 + factRotLength
 sampleID = 3 ###12 45    ####for region 13 take 3 and 6; region 12 sampleID c(23,440); region 11 sampleID c(23,150)
 toMem <- ls()
 
@@ -37,7 +38,13 @@ for(r_no in 1:19){
                          ClCut_spruce,
                          ClCut_birch,
                          fact=factRotLength)
-  save(pClCut,
+  
+  pFert <- calNewDclcut(out,pClCut$ClCut_pine,
+                          pClCut$ClCut_spruce,
+                          pClCut$ClCut_birch,
+                         fact=factFert)
+  
+  save(pClCut,pFert,
        file=paste0(pathX,"ClCutplots_maak",r_no,".rdata"))
   
   rm(list=setdiff(ls(), toMem));gc()
