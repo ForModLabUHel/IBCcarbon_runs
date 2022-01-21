@@ -97,10 +97,11 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   opsna <- which(is.na(initPrebas$multiInitVar))
   initPrebas$multiInitVar[opsna] <- 0.
   
-  ### for adapt and protect scenario, 
+  ### for adapt and protect scenario Replanting schemes 
   ### do not replant pine in sitetypes 1 and 2
   ### do not replant spruce in sitetypes higher than 3
-  if(harscen %in% c("adapt","protect")){
+  ### ensure minimum 20% birch at replanting
+  if(harscen %in% c("adapt","protect","adaptNoAdH","adaptTapio")){
     sitesXs <- which(initPrebas$siteInfo[,3]>3)
     jj <- which(initPrebas$initCLcutRatio[sitesXs,2]>0.)
     initPrebas$initCLcutRatio[sitesXs[jj],2] <- 0.
@@ -237,7 +238,7 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   print(harscen)
   HarvLimX <- HarvLim1[1:nYears,]
   
-  if(harscen %in% c("adapt","adaptNoAdH")){
+  if(harscen %in% c("adapt","adaptNoAdH","adaptTapio")){
     if(harscen=="adaptNoAdH"){
       compHarvX=0.
     }else{
@@ -245,13 +246,14 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
     }
     # HarvLimX[,2]=0.
     # initPrebas$energyCut <- rep(0,length(initPrebas$energyCut))
-    load(paste0("input/",regSets,"/pClCut_adapt/ClCutplots_maak",r_no,".rdata"))
-    ClcutX <- updatePclcut(initPrebas,pClCut)
-    initPrebas$inDclct <- ClcutX$inDclct
-    initPrebas$inAclct <- ClcutX$inAclct
-    # initPrebas$thinInt <- rep(thinIntX,initPrebas$nSites)
-    region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
-                           cutAreas =cutArX,compHarv=compHarvX)
+    if(harscen=="adaptTapio"){
+      region <- regionPrebas(initPrebas,
+                           fertThin = fertThin,nYearsFert = nYearsFert)
+    }else{
+      region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
+                             cutAreas = cutArX,compHarv=compHarvX,
+                             fertThin = fertThin,nYearsFert = nYearsFert)
+    }
   }else if(harscen %in% c("Mitigation","MitigationNoAdH")){
     if(harscen=="MitigationNoAdH"){
       compHarvX=0.
