@@ -35,7 +35,7 @@ sampleForPlots <- 1
 if(!exists("regSets")) regSets <- "maakunta" ### "forCent", "maakunta"
 if(!exists("minDharvX")) minDharvX <- 15 ### minimum DBH for clearcutting
 if(!exists("compHarvX")) compHarvX=3.
-if(!exists("ageMitigScenX")) ageMitigScenX=120.
+if(!exists("ageHarvPriorX")) ageHarvPriorX=120.
 if(!exists("thinIntX")) thinIntX=0.9
 if(!exists("thinFactX")) thinFactX=0.2
 if(!exists("clcutArX") & regSets=="forCent") clcutArX <- NA
