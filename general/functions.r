@@ -318,9 +318,9 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   }else{
     load(paste0("initDeadWVss/reg",
                 r_no,"_deadWV.rdata"))
-    region$multiOut[manFor,,8,,1] <- region$multiOut[manFor,,8,,1] + 
+    region$multiOut[manFor,,8,1:3,1] <- region$multiOut[manFor,,8,1:3,1] + 
       aperm(replicate(length(manFor),(manDeadW$ssDeadW[1:nYears,])),c(3,1:2))
-    region$multiOut[unmanFor,,8,,1] <- region$multiOut[unmanFor,,8,,1] + 
+    region$multiOut[unmanFor,,8,1:3,1] <- region$multiOut[unmanFor,,8,1:3,1] + 
       aperm(replicate(length(unmanFor),(unmanDeadW$ssDeadW[1:nYears,])),c(3,1:2))
   }
   ####end initialize deadWood Volume
