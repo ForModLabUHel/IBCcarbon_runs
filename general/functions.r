@@ -1376,6 +1376,7 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),modOut){
 
   outX <- data.table(t(xx))
   names(outX) <- varsX
+  print(outX)
   #outX[,periods:=paste0('p',1:3)]
   
   return(outX)
