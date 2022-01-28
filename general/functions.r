@@ -350,7 +350,8 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
     uncTab <- UncOutProc(varSel=varSel,#c(46,39,30,37), 
                          funX=funX,#rep("sum",4),
                          modOut=region,sampleID=sampleID,
-                         finPeats=finPeats,sampleX=sampleX)
+                         finPeats=finPeats,sampleX=sampleX,
+                         EC1=EC1[sampleID],EC2=EC2[sampleID])
     #print(uncTab)
     return(uncTab)
   } 
@@ -1266,7 +1267,7 @@ specialVarProc <- function(sampleX,region,r_no,harscen,rcpfile,sampleID,
 } 
 
 UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
-                       modOut,sampleID=1,finPeats=finPeats,sampleX=sampleX){
+                       modOut,sampleID=1,finPeats=finPeats,sampleX=sampleX,EC1=-240,EC2=70){
   nYears <-  max(modOut$nYears)
   nSites <-  max(modOut$nSites)
   nVarSel <- length(varSel)
@@ -1370,8 +1371,8 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
       npp <- NPP[,..curr]
       nep <- NEP[,..curr]
     
-      nep = processPeatUQ(peatX,fert,npp,nep,drPeatID,1)
-      nep = processPeatUQ(peatX,fert,npp,nep,drPeatID,2)
+      nep = processPeatUQ(peatX,fert,npp,nep,drPeatID,1,EC1,EC2)
+      nep = processPeatUQ(peatX,fert,npp,nep,drPeatID,2,EC1,EC2)
       NEP[,curr] <- nep
     }  
     NEP <- colMeans(NEP)
@@ -1385,7 +1386,7 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
   return(outX)
 } 
 
-processPeatUQ <- function(peatXf, fertf, nppf, nepf, peatval, fertval) {
+processPeatUQ <- function(peatXf, fertf, nppf, nepf, peatval, fertval, EC1, EC2) {
   # peatXf = raster with peat soils
   # fertf =  soilType
   # nppf = npp
@@ -1399,9 +1400,9 @@ processPeatUQ <- function(peatXf, fertf, nppf, nepf, peatval, fertval) {
   
   ###calculate the new NEP according to the siteType (fertval)
   if (fertval == 1) {         
-    drPeat <- drPeat + EC1[sampleID]#270  
+    drPeat <- drPeat + EC1#-270  
   } else if (fertval == 2) {
-    drPeat <- drPeat + EC2[sampleID]#70
+    drPeat <- drPeat + EC2#70
   }
   nepf[drPeatNeg] <- drPeat
   return(nepf)#merge(drPeat,nepf))
