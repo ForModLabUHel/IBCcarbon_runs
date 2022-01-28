@@ -241,6 +241,7 @@ if(testRun){ # if needed to test an individual sample
     timeRun <- Sys.time() - startRun
     
     if(!uncSeg){
+      print(sampleXs[[1]])
       m <- ncol(sampleXs[[1]])
       n <- length(sampleXs)
       varNams <- names(sampleXs[[1]])
