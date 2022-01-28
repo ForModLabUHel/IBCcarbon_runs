@@ -18,6 +18,12 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   harscen = harvestscenarios
   
   sampleX <- ops[[sampleID]]
+  
+  ####In protect -> treat buffer conservation areas as conservation areas 
+  if(harscen %in% c("protect","protectNoAdH")){
+    sampleX$cons[sampleX$Wbuffer==1] <- 1
+  } 
+  
   if(outType=="uncRun"){
     area_tot <- sum(data.all$area) # ha
     sampleX[,area := 16^2/10000] 
@@ -101,7 +107,8 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   ### do not replant pine in sitetypes 1 and 2
   ### do not replant spruce in sitetypes higher than 3
   ### ensure minimum 20% birch at replanting
-  if(harscen %in% c("adapt","protect","adaptNoAdH","adaptTapio")){
+  if(harscen %in% c("adapt","protect","protectNoAdH",
+                    "adaptNoAdH","adaptTapio")){
     sitesXs <- which(initPrebas$siteInfo[,3]>3)
     jj <- which(initPrebas$initCLcutRatio[sitesXs,2]>0.)
     initPrebas$initCLcutRatio[sitesXs[jj],2] <- 0.
@@ -269,7 +276,20 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
     initPrebas$thinInt <- rep(thinIntX,initPrebas$nSites)
     region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
                            cutAreas =cutArX,compHarv=compHarvX,
-                           ageMitigScen = ageMitigScenX)
+                           ageHarvPrior = ageHarvPriorX)
+  }else if(harscen %in% c("protect","protectNoAdH")){
+    if(harscen=="protectNoAdH"){
+      compHarvX=0.
+    }else{
+      compHarvX=3.
+    }
+    ####no energy cuts
+    HarvLimX[,2]=0.
+    initPrebas$energyCut <- rep(0,length(initPrebas$energyCut))
+    region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
+                           cutAreas =cutArX,compHarv=compHarvX,
+                           ageHarvPrior = ageHarvPriorX,
+                           oldLayer = 1)
   }else{
     ##Don't pass minDharvX if NA
     if (is.na(minDharvX)) {
@@ -313,9 +333,9 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   }else{
     load(paste0("initDeadWVss/reg",
                 r_no,"_deadWV.rdata"))
-    region$multiOut[manFor,,8,,1] <- region$multiOut[manFor,,8,,1] + 
+    region$multiOut[manFor,,8,1:3,1] <- region$multiOut[manFor,,8,1:3,1] + 
       aperm(replicate(length(manFor),(manDeadW$ssDeadW[1:nYears,])),c(3,1:2))
-    region$multiOut[unmanFor,,8,,1] <- region$multiOut[unmanFor,,8,,1] + 
+    region$multiOut[unmanFor,,8,1:3,1] <- region$multiOut[unmanFor,,8,1:3,1] + 
       aperm(replicate(length(unmanFor),(unmanDeadW$ssDeadW[1:nYears,])),c(3,1:2))
   }
   ####end initialize deadWood Volume
@@ -651,7 +671,9 @@ create_prebas_input.f = function(r_no, clim, data.sample, nYears,
   
   # initVar[,6,] <- as.numeric(data.sample[,hc])
   
-  if(harv %in% c("adapt","protect")){
+  if(harv %in% c("adapt","protect","protectNoAdH",
+                    "adaptNoAdH","adaptTapio")){
+      ####always the 3 species layers in this two scenarios
     ###check which BA ==0. and set to 0 the rest of the variable
     NoPine <- which(initVar[,5,1]==0.)
     NoSpruce <- which(initVar[,5,2]==0.)
