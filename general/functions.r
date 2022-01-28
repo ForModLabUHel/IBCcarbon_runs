@@ -1333,7 +1333,7 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),modOut){
   # if(sampleID==sampleForPlots){dev.off()}
 
   if("NEP" %in% varsX){
-    print("peatland postprocessing...")
+    print(paste0("peatland postprocessing ", sampleID))
     #### Peatland post-processing
     coords <- cbind(sampleX$x, sampleX$y)
     marginX= 1:2#(length(dim(out$annual[,,varSel,]))-1)
@@ -1361,7 +1361,7 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),modOut){
     fert<-region$multiOut[,1,"sitetype",1,1]
   
     #####Loop along periods
-    for (curr in 2:(nYears+1)) {
+    for(curr in 2:(nYears+1)) {
       #curr <- paste0("per",i)
       npp <- NPP[,..curr]
       nep <- NEP[,..curr]
@@ -1401,6 +1401,7 @@ processPeatUQ <- function(peatXf, fertf, nppf, nepf, peatval, fertval) {
     drPeat <- drPeat + EC2[sampleID]#70
   }
   nepf[drPeatNeg] <- drPeat
+  print(nepf)
   return(nepf)#merge(drPeat,nepf))
 }
 
