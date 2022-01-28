@@ -17,10 +17,11 @@ devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_
 source_url("https://raw.githubusercontent.com/virpi-j/IBCcarbon_runs/master/general/functions.r")
 
 nSitesRun <- nSitesRunr
-print(paste("start region",r_no,"- set size",nSitesRun,"- no of samples", nSamplesr))
+print(paste("start region",r_no,"- set size",nSitesRun,"- no of repetitions", nSamplesr))
 
 # Give new set of outputs ------------------------------------------------
-varOuts <- c("NEP","V","npp","VroundWood") # Wtot!
+varOuts <- c("NEP","V","npp","VroundWood","WroundWood",
+             "grossGrowth") # Wtot!
 #cS <- c(-100^2*44/12, 1, 1, 1) # multipliers of areas (&NEE C->CO2eq) for tot.sums
 
 varSel <- match(varOuts,varNames)
@@ -44,9 +45,11 @@ if(!uncSeg){ # sample pixel indices
   print(paste0("Sample size ",nSitesRunr," pixels"))
   if(!loadUnc){
     opsInd <- list() #matrix(0, nSitesRun, nSamples) 
+    load(paste0("input/maakunta/maakunta_",r_no,"_IDsTab.rdata"))
     for(ij in 1:nSamplesr){ 
       opsInd[[ij]] <- sample(1:nrow(data.all), nSitesRunr, replace = TRUE, prob = areas)
       ops[[ij]] <- data.all[opsInd[[ij]],]
+      ops[[ij]] <- cbind(ops[[ij]],data.IDs[match(ops[[ij]]$segID, data.IDs$maakuntaID),4:5])
     }
   }
 } else { # if(uncRun)
@@ -58,6 +61,21 @@ if(!uncSeg){ # sample pixel indices
                          labels = FALSE))[[setX]]
   ops_orig <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
 }
+
+# Load peatland post-processing raster for uncRun
+if(uncRun){
+  soilSyke <- FALSE  ####If TRUE uses Syke peatland database if FALSE uses luke database
+  # luke database pseudoptyp.img: Whole Finland, 100 = mineral soil, 400 = drained peatland, 700=other peatland, 0=non-forest
+  # syke database peatSyke16res.tif: 1 = Undrained peatland; 2 = Drained peatland; 3 = Peat extraction area 
+  if(soilSyke){
+    finPeats <- raster("/scratch/project_2000994/MVMIsegments/segment-IDs/peatSyke16res.tif")
+    drPeatID <- 2  ### ID = 2 for syke database
+  }else{
+    finPeats <- raster("/scratch/project_2000994/MVMIsegments/segment-IDs/pseudopty.img")
+    drPeatID <- 400  ### ID = 400 for luke database; 
+  }
+}
+
 
 if(uncRun & !loadUnc){
   pCROBASr <- list()

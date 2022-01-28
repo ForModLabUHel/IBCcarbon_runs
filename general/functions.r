@@ -1266,7 +1266,7 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),modOut){
   nSites <-  max(modOut$nSites)
   nVarSel <- length(varSel)
   varsX <- rep(NA,(nVarSel+4))
-  xx <- matrix(NA,(nVarSel+4),3)
+  xx <- matrix(NA,(nVarSel+4),nYears)
   for (ij in 1:nVarSel) {
     # print(varSel[ij])
     if(funX[ij]=="baWmean"){
@@ -1277,64 +1277,130 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),modOut){
     }
     ####test plot
     # print(outX)
-    outX <- c(mean(outX[simYear1]),mean(outX[simYear2]),mean(outX[simYear3]))
+    #outX <- c(mean(outX[simYear1]),mean(outX[simYear2]),mean(outX[simYear3]))
     # names(outX) <- paste0("p",1:3)
     varsX[ij] <- varNames[varSel[ij]]
-    xx[ij,1:3] <- outX
+    xx[ij,1:nYears] <- outX
     # assign(varNames[varSel[ij]],outX)
   }
   
   ####process and save special variables: 
-      ###age
-      outX <- c(mean(modOut$multiOut[,simYear1,7,1,1]),
-          mean(modOut$multiOut[,simYear2,7,1,1]),
-          mean(modOut$multiOut[,simYear3,7,1,1]))
-      # names(age) <- paste0("age",1:3)
-      varsX[(nVarSel+1)] <- "age"
-      xx[(nVarSel+1),1:3] <- outX
-      # save(domAge,file=paste0("outputDT/forCent",r_no,"/domAge_",
-      #                         harscen,"_",rcpfile,"_",
-      #                         "sampleID",sampleID,".rdata"))
-      ####VenergyWood
-      outX <- colMeans(apply(modOut$multiEnergyWood[,,,1],1:2,sum))
-      outX <- c(mean(outX[simYear1]),mean(outX[simYear2]),mean(outX[simYear3]))
-      xx[(nVarSel+2),1:3] <- outX
-      varsX[(nVarSel+2)] <- "VenergyWood"
-      # names(outX) <- paste0("p",1:3)
-      # VenergyWood <- outX
-      # save(VenergyWood,file=paste0("outputDT/forCent",r_no,
-      #                              "/VenergyWood_",harscen,"_",rcpfile,"_",
-      #                              "sampleID",sampleID,".rdata"))
-      ####GVbiomass
+  ###age
+  outX <- colMeans(modOut$multiOut[,1:nYears,7,1,1])
+  #  outX <- c(mean(modOut$multiOut[,simYear1,7,1,1]),
+  #    mean(modOut$multiOut[,simYear2,7,1,1]),
+  #    mean(modOut$multiOut[,simYear3,7,1,1]))
+  varsX[(nVarSel+1)] <- "age"
+  xx[(nVarSel+1),1:nYears] <- outX
+  # save(domAge,file=paste0("outputDT/forCent",r_no,"/domAge_",
+  #                         harscen,"_",rcpfile,"_",
+  #                         "sampleID",sampleID,".rdata"))
+  ####VenergyWood
+  outX <- colMeans(apply(modOut$multiEnergyWood[,,,1],1:2,sum))
+  # outX <- c(mean(outX[simYear1]),mean(outX[simYear2]),mean(outX[simYear3]))
+  xx[(nVarSel+2),1:nYears] <- outX
+  varsX[(nVarSel+2)] <- "VenergyWood"
+  # names(outX) <- paste0("p",1:3)
+  # VenergyWood <- outX
+  # save(VenergyWood,file=paste0("outputDT/forCent",r_no,
+  #                              "/VenergyWood_",harscen,"_",rcpfile,"_",
+  #                              "sampleID",sampleID,".rdata"))
+  ####GVbiomass
   outX <- colMeans(modOut$GVout[,,4])
-  outX <- c(mean(outX[simYear1]),
-           mean(outX[simYear2]),
-           mean(outX[simYear3]))
-  xx[(nVarSel+3),1:3] <- outX
+  #outX <- c(mean(outX[simYear1]),
+  #     mean(outX[simYear2]),
+  #     mean(outX[simYear3]))
+  xx[(nVarSel+3),1:nYears] <- outX
   varsX[(nVarSel+3)] <- "wGV"
   # names(GVw) <- paste0("p",1:3)
   # save(GVgpp,file=paste0("outputDT/forCent",r_no,
   #                        "/GVgpp_",harscen,"_",rcpfile,"_",
   #                        "sampleID",sampleID,".rdata"))
   ####Wtot trees
-  outX <- colMeans(apply(modOut$multiOut[,,c(24,25,31,32,33),,1],1:2,sum))
-  outX <- c(mean(outX[simYear1]),mean(outX[simYear2]),mean(outX[simYear3]))
+  outX <- apply(modOut$multiOut[,,c(24,25,31,32,33),,1],1:2,sum)
+  nas <- length(which(is.na(rowSums(outX))))
+  outX <- colMeans(outX[which(!is.na(rowSums(outX))),])
+  #outX <- c(mean(outX[simYear1]),mean(outX[simYear2]),mean(outX[simYear3]))
   # names(outX) <- paste0("p",1:3)
   # Wtot <- outX
-  xx[(nVarSel+4),1:3] <- outX
+  xx[(nVarSel+4),1:nYears] <- outX
   varsX[(nVarSel+4)] <- "Wtot"
   # save(Wtot,file=paste0("outputDT/forCent",r_no,"/Wtot_",
   #                       harscen,"_",rcpfile,"_",
   #                       "sampleID",sampleID,".rdata"))
   # rm(domSpecies,domAge,Vdec,WenergyWood,Wtot,pX,p1,p2,p3); gc()
   # if(sampleID==sampleForPlots){dev.off()}
+
+  if("NEP" %in% varsX){
+    print("peatland postprocessing...")
+    #### Peatland post-processing
+    coords <- cbind(sampleX$x, sampleX$y)
+    marginX= 1:2#(length(dim(out$annual[,,varSel,]))-1)
+  
+    pX <- data.table(segID=sampleX$segID,apply(region$multiOut[,,"npp",,1],marginX,sum))
+    #p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
+    #p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
+    #p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
+    #pX <- data.table(p1,p2[,2],p3[,2]) # can be the same segment multiple times
+    assign("NPP",pX)
+  
+    pX <- data.table(data.table(segID=sampleX$segID,apply(region$multiOut[,,"NEP",,1],marginX,sum)))
+    #p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
+    #p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
+    #p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
+    #pX <- data.table(p1,p2[,2],p3[,2]) # can be the same segment multiple times
+    assign("NEP",pX)
+  
+    ##!!###step to reduce the size of the peat raster 
+    ###load npp first outside loop to get peatX
+    peatX <- extract(finPeats, coords)
+    ##!!## end
+  
+    ###load site type raster
+    fert<-region$multiOut[,1,"sitetype",1,1]
+  
+    #####Loop along periods
+    for (curr in 2:(nYears+1)) {
+      #curr <- paste0("per",i)
+      npp <- NPP[,..curr]
+      nep <- NEP[,..curr]
+    
+      nep = processPeatUQ(peatX,fert,npp,nep,drPeatID,1)
+      nep = processPeatUQ(peatX,fert,npp,nep,drPeatID,2)
+      NEP[,curr] <- nep
+    }  
+    NEP <- colMeans(NEP)
+    xx[which(varsX == "NEP"),] <- NEP[2:(nYears+1)]
+  }
+
   outX <- data.table(t(xx))
   names(outX) <- varsX
-  outX[,periods:=paste0('p',1:3)]
+  #outX[,periods:=paste0('p',1:3)]
   
   return(outX)
 } 
 
+processPeatUQ <- function(peatXf, fertf, nppf, nepf, peatval, fertval) {
+  # peatXf = raster with peat soils
+  # fertf =  soilType
+  # nppf = npp
+  # nepf= nep
+  # peatval = ID to identify the drained peatlands -> tells which peat soil you want to treat
+  # fertval = soilType ID -> tells which siteType you want to treat
+  
+  drPeatNeg <- peatXf == peatval & fertf == fertval  ###selecting the pixels that match the conditions of peat and siteType
+  drPeatNeg[drPeatNeg==0] <- NA  ### assign NA to the remaining pixels
+  drPeat <- nppf[drPeatNeg]  ###raster with only the pixel of interest
+  
+  ###calculate the new NEP according to the siteType (fertval)
+  if (fertval == 1) {         
+    drPeat <- drPeat - 240  
+  } else if (fertval == 2) {
+    drPeat <- drPeat + 70
+  }
+  nepf[drPeatNeg] <- drPeat
+  return(nepf)#merge(drPeat,nepf))
+}
 
 ####test plot
 testPlot <- function(outX,titleX,areas){
