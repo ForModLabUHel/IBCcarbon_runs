@@ -268,7 +268,8 @@ if(testRun){ # if needed to test an individual sample
                                     "_pr",uncPCrobas,"_Xr",uncInput,"_ager",uncAge,
                                     "_Cr",uncClim,"_str",uncSiteType,".rdata")) 
       
-      print("make histograms...")
+      #print("make histograms...")
+      print("make plots")
       m <- length(sampleOutput)
       print(paste(m,"variables"))
       n <- nrow(sampleOutput[[1]])
@@ -276,45 +277,50 @@ if(testRun){ # if needed to test an individual sample
       #"V" "VroundWood" "age"        
       #"VenergyWood" "wGV" 
       #"Wtot" "periods"   
-      units_hist <- c(-area_total*100^2*44/12*10^-12,1,
-                      1,area_total*10^-6, 1,
-                      area_total*10^-6, 1, 1, 1)
-      units_hist_label <- c("NEE [Tg CO2eq]", "mean soilC [kgC ha-1]",
-                            "mean V [m3 ha-1]", "Tot. Vroundwood [10^6 m3]","mean age [years]",
-                            "tot. VenergyWood [10^6 m3]","mean GV biomass [kgC ha-1]",
-                            "mean tree biomass [kgC ha-1]") 
+      #units_hist <- c(-area_total*100^2*44/12*10^-12,1,
+      #                1,area_total*10^-6, 1,
+      #                area_total*10^-6, 1, 1, 1)
+      #units_hist_label <- c("NEE [Tg CO2eq]", "mean soilC [kgC ha-1]",
+      #                      "mean V [m3 ha-1]", "Tot. Vroundwood [10^6 m3]","mean age [years]",
+      #                      "tot. VenergyWood [10^6 m3]","mean GV biomass [kgC ha-1]",
+      #                      "mean tree biomass [kgC ha-1]") 
       
-      for(indj in 1:(m-1)){
+      for(indj in 1:m){
         x <- sampleOutput[[indj]]
         varNams <- rownames(x)[1]
         xnas <- which(is.na(x[,1]))
         x <- x[which(!is.na(x[,1])),]
-        x <- x*units_hist[indj]
-        png(file = paste0("uncRuns/hists_regionID",r_no,"_",varNams,
+        #x <- x*units_hist[indj]
+        png(file = paste0("uncRuns/plots_regionID",r_no,"_",varNams,
                           "_",nSitesRunr,"_",harvscen,"_",
                           "_pr",uncPCrobas,"_Xr",uncInput,"_ager",uncAge,
                           "_Cr",uncClim,"_str",uncSiteType,".png"))
-        xlims <- c(min(x),max(x))
-        xlims[1] <- xlims[1]*(1-0.1*sign(xlims[1]))
-        xlims[2] <- xlims[2]*(1+0.1*sign(xlims[2]))
-        par(mfrow=c(3,1))
-        for(per in 1:3){
-          if(per==1 & length(xnas)>0){
-            hist(as.matrix(x[, paste0("p", per)]),#, with = FALSE]),
-                 main = paste0("region",r_no,"_",harvscen,"_",
-                               "period",per," nas: sampleIDs ",xnas), 
-                 xlab = units_hist_label[indj],
-                 xlim = xlims)  
-          } else {
-            hist(as.matrix(x[, paste0("p", per)]),#, with = FALSE]),
-                 main = paste0("region",r_no,"_",harvscen,"_period",per), 
-                 xlab = units_hist_label[indj],
-                 xlim = xlims)  
+        #xlims <- c(min(x),max(x))
+        #xlims[1] <- xlims[1]*(1-0.1*sign(xlims[1]))
+        #xlims[2] <- xlims[2]*(1+0.1*sign(xlims[2]))
+        #par(mfrow=c(3,1))
+        time <- 2015 + 1:ncol(x)
+        for(iter in 1:n){
+          if(iter==1){
+            plot(time,x[iter,], ylab = rownames(x)[1], xlab = "year")
+          } else{
+            points(time,x[iter,])
           }
+            #hist(as.matrix(x[, paste0("p", per)]),#, with = FALSE]),
+            #     main = paste0("region",r_no,"_",harvscen,"_",
+            #                   "period",per," nas: sampleIDs ",xnas), 
+            #     xlab = units_hist_label[indj],
+            #     xlim = xlims)  
+          #} else {
+          #  hist(as.matrix(x[, paste0("p", per)]),#, with = FALSE]),
+          #       main = paste0("region",r_no,"_",harvscen,"_period",per), 
+          #       xlab = units_hist_label[indj],
+          #       xlim = xlims)  
+          #}
         }
         dev.off()
       }
-      print("histograms made")
+      print("plots made")
     } else { # if uncSeg
       n <- length(sampleXs)
       varNams <- names(sampleXs[[1]])

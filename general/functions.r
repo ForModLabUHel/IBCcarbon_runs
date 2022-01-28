@@ -347,10 +347,11 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
     return("all outs saved")  
   } 
   if(outType=="uncRun"){
-    uncTab <- UncOutProc(varSel=c(46,39,30,37), funX=rep("sum",4),
+    uncTab <- UncOutProc(varSel=varSel,#c(46,39,30,37), 
+                         funX=funX,#rep("sum",4),
                          modOut=region,sampleID=sampleID,
                          finPeats=finPeats,sampleX=sampleX)
-    print(uncTab)
+    #print(uncTab)
     return(uncTab)
   } 
   if(outType=="uncSeg"){
