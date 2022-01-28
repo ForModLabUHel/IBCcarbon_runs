@@ -1394,9 +1394,9 @@ processPeatUQ <- function(peatXf, fertf, nppf, nepf, peatval, fertval) {
   
   ###calculate the new NEP according to the siteType (fertval)
   if (fertval == 1) {         
-    drPeat <- drPeat - 240  
+    drPeat <- drPeat + EC1[sampleID]#270  
   } else if (fertval == 2) {
-    drPeat <- drPeat + 70
+    drPeat <- drPeat + EC2[sampleID]#70
   }
   nepf[drPeatNeg] <- drPeat
   return(nepf)#merge(drPeat,nepf))

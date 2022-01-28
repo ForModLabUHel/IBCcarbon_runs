@@ -17,7 +17,7 @@ devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_
 source_url("https://raw.githubusercontent.com/virpi-j/IBCcarbon_runs/master/general/functions.r")
 
 nSitesRun <- nSitesRunr
-print(paste("start region",r_no,"- set size",nSitesRun,"- no of repetitions", nSamplesr))
+print(paste("start region",r_no," run ",outType,"- set size",nSitesRun,"- no of repetitions", nSamplesr))
 
 # Give new set of outputs ------------------------------------------------
 varOuts <- c("NEP","V","npp","VroundWood","WroundWood",
@@ -39,10 +39,14 @@ if(uncInput){ # Input uncertainty covariance matrix
 if(!uncSeg){ # sample pixel indices
   ops <- list()
   sampleIDs <- 1:nSamplesr
+  #Emission coefficients for peatland post-processing
+  EC1 <- matrix(-240, 1, nSamplesr)#270  
+  EC2 <- matrix(70, 1, nSamplesr)#70
+  
   area_total <- sum(data.all$area)
   areas <- data.all$area
   areas <- areas/area_total
-  print(paste0("Sample size ",nSitesRunr," pixels"))
+  #print(paste0("Sample size ",nSitesRunr," pixels"))
   if(!loadUnc){
     opsInd <- list() #matrix(0, nSitesRun, nSamples) 
     load(paste0("input/maakunta/maakunta_",r_no,"_IDsTab.rdata"))
