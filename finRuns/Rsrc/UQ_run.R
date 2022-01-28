@@ -17,7 +17,7 @@ devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_
 source_url("https://raw.githubusercontent.com/virpi-j/IBCcarbon_runs/master/general/functions.r")
 
 nSitesRun <- nSitesRunr
-print(paste("start region",r_no," run ",outType,"- set size",nSitesRun,"- no of repetitions", nSamplesr))
+print(paste("start region",r_no,"run",outType,"- set size",nSitesRun,"- no of repetitions", nSamplesr))
 
 # Give new set of outputs ------------------------------------------------
 varOuts <- c("NEP","V","npp","VroundWood","WroundWood",
@@ -252,7 +252,7 @@ if(testRun){ # if needed to test an individual sample
           x <- rbind(x, t(sampleXs[[k]][,j,with=FALSE]))
           #rownames(x)[k] <- paste0(varNams[j],k)
         }
-        names(x) <- sampleXs[[1]]$periods
+        #names(x) <- sampleXs[[1]]$periods
         #x[,3:5] <- x[,3:5]*cS[j]
         if(nii == 1){
           sampleOutput[[j]] <- x
