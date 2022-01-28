@@ -347,7 +347,8 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
     return("all outs saved")  
   } 
   if(outType=="uncRun"){
-    uncTab <- UncOutProc(varSel=c(46,39,30,37), funX=rep("sum",4),modOut=region)
+    uncTab <- UncOutProc(varSel=c(46,39,30,37), funX=rep("sum",4),
+                         modOut=region,sampleID=sampleID,finPeats=finPeats)
     print(uncTab)
     return(uncTab)
   } 
@@ -1262,7 +1263,8 @@ specialVarProc <- function(sampleX,region,r_no,harscen,rcpfile,sampleID,
   
 } 
 
-UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),modOut){
+UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
+                       modOut,sampleID=1,finPeats=finPeats){
   nYears <-  max(modOut$nYears)
   nSites <-  max(modOut$nSites)
   nVarSel <- length(varSel)
@@ -1376,7 +1378,6 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),modOut){
 
   outX <- data.table(t(xx))
   names(outX) <- varsX
-  print(outX)
   #outX[,periods:=paste0('p',1:3)]
   
   return(outX)
@@ -1401,7 +1402,6 @@ processPeatUQ <- function(peatXf, fertf, nppf, nepf, peatval, fertval) {
     drPeat <- drPeat + EC2[sampleID]#70
   }
   nepf[drPeatNeg] <- drPeat
-  print(nepf)
   return(nepf)#merge(drPeat,nepf))
 }
 
