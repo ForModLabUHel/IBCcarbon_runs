@@ -348,7 +348,8 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   } 
   if(outType=="uncRun"){
     uncTab <- UncOutProc(varSel=c(46,39,30,37), funX=rep("sum",4),
-                         modOut=region,sampleID=sampleID,finPeats=finPeats)
+                         modOut=region,sampleID=sampleID,
+                         finPeats=finPeats,sampleX=sampleX)
     print(uncTab)
     return(uncTab)
   } 
@@ -1264,7 +1265,7 @@ specialVarProc <- function(sampleX,region,r_no,harscen,rcpfile,sampleID,
 } 
 
 UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
-                       modOut,sampleID=1,finPeats=finPeats){
+                       modOut,sampleID=1,finPeats=finPeats,sampleX=sampleX){
   nYears <-  max(modOut$nYears)
   nSites <-  max(modOut$nSites)
   nVarSel <- length(varSel)
@@ -1340,14 +1341,14 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
     coords <- cbind(sampleX$x, sampleX$y)
     marginX= 1:2#(length(dim(out$annual[,,varSel,]))-1)
   
-    pX <- data.table(segID=sampleX$segID,apply(region$multiOut[,,"npp",,1],marginX,sum))
+    pX <- data.table(segID=sampleX$segID,apply(modOut$multiOut[,,"npp",,1],marginX,sum))
     #p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
     #p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
     #p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
     #pX <- data.table(p1,p2[,2],p3[,2]) # can be the same segment multiple times
     assign("NPP",pX)
   
-    pX <- data.table(data.table(segID=sampleX$segID,apply(region$multiOut[,,"NEP",,1],marginX,sum)))
+    pX <- data.table(data.table(segID=sampleX$segID,apply(modOut$multiOut[,,"NEP",,1],marginX,sum)))
     #p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
     #p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
     #p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
@@ -1360,7 +1361,7 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
     ##!!## end
   
     ###load site type raster
-    fert<-region$multiOut[,1,"sitetype",1,1]
+    fert<-modOut$multiOut[,1,"sitetype",1,1]
   
     #####Loop along periods
     for(curr in 2:(nYears+1)) {
