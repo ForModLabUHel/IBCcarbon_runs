@@ -299,7 +299,8 @@ if(testRun){ # if needed to test an individual sample
         png(file = paste0("uncRuns/plots_regionID",r_no,"_",varNams,
                           "_",nSitesRunr,"_",harvscen,"_",
                           "_pr",uncPCrobas,"_Xr",uncInput,"_ager",uncAge,
-                          "_Cr",uncClim,"_str",uncSiteType,".png"))
+                          "_Cr",uncClim,"_str",uncSiteType,
+                          "_uncPeat",uncPeat,".png"))
         #xlims <- c(min(x),max(x))
         #xlims[1] <- xlims[1]*(1-0.1*sign(xlims[1]))
         #xlims[2] <- xlims[2]*(1+0.1*sign(xlims[2]))
