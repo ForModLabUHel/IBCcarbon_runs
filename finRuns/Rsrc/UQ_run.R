@@ -141,6 +141,11 @@ if(uncRun & !loadUnc){
       if(uncAge){
         ops[[ij]][,age:=ops[[ij]]$age*(1+rage*rnorm(nrow(ops[[ij]])))]
       }
+      if(uncPeat){  
+        EC1[ij] <- -240 + 70*rnorm()#270  
+        EC2[ij] <- 70 + 30*rnorm()#70
+      }
+      
     }
   }
   if(!uncSeg){
