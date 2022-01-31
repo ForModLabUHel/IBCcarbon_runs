@@ -194,10 +194,6 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
     #      HarvLim  = (nSample/1000) / nfiareas[ID == r_no, AREA] * 1e3 *HarvLim
     if(year1harv==1){
       HarvLim1 <- HarvLimX
-      if(harscen == "Base"){ 
-        HarvLim1 <- HarvLimX * 1.04
-        print("case Base*1.04")}
-      
       if(harscen == "Low"){ HarvLim1 <- HarvLimX * 0.6}
       if(harscen == "MaxSust"){HarvLim1 <- HarvLimX * 1.2}
       if(harscen == "NoHarv"){
@@ -211,6 +207,9 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
     }
   }else{
     HarvLim1 <- HarvLimMaak*1000*sum(areas)/sum(data.all$area)
+    if(harscen == "Base"){ 
+      HarvLim1 <- HarvLimX * 1.04
+      print("case Base*1.04")}
     if(harscen == "Low"){ HarvLim1 <- HarvLim1 * 0.6}
     if(harscen == "MaxSust"){HarvLim1 <- HarvLim1 * 1.2}
     if(harscen == "NoHarv"){HarvLim1 <- HarvLim1 * 0.
