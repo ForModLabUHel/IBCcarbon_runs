@@ -21,7 +21,7 @@ print(paste("start region",r_no,"run",outType,"- set size",nSitesRun,"- no of re
 
 # Give new set of outputs ------------------------------------------------
 varOuts <- c("NEP","V","npp","VroundWood","WroundWood",
-             "grossGrowth") # Wtot!
+             "grossGrowth","soilC") # Wtot!
 #cS <- c(-100^2*44/12, 1, 1, 1) # multipliers of areas (&NEE C->CO2eq) for tot.sums
 
 varSel <- match(varOuts,varNames)
@@ -29,7 +29,7 @@ funX <- rep("sum",length(varSel))
 funX[match(varNames[c(7,11:12)],varNames[varSel])] <- "baWmean"
 #----------------------------------------------------------------------------
 
-set.seed(10)
+set.seed(.Random.seed[r_no])
 if(uncInput){ # Input uncertainty covariance matrix
   load(url("https://raw.githubusercontent.com/ForModLabUHel/satRuns/master/data/inputUncer.rdata"))
   C <- chol(errData$all$sigmaFSVda)
@@ -52,7 +52,7 @@ if(!uncSeg){ # sample pixel indices
     load(paste0("input/maakunta/maakunta_",r_no,"_IDsTab.rdata"))
     for(ij in 1:nSamplesr){ 
       opsInd[[ij]] <- sample(1:nrow(data.all), nSitesRunr, replace = TRUE, prob = areas)
-      ops[[ij]] <- data.all[opsInd[[ij]],]
+      ops[[ij]] <- copy(data.all[opsInd[[ij]],])
       ops[[ij]] <- cbind(ops[[ij]],data.IDs[match(ops[[ij]]$segID, data.IDs$maakuntaID),4:5])
     }
   }
@@ -100,7 +100,7 @@ if(uncRun & !loadUnc){
   }
   for(ij in sampleIDs){ 
     if(uncPCrobas){
-      pCROBASr[[ij]] <- rbind(pCROBASr[[ij]],pCROB[(pdim+1):(pdim+3),])
+      pCROBASr[[ij]] <- rbind(copy(pCROBASr[[ij]]),pCROB[(pdim+1):(pdim+3),])
     }else {
       pCROBASr[[ij]] <- pCROB
     }
@@ -112,6 +112,7 @@ if(uncRun & !loadUnc){
         Y <- X + matrix(rnorm(nrow(X)*mx),nrow(X),mx)%*%C
         X <- distr_correction(Y,X)
         ops[[ij]][,':=' (ba=X[,1],dbh=X[,2],h=X[,3]*10,pine=X[,4],spruce=X[,5],birch=X[,6])] # the height converted back to meters
+        
       } 
       if(uncSiteType){
         ###load the fittet probit models to estimate the Site fertility class
