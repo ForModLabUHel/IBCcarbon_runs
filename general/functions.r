@@ -1302,7 +1302,7 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
   #                         harscen,"_",rcpfile,"_",
   #                         "sampleID",sampleID,".rdata"))
   ####VenergyWood
-  outX <- colMeans(apply(modOut$multiEnergyWood[,,,1],1:2,sum))
+  outX <- colMeans(apply(modOut$multiEnergyWood[,,,2],1:2,sum))
   # outX <- c(mean(outX[simYear1]),mean(outX[simYear2]),mean(outX[simYear3]))
   xx[(nVarSel+2),1:nYears] <- outX
   varsX[(nVarSel+2)] <- "VenergyWood"
@@ -1330,8 +1330,8 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
   xx[(nVarSel+4),1:nYears] <- outX
   varsX[(nVarSel+4)] <- "Wtot"
   
-  outX <- colMeans(apply(modOut$energyWood[,,,2],1:2,sum))
-  print(outX)
+  outX <- colMeans(apply(modOut$multiEnergyWood[,,,2],1:2,sum))
+  #print(outX)
   xx[(nVarSel+5),1:nYears] <- outX
   varsX[(nVarSel+5)] <- "Wenergywood"
   
