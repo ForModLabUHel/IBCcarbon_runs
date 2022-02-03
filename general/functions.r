@@ -1326,6 +1326,7 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
   outX <- apply(modOut$multiOut[,,c(24,25,31,32,33),,1],1:2,sum)
   #nas <- length(which(is.na(rowSums(outX))))
   #outX <- colMeans(outX[which(!is.na(rowSums(outX))),])
+  outX <- colMeans(outX)
   xx[(nVarSel+4),1:nYears] <- outX
   varsX[(nVarSel+4)] <- "Wtot"
   
@@ -1672,7 +1673,6 @@ distr_correction <- function(Y,Xtrue,Xdiscr=FALSE){
   Ynew <- matrix(0,nrow=ny,ncol=m)
   
   # Do post-processing variable by variable
-  #par(mfrow=c(3,2))
   for(j in 1:m){
     xu <- unique(X[,j]) # choose the unique values in sample
     xu <- xu[order(xu)] # and sort them from smallest to biggest
@@ -1683,18 +1683,16 @@ distr_correction <- function(Y,Xtrue,Xdiscr=FALSE){
       # given value,
     }
     cdf <- cdf/(n+1) # cdf goes from 0 to 1, here are the inner points
-    #plot(xu, cdf)
+    
     r <- matrix(ny,1)
     for(i in 1:nrow(Y)){
-      r[i] <- sum(Y[,j]<=Y[i,j])/(ny+1) # Define the eCDF of each observation 
-      #r[i] <- sum(X[,j]<=Y[i,j])/n # Define the eCDF of each observation 
+      r[i] <- sum(Y[,j]<=Y[i,j])/ny # Define the eCDF of each observation 
     }
     # use discr. or cont. inverse cdf to generate new sample
     if(Xdiscr[j] | length(Xdiscr)<m){ # discrete values 
       #interp <- approx(c(0,cdf), c(xu,max(xu)+1), r, method = "constant", yleft = xu[1], 
       #                 yright = xu[length(xu)], rule = 2:1)
-      interp <- approx(c(0,cdf,1), c(min(xu),xu,max(xu)+1), r, 
-                       method = "constant", yleft = xu[1], 
+      interp <- approx(c(0,cdf,1), c(min(xu),xu,max(xu)+1), r, method = "constant", yleft = xu[1], 
                        yright = xu[length(xu)], rule = 2:1)
     } else { # continuous values 
       #interp <- approx(c(0,cdf), c(xu,max(xu)+1), r, yleft = xu[1], 
