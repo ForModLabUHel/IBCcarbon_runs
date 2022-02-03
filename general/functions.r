@@ -1330,7 +1330,7 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
   xx[(nVarSel+4),1:nYears] <- outX
   varsX[(nVarSel+4)] <- "Wtot"
   
-  outX <- colMeans(apply(modOut$energyWood[,,,2],1:2,sum))
+  outX <- colMeans(apply(modOut$WenergyWood[,,,2],1:2,sum))
   xx[(nVarSel+5),1:nYears] <- outX
   varsX[(nVarSel+5)] <- "Wenergywood"
   
