@@ -1,6 +1,6 @@
-# r_no=4
+# r_no=5
 # sampleID=3
-# harvestscenarios = "protect" #adapt"
+# harvestscenarios = "Base" #adapt"
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
 source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
 
