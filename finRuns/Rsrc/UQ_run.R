@@ -30,9 +30,11 @@ funX[match(varNames[c(7,11:12)],varNames[varSel])] <- "baWmean"
 #----------------------------------------------------------------------------
 
 set.seed(.Random.seed[r_no])
+
 if(uncInput){ # Input uncertainty covariance matrix
   load(url("https://raw.githubusercontent.com/ForModLabUHel/satRuns/master/data/inputUncer.rdata"))
-  C <- chol(errData$all$sigmaFSVda)
+  CovX <- errData$all$sigmaFSVda
+  C <- chol(CovX)
 }
 
 #----------------------------------------------------------------------------
@@ -110,8 +112,9 @@ if(uncRun & !loadUnc){
         X <- cbind(X$ba, X$dbh, X$h/10, X$pine, X$spruce, X$birch) # h as decimeters in data.all -> convert to meters as in cov matrix C
         mx <- ncol(X)
         Y <- X + matrix(rnorm(nrow(X)*mx),nrow(X),mx)%*%C
-        X <- distr_correction(Y,X)
-        ops[[ij]][,':=' (ba=X[,1],dbh=X[,2],h=X[,3]*10,pine=X[,4],spruce=X[,5],birch=X[,6])] # the height converted back to meters
+        Y <- distr_correction(Y,X)
+        ops[[ij]][,':=' (ba=Y[,1],dbh=Y[,2],h=Y[,3]*10,pine=Y[,4],
+                         spruce=Y[,5],birch=[,6])] # the height converted back to meters
         
       } 
       if(uncSiteType){
