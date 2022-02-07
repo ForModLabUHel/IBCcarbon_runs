@@ -29,14 +29,21 @@ funX <- rep("sum",length(varSel))
 funX[match(varNames[c(7,11:12)],varNames[varSel])] <- "baWmean"
 #----------------------------------------------------------------------------
 
-set.seed(.Random.seed[r_no])
+set.seed(10)
 
-if(uncInput){ # Input uncertainty covariance matrix
-  load(url("https://raw.githubusercontent.com/ForModLabUHel/satRuns/master/data/inputUncer.rdata"))
-  CovX <- errData$all$sigmaFSVda
-  C <- chol(CovX)
+if(uncRun & !loadUnc){
+  if(uncInput){ # Input uncertainty covariance matrix
+    load(url("https://raw.githubusercontent.com/ForModLabUHel/satRuns/master/data/inputUncer.rdata"))
+    CovX <- errData$all$sigmaFSVda
+    C <- chol(CovX)
+  }
+  #pCROBASr <- list()
+  if(uncPCrobas){
+    pCROBASr <- uncParCrobas(nSamples = nSamplesr)
+    #load("input/pCROBASr.rdata")
+    pdim <- nrow(pCROBASr[[1]])
+  }
 }
-
 #----------------------------------------------------------------------------
 if(!uncSeg){ # sample pixel indices
   ops <- list()
@@ -82,14 +89,7 @@ if(uncRun){
   }
 }
 
-
 if(uncRun & !loadUnc){
-  #pCROBASr <- list()
-  if(uncPCrobas){
-    pCROBASr <- uncParCrobas(nSamples = nSamplesr)
-    #load("input/pCROBASr.rdata")
-    pdim <- nrow(pCROBASr[[1]])
-  }
   if(uncSiteType){
     ###load the fittet probit models to estimate the Site fertility class
     load(url("https://raw.githubusercontent.com/ForModLabUHel/satRuns/master/data/step.probit.rdata"))
@@ -237,6 +237,8 @@ if(testRun){ # if needed to test an individual sample
       }
     }
     startRun <- Sys.time() 
+    set.seed(.Random.seed[r_no])
+    
     #sampleXs <- lapply(sampleIDs[1:3], function(jx) { runModel(jx, outType=outType)})      
     #sampleXs <- mclapply(sampleIDs[(1+(nii-1)*nParRuns):(nii*nParRuns)], function(jx) {
     if(uncSeg){
