@@ -84,9 +84,10 @@ if(uncRun){
 
 
 if(uncRun & !loadUnc){
-  pCROBASr <- list()
+  #pCROBASr <- list()
   if(uncPCrobas){
-    load("input/pCROBASr.rdata")
+    pCROBASr <- uncParCrobas(nSamples = nSamplesr)
+    #load("input/pCROBASr.rdata")
     pdim <- nrow(pCROBASr[[1]])
   }
   if(uncSiteType){
@@ -101,9 +102,9 @@ if(uncRun & !loadUnc){
     if(uncSeg) resampleYears1 <- resampleYears
   }
   for(ij in sampleIDs){ 
-    if(uncPCrobas){
-      pCROBASr[[ij]] <- rbind(copy(pCROBASr[[ij]]),pCROB[(pdim+1):(pdim+3),])
-    }else {
+    if(!uncPCrobas){
+    #  pCROBASr[[ij]] <- rbind(copy(pCROBASr[[ij]]),pCROB[(pdim+1):(pdim+3),])
+    #} else {
       pCROBASr[[ij]] <- pCROB
     }
     if(!uncSeg){
@@ -114,7 +115,7 @@ if(uncRun & !loadUnc){
         Y <- X + matrix(rnorm(nrow(X)*mx),nrow(X),mx)%*%C
         Y <- distr_correction(Y,X)
         ops[[ij]][,':=' (ba=Y[,1],dbh=Y[,2],h=Y[,3]*10,pine=Y[,4],
-                         spruce=Y[,5],birch=[,6])] # the height converted back to meters
+                         spruce=Y[,5],birch=Y[,6])] # the height converted back to meters
         
       } 
       if(uncSiteType){
@@ -358,3 +359,5 @@ if(testRun){ # if needed to test an individual sample
   }
 }
 setwd("Rsrc/virpiSbatch/")
+
+

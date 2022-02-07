@@ -1834,3 +1834,139 @@ updatePclcut <- function(initPrebas,pClCut){
   return(list(inDclct=inDclct,inAclct=inAclct))
 }
 
+
+
+uncParCrobas = function(pCrob = 1, nSamples = 1000){
+  if(pCrob==1) load("input/pCROBASr.rdata")
+  
+  m <- nrow(pCROBASr[[1]])
+  varivars <- matrix(0,m)
+  
+  mn <- rownames(pCROBASr[[1]])
+  spn <- colnames(pCROBASr[[1]])
+  msp <- ncol(pCROBASr[[1]])
+  
+  nn <- 334 # use nn first values of the sample set, at the end there are NAs
+  figs <- FALSE #FALSE
+  niter <- ceiling(nSamples/nn)
+  
+  if(figs){
+    ## colors for plotting
+    c1 <- rgb(173,216,230,max = 255, alpha = 80, names = "lt.blue")
+    c2 <- rgb(255,192,203, max = 255, alpha = 80, names = "lt.pink")
+    pdf(file = "uncRuns/testPcrob.pdf")
+  }
+  
+  parameters <- list()
+  variances <- data.frame()
+  
+  for(sp in 1:msp){ # go through all the species
+    XX <-  matrix(0,m,nn)
+    XXvar <-  matrix(0,1,m)
+    for(k in 1:m){ # go through all the parameters
+      for(ij in 1:nn) XX[k,ij] <-  pCROBASr[[ij]][k,sp]
+      XXvar[k] <- var(XX[k,])
+    }
+    variables <- data.frame(XX)
+    rownames(variables) <- paste0(mn,"_",spn[1])
+    parameters <- rbind(parameters, variables)
+    varivars <- data.frame(XXvar)
+    colnames(varivars) <- paste0(mn,"_",spn[1])
+    if(sp == 1){
+      variances <- varivars
+    } else {
+      variances <- cbind(variances, varivars)
+    }
+    if(figs){
+      for(k in 1:m){
+        if(XXvar[k]!=0){
+          hist(as.numeric(variables[k,]), main = paste0("variable ",mn[k]," species ",spn[sp]),
+               xlab = paste0("no of NAs ",length(which(is.na(variables[k,])))))
+          points(variables[k,1:99],matrix(0,1,99),col='blue')
+          points(variables[k,100],0,col='red')
+        }
+      }
+    }
+  }
+  #dev.off()
+  
+  # Copula coupling
+  Xall <- t(parameters) # nn rows, all species specific parameters
+  pars_sample <- which(variances != 0) # parameters with varying values in the sample
+  X <- Xall[,pars_sample] # parameters with non-zero variances
+  M <- ncol(X)
+  
+  yMins <- matrix(0, nrow = 1, ncol = M)
+  yMaxs <- matrix(0, nrow = 1, ncol = M)
+  xrank <- matrix(0,nrow = nn,ncol = M)
+  for(j in 1:M){ # put in memory the rank of each value in X
+    xrank[,j] <- order(X[1:nn,j])
+  }
+  
+  # Then create cdf for each marginal distr. and use it to generate 
+  # nn random variables from that distribution:
+  
+  Yout <- matrix(0, nrow = niter*nn, ncol=M)
+  
+  for(iter in 1:niter){
+    Y <- matrix(0, nrow = nn, ncol = M)
+    for(j in 1:M){
+      xu <- unique(X[,j]) # choose the unique values in sample
+      xu <- xu[order(xu)] # and sort them from smallest to biggest
+      # create empirical cdf:
+      cdf <- matrix(0,length(xu),1) # empty matrix
+      for(i in 1:length(xu)){
+        cdf[i] <- sum(X[,j] <= xu[i]) # count the sample values less than 
+        # given value,
+      }
+      cdf <- cdf/nn # cdf goes from 0 to 1, here are the inner points
+      
+      r <- runif(nn) # nn random variables from U(0,1)
+      # use discr. or cont. inverse cdf to generate new sample
+      if(j == 1){ # discrete values for Precip
+        interp <- approx(c(0,cdf), c(xu,max(xu)+1), r, method = "constant", yleft = xu[1], yright = xu[length(xu)], rule = 2:1)
+      } else { # continuous values for VPD, Tair, PAR
+        interp <- approx(c(0,cdf), c(xu,max(xu)+1), r, yleft = xu[1], yright = xu[length(xu)], rule = 2:1)
+      }
+      ntmp <- order(interp$y)
+      Y[,j] <- interp$y[ntmp]
+      # Then, order the random sample according to the information given 
+      # in the original sample:
+      Y[xrank[,j],j] <- Y[,j]
+    }
+    Yout[(nn*(iter-1)+1):(nn*iter),] <- Y
+  }
+  
+  if(figs){
+    for(j in 1:M){    
+      # plot marginal distr.histograms, they should be overlapping
+      b <- min(c(X[,j],Yout[,j])) # Set the minimum for the breakpoints
+      e <- max(c(X[,j],Yout[,j])) # Set the maximum for the breakpoints
+      yMins[j] <- b
+      yMaxs[j] <- e
+      ax <- pretty((b-0.2*(e-b)):(e+0.2*(e-b)), n = 12) # Make a neat vector for the breakpoints
+      hgA <- hist(X[,j], breaks = ax, plot = FALSE) # Save first histogram data
+      hgB <- hist(Yout[,j], breaks = ax, plot = FALSE) # Save 2nd histogram data
+      plot(hgA, col = c1, main = paste("marg. distr. X",j," data and random sample"), xlab ="X", ylab ="freq") # Plot 1st histogram using a transparent color
+      plot(hgB, col = c2, add = TRUE) # Add 2nd histogram using different color
+    }
+    # Plot the joint distributions
+    for(ii in 1:(M-1)){
+      for(jj in (ii+1):M){
+        plot(X[,ii], X[,jj],main = "joint distr.", xlab = paste("X",ii), ylab = paste("X",jj))
+        points(Y[,ii],Y[,jj], col = "red")
+        legend(min(X[,ii]), 0.9*max(X[,jj]),col = c("black","red"),legend = c("data", "random sample"), lty = 1.8, cex = 0.8)
+      }
+    }
+    dev.off()
+  }
+  
+  Yall <- list()
+  for(ij in 1:nSamples){
+    ytmp <- Xall[1,]
+    ytmp[pars_sample] <- Yout[ij,]
+    Yall[[ij]] <- pCROBASr[[1]]
+    Yall[[ij]][] <- matrix(ytmp, nrow = m, ncol = msp)
+  }  
+  return(Yall)
+}
