@@ -1363,9 +1363,9 @@ processPeat <- function(peatXf, fertf, nppf, nepf, peatval, fertval) {
   drPeat <- mask(nppf, drPeatNeg)  ###raster with only the pixel of interest
   
   ###calculate the new NEP according to the siteType (fertval)
-  if (fertval == 1) {         
-    drPeat <- drPeat - 270  
-  } else if (fertval == 2) {
+  if (fertval < 3) {         
+    drPeat <- drPeat - 240  
+  } else if (fertval >= 3) {
     drPeat <- drPeat + 70
   }
   return(merge(drPeat,nepf))
