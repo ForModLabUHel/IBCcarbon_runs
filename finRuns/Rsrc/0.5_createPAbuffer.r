@@ -61,15 +61,13 @@ for(i in 1:nX){
   # data.all[maakuntaID==ID,nPix:=nPix-nCons]
   outBuf <- inBuf <- data.all[maakuntaID==ID]
   outBuf[maakuntaID==ID,nPix:=nPix-nCons]
-  inBuf[maakuntaID==ID,(colX):=.(newID,nCons)]
   inBuf$cons = inBuf$Wbuffer=1
   inBuf$nPix = nCons
   inBuf$maakuntaID = newID
-  colX <- c("maakuntaID","nPix")
   buffDat <- rbind(buffDat,inBuf)
   buffDat <- rbind(buffDat,outBuf)
   # gg[maakuntaID == ID & consBuf==1,maakuntaID := newID]
-  if(i %% 10==0) print(paste0(i," of ",nX))
+  if(i %% 1000==0) print(paste0(i," of ",nX))
 }
 
 buf.IDs <- gg[maakuntaID %in% toSplit$maakuntaID & consBuf==1]
