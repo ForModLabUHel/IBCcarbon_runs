@@ -32,8 +32,8 @@ buf <- st_buffer(r.to.poly, dist = 200)
 maakIDbuf <- mask(maakIDrast,buf)
 
 kk <- data.table(rasterToPoints(maakIDbuf))
-plot(r.to.poly)
-plot(buf,col=2,add=T)
+# plot(r.to.poly)
+# plot(buf,col=2,add=T)
 setkey(kk,x,y,maakuntaID)
 setkey(data.IDs,x,y,maakuntaID)
 kk$consBuf <- 1
