@@ -117,7 +117,7 @@ if(regSets=="forCent"){
   load(paste0("input/maakunta/data.all_maakunta_",r_no,".rdata"))
   
   ####in the protection scenarios consider buffer to protection areas
-  if(harscen %in% c("protect","protectNoAdH")){
+  if(harvestscenarios %in% c("protect","protectNoAdH")){
     # sampleX$cons[sampleX$Wbuffer==1] <- 1
     load(paste0("input/maakunta/maakunta_",r_no,"_IDsBuffer.rdata"))
     buffDat$cons <- buffDat$Wbuffer <- 1
