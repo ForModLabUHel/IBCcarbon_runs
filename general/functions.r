@@ -20,9 +20,9 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   sampleX <- ops[[sampleID]]
   
   ####In protect -> treat buffer conservation areas as conservation areas 
-  if(harscen %in% c("protect","protectNoAdH")){
-    sampleX$cons[sampleX$Wbuffer==1] <- 1
-  } 
+  # if(harscen %in% c("protect","protectNoAdH")){
+  #   sampleX$cons[sampleX$Wbuffer==1] <- 1
+  # } 
   
   if(outType=="uncRun"){
     area_tot <- sum(data.all$area) # ha
