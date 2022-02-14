@@ -14,6 +14,18 @@ if(regSets=="forCent"){
 data.IDs <- data.IDs[segID!=0]
 setkey(data.IDs,segID)
 
+if(harvestscenarios %in% c("protect","protectNoAdH")){
+  load(paste0("input/maakunta/maakunta_",r_no,"_IDsBuffer.rdata"))
+  setkey(buf.IDs,segID,x,y)
+  setkey(data.IDs,segID,x,y)
+  newIDs <- merge(data.IDs,buf.IDs[,.(x,y,consBuf,newMaakuntaID)]
+                  ,by=c("x","y"),all.x=T)
+
+  newIDs[!is.na(newMaakuntaID),maakuntaID:=newMaakuntaID]
+  newIDs$segID <- newIDs$maakuntaID
+  data.IDs <- newIDs
+}
+
 nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
 
 
