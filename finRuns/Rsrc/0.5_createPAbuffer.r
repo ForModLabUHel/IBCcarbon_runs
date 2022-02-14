@@ -83,3 +83,30 @@ save(buf.IDs,buffDat,
      file=paste0(pathX,"maakunta_",r_no,"_IDsBuffer.rdata"))
 
 # hj <- merge(data.IDs, jj, by = c("x", "y"), all = FALSE)
+
+
+
+# models outputs to NAs, outputDT, initSoilC and plots
+Sys.chmod(list.dirs("NAs"), "0777",use_umask=FALSE)
+f <- list.files("NAs", all.files = TRUE, full.names = TRUE, recursive = TRUE)
+Sys.chmod(f, (file.info(f)$mode | "0777"),use_umask=FALSE)
+
+Sys.chmod(list.dirs("outputDT"), "0777",use_umask=FALSE)
+f <- list.files("outputDT", all.files = TRUE, full.names = TRUE, recursive = TRUE)
+Sys.chmod(f, (file.info(f)$mode | "0777"),use_umask=FALSE)
+
+Sys.chmod(list.dirs("initSoilC"), "0777",use_umask=FALSE)
+f <- list.files("initSoilC", all.files = TRUE, full.names = TRUE, recursive = TRUE)
+Sys.chmod(f, (file.info(f)$mode | "0777"),use_umask=FALSE)
+
+Sys.chmod(list.dirs("plots"), "0777",use_umask=FALSE)
+f <- list.files("plots", all.files = TRUE, full.names = TRUE, recursive = TRUE)
+Sys.chmod(f, (file.info(f)$mode | "0777"),use_umask=FALSE)
+
+Sys.chmod(list.dirs("input"), "0777",use_umask=FALSE)
+f <- list.files("input", all.files = TRUE, full.names = TRUE, recursive = TRUE)
+Sys.chmod(f, (file.info(f)$mode | "0777"),use_umask=FALSE)
+
+Sys.chmod(list.dirs("rasters"), "0777",use_umask=FALSE)
+f <- list.files("rasters", all.files = TRUE, full.names = TRUE, recursive = TRUE)
+Sys.chmod(f, (file.info(f)$mode | "0777"),use_umask=FALSE)

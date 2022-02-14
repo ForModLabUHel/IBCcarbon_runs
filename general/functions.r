@@ -37,6 +37,7 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
     ops[[sampleID]][,oldMaakID:=maakuntaID]
     
     sampleX <- rbind(ops[[sampleID]],selX)
+    sampleX$segID <- sampleX$maakuntaID
     initSoilC <- abind(initSoilC,initSoilC[posX,,,],along=1)
 
     ###remove N==0 -> all seggment within the buffer
