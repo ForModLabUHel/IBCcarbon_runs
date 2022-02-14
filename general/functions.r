@@ -245,8 +245,10 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   ###run PREBAS
   if(harscen !="Base"){
     if(outType!="uncRun"){
-      load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
-    }else if(!harscen %in% c("protect","protectNoAdH")){
+      if(!harscen %in% c("protect","protectNoAdH")){
+        load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,".rdata"))  
+      }
+    }else{
       load(paste0("initSoilCunc/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
     }
     initPrebas$yassoRun <- rep(1,initPrebas$nSites)
