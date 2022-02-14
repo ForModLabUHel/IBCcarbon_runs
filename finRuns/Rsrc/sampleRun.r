@@ -14,6 +14,10 @@ nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
 #                    cut(seq_along(1:nSamples),
 #                    nSetRuns,
 #                    labels = FALSE))[[setX]]
+
+set.seed(1)
+ops <- split(data.old, sample(1:nSamples, nrow(data.old), replace=T))
+
 set.seed(1)
 ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
 
