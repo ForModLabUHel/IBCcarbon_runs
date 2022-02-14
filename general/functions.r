@@ -16,13 +16,37 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   # print(date())
   print(paste("start sample ID",sampleID))
   harscen = harvestscenarios
+
   
-  sampleX <- ops[[sampleID]]
-  
-  ####In protect -> treat buffer conservation areas as conservation areas 
-  # if(harscen %in% c("protect","protectNoAdH")){
-  #   sampleX$cons[sampleX$Wbuffer==1] <- 1
-  # } 
+  ####in the protection scenarios consider buffer to protection areas
+  if(harvestscenarios %in% c("protect","protectNoAdH")){
+    # sampleX$cons[sampleX$Wbuffer==1] <- 1
+    load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
+    load(paste0("input/maakunta/maakunta_",r_no,"_IDsBuffer.rdata"))
+    setnames(buffDat,"nPix","N")
+    buffDat[,area:=N*16^2/10000]
+    setkey(ops[[sampleID]],maakuntaID)
+    setkey(buffDat,maakuntaID)
+    maakX <- ops[[sampleID]]$maakuntaID[which(ops[[sampleID]]$maakuntaID %in% buffDat$maakuntaID)]
+    posX <- which(ops[[sampleID]]$maakuntaID %in% buffDat$maakuntaID)
+    ops[[sampleID]][maakuntaID %in% maakX]$N <- buffDat[maakuntaID %in% maakX]$N
+    ops[[sampleID]][maakuntaID %in% maakX]$area <- buffDat[maakuntaID %in% maakX]$area
+
+    selX <- buffDat[!maakuntaID %in% maakX &
+                       oldMaakID %in%maakX]
+    ops[[sampleID]][,oldMaakID:=maakuntaID]
+    
+    sampleX <- rbind(ops[[sampleID]],selX)
+    initSoilC <- abind(initSoilC,initSoilC[posX,,,],along=1)
+
+    ###remove N==0 -> all seggment within the buffer
+    x0 <- which(sampleX$N==0)    
+    sampleX <- sampleX[-x0]
+    initSoilC <- initSoilC[-x0,,,]
+    # data.all <- rbind(data.all[!maakuntaID %in% buffDat$maakuntaID],buffDat)
+  }else{
+    sampleX <- ops[[sampleID]]
+  }
   
   if(outType=="uncRun"){
     area_tot <- sum(data.all$area) # ha
@@ -218,7 +242,7 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   # save(initPrebas,HarvLim1,file=paste0("test1",harscen,".rdata"))
   # region <- regionPrebas(initPrebas)
   ###run PREBAS
-  if(harscen!="Base"){
+  if(harscen!=c("protect","protectNoAdH","Base")){
     if(outType!="uncRun"){
       load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
     }else {

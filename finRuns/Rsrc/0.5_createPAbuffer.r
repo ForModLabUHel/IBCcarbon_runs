@@ -62,6 +62,7 @@ for(i in 1:nX){
   # data.all[maakuntaID==ID,nPix:=nPix-nCons]
   outBuf <- inBuf <- data.all[maakuntaID==ID]
   outBuf[maakuntaID==ID,nPix:=nPix-nCons]
+  inBuf$oldMaakID <- outBuf$oldMaakID <- ID
   inBuf$cons = inBuf$Wbuffer=1
   inBuf$nPix = nCons
   inBuf$maakuntaID = newID
