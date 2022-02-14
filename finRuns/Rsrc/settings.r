@@ -119,7 +119,7 @@ if(regSets=="forCent"){
   ####in the protection scenarios consider buffer to protection areas
   if(harvestscenarios %in% c("protect","protectNoAdH")){
     # sampleX$cons[sampleX$Wbuffer==1] <- 1
-    data.old <- data
+    data.old <- data.all
     load(paste0("input/maakunta/maakunta_",r_no,"_IDsBuffer.rdata"))
     buffDat$cons <- 1
     data.all <- rbind(data.all[!maakuntaID %in% buffDat$maakuntaID],buffDat)
