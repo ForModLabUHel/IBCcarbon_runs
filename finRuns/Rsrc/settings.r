@@ -115,16 +115,6 @@ if(regSets=="forCent"){
   load(paste0("input/forCent/data.all_forCent_",r_no,".rdata"))
 }else{
   load(paste0("input/maakunta/data.all_maakunta_",r_no,".rdata"))
-  
-  ####in the protection scenarios consider buffer to protection areas
-  if(harvestscenarios %in% c("protect","protectNoAdH")){
-    # sampleX$cons[sampleX$Wbuffer==1] <- 1
-    data.old <- data.all
-    load(paste0("input/maakunta/maakunta_",r_no,"_IDsBuffer.rdata"))
-    buffDat$cons <- 1
-    data.all <- rbind(data.all[!maakuntaID %in% buffDat$maakuntaID],buffDat)
-  } 
-
   data.all$segID <- data.all$maakuntaID
 }
 
