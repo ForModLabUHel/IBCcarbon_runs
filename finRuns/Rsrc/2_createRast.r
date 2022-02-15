@@ -46,7 +46,8 @@ for(varX in varXs){
   }
   
   setkey(outX,segID)
-
+  setkey(data.IDs,segID)
+  
   tabX <- merge(outX,data.IDs)
 
   
