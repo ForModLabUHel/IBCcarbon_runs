@@ -29,6 +29,10 @@ r.to.poly <- st_as_sf(st_as_stars(consRast),
 
 buf <- st_buffer(r.to.poly, dist = 200)
 
+###write shapes:
+st_write(buf, paste0(pathX,"maakunta_",r_no,"_bufPAs.shp"))
+st_write(r.to.poly, paste0(pathX,"maakunta_",r_no,"_PAs.shp"))
+
 maakIDbuf <- mask(maakIDrast,buf)
 
 kk <- data.table(rasterToPoints(maakIDbuf))
