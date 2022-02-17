@@ -37,7 +37,7 @@ for(klk in maaks){
   
 }
 
-Sys.chmod(list.dirs("initDeadWVss"), "0744",use_umask=FALSE)
+Sys.chmod(list.dirs("initDeadWVss"), "0777",use_umask=FALSE)
 f <- list.files("initDeadWVss", all.files = TRUE, full.names = TRUE, recursive = TRUE)
-Sys.chmod(f, (file.info(f)$mode | "0744"),use_umask=FALSE)
+Sys.chmod(f, (file.info(f)$mode | "0777"),use_umask=FALSE)
 
