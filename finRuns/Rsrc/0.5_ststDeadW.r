@@ -1,5 +1,5 @@
 # devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/testCode.r")
-if(!exists("maaks")) maaks <- 1:19 
+if(!exists("maaks")) maaks <- 10:19 
 if(!exists("sampleID")) sampleID <- 1#498 #136
 if(!exists("harvestscenarios")) harvestscenarios <- "Base"
 if(!exists("regSets")) regSets = "maakunta"
@@ -30,7 +30,11 @@ for(klk in maaks){
   toMem <- ls()
   
   runModel(sampleID,outType="ststDeadW")
+  
   print(paste("region",r_no,"completed"))
+  rm(list=setdiff(ls(), c(toMem,"toMem")))
+  gc()
+  
 }
 
 Sys.chmod(list.dirs("initDeadWVss"), "0744",use_umask=FALSE)
