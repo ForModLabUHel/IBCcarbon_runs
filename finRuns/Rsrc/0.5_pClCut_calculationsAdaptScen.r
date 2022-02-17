@@ -49,3 +49,9 @@ for(r_no in 1:19){
   print(paste("region",r_no,"completed")) 
   rm(list=setdiff(ls(), toMem));gc()
 }
+
+
+Sys.chmod(list.dirs(pathX), "0777",use_umask=FALSE)
+f <- list.files(pathX, all.files = TRUE, full.names = TRUE, recursive = TRUE)
+Sys.chmod(f, (file.info(f)$mode | "0777"),use_umask=FALSE)
+
