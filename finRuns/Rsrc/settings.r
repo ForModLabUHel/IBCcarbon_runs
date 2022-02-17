@@ -41,8 +41,8 @@ if(!exists("thinFactX")) thinFactX=0.2
 if(!exists("clcutArX") & regSets=="forCent") clcutArX <- NA
 if(!exists("clcutArX") & regSets=="maakunta") clcutArX <- 1
 ####Hcmodel bias for all maakunta regions
-HcFactorAll <- c(1.2,0.8,0.8,1.2,1.2,0.8,1.2,1.2,0.8,
-                 0.8,1.2,0.8,0.8,1.2,0.8,1.2,0.8,1.2,1.2)
+HcFactorAll <- rep(1,19)#c(1.2,0.8,0.8,1.2,1.2,0.8,1.2,1.2,0.8,
+                 # 0.8,1.2,0.8,0.8,1.2,0.8,1.2,0.8,1.2,1.2)
 if(!exists("HcFactor") & regSets=="maakunta") HcFactor = HcFactorAll[r_no]
 if(!exists("HcFactor") & regSets=="forCent") HcFactor = 1.
 ###parameters for adaptation scenario
@@ -57,8 +57,7 @@ varOuts <- c("NEP","GPPtrees", "npp", "grossGrowth",
              "soilC", "V", "age", "WroundWood","VroundWood",
              "Litter_fol", "Litter_fr", 
              "Litter_fWoody", "Litter_cWoody",
-             "DeadWoodVolume", "D", "BA", "H", "Vmort",
-             "Wbranch","WfineRoots","Wstem","W_croot","wf_STKG")
+             "DeadWoodVolume", "D", "BA", "H", "Vmort")
 varSel <- match(varOuts,varNames)
 specialVars <- c("domSpecies","domAge","Vdec","VenergyWood",
                  "WenergyWood","Wtot","GVgpp","GVw")
