@@ -30,7 +30,7 @@ for(klk in maaks){
   toMem <- ls()
   
   runModel(sampleID,outType="ststDeadW")
-  print(r_no)
+  print(paste("region",r_no,"completed"))
 }
 
 Sys.chmod(list.dirs("initDeadWVss"), "0744",use_umask=FALSE)
