@@ -46,6 +46,6 @@ for(r_no in 1:19){
   
   save(pClCut,pFert,
        file=paste0(pathX,"ClCutplots_maak",r_no,".rdata"))
-  
+  print(paste("region",r_no,"completed")) 
   rm(list=setdiff(ls(), toMem));gc()
 }
