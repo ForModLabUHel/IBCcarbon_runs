@@ -1802,3 +1802,22 @@ vDecFun <- function(modOut){
   VdecMat[as.matrix(ff[,1:2])] <- unlist(ff[,3])
   outX <- data.table(segID=sampleX$segID,VdecMat)
 }
+
+
+#####extract model output as baweighted mean or sum according to funX
+##modOut -> multiPREBAS output
+##varSel -> variable ID 
+##funX -> function to summarize the output accross layers (sum or BA weighted mean (baWmean))
+outProcFun <- function(modOut,varSel,funX="baWmean"){
+  segID <- modOut$siteInfo[,1]
+  marginX <- 1:2
+  if(funX=="baWmean"){
+    outX <- data.table(segID=segID,baWmean(modOut,varSel))
+  }
+  if(funX=="sum"){
+    outX <- data.table(segID=segID,apply(modOut$multiOut[,,varSel,,1],marginX,sum))
+  }
+  setnames(outX,c("segID",1:modOut$maxYears))
+  return(outX)
+}
+  
