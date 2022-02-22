@@ -1,7 +1,10 @@
 r_no=5
 sampleID=3
 # harvestscenarios <- "protect"
-scens <- c("Base", "protect")
+scens <- c("Base", "Low", "NoHarv", "MaxSust",
+    "protect","protectNoAdH",
+    "adapt","adaptNoAdH","adaptTapio",
+    "Mitigation","MitigationNoAdH")
 
 datAllScen <- data.table()
 for(harvestscenarios in scens){
@@ -21,7 +24,7 @@ for(harvestscenarios in scens){
       setkey(datAll,segID,year)
       datAll <- merge(datAll,datX)
     }
-    print(varNames[varSel[i]])
+    # print(varNames[varSel[i]])
   }
   
   ####proc Spec vars
@@ -101,6 +104,8 @@ for(harvestscenarios in scens){
   datAll$maakID <- r_no 
   datAll$harScen <- harvestscenarios
   datAllScen <- rbind(datAllScen,datAll)
+
+  print(harvestscenarios)
 }
 areas <- data.table(segID=region$siteInfo[,1],area=region$areas)
 save(datAllScen,areas, file=paste0("outSample/r_no",r_no,".rdata"))
