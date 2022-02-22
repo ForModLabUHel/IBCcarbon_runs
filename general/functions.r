@@ -1174,8 +1174,7 @@ specialVarProc <- function(sampleX,region,r_no,harscen,rcpfile,sampleID,
   nSites <-  max(region$nSites)
   ####process and save special variables: 
   ###dominant Species
-  outX <- data.table(segID=sampleX$segID,apply(region$multiOut[,,30,,1],1:2,which.max))
-  
+  outX <- domFun(region,varX="species")  
   ####test plot
   if(sampleID==sampleForPlots){testPlot(outX,"domSpecies",areas)}
   ###take the most frequent species in the periods
@@ -1190,18 +1189,19 @@ specialVarProc <- function(sampleX,region,r_no,harscen,rcpfile,sampleID,
                               "sampleID",sampleID,".rdata"))
   # rm(domSpecies); gc()
   ###age dominant species
-  matX <- apply(region$multiOut[,simYear1,7,,1],c(1,3),mean)
-  per1 <- matX[cbind(1:nSites, domSpecies$per1)]
-  matX <- apply(region$multiOut[,simYear2,7,,1],c(1,3),mean)
-  per2 <- matX[cbind(1:nSites, domSpecies$per2)]
-  matX <- apply(region$multiOut[,simYear3,7,,1],c(1,3),mean)
-  per3 <- matX[cbind(1:nSites, domSpecies$per3)]
-  domAge <- data.table(segID=sampleX$segID,per1=per1,per2=per2,per3=per3)
+  outX <- domFun(region,varX="age")
+  p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
+  p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
+  p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
+  pX <- merge(p1,p2)
+  pX <- merge(pX,p3)
+  domAge <- pX
+  
   save(domAge,file=paste0("outputDT/forCent",r_no,"/domAge_",
                           harscen,"_",rcpfile,"_",
                           "sampleID",sampleID,".rdata"))
   ###deciduous Volume Vdec
-  outX <- data.table(segID=sampleX$segID,region$multiOut[,,30,3,1])
+  outX <- vDecFun(region)
   if(sampleID==sampleForPlots){testPlot(outX,"Vdec",areas)}
   p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
   p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
@@ -1769,4 +1769,36 @@ updatePclcut <- function(initPrebas,pClCut){
   return(list(inDclct=inDclct,inAclct=inAclct))
 }
 
+#returns a the dominant species or the age of dominant species for each site at each year
+###varX="species" -> returns the dominant species
+###varX="age" -> returns the age of dominant layer
+domFun <- function(modOut,varX="species"){
+  nSites <- modOut$nSites
+  nYears <- modOut$maxYears
+  segID <- modOut$siteInfo[,1]
 
+  oo <- as.vector(apply(modOut$multiOut[,,30,1:3,1],1:2,which.max))  
+  oo <- cbind(rep(1:nSites,nYears),
+              rep(1:nYears,each=nSites),
+              oo)
+  if(varX=="species") domX <- matrix(modOut$multiOut[,,4,1:3,1][oo],
+                  nSites,nYears)
+  if(varX=="age") domX <- matrix(modOut$multiOut[,,7,1:3,1][oo],
+                                     nSites,nYears)
+  outX <- data.table(segID=segID,domX)
+}
+
+
+###retunrs the Volume of deciduous
+##modOut -> multiPREBAS output
+vDecFun <- function(modOut){
+  oo <- data.table(which(modOut$multiOut[,,4,,1]==3,arr.ind=T))
+  setnames(oo,c("site","year","layer"))
+  vx <-modOut$multiOut[,,30,,1][as.matrix(oo)]
+  oo$Vdec <- vx
+  setkey(oo,site,year)
+  ff <- oo[,sum(Vdec),by=.(site,year)]
+  VdecMat <- matrix(0,modOut$nSites,modOut$maxYears)
+  VdecMat[as.matrix(ff[,1:2])] <- unlist(ff[,3])
+  outX <- data.table(segID=sampleX$segID,VdecMat)
+}
