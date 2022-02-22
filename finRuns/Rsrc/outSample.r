@@ -20,11 +20,12 @@ for(harvestscenarios in scens){
   
   toMem <- ls()
   
-  sampleX <- runModel(sampleID,outType="testRun")
+  modRun <- runModel(sampleID,outType="testRun")
     
-  region <- sampleX$region
-  rm(sampleX); gc()
+  region <- modRun$region
+  rm(modRun); gc()
   datAll <- data.table()
+  segID <- modRun$siteInfo[,1]
   for(i in 1:length(varSel)){
     # i=2
     datX <- outProcFun(region,varSel[i],funX[i])
@@ -69,7 +70,7 @@ for(harvestscenarios in scens){
   datAll <- merge(datAll,datX)
   
   ####WenergyWood
-  datX <- data.table(segID=sampleX$segID,apply(region$multiEnergyWood[,,,2],1:2,sum))
+  datX <- data.table(segID=segID,apply(region$multiEnergyWood[,,,2],1:2,sum))
   setnames(datX,c("segID",1:region$maxYears))
   datX <- melt(datX,"segID")
   setnames(datX,c("variable","value"),c("year","WenergyWood"))
@@ -78,7 +79,7 @@ for(harvestscenarios in scens){
   datAll <- merge(datAll,datX)
   
   ####VenergyWood
-  datX <- data.table(segID=sampleX$segID,apply(region$multiEnergyWood[,,,1],1:2,sum))
+  datX <- data.table(segID=segID,apply(region$multiEnergyWood[,,,1],1:2,sum))
   setnames(datX,c("segID",1:region$maxYears))
   datX <- melt(datX,"segID")
   setnames(datX,c("variable","value"),c("year","VenergyWood"))
@@ -87,7 +88,7 @@ for(harvestscenarios in scens){
   datAll <- merge(datAll,datX)
   
   ####GVgpp
-  datX <- data.table(segID=sampleX$segID,region$GVout[,,3])
+  datX <- data.table(segID=segID,region$GVout[,,3])
   setnames(datX,c("segID",1:region$maxYears))
   datX <- melt(datX,"segID")
   setnames(datX,c("variable","value"),c("year","GVgpp"))
@@ -96,7 +97,7 @@ for(harvestscenarios in scens){
   datAll <- merge(datAll,datX)
   
   ####GVw
-  datX <- data.table(segID=sampleX$segID,region$GVout[,,4])
+  datX <- data.table(segID=segID,region$GVout[,,4])
   setnames(datX,c("segID",1:region$maxYears))
   datX <- melt(datX,"segID")
   setnames(datX,c("variable","value"),c("year","GVw"))
@@ -105,7 +106,7 @@ for(harvestscenarios in scens){
   datAll <- merge(datAll,datX)
   
   ####Wtot
-  datX <- data.table(segID=sampleX$segID,apply(region$multiOut[,,c(24,25,31,32,33),,1],1:2,sum))
+  datX <- data.table(segID=segID,apply(region$multiOut[,,c(24,25,31,32,33),,1],1:2,sum))
   setnames(datX,c("segID",1:region$maxYears))
   datX <- melt(datX,"segID")
   setnames(datX,c("variable","value"),c("year","WtotTrees"))
