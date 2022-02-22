@@ -120,7 +120,7 @@ for(harvestscenarios in scens){
   datAllScen <- rbind(datAllScen,datAll)
 
   print(harvestscenarios)
-  rm(list=setdiff(ls(), c(toMem,"toMem"))); gc()
+  # rm(list=setdiff(ls(), c(toMem,"toMem"))); gc()
 }
 areas <- data.table(segID=region$siteInfo[,1],area=region$areas)
 save(datAllScen,areas, file=paste0("outSample/r_no",r_no,".rdata"))
