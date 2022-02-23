@@ -124,3 +124,10 @@ for(harvestscenarios in scens){
 }
 areas <- data.table(segID=region$siteInfo[,1],area=region$areas)
 save(datAllScen,areas, file=paste0("outSample/r_no",r_no,".rdata"))
+
+
+
+
+Sys.chmod(list.dirs("outSample"), "0777",use_umask=FALSE)
+f <- list.files("outSample", all.files = TRUE, full.names = TRUE, recursive = TRUE)
+Sys.chmod(f, (file.info(f)$mode | "0777"),use_umask=FALSE)
