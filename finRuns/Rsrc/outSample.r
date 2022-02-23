@@ -25,7 +25,7 @@ for(harvestscenarios in scens){
   region <- modRun$region
   rm(modRun); gc()
   datAll <- data.table()
-  segID <- modRun$siteInfo[,1]
+  segID <- region$siteInfo[,1]
   for(i in 1:length(varSel)){
     # i=2
     datX <- outProcFun(region,varSel[i],funX[i])
