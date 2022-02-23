@@ -1792,6 +1792,7 @@ domFun <- function(modOut,varX="species"){
 ###retunrs the Volume of deciduous
 ##modOut -> multiPREBAS output
 vDecFun <- function(modOut){
+  segID <- modOut$siteInfo[,1]
   oo <- data.table(which(modOut$multiOut[,,4,,1]==3,arr.ind=T))
   setnames(oo,c("site","year","layer"))
   vx <-modOut$multiOut[,,30,,1][as.matrix(oo)]
@@ -1800,7 +1801,7 @@ vDecFun <- function(modOut){
   ff <- oo[,sum(Vdec),by=.(site,year)]
   VdecMat <- matrix(0,modOut$nSites,modOut$maxYears)
   VdecMat[as.matrix(ff[,1:2])] <- unlist(ff[,3])
-  outX <- data.table(segID=sampleX$segID,VdecMat)
+  outX <- data.table(segID=segID,VdecMat)
 }
 
 
