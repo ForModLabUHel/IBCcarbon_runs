@@ -13,7 +13,7 @@ vars <- colnames(datAllScenNorm)[!colnames(datAllScenNorm) %in% c("segID","area"
 datAllScenNorm[, vars] <- 
   datAllScenNorm[ ,lapply(.SD, `*`, area*length(areas$area)/sum(areas$area)), .SDcols = vars]
 
-pdf(paste0("outSample/plots",r_no,".rdata"))
+pdf(paste0("outSample/plots",r_no,".pdf"))
 for(varX in vars){
   sumryX <- datAllScenNorm %>%   
     group_by(year, harScen) %>%
