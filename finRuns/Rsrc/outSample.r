@@ -4,7 +4,7 @@ devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_
 source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
 # harvestscenarios <- "Base"
 scens <- c(#"Base", "Low", "NoHarv", "MaxSust",
-    "protect","protectNoAdH",)
+    "protect","protectNoAdH")
     # "adapt","adaptNoAdH","adaptTapio",
     # "Mitigation","MitigationNoAdH")
 
