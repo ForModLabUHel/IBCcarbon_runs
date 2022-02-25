@@ -1,4 +1,4 @@
-if(!exists("r_no")) r_no <- 5 
+if(!exists("r_no")) r_no <- 1
 if(!exists("sampleID")) sampleID=3
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
 source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
