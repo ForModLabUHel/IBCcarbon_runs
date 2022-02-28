@@ -18,7 +18,7 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE,
   print(paste("start sample ID",sampleID))
   harscen = harvestscenarios
 
-if(!all(is.na(sampleX))){  
+if(all(is.na(sampleX))){  
   ####in the protection scenarios consider buffer to protection areas
   if(harvestscenarios %in% c("protect","protectNoAdH")){
     # sampleX$cons[sampleX$Wbuffer==1] <- 1

@@ -122,7 +122,7 @@ hist(sampleX$ba,freq=0,col=2)
 hist(sampleXyoung$ba,freq=0,col=4,add=T)
 hist(sampleXuni$ba,freq=0,col=3,add=T)
 
-sampleToRun <- "sampleXuni"
+# sampleToRun <- "sampleXuni"
 
 scens <- c("Base", "Low", "NoHarv", "MaxSust")
            # "adapt","adaptNoAdH","adaptTapio",
