@@ -122,8 +122,8 @@ hist(sampleX$ba,freq=0,col=2)
 hist(sampleXyoung$ba,freq=0,col=4,add=T)
 hist(sampleXuni$ba,freq=0,col=3,add=T)
 
-# sampleToRun <- "sampleXuni"
-
+sampleToRun <- "sampleXuni"
+harvestscenarios <- "Base"
 scens <- c("Base", "Low", "NoHarv", "MaxSust")
            # "adapt","adaptNoAdH","adaptTapio",
            # "Mitigation","MitigationNoAdH")
@@ -138,7 +138,7 @@ for(sampleToRun in c("sampleXuni","sampleXyoung")){
     
     if(harvestscenarios=="Base"){
       modRun <- runModel(sampleID,outType="testRun",sampleX=sampleX)
-      initSoilC=modRun$initSoilC
+      initSoilC=modRun$initSoil
     }else{
       modRun <- runModel(sampleID,outType="testRun",sampleX=sampleX,initSoilC=initSoilC)
     }
