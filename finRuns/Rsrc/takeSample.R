@@ -131,8 +131,12 @@ scens <- c("Base", "Low", "NoHarv", "MaxSust")
 
 for(sampleToRun in c("sampleXuni","sampleXyoung")){
   datAllScen <- data.table()
-  sampleXrun <- get(sampleToRun)  
-  setkey(sampleXrun,NULL)
+  if(sampleToRun=="sampleXuni"){
+    sampleXrun <- sampleXuni
+  }else if(sampleToRun=="sampleXyoung"){
+    sampleXrun <- sampleXyoung
+  }
+  # setkey(sampleXrun,NULL)
   
   ####run Base
   for(harvestscenarios in scens){
