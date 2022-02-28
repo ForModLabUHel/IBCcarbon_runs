@@ -3,10 +3,10 @@ if(!exists("sampleID")) sampleID=3
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
 source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
 # harvestscenarios <- "Base"
-scens <- c(#"Base", "Low", "NoHarv", "MaxSust",
-    "protect","protectNoAdH")
-    # "adapt","adaptNoAdH","adaptTapio",
-    # "Mitigation","MitigationNoAdH")
+# scens <- c("Base", "Low", "NoHarv", "MaxSust",
+#     # "protect","protectNoAdH")
+#     "adapt","adaptNoAdH","adaptTapio",
+#     "Mitigation","MitigationNoAdH")
 
 datAllScen <- data.table()
 toMem <- ls()
