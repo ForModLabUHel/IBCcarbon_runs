@@ -6,7 +6,7 @@
 ## MAIN SCRIPT: uncRun for random segments, uncSeg for random values for segments
 ## ---------------------------------------------------------------------
 runModel <- function(sampleID, outType="dTabs",easyInit=FALSE,
-                     sampleX=NA,initSoilCin=NA){
+                     sampleXin=NA,initSoilCin=NA){
   # outType determines the type of output:
   # dTabs -> standard run, mod outputs saved as data.tables 
   # testRun-> test run reports the mod out and initPrebas as objects
@@ -18,7 +18,7 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE,
   print(paste("start sample ID",sampleID))
   harscen = harvestscenarios
 
-if(all(is.na(sampleX))){  
+if(all(is.na(sampleXin))){  
   ####in the protection scenarios consider buffer to protection areas
   if(harvestscenarios %in% c("protect","protectNoAdH")){
     # sampleX$cons[sampleX$Wbuffer==1] <- 1
@@ -49,6 +49,8 @@ if(all(is.na(sampleX))){
   }else{
     sampleX <- ops[[sampleID]]
   }
+}else{
+  sampleX  <- sampleXin
 }
   
   if(outType=="uncRun"){
@@ -359,11 +361,9 @@ if(all(is.na(sampleX))){
   ####end initialize deadWood Volume
   
   if(outType=="testRun"){
-    # initSoil <- initSoilC
     return(list(region = region,
-                initSoilC=initSoilC))#,
-                # initPrebas=initPrebas))#,
-                # initSoil=initSoil))
+                initPrebas=initPrebas,
+                initSoil=initSoilC))
   } 
   if(outType=="dTabs"){
     runModOut(sampleID, sampleX,region,r_no,harscen,rcpfile,areas,
