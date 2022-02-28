@@ -131,24 +131,24 @@ scens <- c("Base", "Low", "NoHarv", "MaxSust")
 
 for(sampleToRun in c("sampleXuni","sampleXyoung")){
   datAllScen <- data.table()
-  sampleXrun <- get(sampleToRun)  
+  sampleX <- get(sampleToRun)  
+  outType="testRun"
   # setkey(sampleX,segID)
   ####run Base
   for(harvestscenarios in scens){
     # harvestscenarios="Base"
     
     if(harvestscenarios=="Base"){
-      outType="testRun"
-      sampleX=sampleXrun
+      # sampleX=sampleXrun
       initSoilCin=NA
-      source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/runAlternative.r")
+      source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/runAlternative.r")
       initSoilCin=initSoilC
     }else{
-      modRun <- runModelSampleIn(outType="testRun",sampleX=sampleXrun,initSoilC=initSoilC)
+      source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/runAlternative.r")
     }
     
-    region <- modRun$region
-    rm(modRun); gc()
+    # region <- modRun$region
+    # rm(modRun); gc()
     datAll <- data.table()
     segID <- region$siteInfo[,1]
     for(i in 1:length(varSel)){
