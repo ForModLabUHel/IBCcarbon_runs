@@ -2127,24 +2127,24 @@ runModelSampleIn <- function(outType="testRun",
   }
   print(paste("all runs done",sampleID))
   
-  #####start initialize deadWood volume
-  ## identify managed and unmanaged forests
-  manFor <-  which(sampleX$cons==0)
-  unmanFor <- which(sampleX$cons==1)
-  if(outType=="ststDeadW"){
-    unmanDeadW <- initDeadW(region,unmanFor,yearsDeadW)
-    manDeadW <- initDeadW(region,manFor,yearsDeadW)
-    save(unmanDeadW,manDeadW,file=paste0("initDeadWVss/reg",
-                                         r_no,"_deadWV.rdata"))
-    return("deadWood volume at steady state saved")
-  }else{
-    load(paste0("initDeadWVss/reg",
-                r_no,"_deadWV.rdata"))
-    deadWx <- aperm(replicate(length(manFor),(manDeadW$ssDeadW[1:nYears,])),c(3,1:2))
-    region$multiOut[manFor,,8,1:3,1] <- region$multiOut[manFor,,8,1:3,1] + deadWx
-    deadWx <- aperm(replicate(length(unmanFor),(unmanDeadW$ssDeadW[1:nYears,])),c(3,1:2))
-    region$multiOut[unmanFor,,8,1:3,1] <- region$multiOut[unmanFor,,8,1:3,1] + deadWx
-  }
+  # #####start initialize deadWood volume
+  # ## identify managed and unmanaged forests
+  # manFor <-  which(sampleX$cons==0)
+  # unmanFor <- which(sampleX$cons==1)
+  # if(outType=="ststDeadW"){
+  #   unmanDeadW <- initDeadW(region,unmanFor,yearsDeadW)
+  #   manDeadW <- initDeadW(region,manFor,yearsDeadW)
+  #   save(unmanDeadW,manDeadW,file=paste0("initDeadWVss/reg",
+  #                                        r_no,"_deadWV.rdata"))
+  #   return("deadWood volume at steady state saved")
+  # }else{
+  #   load(paste0("initDeadWVss/reg",
+  #               r_no,"_deadWV.rdata"))
+  #   deadWx <- aperm(replicate(length(manFor),(manDeadW$ssDeadW[1:nYears,])),c(3,1:2))
+  #   region$multiOut[manFor,,8,1:3,1] <- region$multiOut[manFor,,8,1:3,1] + deadWx
+  #   deadWx <- aperm(replicate(length(unmanFor),(unmanDeadW$ssDeadW[1:nYears,])),c(3,1:2))
+  #   region$multiOut[unmanFor,,8,1:3,1] <- region$multiOut[unmanFor,,8,1:3,1] + deadWx
+  # }
   ####end initialize deadWood Volume
   
   # if(outType=="testRun"){
