@@ -357,10 +357,13 @@ if(all(is.na(sampleX))){
     region$multiOut[unmanFor,,8,1:3,1] <- region$multiOut[unmanFor,,8,1:3,1] + deadWx
   }
   ####end initialize deadWood Volume
-  initSoil <- initSoilC
-  if(outType=="testRun") return(list(region = region,
-                                     initPrebas=initPrebas,
-                                     initSoil=initSoil))
+  
+  if(outType=="testRun"){
+    # initSoil <- initSoilC
+    return(list(region = region,
+                initPrebas=initPrebas))#,
+                # initSoil=initSoil))
+  } 
   if(outType=="dTabs"){
     runModOut(sampleID, sampleX,region,r_no,harscen,rcpfile,areas,
               colsOut1,colsOut2,colsOut3,varSel,sampleForPlots)
