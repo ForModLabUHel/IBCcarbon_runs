@@ -1,3 +1,5 @@
+library(dplyr)
+library(ggplot2)
 library(data.table)
 
 # load("C:/Users/checcomi/Documents/research/IBC-carbon/test/data.all_maakunta_5.rdata")
@@ -131,11 +133,7 @@ scens <- c("Base", "Low", "NoHarv", "MaxSust")
 
 for(sampleToRun in c("sampleXuni","sampleXyoung")){
   datAllScen <- data.table()
-  if(sampleToRun=="sampleXuni"){
-    sampleXrun <- sampleXuni
-  }else if(sampleToRun=="sampleXyoung"){
-    sampleXrun <- sampleXyoung
-  }
+  sampleXrun <- get(sampleToRun)
   # setkey(sampleXrun,NULL)
   
   ####run Base
@@ -163,9 +161,8 @@ for(sampleToRun in c("sampleXuni","sampleXyoung")){
       }else{
         setkey(datX,segID,year)
         setkey(datAll,segID,year)
-        datAll <- merge(datAll,datX)
+        datAll <- datAll %>% right_join(datX, by=c("segID","year"))
       }
-      # print(varNames[varSel[i]])
     }
     ####proc Spec vars
     ###dominant Species
@@ -175,7 +172,7 @@ for(sampleToRun in c("sampleXuni","sampleXyoung")){
     setnames(datX,c("variable","value"),c("year","domSp"))
     setkey(datX,segID,year)
     setkey(datAll,segID,year)
-    datAll <- merge(datAll,datX)
+    datAll <- datAll %>% right_join(datX, by=c("segID","year"))
     
     ###age dominant species
     datX <- domFun(region,varX="age")
@@ -184,7 +181,7 @@ for(sampleToRun in c("sampleXuni","sampleXyoung")){
     setnames(datX,c("variable","value"),c("year","ageDom"))
     setkey(datX,segID,year)
     setkey(datAll,segID,year)
-    datAll <- merge(datAll,datX)
+    datAll <- datAll %>% right_join(datX, by=c("segID","year"))
     
     ###deciduous Volume Vdec
     datX <- vDecFun(region)
@@ -193,7 +190,7 @@ for(sampleToRun in c("sampleXuni","sampleXyoung")){
     setnames(datX,c("variable","value"),c("year","Vdec"))
     setkey(datX,segID,year)
     setkey(datAll,segID,year)
-    datAll <- merge(datAll,datX)
+    datAll <- datAll %>% right_join(datX, by=c("segID","year"))
     
     ####WenergyWood
     datX <- data.table(segID=segID,apply(region$multiEnergyWood[,,,2],1:2,sum))
@@ -202,7 +199,7 @@ for(sampleToRun in c("sampleXuni","sampleXyoung")){
     setnames(datX,c("variable","value"),c("year","WenergyWood"))
     setkey(datX,segID,year)
     setkey(datAll,segID,year)
-    datAll <- merge(datAll,datX)
+    datAll <- datAll %>% right_join(datX, by=c("segID","year"))
     
     ####VenergyWood
     datX <- data.table(segID=segID,apply(region$multiEnergyWood[,,,1],1:2,sum))
@@ -211,7 +208,7 @@ for(sampleToRun in c("sampleXuni","sampleXyoung")){
     setnames(datX,c("variable","value"),c("year","VenergyWood"))
     setkey(datX,segID,year)
     setkey(datAll,segID,year)
-    datAll <- merge(datAll,datX)
+    datAll <- datAll %>% right_join(datX, by=c("segID","year"))
     
     ####GVgpp
     datX <- data.table(segID=segID,region$GVout[,,3])
@@ -220,7 +217,7 @@ for(sampleToRun in c("sampleXuni","sampleXyoung")){
     setnames(datX,c("variable","value"),c("year","GVgpp"))
     setkey(datX,segID,year)
     setkey(datAll,segID,year)
-    datAll <- merge(datAll,datX)
+    datAll <- datAll %>% right_join(datX, by=c("segID","year"))
     
     ####GVw
     datX <- data.table(segID=segID,region$GVout[,,4])
@@ -229,7 +226,7 @@ for(sampleToRun in c("sampleXuni","sampleXyoung")){
     setnames(datX,c("variable","value"),c("year","GVw"))
     setkey(datX,segID,year)
     setkey(datAll,segID,year)
-    datAll <- merge(datAll,datX)
+    datAll <- datAll %>% right_join(datX, by=c("segID","year"))
     
     ####Wtot
     datX <- data.table(segID=segID,apply(region$multiOut[,,c(24,25,31,32,33),,1],1:2,sum))
@@ -238,7 +235,7 @@ for(sampleToRun in c("sampleXuni","sampleXyoung")){
     setnames(datX,c("variable","value"),c("year","WtotTrees"))
     setkey(datX,segID,year)
     setkey(datAll,segID,year)
-    datAll <- merge(datAll,datX)
+    datAll <- datAll %>% right_join(datX, by=c("segID","year"))
     
     datAll$year <- as.numeric(as.character(datAll$year))
     datAll$maakID <- r_no 
