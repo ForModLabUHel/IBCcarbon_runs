@@ -246,7 +246,7 @@ if(all(is.na(sampleX))){
   # region <- regionPrebas(initPrebas)
   ###run PREBAS
   if(!all(is.na(initSoilCin))){
-    initPrebas$soilC[,1,,,] <- initSoilCin
+    initPrebas$soilC[,1,,,] <- initSoilC <- initSoilCin
   }else{
     if(harscen !="Base"){
       if(outType!="uncRun"){
