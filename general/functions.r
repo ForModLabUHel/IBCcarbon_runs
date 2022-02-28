@@ -320,7 +320,7 @@ if(all(is.na(sampleX))){
     }
   }
   
-  print(paste("runModel",sampleID))
+  print(paste("runModel",sampleID,"completed"))
   ##calculate steady state carbon from prebas litter 
   if(harscen=="Base"){
     initSoilC <- stXX_GV(region, 1)
@@ -357,10 +357,10 @@ if(all(is.na(sampleX))){
     region$multiOut[unmanFor,,8,1:3,1] <- region$multiOut[unmanFor,,8,1:3,1] + deadWx
   }
   ####end initialize deadWood Volume
-  
+  initSoil <- initSoilC
   if(outType=="testRun") return(list(region = region,
                                      initPrebas=initPrebas,
-                                     initSoil=initSoilC))
+                                     initSoil=initSoil))
   if(outType=="dTabs"){
     runModOut(sampleID, sampleX,region,r_no,harscen,rcpfile,areas,
               colsOut1,colsOut2,colsOut3,varSel,sampleForPlots)
