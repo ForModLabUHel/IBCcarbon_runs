@@ -361,7 +361,8 @@ if(all(is.na(sampleX))){
   if(outType=="testRun"){
     # initSoil <- initSoilC
     return(list(region = region,
-                initPrebas=initPrebas))#,
+                initSoilC=initSoilC))#,
+                # initPrebas=initPrebas))#,
                 # initSoil=initSoil))
   } 
   if(outType=="dTabs"){
