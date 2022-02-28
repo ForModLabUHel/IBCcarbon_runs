@@ -5,7 +5,8 @@
 ## ---------------------------------------------------------------------
 ## MAIN SCRIPT: uncRun for random segments, uncSeg for random values for segments
 ## ---------------------------------------------------------------------
-runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
+runModel <- function(sampleID, outType="dTabs",easyInit=FALSE,
+                     sampleX=NA,initSoilC=NA){
   # outType determines the type of output:
   # dTabs -> standard run, mod outputs saved as data.tables 
   # testRun-> test run reports the mod out and initPrebas as objects
@@ -17,7 +18,7 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   print(paste("start sample ID",sampleID))
   harscen = harvestscenarios
 
-  
+if(!all(is.na(sampleX))){  
   ####in the protection scenarios consider buffer to protection areas
   if(harvestscenarios %in% c("protect","protectNoAdH")){
     # sampleX$cons[sampleX$Wbuffer==1] <- 1
@@ -48,6 +49,7 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   }else{
     sampleX <- ops[[sampleID]]
   }
+}
   
   if(outType=="uncRun"){
     area_tot <- sum(data.all$area) # ha
@@ -243,16 +245,20 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   # save(initPrebas,HarvLim1,file=paste0("test1",harscen,".rdata"))
   # region <- regionPrebas(initPrebas)
   ###run PREBAS
-  if(harscen !="Base"){
-    if(outType!="uncRun"){
-      if(!harscen %in% c("protect","protectNoAdH")){
-        load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,".rdata"))  
-      }
-    }else{
-      load(paste0("initSoilCunc/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
-    }
-    initPrebas$yassoRun <- rep(1,initPrebas$nSites)
+  if(!all(is.na(initSoilC))){
     initPrebas$soilC[,1,,,] <- initSoilC
+  }else{
+    if(harscen !="Base"){
+      if(outType!="uncRun"){
+        if(!harscen %in% c("protect","protectNoAdH")){
+          load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,".rdata"))  
+        }
+      }else{
+        load(paste0("initSoilCunc/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
+      }
+      initPrebas$yassoRun <- rep(1,initPrebas$nSites)
+      initPrebas$soilC[,1,,,] <- initSoilC
+    }
   }
   print(harscen)
   HarvLimX <- HarvLim1[1:nYears,]
@@ -352,7 +358,9 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   }
   ####end initialize deadWood Volume
   
-  if(outType=="testRun") return(list(region = region,initPrebas=initPrebas))
+  if(outType=="testRun") return(list(region = region,
+                                     initPrebas=initPrebas,
+                                     initSoilC=initSoilC))
   if(outType=="dTabs"){
     runModOut(sampleID, sampleX,region,r_no,harscen,rcpfile,areas,
               colsOut1,colsOut2,colsOut3,varSel,sampleForPlots)
