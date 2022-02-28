@@ -6,7 +6,7 @@
 ## MAIN SCRIPT: uncRun for random segments, uncSeg for random values for segments
 ## ---------------------------------------------------------------------
 runModel <- function(sampleID, outType="dTabs",easyInit=FALSE,
-                     sampleX=NA,initSoilC=NA){
+                     sampleX=NA,initSoilCin=NA){
   # outType determines the type of output:
   # dTabs -> standard run, mod outputs saved as data.tables 
   # testRun-> test run reports the mod out and initPrebas as objects
@@ -245,8 +245,8 @@ if(all(is.na(sampleX))){
   # save(initPrebas,HarvLim1,file=paste0("test1",harscen,".rdata"))
   # region <- regionPrebas(initPrebas)
   ###run PREBAS
-  if(!all(is.na(initSoilC))){
-    initPrebas$soilC[,1,,,] <- initSoilC
+  if(!all(is.na(initSoilCin))){
+    initPrebas$soilC[,1,,,] <- initSoilCin
   }else{
     if(harscen !="Base"){
       if(outType!="uncRun"){
