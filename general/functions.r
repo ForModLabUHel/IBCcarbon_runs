@@ -368,8 +368,8 @@ if(all(is.na(sampleX))){
   ####end initialize deadWood Volume
   
   if(outType=="testRun") return(list(region = region,
-                                     initPrebas=initPrebas,
-                                     initSoilC=initSoilC))
+                                     initPrebas=initPrebas))#,
+                                     # initSoilC=initSoilC))
   if(outType=="dTabs"){
     runModOut(sampleID, sampleX,region,r_no,harscen,rcpfile,areas,
               colsOut1,colsOut2,colsOut3,varSel,sampleForPlots)
