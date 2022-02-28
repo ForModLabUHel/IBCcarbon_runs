@@ -340,11 +340,8 @@ if(all(is.na(sampleX))){
   
   #####start initialize deadWood volume
   ## identify managed and unmanaged forests
-  print(1)
   manFor <-  which(sampleX$cons==0)
-  print(2)
   unmanFor <- which(sampleX$cons==1)
-  print(3)
   if(outType=="ststDeadW"){
     unmanDeadW <- initDeadW(region,unmanFor,yearsDeadW)
     manDeadW <- initDeadW(region,manFor,yearsDeadW)
@@ -352,24 +349,18 @@ if(all(is.na(sampleX))){
                                          r_no,"_deadWV.rdata"))
     return("deadWood volume at steady state saved")
   }else{
-    print(4)
     load(paste0("initDeadWVss/reg",
                 r_no,"_deadWV.rdata"))
-    print(5)
     deadWx <- aperm(replicate(length(manFor),(manDeadW$ssDeadW[1:nYears,])),c(3,1:2))
-    print(6)
     region$multiOut[manFor,,8,1:3,1] <- region$multiOut[manFor,,8,1:3,1] + deadWx
-    print(7)
     deadWx <- aperm(replicate(length(unmanFor),(unmanDeadW$ssDeadW[1:nYears,])),c(3,1:2))
-    print(8)
     region$multiOut[unmanFor,,8,1:3,1] <- region$multiOut[unmanFor,,8,1:3,1] + deadWx
-    print(9)
   }
   ####end initialize deadWood Volume
   
   if(outType=="testRun") return(list(region = region,
-                                     initPrebas=initPrebas))#,
-                                     # initSoilC=initSoilC))
+                                     initPrebas=initPrebas,
+                                     initSoil=initSoilC))
   if(outType=="dTabs"){
     runModOut(sampleID, sampleX,region,r_no,harscen,rcpfile,areas,
               colsOut1,colsOut2,colsOut3,varSel,sampleForPlots)
