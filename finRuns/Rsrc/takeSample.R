@@ -138,7 +138,7 @@ for(sampleToRun in c("sampleXuni","sampleXyoung")){
     # harvestscenarios="Base"
     
     if(harvestscenarios=="Base"){
-      modRun <- runModelSampleIn(outType="testRun",sampleX=sampleXrun)
+      modRun <- runModelSampleIn(outType="testRun",sampleX=sampleXrun,initSoilC=NA)
       initSoilC=modRun$initSoilC
     }else{
       modRun <- runModelSampleIn(outType="testRun",sampleX=sampleXrun,initSoilC=initSoilC)
