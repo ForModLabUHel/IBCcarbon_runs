@@ -124,14 +124,14 @@ hist(sampleXin$ba,freq=0,col=2)
 hist(sampleXyoung$ba,freq=0,col=4,add=T)
 hist(sampleXuni$ba,freq=0,col=3,add=T)
 
-sampleToRun <- "sampleXuni"
+sampleToRun <- "sampleXyoung"
 harvestscenarios <- "Base"
 scens <- c("Base", "Low", "NoHarv", "MaxSust")
            # "adapt","adaptNoAdH","adaptTapio",
            # "Mitigation","MitigationNoAdH")
            # "protect","protectNoAdH")
 
-for(sampleToRun in c("sampleXuni","sampleXyoung")){
+# for(sampleToRun in c("sampleXuni","sampleXyoung")){
   datAllScen <- data.table()
   sampleXrun <- get(sampleToRun)
   # setkey(sampleXrun,NULL)
@@ -252,67 +252,67 @@ for(sampleToRun in c("sampleXuni","sampleXyoung")){
   save(datAllScen,areas,
        file=paste0("outSample/r_no",r_no,"_",sampleToRun,".rdata"))
   
+# }
+
+
+
+
+
+######Make plots
+for(sampleToRun in c("sampleXuni","sampleXyoung")){
+  r_no=5
+  load(paste0("/scratch/project_2000994/PREBASruns/finRuns/outSample/r_no"
+              ,r_no,"_",sampleToRun,".rdata"))
+  
+  datAllScenNorm <- datAllScen
+  # datAllScenNormProtect <- datAllScenProtect
+  setkey(areas,segID)
+  setkey(datAllScenNorm,segID)
+  # setkey(areasProtect,segID)
+  # setkey(datAllScenNormProtect,segID)
+  datAllScenNorm <- merge(datAllScenNorm,areas)
+  # datAllScenNormProtect <- merge(datAllScenNormProtect,areasProtect)
+  vars <- colnames(datAllScenNorm)[!colnames(datAllScenNorm) %in% c("segID","area","year","maakID","harScen")]
+  # datAllScenNorm[,normFact:=area*length(areas$area)/sum(areas$area)]
+  datAllScenNorm[, vars] <- 
+    datAllScenNorm[ ,lapply(.SD, `*`, area*length(areas$area)/sum(areas$area)), .SDcols = vars]
+  
+  # datAllScenNormProtect[, vars] <- 
+    # datAllScenNormProtect[ ,lapply(.SD, `*`, area*length(areasProtect$area)/sum(areasProtect$area)), .SDcols = vars]
+  
+  plot.list <- list()
+  i=0
+  for(varX in vars){
+    i=i+1
+    sumryX <- datAllScenNorm %>%   
+      group_by(year, harScen) %>%
+      summarise(medi = median(get(varX),na.rm=T),
+                q0.25 = quantile(get(varX),probs=0.25,na.rm=T),
+                q0.75 = quantile(get(varX),probs=0.75,na.rm=T))
+    # 
+    # sumryXProtect <- datAllScenNormProtect %>%   
+      # group_by(year, harScen) %>%
+      # summarise(medi = median(get(varX),na.rm=T),
+      #           q0.25 = quantile(get(varX),probs=0.25,na.rm=T),
+      #           q0.75 = quantile(get(varX),probs=0.75,na.rm=T))
+    
+    # sumryX <- rbind(sumryX,sumryXProtect)
+    plot.list[[i]] <- ggplot(sumryX)+
+      geom_ribbon(aes(x = year + 2016, ymin = q0.25, ymax = q0.75,fill= harScen), alpha = 0.3)+
+      geom_line(aes(x = year+ 2016, y = medi, color = harScen)) +
+      xlab("year") + ylab(varX)
+    
+    i=i+1
+    
+    plot.list[[i]] <- ggplot(sumryX)+
+      # geom_ribbon(aes(x = year + 2016, ymin = q0.25, ymax = q0.75,fill= harScen), alpha = 0.3)+
+      geom_line(aes(x = year+ 2016, y = medi, color = harScen)) + 
+      xlab("year") + ylab(varX)
+  }
+  
+  pdf(paste0("outSample/plots",r_no,"_",sampleToRun,".pdf"))
+  for(i in 1:length(plot.list)) print(plot.list[[i]])
+  dev.off()
 }
 
 
-
-# 
-# 
-# ######Make plots
-# for(sampleToRun in c("sampleXuni","sampleXyoung")){
-#   r_no=5
-#   load(paste0("/scratch/project_2000994/PREBASruns/finRuns/outSample/r_no"
-#               ,r_no,"_",sampleToRun,".rdata"))
-#   
-#   datAllScenNorm <- datAllScen
-#   # datAllScenNormProtect <- datAllScenProtect
-#   setkey(areas,segID)
-#   setkey(datAllScenNorm,segID)
-#   # setkey(areasProtect,segID)
-#   # setkey(datAllScenNormProtect,segID)
-#   datAllScenNorm <- merge(datAllScenNorm,areas)
-#   # datAllScenNormProtect <- merge(datAllScenNormProtect,areasProtect)
-#   vars <- colnames(datAllScenNorm)[!colnames(datAllScenNorm) %in% c("segID","area","year","maakID","harScen")]
-#   # datAllScenNorm[,normFact:=area*length(areas$area)/sum(areas$area)]
-#   datAllScenNorm[, vars] <- 
-#     datAllScenNorm[ ,lapply(.SD, `*`, area*length(areas$area)/sum(areas$area)), .SDcols = vars]
-#   
-#   # datAllScenNormProtect[, vars] <- 
-#     # datAllScenNormProtect[ ,lapply(.SD, `*`, area*length(areasProtect$area)/sum(areasProtect$area)), .SDcols = vars]
-#   
-#   plot.list <- list()
-#   i=0
-#   for(varX in vars){
-#     i=i+1
-#     sumryX <- datAllScenNorm %>%   
-#       group_by(year, harScen) %>%
-#       summarise(medi = median(get(varX),na.rm=T),
-#                 q0.25 = quantile(get(varX),probs=0.25,na.rm=T),
-#                 q0.75 = quantile(get(varX),probs=0.75,na.rm=T))
-#     # 
-#     # sumryXProtect <- datAllScenNormProtect %>%   
-#       # group_by(year, harScen) %>%
-#       # summarise(medi = median(get(varX),na.rm=T),
-#       #           q0.25 = quantile(get(varX),probs=0.25,na.rm=T),
-#       #           q0.75 = quantile(get(varX),probs=0.75,na.rm=T))
-#     
-#     # sumryX <- rbind(sumryX,sumryXProtect)
-#     plot.list[[i]] <- ggplot(sumryX)+
-#       geom_ribbon(aes(x = year + 2016, ymin = q0.25, ymax = q0.75,fill= harScen), alpha = 0.3)+
-#       geom_line(aes(x = year+ 2016, y = medi, color = harScen)) +
-#       xlab("year") + ylab(varX)
-#     
-#     i=i+1
-#     
-#     plot.list[[i]] <- ggplot(sumryX)+
-#       # geom_ribbon(aes(x = year + 2016, ymin = q0.25, ymax = q0.75,fill= harScen), alpha = 0.3)+
-#       geom_line(aes(x = year+ 2016, y = medi, color = harScen)) + 
-#       xlab("year") + ylab(varX)
-#   }
-#   
-#   pdf(paste0("outSample/plots",r_no,"_",sampleToRun,".pdf"))
-#   for(i in 1:length(plot.list)) print(plot.list[[i]])
-#   dev.off()
-# }
-# 
-# 
