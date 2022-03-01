@@ -259,9 +259,6 @@ for(sampleToRun in c("sampleXuni","sampleXyoung")){
 
 
 ######Make plots
-library(dplyr)
-library(ggplot2)
-
 for(sampleToRun in c("sampleXuni","sampleXyoung")){
   r_no=5
   load(paste0("/scratch/project_2000994/PREBASruns/finRuns/outSample/r_no"
