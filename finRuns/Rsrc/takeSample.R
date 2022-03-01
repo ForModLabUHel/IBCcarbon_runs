@@ -74,55 +74,55 @@ hist(sampleXuni$ba,freq=0,col=3,add=T)
 
 # library(data.table)
 
-baClass <- seq(0,quantile(data.all$ba,0.99)
-                ,by=3)
-
-sampleXin <- ops[[sampleID]]
-hist(data.all$ba,freq=0)
-hist(ops[[sampleID]]$ba,add=T,col=2,freq=0)
-
-for(i in 1:length(baClass)){
-  if (i<length(baClass)) sampleXin[ba %between% c(baClass[i],baClass[i+1]),class:=i]
-  if (i==length(baClass)) sampleXin[ba > baClass[i],class:=i]
-}
-
-tabX <- sampleXin[,.N,by=class]
-tabX[,classNew:=class-3]
-tabX[classNew<1,classNew:=length(baClass) + classNew]
-
-sampleXyoung <- data.table()
-nSample <- round(nrow(sampleXin)/length(baClass))
-for(i in 1:length(baClass)){
-  nSample <- tabX[classNew==i]$N
-  if(i<length(baClass)) sampleNew <- data.all[ba %between% c(baClass[i],baClass[i+1])][sample(nSample,replace = T)]
-  if (i==length(baClass)) sampleNew <- data.all[ba > baClass[i]][sample(nSample,replace = T)]
-  sampleXyoung <- rbind(sampleXyoung,sampleNew)
-}  
-
-
-sampleXuni <- data.table()
-nSample <- round(nrow(sampleXin)/length(baClass))
-for(i in 1:length(baClass)){
-  if(i<length(baClass)) sampleNew <- data.all[ba %between% c(baClass[i],baClass[i+1])][sample(nSample,replace = T)]
-  if (i==length(baClass)) sampleNew <- data.all[ba > baClass[i]][sample(nSample,replace = T)]
-  sampleXuni <- rbind(sampleXuni,sampleNew)
-}  
-
-hist(sampleXin$age,col=2)
-hist(sampleXyoung$age,col=4,add=T)
-hist(sampleXuni$age,col=3,add=T)
-
-hist(sampleXin$h,col=2)
-hist(sampleXyoung$h,col=4,add=T)
-hist(sampleXuni$h,col=3,add=T)
-
-hist(sampleXin$dbh,col=2)
-hist(sampleXyoung$dbh,col=4,add=T)
-hist(sampleXuni$dbh,col=3,add=T)
-
-hist(sampleXin$ba,freq=0,col=2)
-hist(sampleXyoung$ba,freq=0,col=4,add=T)
-hist(sampleXuni$ba,freq=0,col=3,add=T)
+# baClass <- seq(0,quantile(data.all$ba,0.99)
+#                 ,by=3)
+# 
+# sampleXin <- ops[[sampleID]]
+# hist(data.all$ba,freq=0)
+# hist(ops[[sampleID]]$ba,add=T,col=2,freq=0)
+# 
+# for(i in 1:length(baClass)){
+#   if (i<length(baClass)) sampleXin[ba %between% c(baClass[i],baClass[i+1]),class:=i]
+#   if (i==length(baClass)) sampleXin[ba > baClass[i],class:=i]
+# }
+# 
+# tabX <- sampleXin[,.N,by=class]
+# tabX[,classNew:=class-3]
+# tabX[classNew<1,classNew:=length(baClass) + classNew]
+# 
+# sampleXyoung <- data.table()
+# nSample <- round(nrow(sampleXin)/length(baClass))
+# for(i in 1:length(baClass)){
+#   nSample <- tabX[classNew==i]$N
+#   if(i<length(baClass)) sampleNew <- data.all[ba %between% c(baClass[i],baClass[i+1])][sample(nSample,replace = T)]
+#   if (i==length(baClass)) sampleNew <- data.all[ba > baClass[i]][sample(nSample,replace = T)]
+#   sampleXyoung <- rbind(sampleXyoung,sampleNew)
+# }  
+# 
+# 
+# sampleXuni <- data.table()
+# nSample <- round(nrow(sampleXin)/length(baClass))
+# for(i in 1:length(baClass)){
+#   if(i<length(baClass)) sampleNew <- data.all[ba %between% c(baClass[i],baClass[i+1])][sample(nSample,replace = T)]
+#   if (i==length(baClass)) sampleNew <- data.all[ba > baClass[i]][sample(nSample,replace = T)]
+#   sampleXuni <- rbind(sampleXuni,sampleNew)
+# }  
+# 
+# hist(sampleXin$age,col=2)
+# hist(sampleXyoung$age,col=4,add=T)
+# hist(sampleXuni$age,col=3,add=T)
+# 
+# hist(sampleXin$h,col=2)
+# hist(sampleXyoung$h,col=4,add=T)
+# hist(sampleXuni$h,col=3,add=T)
+# 
+# hist(sampleXin$dbh,col=2)
+# hist(sampleXyoung$dbh,col=4,add=T)
+# hist(sampleXuni$dbh,col=3,add=T)
+# 
+# hist(sampleXin$ba,freq=0,col=2)
+# hist(sampleXyoung$ba,freq=0,col=4,add=T)
+# hist(sampleXuni$ba,freq=0,col=3,add=T)
 
 sampleToRun <- "sampleXuni"
 harvestscenarios <- "Base"
