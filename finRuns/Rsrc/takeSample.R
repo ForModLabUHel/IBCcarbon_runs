@@ -255,10 +255,10 @@ for(sampleToRun in c("sampleXuni","sampleXyoung","sampleXin")){
   
   areas <- data.table(segID=region$siteInfo[,1],area=region$areas)
   
-  # save(datAllScen,areas,
-  #      file=paste0("outSample/r_no",r_no,"_",sampleToRun,".rdata"))
   save(datAllScen,areas,
-       file=paste0("outSample/r_no",r_no,"_",sampleToRun,"NoAddHarv.rdata"))
+       file=paste0("outSample/r_no",r_no,"_",sampleToRun,".rdata"))
+  # save(datAllScen,areas,
+  #      file=paste0("outSample/r_no",r_no,"_",sampleToRun,"NoAddHarv.rdata"))
   
 }
 
