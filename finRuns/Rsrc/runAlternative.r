@@ -1,16 +1,5 @@
-# runModelSampleIn <- function(outType="testRun",
-#                      sampleX,initSoilCin=NA){
-  # outType determines the type of output:
-  # dTabs -> standard run, mod outputs saved as data.tables 
-  # testRun-> test run reports the mod out and initPrebas as objects
-  # ststDeadW -> initialize the dead Wood volume;
-  # uncRun -> reports the output table for the regional uncertainty run
-  # uncSeg -> reports the list of output table for the segment uncertainty run
-  
-  # print(date())
   print(paste("start sample ID",sampleID))
   harscen = harvestscenarios
-
   if(outType=="uncRun"){
     area_tot <- sum(data.all$area) # ha
     sampleX[,area := 16^2/10000] 
@@ -36,22 +25,7 @@
       dat[,rday:=xday]
     }
   }
-  ## Loop regions -------------------------------------------------------
-  # for (r_no in regions) {
-  # print(date())
-  # print(paste("Region", r_no) )
-  # r_no=7
-  ## Load samples from regions; region-files include every 1000th pixel
-  ## Pixel data are from 16 m x 16 m cells, but all numbers are per unit area.
-  ## Model also produces per values  per hectar or m2.
-  ## Note also that some of the pixels are non-forest (not metsamaa, kitumaa, joutomaa)
-  ## or not inside Finland (32767) or may be cloudcovered (32766).
-  
-  # data.all = fread(paste(regiondatapath, "data.proc.", r_no, ".txt", sep=""))
-  # data.all = fread(paste("data.proc.", r_no, ".txt",sep=""))
-  # dat = dat[id %in% data.all[, unique(id)]]
   gc()
-  ## Prepare the same initial state for all harvest scenarios that are simulated in a loop below
   data.sample = sample_data.f(sampleX, nSample)
   if(rcpfile=="CurrClim") data.sample$id <- data.sample$CurrClimID
   areas <- data.sample$area
@@ -60,13 +34,9 @@
   clim = prep.climate.f(dat, data.sample, startingYear, nYears)
   
   Region = nfiareas[ID==r_no, Region]
-  
-  ###set parameters
-  # if(outType %in% c("uncRun","uncSeg")){
   if(outType %in% c("uncRun","uncSeg")){
     pCrobasX <- pCROBASr[[sampleID]]
   }
-  ## Second, continue now starting from soil SS
   initPrebas = create_prebas_input.f(r_no, clim, data.sample, nYears = nYears,
                                      startingYear = startingYear,domSPrun=domSPrun,
                                      harv=harscen)
@@ -75,10 +45,6 @@
   opsna <- which(is.na(initPrebas$multiInitVar))
   initPrebas$multiInitVar[opsna] <- 0.
   
-  ### for adapt and protect scenario Replanting schemes 
-  ### do not replant pine in sitetypes 1 and 2
-  ### do not replant spruce in sitetypes higher than 3
-  ### ensure minimum 20% birch at replanting
   if(harscen %in% c("adapt","protect","protectNoAdH",
                     "adaptNoAdH","adaptTapio")){
     sitesXs <- which(initPrebas$siteInfo[,3]>3)
@@ -100,14 +66,6 @@
       sweep(initPrebas$initCLcutRatio[jj,1:2],MARGIN=1,xx, `*`)
     initPrebas$initCLcutRatio[jj,3] <- 0.2
   }
-  
-  # initSoil <- aperm(initPrebas$soilC,c(3:5,1,2))
-  # initSoil[,,1,,1] <- initSoilCstst[[r_no]]
-  # initSoil <- aperm(initSoil,c(4,5,1:3))
-  # initPrebas$soilC <- initSoil
-  # if(exists("soilCststXX")) initPrebas$soilC[,1,,,] <- soilCststXX[[sampleID]]$soilC
-  
-  ##here mix years for weather inputs for Curr Climate
   if(rcpfile=="CurrClim"){
     #if(outType=="uncRun"){
     if(outType %in% c("uncRun","uncSeg")){
@@ -208,19 +166,6 @@
   if(!all(is.na(initSoilCin))){
     initPrebas$soilC[,1,,,] <- initSoilC <- initSoilCin
   }
-  # }else{
-  #   if(harscen !="Base"){
-  #     if(outType!="uncRun"){
-  #       if(!harscen %in% c("protect","protectNoAdH")){
-  #         load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,".rdata"))  
-  #       }
-  #     }else{
-  #       load(paste0("initSoilCunc/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
-  #     }
-  #     initPrebas$yassoRun <- rep(1,initPrebas$nSites)
-  #     initPrebas$soilC[,1,,,] <- initSoilC
-  #   }
-  # }
   print(harscen)
   HarvLimX <- HarvLim1[1:nYears,]
   
@@ -318,10 +263,3 @@
     region$multiOut[unmanFor,,8,1:3,1] <- region$multiOut[unmanFor,,8,1:3,1] + deadWx
   }
   ####end initialize deadWood Volume
-  
-  # if(outType=="testRun"){
-    # return(list(region = region,
-    #             initPrebas=initPrebas,
-    #             initSoil=initSoilC))
-  # } 
-

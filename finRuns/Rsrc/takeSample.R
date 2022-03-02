@@ -4,7 +4,7 @@ library(data.table)
 
 # load("C:/Users/checcomi/Documents/research/IBC-carbon/test/data.all_maakunta_5.rdata")
 if(!exists("r_no")) r_no <- 5 
-if(!exists("sampleID")) sampleID=3
+if(!exists("sampleID")) sampleID=5
 if(!exists("harvestscenarios")) harvestscenarios <- "Base"
 
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
@@ -70,11 +70,9 @@ hist(sampleXin$ba,freq=0,col=2)
 hist(sampleXyoung$ba,freq=0,col=4,add=T)
 hist(sampleXuni$ba,freq=0,col=3,add=T)
 
-harvestscenarios <- "Base"
-ciao <- sampleXyoung[-7453]
-modRun <- runModelSampleIn(outType="testRun",
-              sampleX=sampleXyoung,initSoilC=NA)
-sampleXyoung[7452:7455]
+# harvestscenarios <- "Base"
+# modRun <- runModelSampleIn(outType="testRun",
+#               sampleX=sampleXyoung,initSoilC=0)
 
 
 ######BA based
@@ -130,22 +128,23 @@ sampleXyoung[7452:7455]
 # hist(sampleXin$ba,freq=0,col=2)
 # hist(sampleXyoung$ba,freq=0,col=4,add=T)
 # hist(sampleXuni$ba,freq=0,col=3,add=T)
-
-sampleToRun <- "sampleXuni"
+varSel <- c(varSel,14)
+funX <- c(funX,"baWmean")
+sampleToRun <- "sampleXin"
 harvestscenarios <- "Base"
-scens <- c("Base", "Low")#, "NoHarv", "MaxSust")
+scens <- c("Base", "Low", "NoHarv", "MaxSust")
            # "adapt","adaptNoAdH","adaptTapio",
            # "Mitigation","MitigationNoAdH")
            # "protect","protectNoAdH")
 
-# for(sampleToRun in c("sampleXuni","sampleXyoung")){
+for(sampleToRun in c("sampleXuni","sampleXyoung","sampleXin")){
   datAllScen <- data.table()
   sampleXrun <- get(sampleToRun)
   # setkey(sampleXrun,NULL)
   
   ####run Base
   for(harvestscenarios in scens){
-    # harvestscenarios="Base"
+    # harvestscenarios="NoHarv"
     
     if(harvestscenarios=="Base"){
       modRun <- runModelSampleIn(outType="testRun",sampleX=sampleXrun,initSoilC=NA)
@@ -256,15 +255,18 @@ scens <- c("Base", "Low")#, "NoHarv", "MaxSust")
   
   areas <- data.table(segID=region$siteInfo[,1],area=region$areas)
   
+  # save(datAllScen,areas,
+  #      file=paste0("outSample/r_no",r_no,"_",sampleToRun,".rdata"))
   save(datAllScen,areas,
-       file=paste0("outSample/r_no",r_no,"_",sampleToRun,".rdata"))
+       file=paste0("outSample/r_no",r_no,"_",sampleToRun,"NoAddHarv.rdata"))
   
-# }
+}
 
 
 
 
-
+  scens <- c("Base", "Low", "NoHarv", "MaxSust")
+  
 ######Make plots
 for(sampleToRun in c("sampleXuni","sampleXyoung")){
   r_no=5
