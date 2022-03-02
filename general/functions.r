@@ -2028,7 +2028,7 @@ runModelSampleIn <- function(sampleX, outType="testRun",initSoilC){
   cutArX <- cbind(cutArX,fThinX)
   if(harscen == "Low"){ cutArX <- cutArX * 0.6}
   if(harscen == "MaxSust"){cutArX <- cutArX * 1.2}
-  if(harscen == "NoHarv"){cutArX <- cutArX * 0.
+  if(harscen == "NoHarv"){cutArX <- cutArX * 0.}
   
   # }else{
   #   cutArX <- NA
