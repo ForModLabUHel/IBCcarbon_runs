@@ -235,6 +235,10 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   fThinX <- cbind(fThinX[1:nYears],0.)
   cutArX <- cbind(clcutArX,tendX)
   cutArX <- cbind(cutArX,fThinX)
+  if(harscen == "Low"){ cutArX <- cutArX * 0.6}
+  if(harscen == "MaxSust"){cutArX <- cutArX * 1.2}
+  if(harscen == "NoHarv"){cutArX <- cutArX * 0.}
+  
   # }else{
   #   cutArX <- NA
   # } 
