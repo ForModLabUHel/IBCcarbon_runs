@@ -3,7 +3,7 @@ library(ggplot2)
 library(data.table)
 
 # load("C:/Users/checcomi/Documents/research/IBC-carbon/test/data.all_maakunta_5.rdata")
-if(!exists("r_no")) r_no <- 12
+if(!exists("r_no")) r_no <- 8
 if(!exists("sampleID")) sampleID=5
 if(!exists("harvestscenarios")) harvestscenarios <- "Base"
 
