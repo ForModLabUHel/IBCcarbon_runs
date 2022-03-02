@@ -36,18 +36,21 @@ tabX[classNew<1,classNew:=length(ageClass) + classNew]
 sampleXyoung <- data.table()
 nSample <- round(nrow(sampleXin)/length(ageClass))
 for(i in 1:length(ageClass)){
-  nSample <- tabX[classNew==i]$N
-  if(i<length(ageClass)) sampleNew <- data.all[age %between% c(ageClass[i],ageClass[i+1])][sample(nSample,replace = T)]
-  if (i==length(ageClass)) sampleNew <- data.all[age > ageClass[i]][sample(nSample,replace = T)]
+  nSample <- as.numeric(tabX[classNew==i]$N)
+  if(i<length(ageClass)) sampleNew <- 
+      data.all[age %between% c(ageClass[i],ageClass[i+1])][sample(nSample,replace = T)]
+  if (i==length(ageClass)) sampleNew <- 
+      data.all[age > ageClass[i]][sample(nSample,replace = T)]
   sampleXyoung <- rbind(sampleXyoung,sampleNew)
 }  
-
 
 sampleXuni <- data.table()
 nSample <- round(nrow(sampleXin)/length(ageClass))
 for(i in 1:length(ageClass)){
-  if(i<length(ageClass)) sampleNew <- data.all[age %between% c(ageClass[i],ageClass[i+1])][sample(nSample,replace = T)]
-  if (i==length(ageClass)) sampleNew <- data.all[age > ageClass[i]][sample(nSample,replace = T)]
+  if(i<length(ageClass)) sampleNew <- 
+      data.all[age %between% c(ageClass[i],ageClass[i+1])][sample(nSample,replace = T)]
+  if (i==length(ageClass)) sampleNew <- 
+      data.all[age > ageClass[i]][sample(nSample,replace = T)]
   sampleXuni <- rbind(sampleXuni,sampleNew)
 }  
 
@@ -67,7 +70,11 @@ hist(sampleXin$ba,freq=0,col=2)
 hist(sampleXyoung$ba,freq=0,col=4,add=T)
 hist(sampleXuni$ba,freq=0,col=3,add=T)
 
-
+harvestscenarios <- "Base"
+ciao <- sampleXyoung[-7453]
+modRun <- runModelSampleIn(outType="testRun",
+              sampleX=sampleXyoung,initSoilC=NA)
+sampleXyoung[7452:7455]
 
 
 ######BA based
