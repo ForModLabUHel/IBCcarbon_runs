@@ -132,7 +132,7 @@ varSel <- c(varSel,14)
 funX <- c(funX,"baWmean")
 sampleToRun <- "sampleXin"
 harvestscenarios <- "Base"
-scens <- c("Base", "NoHarv")#, "Low", "MaxSust")
+scens <- c("Base", "NoHarv", "Low", "MaxSust")
            # "adapt","adaptNoAdH","adaptTapio",
            # "Mitigation","MitigationNoAdH")
            # "protect","protectNoAdH")
