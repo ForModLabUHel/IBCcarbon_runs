@@ -3,7 +3,7 @@ library(ggplot2)
 library(data.table)
 
 # load("C:/Users/checcomi/Documents/research/IBC-carbon/test/data.all_maakunta_5.rdata")
-if(!exists("r_no")) r_no <- 5 
+if(!exists("r_no")) r_no <- 12
 if(!exists("sampleID")) sampleID=5
 if(!exists("harvestscenarios")) harvestscenarios <- "Base"
 
@@ -132,7 +132,7 @@ varSel <- c(varSel,14)
 funX <- c(funX,"baWmean")
 sampleToRun <- "sampleXin"
 harvestscenarios <- "Base"
-scens <- c("Base", "Low", "NoHarv", "MaxSust")
+scens <- c("Base", "NoHarv")#, "Low", "MaxSust")
            # "adapt","adaptNoAdH","adaptTapio",
            # "Mitigation","MitigationNoAdH")
            # "protect","protectNoAdH")
