@@ -488,7 +488,7 @@ UncOutProcSeg <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
   
   ##process and save special variables: 
   ###age dominant species
-  outX <- domFun(region,varX="age")
+  outX <- domFun(modOut,varX="age")
   p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
   p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
   p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
@@ -497,7 +497,7 @@ UncOutProcSeg <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
   varsX[[(ij+1)]] <- pX
   
   # species
-  outX <- domFun(region,varX="species")  
+  outX <- domFun(modOut,varX="species")  
   ####test plot
   #if(sampleID==sampleForPlots){testPlot(outX,"domSpecies",areas)}
   ###take the most frequent species in the periods
@@ -509,8 +509,7 @@ UncOutProcSeg <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
   varsX[[(ij+2)]] <- pX
   
   ###deciduous Volume Vdec
-  outX <- vDecFun(region)
-  if(sampleID==sampleForPlots){testPlot(outX,"Vdec",areas)}
+  outX <- vDecFun(modOut)
   p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
   p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
   p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
