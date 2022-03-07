@@ -31,7 +31,8 @@ print(paste("start region",r_no,"run",outType,"-",harvscen,"- set size",nSitesRu
 
 # Give new set of outputs ------------------------------------------------
 if(uncSeg){
-  varOuts <- c("NEP","DeadWoodVolume","soilC","V","D","BA","H","sitetype") # Wtot, age, Vdec, species!
+  varOuts <- c("NEP","DeadWoodVolume","soilC","V","D","BA","H") 
+  # added; Wtot, age, Vdec, species, sitetype!
 } else {
   varOuts <- c("NEP","V","npp","VroundWood","WroundWood",
                "grossGrowth","soilC") # Wtot!
