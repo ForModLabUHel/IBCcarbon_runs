@@ -388,7 +388,8 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
     #                      modOut=region,sampleX,colsOut1,colsOut2,colsOut3)
     pind <- length(uncSegTab)+1
     uncSegTab[[pind]] <- cbind(sampleX$segID, sampleX$fert)
-    names(uncSegTab)[pind] <- "sitetype"
+    names(uncSegTab)[pind] <- "fert"
+    
     return(uncSegTab)
   }
   # rm(list=c("region","initPrebas")); gc()
