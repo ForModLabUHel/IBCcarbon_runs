@@ -3,10 +3,10 @@ library(Rprebasso)
 library(dplyr)
 library(ggplot2)
 
-r_no <- "r_no7"
+r_no <- "r_no12"
 sims <- paste0(r_no,c("_sampleXuni","_sampleXyoung","_sampleXin"))#,
           # "_sampleXinNoAddHarv","_sampleXuniNoAddHarv","_sampleXyoungNoAddHarv"))
-scenXs <- c("Base","NoHarv")#"Low","MaxSust",
+scenXs <- c("Base","NoHarv")#,"Low","MaxSust")
 
 sumry <- data.table()
 for(simX in sims){
@@ -86,3 +86,21 @@ for(varX in vars){
 pdf(paste0("~/research/IBC-carbon/test/plots",r_no,"_allScen.pdf"))
 for(i in 1:length(plot.list)) print(plot.list[[i]])
 dev.off()
+
+
+
+datAllScen[,plot(age,grossGrowth,pch=".")]
+
+simGroupStart <- c(1,6,11,16,21,26,31)
+simGroupEnd <- c(5,10,15,20,25,30,37)
+for(i in 1:7) datAllScen[year %in% simGroupStart[i]:simGroupEnd[i],simYear:=i]
+
+plot(datAllScen[simYear==1 & harScen=="Base",]$BA,datAllScen[simYear==1 & harScen=="Base",]$grossGrowth,pch=".")
+i=5;points(datAllScen[simYear==1 & harScen=="Base",]$BA,datAllScen[simYear==i & harScen=="Base",]$grossGrowth,pch=".",col=i)
+for(i in 2:7) points(datAllScen[simYear==1 & harScen=="Base",]$age,datAllScen[simYear==i & harScen=="Base",]$grossGrowth,pch=".",col=i)
+
+
+
+
+
+-1(soilC(t+1) - soilC(t) - litter(t+1))
