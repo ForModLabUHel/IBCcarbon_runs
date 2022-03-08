@@ -276,7 +276,7 @@ for(nii in 1:niter){
   if(testRun){ # if needed to test an individual sample
     sampleXs <- lapply(sampleIDs, function(jx) { runModel(jx, outType=outType)})
     #sampleXs <- runModel(sampleIDs,outType=outType)
-    print(sampleXs[[1]])
+    #print(sampleXs[[1]])
   } else if(uncSeg){
     sampleXs <- mclapply(sampleIDs, function(jx) {
       runModel(jx, outType=outType)}, 
@@ -362,6 +362,11 @@ for(nii in 1:niter){
         names(sampleOutput)[j]<-varNams[j]
       } else {
         sampleOutput[[j]] <- cbind(sampleOutput[[j]], x[,-1])
+      }
+      if(ncol(x)==4){
+        setnames(sampleOutput[[j]], c("segID",paste0(c("per1.","per2.","per3."),rep(nii,each=3))))
+      } else {
+        setnames(sampleOutput[[j]], c("segID",paste0("iter",nii)))
       }
     }
     save(sampleOutput,file=paste0("uncRuns/segRuns/samplexout_uncSeg_reg",r_no,
