@@ -366,9 +366,11 @@ for(nii in 1:niter){
       if(nii==1){
         sampleOutput[[j]] <- x
         names(sampleOutput)[j]<-varNams[j]
-        
       } else {
         sampleOutput[[j]] <- cbind(sampleOutput[[j]], x[,-1])
+        if(ncol(x)==2){
+          names(sampleOutput[[j]])[nii+1] <- paste0("iter",nii)
+        }
       }
     }
     save(sampleOutput,file=paste0("uncRuns/segRuns/samplexout_uncSeg_reg",r_no,
