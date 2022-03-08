@@ -276,7 +276,7 @@ for(nii in 1:niter){
   if(testRun){ # if needed to test an individual sample
     sampleXs <- lapply(sampleIDs, function(jx) { runModel(jx, outType=outType)})
     #sampleXs <- runModel(sampleIDs,outType=outType)
-    print(sampleXs)
+    print(sampleXs[[1]])
   } else if(uncSeg){
     sampleXs <- mclapply(sampleIDs, function(jx) {
       runModel(jx, outType=outType)}, 
