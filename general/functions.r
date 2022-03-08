@@ -384,12 +384,6 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   if(outType=="uncSeg"){
     uncSegTab <- UncOutProcSeg(varSel=varSel, funX=funX,
                                modOut=region,sampleX,colsOut1,colsOut2,colsOut3)
-    #uncSegTab <- UncOutProcSeg(varSel=c(46,39,30,37), funX=rep("sum",4),
-    #                      modOut=region,sampleX,colsOut1,colsOut2,colsOut3)
-    pind <- length(uncSegTab)+1
-    uncSegTab[[pind]] <- cbind(sampleX$segID, sampleX$fert)
-    names(uncSegTab)[pind] <- "fert"
-    
     return(uncSegTab)
   }
   # rm(list=c("region","initPrebas")); gc()
@@ -521,15 +515,6 @@ UncOutProcSeg <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
   pX <- merge(pX,p3)
   varsX[[(ij+3)]] <- pX
   
-  # sitetype
-  outX <- data.table(segID=sampleX$segID,modOut$sitetype)
-  p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
-  p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
-  p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
-  pX <- merge(p1,p2)
-  pX <- merge(pX,p3)
-  varsX[[(ij+4)]] <- pX
-  
   ####GVw
   outX <- data.table(segID=sampleX$segID,modOut$GVout[,,4])
   p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
@@ -547,9 +532,12 @@ UncOutProcSeg <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
   pX <- merge(p1,p2)
   pX <- merge(pX,p3)
   varsX[[(ij+5)]] <- pX
+
+  pX <- cbind(sampleX$segID, sampleX$fert)
+  varsX[[(ij+6)]] <- pX
   
   outX <- varsX
-  names(outX) <- c(varNames[varSel],"domage","domspecies","Vdec","GVw","Wtot")
+  names(outX) <- c(varNames[varSel],"domage","domspecies","Vdec","GVw","Wtot","fert")
   return(outX)
 } 
 

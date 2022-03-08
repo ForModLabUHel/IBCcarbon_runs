@@ -77,7 +77,7 @@ if(uncRun){ # load distribution data
   if(uncPPrel){
     load(paste0(parPath,"pPREL_unc.rdata"))
     parindPrel <- parind
-    pCrobdim <- nrow(pPREL_unc)
+    pPreldim <- nrow(pPREL_unc)
   }
   if(uncPYas){
     data <- read.delim(paste0(parPath,"Yasso15.dat"), header = TRUE, sep="\t") 
