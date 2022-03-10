@@ -62,9 +62,9 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   ## ---------------------------------------------------------
   i = 0
   rcpfile = rcps
-  load(paste(climatepath, rcpfile,".rdata", sep=""))  
   #if(outType != "uncRun"){
   if(!outType %in% c("uncRun","uncSeg")){
+    load(paste(climatepath, rcpfile,".rdata", sep=""))  
     if(rcpfile=="CurrClim"){
       #####process data considering only current climate###
       # dat <- dat[rday %in% 1:10958] #uncomment to select some years (10958 needs to be modified)
@@ -101,14 +101,23 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   
   ###set parameters
   # if(outType %in% c("uncRun","uncSeg")){
+  HcFactor <- 1
   if(outType %in% c("uncRun","uncSeg")){
     pCrobasX <- pCROBASr[[sampleID]]
+    pPRELES <- as.numeric(pPRELr[sampleID,])
+    pYAS <- as.numeric(pYASr[sampleID,])
+    HcFactor <- HcFactorr[sampleID] 
+    print(paste("sampleID",sampleID,"HcFactor =",HcFactor))
   }
   ## Second, continue now starting from soil SS
-  initPrebas = create_prebas_input.f(r_no, clim, data.sample, nYears = nYears,
+  initPrebas = create_prebas_input.f(r_no, clim, data.sample, nYears = nYears, HcFactorX=HcFactor,
                                      startingYear = startingYear,domSPrun=domSPrun,
                                      harv=harscen)
   
+  if(outType %in% c("uncRun","uncSeg")){
+    initPrebas$pPRELES <- pPRELES
+    initPrebas$pYASSO <- pYAS
+  }
   
   opsna <- which(is.na(initPrebas$multiInitVar))
   initPrebas$multiInitVar[opsna] <- 0.
@@ -248,12 +257,13 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   # region <- regionPrebas(initPrebas)
   ###run PREBAS
   if(harscen !="Base"){
-    if(outType!="uncRun"){
+    if(!outType %in% c("uncRun","uncSeg")){
+      #if(outType!="uncRun"){
       if(!harscen %in% c("protect","protectNoAdH")){
         load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,".rdata"))  
       }
-    }else{
-      load(paste0("initSoilCunc/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
+    }else{ # if UncRun or uncSeg
+      load(paste0("initSoilCunc/forCent",r_no,"/initSoilC_",outType,"_",sampleID,".rdata"))
     }
     initPrebas$yassoRun <- rep(1,initPrebas$nSites)
     initPrebas$soilC[,1,,,] <- initSoilC
@@ -327,7 +337,7 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
       if(!outType %in% c("uncRun","uncSeg")){
         save(initSoilC,file=paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
       } else {
-        save(initSoilC,file=paste0("initSoilCunc/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
+        save(initSoilC,file=paste0("initSoilCunc/forCent",r_no,"/initSoilC_",outType,"_",sampleID,".rdata"))
       }
     }
     ###run yasso (starting from steady state) using PREBAS litter
@@ -363,12 +373,17 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
     return("all outs saved")  
   } 
   if(outType=="uncRun"){
-    uncTab <- UncOutProc(varSel=c(46,39,30,37), funX=rep("sum",4),modOut=region)
+    uncTab <- UncOutProc(varSel=varSel,#c(46,39,30,37), 
+                         funX=funX,#rep("sum",4),
+                         modOut=region,sampleID=sampleID,
+                         finPeats=finPeats,sampleX=sampleX,
+                         EC1=EC1[sampleID],EC2=EC2[sampleID])
+    #uncTab <- UncOutProc(varSel=c(46,39,30,37), funX=rep("sum",4),modOut=region)
     return(uncTab)
   } 
   if(outType=="uncSeg"){
-    uncSegTab <- UncOutProcSeg(varSel=c(46,39,30,37), funX=rep("sum",4),
-                          modOut=region,sampleX,colsOut1,colsOut2,colsOut3)
+    uncSegTab <- UncOutProcSeg(varSel=varSel, funX=funX,
+                               modOut=region,sampleX,colsOut1,colsOut2,colsOut3)
     return(uncSegTab)
   }
   # rm(list=c("region","initPrebas")); gc()
@@ -442,7 +457,6 @@ runModOut <- function(sampleID, sampleX,modOut,r_no,harscen,rcpfile,areas,
            colsOut1,colsOut2,colsOut3,areas,sampleForPlots)
 }
 
-
 UncOutProcSeg <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
                           modOut,sampleX,colsOut1,colsOut2,colsOut3){
   nYears <-  max(modOut$nYears)
@@ -470,23 +484,37 @@ UncOutProcSeg <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
     
   }
   
-  ####process and save special variables: 
-  ###age
-  per1 <- apply(modOut$multiOut[,simYear1,7,1,1],1,mean)
-  per2 <- apply(modOut$multiOut[,simYear2,7,1,1],1,mean)
-  per3 <- apply(modOut$multiOut[,simYear3,7,1,1],1,mean)
-  pX <- data.table(segID=sampleX$segID,per1=per1,per2=per2,per3=per3)
-  varsX[[(ij+1)]] <- pX
-  
-  ####VenergyWood
-  outX <- data.table(segID=sampleX$segID,apply(modOut$multiEnergyWood[,,,1],1:2,sum))
+  ##process and save special variables: 
+  ###age dominant species
+  outX <- domFun(modOut,varX="age")
   p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
   p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
   p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
   pX <- merge(p1,p2)
   pX <- merge(pX,p3)
+  varsX[[(ij+1)]] <- pX
+  
+  # species
+  outX <- domFun(modOut,varX="species")  
+  ####test plot
+  #if(sampleID==sampleForPlots){testPlot(outX,"domSpecies",areas)}
+  ###take the most frequent species in the periods
+  p1 <- outX[,.(per1 = Mode(as.numeric(.SD))[1]),.SDcols=colsOut1,by=segID]
+  p2 <- outX[,.(per2 = Mode(as.numeric(.SD))[1]),.SDcols=colsOut2,by=segID]
+  p3 <- outX[,.(per3 = Mode(as.numeric(.SD))[1]),.SDcols=colsOut3,by=segID]
+  pX <- merge(p1,p2)
+  pX <- merge(pX,p3)
   varsX[[(ij+2)]] <- pX
-
+  
+  ###deciduous Volume Vdec
+  outX <- vDecFun(modOut)
+  p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
+  p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
+  p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
+  pX <- merge(p1,p2)
+  pX <- merge(pX,p3)
+  varsX[[(ij+3)]] <- pX
+  
   ####GVw
   outX <- data.table(segID=sampleX$segID,modOut$GVout[,,4])
   p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
@@ -494,8 +522,8 @@ UncOutProcSeg <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
   p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
   pX <- merge(p1,p2)
   pX <- merge(pX,p3)
-  varsX[[(ij+3)]] <- pX
-
+  varsX[[(ij+4)]] <- pX
+  
   ####Wtot
   outX <- data.table(segID=sampleX$segID,apply(modOut$multiOut[,,c(24,25,31,32,33),,1],1:2,sum))
   p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
@@ -503,13 +531,15 @@ UncOutProcSeg <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
   p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
   pX <- merge(p1,p2)
   pX <- merge(pX,p3)
-  varsX[[(ij+4)]] <- pX
+  varsX[[(ij+5)]] <- pX
 
+  pX <- cbind(sampleX$segID, sampleX$fert)
+  varsX[[(ij+6)]] <- pX
+  
   outX <- varsX
-  names(outX) <- c(varNames[varSel],"age","VenergyWood","GVw","Wtot")
+  names(outX) <- c(varNames[varSel],"domage","domspecies","Vdec","GVw","Wtot","fert")
   return(outX)
 } 
-
 
 sample_data.f = function(data.all, nSample) {
   cloudpixels = data.all[, sum(ba==32766)]
@@ -1277,12 +1307,13 @@ specialVarProc <- function(sampleX,region,r_no,harscen,rcpfile,sampleID,
   
 } 
 
-UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),modOut){
+UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
+                       modOut,sampleID=1,finPeats=finPeats,sampleX=sampleX,EC1=-240,EC2=70){
   nYears <-  max(modOut$nYears)
   nSites <-  max(modOut$nSites)
   nVarSel <- length(varSel)
-  varsX <- rep(NA,(nVarSel+4))
-  xx <- matrix(NA,(nVarSel+4),3)
+  varsX <- rep(NA,(nVarSel+5))
+  xx <- matrix(NA,(nVarSel+5),nYears)
   for (ij in 1:nVarSel) {
     # print(varSel[ij])
     if(funX[ij]=="baWmean"){
@@ -1293,60 +1324,110 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),modOut){
     }
     ####test plot
     # print(outX)
-    outX <- c(mean(outX[simYear1]),mean(outX[simYear2]),mean(outX[simYear3]))
+    #outX <- c(mean(outX[simYear1]),mean(outX[simYear2]),mean(outX[simYear3]))
     # names(outX) <- paste0("p",1:3)
     varsX[ij] <- varNames[varSel[ij]]
-    xx[ij,1:3] <- outX
+    xx[ij,1:nYears] <- outX
     # assign(varNames[varSel[ij]],outX)
   }
   
   ####process and save special variables: 
-      ###age
-      outX <- c(mean(modOut$multiOut[,simYear1,7,1,1]),
-          mean(modOut$multiOut[,simYear2,7,1,1]),
-          mean(modOut$multiOut[,simYear3,7,1,1]))
-      # names(age) <- paste0("age",1:3)
-      varsX[(nVarSel+1)] <- "age"
-      xx[(nVarSel+1),1:3] <- outX
-      # save(domAge,file=paste0("outputDT/forCent",r_no,"/domAge_",
-      #                         harscen,"_",rcpfile,"_",
-      #                         "sampleID",sampleID,".rdata"))
-      ####VenergyWood
-      outX <- colMeans(apply(modOut$multiEnergyWood[,,,1],1:2,sum))
-      outX <- c(mean(outX[simYear1]),mean(outX[simYear2]),mean(outX[simYear3]))
-      xx[(nVarSel+2),1:3] <- outX
-      varsX[(nVarSel+2)] <- "VenergyWood"
-      # names(outX) <- paste0("p",1:3)
-      # VenergyWood <- outX
-      # save(VenergyWood,file=paste0("outputDT/forCent",r_no,
-      #                              "/VenergyWood_",harscen,"_",rcpfile,"_",
-      #                              "sampleID",sampleID,".rdata"))
-      ####GVbiomass
+  ###age
+  outX <- colMeans(modOut$multiOut[,1:nYears,7,1,1])
+  #  outX <- c(mean(modOut$multiOut[,simYear1,7,1,1]),
+  #    mean(modOut$multiOut[,simYear2,7,1,1]),
+  #    mean(modOut$multiOut[,simYear3,7,1,1]))
+  varsX[(nVarSel+1)] <- "age"
+  xx[(nVarSel+1),1:nYears] <- outX
+  # save(domAge,file=paste0("outputDT/forCent",r_no,"/domAge_",
+  #                         harscen,"_",rcpfile,"_",
+  #                         "sampleID",sampleID,".rdata"))
+  ####VenergyWood
+  outX <- colMeans(apply(modOut$multiEnergyWood[,,,1],1:2,sum))
+  # outX <- c(mean(outX[simYear1]),mean(outX[simYear2]),mean(outX[simYear3]))
+  xx[(nVarSel+2),1:nYears] <- outX
+  varsX[(nVarSel+2)] <- "VenergyWood"
+  # names(outX) <- paste0("p",1:3)
+  # VenergyWood <- outX
+  # save(VenergyWood,file=paste0("outputDT/forCent",r_no,
+  #                              "/VenergyWood_",harscen,"_",rcpfile,"_",
+  #                              "sampleID",sampleID,".rdata"))
+  ####GVbiomass
   outX <- colMeans(modOut$GVout[,,4])
-  outX <- c(mean(outX[simYear1]),
-           mean(outX[simYear2]),
-           mean(outX[simYear3]))
-  xx[(nVarSel+3),1:3] <- outX
+  #outX <- c(mean(outX[simYear1]),
+  #     mean(outX[simYear2]),
+  #     mean(outX[simYear3]))
+  xx[(nVarSel+3),1:nYears] <- outX
   varsX[(nVarSel+3)] <- "wGV"
   # names(GVw) <- paste0("p",1:3)
   # save(GVgpp,file=paste0("outputDT/forCent",r_no,
   #                        "/GVgpp_",harscen,"_",rcpfile,"_",
   #                        "sampleID",sampleID,".rdata"))
   ####Wtot trees
-  outX <- colMeans(apply(modOut$multiOut[,,c(24,25,31,32,33),,1],1:2,sum))
-  outX <- c(mean(outX[simYear1]),mean(outX[simYear2]),mean(outX[simYear3]))
-  # names(outX) <- paste0("p",1:3)
-  # Wtot <- outX
-  xx[(nVarSel+4),1:3] <- outX
+  outX <- apply(modOut$multiOut[,,c(24,25,31,32,33),,1],1:2,sum)
+  #nas <- length(which(is.na(rowSums(outX))))
+  #outX <- colMeans(outX[which(!is.na(rowSums(outX))),])
+  outX <- colMeans(outX)
+  xx[(nVarSel+4),1:nYears] <- outX
   varsX[(nVarSel+4)] <- "Wtot"
+  
+  outX <- colMeans(apply(modOut$multiEnergyWood[,,,2],1:2,sum))
+  #print(outX)
+  xx[(nVarSel+5),1:nYears] <- outX
+  varsX[(nVarSel+5)] <- "Wenergywood"
+  
   # save(Wtot,file=paste0("outputDT/forCent",r_no,"/Wtot_",
   #                       harscen,"_",rcpfile,"_",
   #                       "sampleID",sampleID,".rdata"))
   # rm(domSpecies,domAge,Vdec,WenergyWood,Wtot,pX,p1,p2,p3); gc()
   # if(sampleID==sampleForPlots){dev.off()}
+  
+  if("NEP" %in% varsX){
+    print(paste0("peatland postprocessing ", sampleID))
+    #### Peatland post-processing
+    coords <- cbind(sampleX$x, sampleX$y)
+    marginX= 1:2#(length(dim(out$annual[,,varSel,]))-1)
+    
+    pX <- data.table(segID=sampleX$segID,apply(modOut$multiOut[,,"npp",,1],marginX,sum))
+    #p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
+    #p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
+    #p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
+    #pX <- data.table(p1,p2[,2],p3[,2]) # can be the same segment multiple times
+    assign("NPP",pX)
+    
+    pX <- data.table(data.table(segID=sampleX$segID,apply(modOut$multiOut[,,"NEP",,1],marginX,sum)))
+    #p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
+    #p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
+    #p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
+    #pX <- data.table(p1,p2[,2],p3[,2]) # can be the same segment multiple times
+    assign("NEP",pX)
+    
+    ##!!###step to reduce the size of the peat raster 
+    ###load npp first outside loop to get peatX
+    peatX <- extract(finPeats, coords)
+    ##!!## end
+    
+    ###load site type raster
+    fert<-modOut$multiOut[,1,"sitetype",1,1]
+    
+    #####Loop along periods
+    for(curr in 2:(nYears+1)) {
+      #curr <- paste0("per",i)
+      npp <- NPP[,..curr]
+      nep <- NEP[,..curr]
+      
+      nep = processPeatUQ(peatX,fert,npp,nep,drPeatID,1,EC1,EC2)
+      nep = processPeatUQ(peatX,fert,npp,nep,drPeatID,2,EC1,EC2)
+      NEP[,curr] <- nep
+    }  
+    NEP <- colMeans(NEP)
+    xx[which(varsX == "NEP"),] <- NEP[2:(nYears+1)]
+  }
+  
   outX <- data.table(t(xx))
   names(outX) <- varsX
-  outX[,periods:=paste0('p',1:3)]
+  print(outX[1,])
+  #outX[,periods:=paste0('p',1:3)]
   
   return(outX)
 } 
@@ -2138,4 +2219,58 @@ runModelSampleIn <- function(sampleX, outType="testRun",initSoilC){
   ####end initialize deadWood Volume
   
   return(list(region = region,initPrebas=initPrebas,initSoilC=initSoilC))
+}
+
+
+uncVariables <- function(ops = ops, sampleIDs = sampleIDs, rage = 0.1,
+                         uncInput = TRUE, uncSiteType = TRUE, uncAge = TRUE){
+  if(uncInput){ # Input uncertainty covariance matrix
+    load(url("https://raw.githubusercontent.com/ForModLabUHel/satRuns/master/data/inputUncer.rdata"))
+    CovX <- errData$all$sigmaFSVda
+    C <- chol(CovX)
+  }
+  if(uncSiteType){
+    ###load the fittet probit models to estimate the Site fertility class
+    load(url("https://raw.githubusercontent.com/ForModLabUHel/satRuns/master/data/step.probit.rdata"))
+  }
+  
+  for(ij in sampleIDs){ 
+    if(uncInput){
+      X <- copy(ops[[ij]])
+      X <- cbind(X$ba, X$dbh, X$h/10, X$pine, X$spruce, X$birch) # h as decimeters in data.all -> convert to meters as in cov matrix C
+      mx <- ncol(X)
+      Y <- X + matrix(rnorm(nrow(X)*mx),nrow(X),mx)%*%C
+      Y <- distr_correction(Y,X)
+      ops[[ij]][,':=' (ba=Y[,1],dbh=Y[,2],h=Y[,3]*10,pine=Y[,4],
+                       spruce=Y[,5],birch=Y[,6])] # the height converted back to meters
+    } 
+    if(uncSiteType){
+      ###load the fittet probit models to estimate the Site fertility class
+      #load(url("https://raw.githubusercontent.com/ForModLabUHel/satRuns/master/data/step.probit.rdata"))
+      ####generate sample input data
+      dataSample <- data.table(st=ops[[ij]]$fert,
+                               H=ops[[ij]]$h,
+                               D=ops[[ij]]$dbh,
+                               BAtot=ops[[ij]]$ba,
+                               BApPer=ops[[ij]]$pine)
+      modX <- step.probit[["all"]]
+      ###run model -> returns the probability for each site type so you can sample using that probability
+      ###model inputs:
+      # st = site type
+      # H = average height
+      # D = average dbh
+      #BAtot = total basal area
+      #BApPer = % of pine basal area
+      probs <- predict(modX,type='p',dataSample)
+      str <- matrix(0,nrow(ops[[ij]]),1)
+      for(ri in 1:nrow(ops[[ij]])){
+        str[ri] <- sample(1:5,1,prob = probs[ri,])
+      }
+      ops[[ij]][,fert:=str]
+    } 
+    if(uncAge){
+      ops[[ij]][,age:=ops[[ij]]$age*(1+rage*rnorm(nrow(ops[[ij]])))]
+    }
+  } # end for(ij in sampleIDs)
+  return(ops)
 }
