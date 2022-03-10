@@ -2274,3 +2274,25 @@ uncVariables <- function(ops = ops, sampleIDs = sampleIDs, rage = 0.1,
   } # end for(ij in sampleIDs)
   return(ops)
 }
+
+processPeatUQ <- function(peatXf, fertf, nppf, nepf, peatval, fertval, EC1, EC2) {
+  # peatXf = raster with peat soils
+  # fertf =  soilType
+  # nppf = npp
+  # nepf= nep
+  # peatval = ID to identify the drained peatlands -> tells which peat soil you want to treat
+  # fertval = soilType ID -> tells which siteType you want to treat
+  
+  drPeatNeg <- peatXf == peatval & fertf == fertval  ###selecting the pixels that match the conditions of peat and siteType
+  drPeatNeg[drPeatNeg==0] <- NA  ### assign NA to the remaining pixels
+  drPeat <- nppf[drPeatNeg]  ###raster with only the pixel of interest
+  
+  ###calculate the new NEP according to the siteType (fertval)
+  if (fertval < 3) {         
+    drPeat <- drPeat + EC1#-240  
+  } else if (fertval >= 3) {
+    drPeat <- drPeat + EC2#70
+  }
+  nepf[drPeatNeg] <- drPeat
+  return(nepf)#merge(drPeat,nepf))
+}
