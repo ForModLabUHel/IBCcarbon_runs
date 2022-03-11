@@ -321,8 +321,8 @@ for(nii in 1:niter){
     m <- length(sampleOutput)
     print(paste(m,"variables"))
     n <- nrow(sampleOutput[[1]])
-    pdf(file = paste0("uncRuns/regRuns/plots_regionID",r_no,"_",varNams,
-                      "_",nSitesRunr,"_",harvscen,"_",
+    pdf(file = paste0("uncRuns/regRuns/plots_reg",r_no,
+                      "_",harvscen,"_samplesize",nSitesRunr,"_iters",nSamplesr,
                       "_pr",uncPCrobas,"_Xr",uncInput,"_ager",uncAge,
                       "_Cr",uncClim,"_str",uncSiteType,
                       "_uncPeat",uncPeat,".pdf"))
