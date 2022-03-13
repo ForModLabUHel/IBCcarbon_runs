@@ -290,6 +290,11 @@ for(nii in 1:niter){
   
   if(!uncSeg){
     print(sampleXs[[1]])
+    save(area_total,sampleXs,file=paste0("uncRuns/regRuns/samplexout_reg",r_no,
+                                             "_",harvscen,"_",                                    
+                                             "samplesize",nSitesRunr,"_iters",nSamplesr,
+                                             "_pr",uncPCrobas,"_Xr",uncInput,"_ager",uncAge,
+                                             "_Cr",uncClim,"_str",uncSiteType,".rdata")) 
     m <- ncol(sampleXs[[1]])
     n <- length(sampleXs)
     varNams <- names(sampleXs[[1]])
