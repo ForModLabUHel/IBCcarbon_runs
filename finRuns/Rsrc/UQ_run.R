@@ -300,11 +300,15 @@ for(nii in 1:niter){
     varNams <- names(sampleXs[[1]])
     #varNams <-  sampleXs[[1]][,"vari"]
     # g /m2 /year -> -44/12*16^2/10^12
+    errorsList <- data.frame()
     for(j in 1:m){
       x <- data.frame()
       for(k in 1:n){
-        x <- rbind(x, t(sampleXs[[k]][,j,with=FALSE]))
-        #rownames(x)[k] <- paste0(varNams[j],k)
+        if(length(sampleXs[[k]]) > 1){
+          x <- rbind(x, t(sampleXs[[k]][,j]))#,with=FALSE]))
+        } else if(k == 1) {
+          errorsList <- rbind(errorsList, sampleID = k)
+        }
       }
       #names(x) <- sampleXs[[1]]$periods
       #x[,3:5] <- x[,3:5]*cS[j]
@@ -313,6 +317,7 @@ for(nii in 1:niter){
       } else {
         sampleOutput[[j]] <- rbind(sampleOutput[[j]], x)
       }
+      names(sampleOutput)[j] <- varNams[j]
     }
     
     save(area_total,sampleOutput,file=paste0("uncRuns/regRuns/samplexout_reg",r_no,

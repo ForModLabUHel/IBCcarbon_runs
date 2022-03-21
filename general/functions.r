@@ -379,6 +379,7 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
                          finPeats=finPeats,sampleX=sampleX,
                          EC1=EC1[sampleID],EC2=EC2[sampleID])
     #uncTab <- UncOutProc(varSel=c(46,39,30,37), funX=rep("sum",4),modOut=region)
+    print(uncTab)
     return(uncTab)
   } 
   if(outType=="uncSeg"){
