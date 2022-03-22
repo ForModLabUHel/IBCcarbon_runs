@@ -305,7 +305,7 @@ for(nii in 1:niter){
       x <- data.frame()
       for(k in 1:n){
         if(length(sampleXs[[k]]) > 1){
-          x <- rbind(x, t(sampleXs[[k]][,j]))#,with=FALSE]))
+          x <- rbind(x, t(as.matrix(sampleXs[[k]])[,j]))#,with=FALSE]))
         } else if(k == 1) {
           errorsList <- rbind(errorsList, sampleID = k)
         }
