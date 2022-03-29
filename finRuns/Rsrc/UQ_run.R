@@ -48,7 +48,7 @@ parPath <- "/scratch/project_2000994/PREBASruns/metadata/paramUnc/"
 # Cut the joutomaa off
 data.all <- data.all[which(landclass!=3),]
 # No harvests on "kitumaa", set here as conservation area
-data.all$cons[which(data.all$landclass==2 & data.all2$cons==0)]<-1
+data.all$cons[which(data.all$landclass==2 & data.all$cons==0)]<-1
 
 
 set.seed(10)
