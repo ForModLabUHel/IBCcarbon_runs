@@ -106,7 +106,7 @@ if(!uncSeg & !loadUnc){ # sample pixel indices
   #if(!loadUnc){
   opsInd <- list() #matrix(0, nSitesRun, nSamples) 
   load(paste0("input/maakunta/maakunta_",r_no,"_IDsTab.rdata"))
-  for(ij in 1:1000){ 
+  for(ij in 1:nSamplesr){ 
     opsInd[[ij]] <- sample(1:nrow(data.all), nSitesRunr, replace = TRUE, prob = areas)
     ops[[ij]] <- copy(data.all[opsInd[[ij]],])
     ops[[ij]] <- cbind(ops[[ij]],data.IDs[match(ops[[ij]]$segID, data.IDs$maakuntaID),4:5])
@@ -216,7 +216,9 @@ if(uncRun){# sample model parameters, HcFactor and peatland emission coefficient
     } else {
       HcFactorr <- matrix(1,1,length(sampleIDs))
     }
-    save(opsInd,parids,ops,EC1,EC2,HcFactorr,file=paste0("uncRuns/regRuns/opsInd_reg",r_no,"_uncSeg",uncSeg,".rdata")) 
+    if(!testRun){
+      save(opsInd,parids,ops,EC1,EC2,HcFactorr,file=paste0("uncRuns/regRuns/opsInd_reg",r_no,"_uncSeg",uncSeg,".rdata")) 
+    }
   } #if(!uncSeg & !loadUnc) 
 }
 
