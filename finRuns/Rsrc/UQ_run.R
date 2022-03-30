@@ -49,7 +49,7 @@ parPath <- "/scratch/project_2000994/PREBASruns/metadata/paramUnc/"
 #extrLandclass <- 3
 data.all <- data.all[which(!data.all$landclass%in%extrLandclass),]#!=3 & data.all$landclass!=2),]
 # No harvests on "kitumaa", set here as conservation area
-data.all$cons[which(data.all$landclass==2 & data.all$cons==0)]<-1
+data.all$cons[which(data.all$landclass==2)]<-1
 
 
 set.seed(10)
