@@ -46,7 +46,8 @@ funX[match(varNames[c(7,11:12)],varNames[varSel])] <- "baWmean"
 parPath <- "/scratch/project_2000994/PREBASruns/metadata/paramUnc/"
 
 # Cut the joutomaa off
-data.all <- data.all[which(data.all$landclass!=3),]
+#extrLandclass <- 3
+data.all <- data.all[which(!data.all$landclass%in%extrLandclass),]#!=3 & data.all$landclass!=2),]
 # No harvests on "kitumaa", set here as conservation area
 data.all$cons[which(data.all$landclass==2 & data.all$cons==0)]<-1
 
