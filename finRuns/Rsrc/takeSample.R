@@ -259,7 +259,7 @@ for(sampleToRun in c("sampleXuni","sampleXyoung","sampleXin")){
   fileName = paste0("outSample/r_no",r_no,"_",sampleToRun)
   if(exists("addFileName")) fileName = paste0(fileName,"_",addFileName)
   save(datAllScen,areas,
-       fileName=paste0(fileName,".rdata"))
+       file=paste0(fileName,".rdata"))
   # save(datAllScen,areas,
   #      file=paste0("outSample/r_no",r_no,"_",sampleToRun,"NoAddHarv.rdata"))
   
