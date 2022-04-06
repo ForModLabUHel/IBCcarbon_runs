@@ -31,6 +31,8 @@ sampleForPlots <- 1
 # Missing from varOuts: 
 # MinPeat-index, NEPdrPeat
 
+if(!exists("siteTypes")) siteTypes=1:20
+if(!exists("landClassX")) landClassX=1:3
 ###flag for settings the regions to consider
 if(!exists("regSets")) regSets <- "maakunta" ### "forCent", "maakunta"
 if(!exists("minDharvX")) minDharvX <- 15 ### minimum DBH for clearcutting
@@ -117,7 +119,9 @@ if(regSets=="forCent"){
   load(paste0("input/maakunta/data.all_maakunta_",r_no,".rdata"))
   data.all$segID <- data.all$maakuntaID
 }
-
+####procData
+  data.all <- data.all[fert %in% siteTypes]
+  data.all <- data.all[landclass %in% landClassX]
   cloudpixels = data.all[, sum(ba==32766)]
   nonforest = data.all[, sum(ba==32767)]
   forest = data.all[, sum(ba< 32766)]
