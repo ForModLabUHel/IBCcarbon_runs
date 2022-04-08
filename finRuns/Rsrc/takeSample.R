@@ -70,64 +70,6 @@ hist(sampleXin$ba,freq=0,col=2)
 hist(sampleXyoung$ba,freq=0,col=4,add=T)
 hist(sampleXuni$ba,freq=0,col=3,add=T)
 
-# harvestscenarios <- "Base"
-# modRun <- runModelSampleIn(outType="testRun",
-#               sampleX=sampleXyoung,initSoilC=0)
-
-
-######BA based
-
-# library(data.table)
-
-# baClass <- seq(0,quantile(data.all$ba,0.99)
-#                 ,by=3)
-# 
-# sampleXin <- ops[[sampleID]]
-# hist(data.all$ba,freq=0)
-# hist(ops[[sampleID]]$ba,add=T,col=2,freq=0)
-# 
-# for(i in 1:length(baClass)){
-#   if (i<length(baClass)) sampleXin[ba %between% c(baClass[i],baClass[i+1]),class:=i]
-#   if (i==length(baClass)) sampleXin[ba > baClass[i],class:=i]
-# }
-# 
-# tabX <- sampleXin[,.N,by=class]
-# tabX[,classNew:=class-3]
-# tabX[classNew<1,classNew:=length(baClass) + classNew]
-# 
-# sampleXyoung <- data.table()
-# nSample <- round(nrow(sampleXin)/length(baClass))
-# for(i in 1:length(baClass)){
-#   nSample <- tabX[classNew==i]$N
-#   if(i<length(baClass)) sampleNew <- data.all[ba %between% c(baClass[i],baClass[i+1])][sample(nSample,replace = T)]
-#   if (i==length(baClass)) sampleNew <- data.all[ba > baClass[i]][sample(nSample,replace = T)]
-#   sampleXyoung <- rbind(sampleXyoung,sampleNew)
-# }  
-# 
-# 
-# sampleXuni <- data.table()
-# nSample <- round(nrow(sampleXin)/length(baClass))
-# for(i in 1:length(baClass)){
-#   if(i<length(baClass)) sampleNew <- data.all[ba %between% c(baClass[i],baClass[i+1])][sample(nSample,replace = T)]
-#   if (i==length(baClass)) sampleNew <- data.all[ba > baClass[i]][sample(nSample,replace = T)]
-#   sampleXuni <- rbind(sampleXuni,sampleNew)
-# }  
-# 
-# hist(sampleXin$age,col=2)
-# hist(sampleXyoung$age,col=4,add=T)
-# hist(sampleXuni$age,col=3,add=T)
-# 
-# hist(sampleXin$h,col=2)
-# hist(sampleXyoung$h,col=4,add=T)
-# hist(sampleXuni$h,col=3,add=T)
-# 
-# hist(sampleXin$dbh,col=2)
-# hist(sampleXyoung$dbh,col=4,add=T)
-# hist(sampleXuni$dbh,col=3,add=T)
-# 
-# hist(sampleXin$ba,freq=0,col=2)
-# hist(sampleXyoung$ba,freq=0,col=4,add=T)
-# hist(sampleXuni$ba,freq=0,col=3,add=T)
 varSel <- c(varSel,14)
 funX <- c(funX,"baWmean")
 sampleToRun <- "sampleXin"
@@ -260,73 +202,7 @@ for(sampleToRun in c("sampleXuni","sampleXyoung","sampleXin")){
   if(exists("addFileName")) fileName = paste0(fileName,"_",addFileName)
   save(datAllScen,areas,
        file=paste0(fileName,".rdata"))
-  # save(datAllScen,areas,
-  #      file=paste0("outSample/r_no",r_no,"_",sampleToRun,"NoAddHarv.rdata"))
-  
+
 }
 
 
-# 
-# 
-#   scens <- c("Base", "Low", "NoHarv", "MaxSust")
-#   
-# ######Make plots
-# for(sampleToRun in c("sampleXuni","sampleXyoung")){
-#   r_no=5
-#   load(paste0("/scratch/project_2000994/PREBASruns/finRuns/outSample/r_no"
-#               ,r_no,"_",sampleToRun,".rdata"))
-#   
-#   datAllScenNorm <- datAllScen
-#   # datAllScenNormProtect <- datAllScenProtect
-#   setkey(areas,NULL)
-#   setkey(datAllScenNorm,NULL)
-#   
-#   setkey(areas,segID)
-#   setkey(datAllScenNorm,segID)
-#   # setkey(areasProtect,segID)
-#   # setkey(datAllScenNormProtect,segID)
-#   datAllScenNorm <- merge(datAllScenNorm,areas,allow.cartesian=T)
-#   # datAllScenNormProtect <- merge(datAllScenNormProtect,areasProtect)
-#   vars <- colnames(datAllScenNorm)[!colnames(datAllScenNorm) %in% c("segID","area","year","maakID","harScen")]
-#   # datAllScenNorm[,normFact:=area*length(areas$area)/sum(areas$area)]
-#   datAllScenNorm[, vars] <- 
-#     datAllScenNorm[ ,lapply(.SD, `*`, area*length(areas$area)/sum(areas$area)), .SDcols = vars]
-#   
-#   # datAllScenNormProtect[, vars] <- 
-#     # datAllScenNormProtect[ ,lapply(.SD, `*`, area*length(areasProtect$area)/sum(areasProtect$area)), .SDcols = vars]
-#   
-#   plot.list <- list()
-#   i=0
-#   for(varX in vars){
-#     i=i+1
-#     sumryX <- datAllScenNorm[,.(median=median(get(varX)),
-#                              p25=quantile(get(varX),probs=0.25),
-#                              p75=quantile(get(varX),probs=0.75)),
-#                              by=.(year, harScen)]
-#      
-#     # sumryXProtect <- datAllScenNormProtect %>%   
-#       # group_by(year, harScen) %>%
-#       # summarise(medi = median(get(varX),na.rm=T),
-#       #           q0.25 = quantile(get(varX),probs=0.25,na.rm=T),
-#       #           q0.75 = quantile(get(varX),probs=0.75,na.rm=T))
-#     
-#     # sumryX <- rbind(sumryX,sumryXProtect)
-#     plot.list[[i]] <- ggplot(sumryX)+
-#       geom_ribbon(aes(x = year + 2016, ymin = p25, ymax = p75,fill= harScen), alpha = 0.3)+
-#       geom_line(aes(x = year+ 2016, y = median, color = harScen)) +
-#       xlab("year") + ylab(varX)
-#     
-#     i=i+1
-#     
-#     plot.list[[i]] <- ggplot(sumryX)+
-#       # geom_ribbon(aes(x = year + 2016, ymin = q0.25, ymax = q0.75,fill= harScen), alpha = 0.3)+
-#       geom_line(aes(x = year+ 2016, y = median, color = harScen)) + 
-#       xlab("year") + ylab(varX)
-#   }
-#   
-#   pdf(paste0("outSample/plots",r_no,"_",sampleToRun,".pdf"))
-#   for(i in 1:length(plot.list)) print(plot.list[[i]])
-#   dev.off()
-# }
-# 
-# 
