@@ -52,6 +52,7 @@ data.all <- data.all[which(!data.all$landclass%in%extrLandclass),]#!=3 & data.al
 data.all$cons[which(data.all$landclass==2)]<-1
 print("Leave landclass(es) out:")
 print(extrLandclass)
+
 set.seed(10)
 if(uncRun){ # load distribution data
   
