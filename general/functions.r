@@ -805,7 +805,8 @@ create_prebas_input.f = function(r_no, clim, data.sample, nYears,
                               VPD=clim$VPD[, 1:(nYears*365)],
                               Precip=clim$Precip[, 1:(nYears*365)],
                               CO2=clim$CO2[, 1:(nYears*365)],
-                              yassoRun = 1)
+                              yassoRun = 1,
+                              mortMod = mortMod)
   initPrebas
 }
 
