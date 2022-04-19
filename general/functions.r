@@ -2126,11 +2126,11 @@ runModelSampleIn <- function(sampleX, outType="testRun",initSoilC){
     unmanDeadW <- initDeadW(region,unmanFor,yearsDeadW)
     manDeadW <- initDeadW(region,manFor,yearsDeadW)
     save(unmanDeadW,manDeadW,file=paste0("initDeadWVss/reg",
-                                         r_no,"_deadWV.rdata"))
+                                         r_no,"_deadWV_mortMod",mortMod,".rdata"))
     return("deadWood volume at steady state saved")
   }else{
     load(paste0("initDeadWVss/reg",
-                r_no,"_deadWV.rdata"))
+                r_no,"_deadWV_mortMod",mortMod,".rdata"))
     region$multiOut[manFor,,8,1:3,1] <- region$multiOut[manFor,,8,1:3,1] + 
       aperm(replicate(length(manFor),(manDeadW$ssDeadW[1:nYears,])),c(3,1:2))
     region$multiOut[unmanFor,,8,1:3,1] <- region$multiOut[unmanFor,,8,1:3,1] + 
