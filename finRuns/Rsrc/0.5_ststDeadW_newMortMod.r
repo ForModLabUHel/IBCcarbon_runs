@@ -13,9 +13,9 @@ if(!exists("NoftTapio")) NoftTapio <- FALSE ##flag to switch off first thinning 
 if(!exists("ggCountry")) ggCountry <- array(NA,dim=c(36,3,19))
 
 noRmList <- c(ls(),"noRmList")
-nYears <- 50
+nYears <- 36#50
 sampleID=5
-yearsDeadW <- 21:50
+yearsDeadW <- 1:36#21:50
 
 for(klk in maaks){
   
