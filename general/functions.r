@@ -21,8 +21,8 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE,forceSaveInitSoil=
   ####in the protection scenarios consider buffer to protection areas
   if(harvestscenarios %in% c("protect","protectNoAdH")){
     # sampleX$cons[sampleX$Wbuffer==1] <- 1
-    if(landClassX==1:3) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to3.rdata"))
-    if(landClassX==1) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1.rdata"))
+    if(identical(landClassX,1:3)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to3.rdata"))
+    if(identical(landClassX,1)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1.rdata"))
     load(paste0("input/maakunta/maakunta_",r_no,"_IDsBuffer.rdata"))
     setnames(buffDat,"nPix","N")
     buffDat[,area:=N*16^2/10000]
@@ -251,8 +251,8 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE,forceSaveInitSoil=
   if(harscen !="Base"){
     if(outType!="uncRun"){
       if(!harscen %in% c("protect","protectNoAdH")){
-        if(landClassX==1:3) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to3.rdata"))
-        if(landClassX==1) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1.rdata"))
+        if(identical(landClassX,1:3)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to3.rdata"))
+        if(identical(landClassX,1)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1.rdata"))
       }
     }else{
       load(paste0("initSoilCunc/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
@@ -327,8 +327,8 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE,forceSaveInitSoil=
     print(paste("initSoilC",sampleID))
     if(outType!="testRun" | forceSaveInitSoil){
       if(!outType %in% c("uncRun","uncSeg")){
-        if(landClassX==1:3) save(initSoilC,file=paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to3.rdata"))
-        if(landClassX==1) save(initSoilC,file=paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1.rdata"))
+        if(identical(landClassX,1:3)) save(initSoilC,file=paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to3.rdata"))
+        if(identical(landClassX,1)) save(initSoilC,file=paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1.rdata"))
       } else {
         save(initSoilC,file=paste0("initSoilCunc/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
       }
