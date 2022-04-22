@@ -5,7 +5,7 @@
 ## ---------------------------------------------------------------------
 ## MAIN SCRIPT: uncRun for random segments, uncSeg for random values for segments
 ## ---------------------------------------------------------------------
-runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
+runModel <- function(sampleID, outType="dTabs",easyInit=FALSE,forceSaveInitSoil=F){
   # outType determines the type of output:
   # dTabs -> standard run, mod outputs saved as data.tables 
   # testRun-> test run reports the mod out and initPrebas as objects
@@ -325,7 +325,7 @@ runModel <- function(sampleID, outType="dTabs",easyInit=FALSE){
   if(harscen=="Base"){
     initSoilC <- stXX_GV(region, 1)
     print(paste("initSoilC",sampleID))
-    if(outType!="testRun"){
+    if(outType!="testRun" | forceSaveInitSoil){
       if(!outType %in% c("uncRun","uncSeg")){
         if(landClassX==1:3) save(initSoilC,file=paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to3.rdata"))
         if(landClassX==1) save(initSoilC,file=paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1.rdata"))
