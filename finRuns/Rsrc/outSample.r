@@ -106,7 +106,7 @@ for(harvestscenarios in scens){
   set.seed(1)
   ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
   toMem <- ls()
-  modRun <- runModel(sampleID,outType="testRun",forceSaveInitSoil=T)
+  modRun <- runModel(sampleID,outType="testRun")
   region <- modRun$region
   rm(modRun); gc()
   datAll <- data.table()
@@ -197,16 +197,12 @@ for(harvestscenarios in scens){
 areasProtect <- data.table(segID=region$siteInfo[,1],area=region$areas)
 datAllScenProtect <- datAllScen
 
-scens <- c("Base", "Low", "NoHarv", "MaxSust",
-           # "protect","protectNoAdH",
-           "adapt","adaptNoAdH","adaptTapio",
-           "Mitigation","MitigationNoAdH")
-
+scens <- c("Low", "NoHarv", "MaxSust",
+           "adapt","adaptTapio",
+           "Mitigation")
 datAllScen <- data.table()
 toMem <- ls()
-
 for(harvestscenarios in scens){
-  
   nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
   
   set.seed(1)
@@ -234,7 +230,6 @@ for(harvestscenarios in scens){
     }
     # print(varNames[varSel[i]])
   }
-  
   ####proc Spec vars
   ###dominant Species
   datX <- domFun(region,varX="species")  
@@ -244,7 +239,6 @@ for(harvestscenarios in scens){
   setkey(datX,segID,year)
   setkey(datAll,segID,year)
   datAll <- merge(datAll,datX)
-  
   ###age dominant species
   datX <- domFun(region,varX="age")
   setnames(datX,c("segID",1:region$maxYears))
@@ -253,7 +247,6 @@ for(harvestscenarios in scens){
   setkey(datX,segID,year)
   setkey(datAll,segID,year)
   datAll <- merge(datAll,datX)
-  
   ###deciduous Volume Vdec
   datX <- vDecFun(region)
   setnames(datX,c("segID",1:region$maxYears))
@@ -262,7 +255,6 @@ for(harvestscenarios in scens){
   setkey(datX,segID,year)
   setkey(datAll,segID,year)
   datAll <- merge(datAll,datX)
-  
   ####WenergyWood
   datX <- data.table(segID=segID,apply(region$multiEnergyWood[,,,2],1:2,sum))
   setnames(datX,c("segID",1:region$maxYears))
@@ -271,7 +263,6 @@ for(harvestscenarios in scens){
   setkey(datX,segID,year)
   setkey(datAll,segID,year)
   datAll <- merge(datAll,datX)
-  
   ####VenergyWood
   datX <- data.table(segID=segID,apply(region$multiEnergyWood[,,,1],1:2,sum))
   setnames(datX,c("segID",1:region$maxYears))
@@ -280,7 +271,6 @@ for(harvestscenarios in scens){
   setkey(datX,segID,year)
   setkey(datAll,segID,year)
   datAll <- merge(datAll,datX)
-  
   ####GVgpp
   datX <- data.table(segID=segID,region$GVout[,,3])
   setnames(datX,c("segID",1:region$maxYears))
@@ -289,7 +279,6 @@ for(harvestscenarios in scens){
   setkey(datX,segID,year)
   setkey(datAll,segID,year)
   datAll <- merge(datAll,datX)
-  
   ####GVw
   datX <- data.table(segID=segID,region$GVout[,,4])
   setnames(datX,c("segID",1:region$maxYears))
@@ -298,7 +287,6 @@ for(harvestscenarios in scens){
   setkey(datX,segID,year)
   setkey(datAll,segID,year)
   datAll <- merge(datAll,datX)
-  
   ####Wtot
   datX <- data.table(segID=segID,apply(region$multiOut[,,c(24,25,31,32,33),,1],1:2,sum))
   setnames(datX,c("segID",1:region$maxYears))
@@ -312,17 +300,27 @@ for(harvestscenarios in scens){
   datAll$maakID <- r_no 
   datAll$harScen <- harvestscenarios
   datAllScen <- rbind(datAllScen,datAll)
-  
   print(harvestscenarios)
   # rm(list=setdiff(ls(), c(toMem,"toMem"))); gc()
 }
 areas <- data.table(segID=region$siteInfo[,1],area=region$areas)
+datAllScen <- rbind(datAllBase,datAllScen)
+
+minDharvX = 999
+landClassX = 1
+mortMod=3
+
+if(minDharvX>100) addHarv="NO"
+fileName <- paste0("outSample/r_no",r_no,
+          "_addHarv",addHarv,"_landClassX",landClassX,
+          "_mortMod",mortMod,
+          ".rdata")
+save(datAllScen,areas,datAllScenProtect,areasProtect, file=fileName)
 
 
-
-save(datAllScen,areas,datAllScenProtect,areasProtect, file=paste0("outSample/r_no",r_no,".rdata"))
-
-
+Sys.chmod(list.dirs("initSoilC"), "0777",use_umask=FALSE)
+f <- list.files("initSoilC", all.files = TRUE, full.names = TRUE, recursive = TRUE)
+Sys.chmod(f, (file.info(f)$mode | "0777"),use_umask=FALSE)
 
 
 Sys.chmod(list.dirs("outSample"), "0777",use_umask=FALSE)
