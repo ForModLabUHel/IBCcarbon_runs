@@ -1,6 +1,7 @@
 library(dplyr)
 library(ggplot2)
 library(data.table)
+
 setwd("/scratch/project_2000994/PREBASruns/finRuns")
 r_no=4
 run_settings <- "_addHarvNO_landClassX1_mortMod3"
@@ -56,7 +57,7 @@ for(varX in vars){
   print(varX)
 }
 
-pdf(paste0("outSample/plots",r_no,".pdf"))
+pdf(paste0("outSample/plots/plots",r_no,".pdf"))
 for(i in 1:length(plot.list)) print(plot.list[[i]])
 dev.off()
 
