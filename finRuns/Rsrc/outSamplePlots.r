@@ -1,6 +1,6 @@
 library(dplyr)
 library(ggplot2)
-
+library(data.table)
 setwd("/scratch/project_2000994/PREBASruns/finRuns")
 r_no=4
 run_settings <- "_addHarvNO_landClassX1_mortMod3"
