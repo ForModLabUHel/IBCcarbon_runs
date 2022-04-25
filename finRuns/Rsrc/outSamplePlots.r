@@ -3,7 +3,7 @@ library(ggplot2)
 library(data.table)
 
 setwd("/scratch/project_2000994/PREBASruns/finRuns")
-r_no=4
+# r_no=4
 run_settings <- "_addHarvNO_landClassX1_mortMod3"
 # load(paste0("/scratch/project_2000994/PREBASruns/finRuns/outSample/r_no",r_no,".rdata"))
 load(paste0("outSample/r_no",r_no,run_settings,".rdata"))
