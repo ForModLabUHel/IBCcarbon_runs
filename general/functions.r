@@ -1421,9 +1421,18 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
       nep = processPeatUQ(peatX,fert,npp,nep,drPeatID,1,EC1,EC2)
       nep = processPeatUQ(peatX,fert,npp,nep,drPeatID,2,EC1,EC2)
       NEP[,curr] <- nep
+      N2O[,curr] <- processPeatUQ_N2O_CH4(peatX, fert, peatval, type = "N2O")
+      CH4[,curr] <- processPeatUQ_N2O_CH4(peatX, fert, peatval, type = "CH4")
     }  
     NEP <- colMeans(NEP)
+    N2O <- colMeans(N2O)
+    CH4 <- colMeans(CH4)
     xx[which(varsX == "NEP"),] <- NEP[2:(nYears+1)]
+    xx[(nVarSel+6),1:nYears] <- N2O
+    varsX[(nVarSel+6)] <- "N2O [g N2O m−2 year−1"
+    xx[(nVarSel+7),1:nYears] <- CH4
+    varsX[(nVarSel+7)] <- "CH4 [g CH4 m−2 year−1"
+    
   }
   
   outX <- data.table(t(xx))
@@ -2285,16 +2294,36 @@ processPeatUQ <- function(peatXf, fertf, nppf, nepf, peatval, fertval, EC1, EC2)
   # peatval = ID to identify the drained peatlands -> tells which peat soil you want to treat
   # fertval = soilType ID -> tells which siteType you want to treat
   
-  drPeatNeg <- peatXf == peatval & fertf == fertval  ###selecting the pixels that match the conditions of peat and siteType
+  drPeatNeg <- peatXf == peatval #& fertf == fertval  ###selecting the pixels that match the conditions of peat and siteType
   drPeatNeg[drPeatNeg==0] <- NA  ### assign NA to the remaining pixels
-  drPeat <- nppf[drPeatNeg]  ###raster with only the pixel of interest
+  drPeat <- nppf#[drPeatNeg]  ###raster with only the pixel of interest
   
   ###calculate the new NEP according to the siteType (fertval)
-  if (fertval < 3) {         
-    drPeat <- drPeat + EC1#-240  
-  } else if (fertval >= 3) {
-    drPeat <- drPeat + EC2#70
-  }
-  nepf[drPeatNeg] <- drPeat
+  #if (fertval <= 3) {         
+  drPeat[which(drPeatNeg & fertf <= 3)] <- 
+    drPeat[which(drPeatNeg & fertf <= 3)] + EC1#-240  
+  #} else if (fertval > 3) {
+  drPeat[which(drPeatNeg & fertf > 3)] <- 
+    drPeat[which(drPeatNeg & fertf > 3)] + EC2#-240  
+  #drPeat <- drPeat + EC2#70
+  #}
+  nepf[drPeatNeg] <- drPeat[drPeatNeg]
   return(nepf)#merge(drPeat,nepf))
+}
+
+processPeatUQ_N2O_CH4 <- function(peatXf, fertf, peatval, type = "N2O") {
+  
+  drPeatInd <- peatXf == peatval # & fertf == fertval  ###selecting the pixels that match the conditions of peat and siteType
+  emission <- 0*drPeatInd  ### zero vector  
+  ###calculate the new NEP according to the siteType (fertval)
+  if(type == "N2O"){
+    emission[which(drPeatInd & fertf<=3)] <- 0.23 + 0.04*rnorm(1) #g N2O m−2 year−1
+    emission[which(drPeatInd & fertf>3)] <- 0.077 + 0.004*rnorm(1) #g N2O m−2 year−1
+    emission[drPeatInd == 0] <- 0
+  } elseif (type == "CH4"){
+    emission[drPeatInd > 0] <- 0.34 ± 0.12 rnorm(1) #g CH4 m-2 year-1
+    emission[drPeatInd == 0] <- 0
+  }
+  
+  return(emission)#merge(drPeat,nepf))
 }
