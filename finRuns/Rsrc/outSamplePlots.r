@@ -1,8 +1,11 @@
 library(dplyr)
 library(ggplot2)
 
-r_no=1
-load(paste0("/scratch/project_2000994/PREBASruns/finRuns/outSample/r_no",r_no,".rdata"))
+setwd("/scratch/project_2000994/PREBASruns/finRuns")
+r_no=4
+run_settings <- "_addHarvNO_landClassX1_mortMod3"
+# load(paste0("/scratch/project_2000994/PREBASruns/finRuns/outSample/r_no",r_no,".rdata"))
+load(paste0("outSample/r_no",r_no,run_settings,".rdata"))
 
 datAllScenNorm <- datAllScen
 datAllScenNormProtect <- datAllScenProtect
@@ -38,7 +41,8 @@ for(varX in vars){
 
   sumryX <- rbind(sumryX,sumryXProtect)
   plot.list[[i]] <- ggplot(sumryX)+
-    geom_ribbon(aes(x = year + 2016, ymin = q0.25, ymax = q0.75,fill= harScen), alpha = 0.3)+
+    geom_line(aes(x = year+ 2016, y = q0.25, color = harScen),linetype=2) +
+    geom_line(aes(x = year+ 2016, y = q0.75, color = harScen),linetype=3) +
     geom_line(aes(x = year+ 2016, y = medi, color = harScen)) +
     xlab("year") + ylab(varX)
   
@@ -48,6 +52,8 @@ for(varX in vars){
     # geom_ribbon(aes(x = year + 2016, ymin = q0.25, ymax = q0.75,fill= harScen), alpha = 0.3)+
     geom_line(aes(x = year+ 2016, y = medi, color = harScen)) + 
     xlab("year") + ylab(varX)
+
+  print(varX)
 }
 
 pdf(paste0("outSample/plots",r_no,".pdf"))
