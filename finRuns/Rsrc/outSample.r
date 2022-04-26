@@ -306,9 +306,9 @@ for(harvestscenarios in scens){
 areas <- data.table(segID=region$siteInfo[,1],area=region$areas)
 datAllScen <- rbind(datAllBase,datAllScen)
 
-minDharvX = 999
-landClassX = 1
-mortMod=3
+# minDharvX = 999
+# landClassX = 1
+# mortMod=3
 
 if(minDharvX>100) addHarv="NO"
 fileName <- paste0("outSample/r_no",r_no,
