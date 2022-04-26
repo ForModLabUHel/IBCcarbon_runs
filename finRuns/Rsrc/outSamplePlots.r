@@ -26,17 +26,26 @@ datAllScenNormProtect[, vars] <-
 
 plot.list <- list()
 i=0
+# funX <-c("NEP","GPPtrees","npp","grossGrowth",
+#          "soilC","V","age","WroundWood",
+#          "VroundWood","Litter_fol","Litter_fr","Litter_fWoody", 
+#          "Litter_cWoody","DeadWoodVolume","D","BA",
+#          "H","Vmort","domSp","ageDom", 
+#          "Vdec","WenergyWood","VenergyWood","GVgpp",
+#          "GVw","WtotTrees" )
 for(varX in vars){
   i=i+1
   sumryX <- datAllScenNorm %>%   
     group_by(year, harScen) %>%
     summarise(medi = median(get(varX),na.rm=T),
+              mean = mean(get(varX),na.rm=T),
               q0.25 = quantile(get(varX),probs=0.25,na.rm=T),
               q0.75 = quantile(get(varX),probs=0.75,na.rm=T))
 
   sumryXProtect <- datAllScenNormProtect %>%   
     group_by(year, harScen) %>%
     summarise(medi = median(get(varX),na.rm=T),
+              mean = mean(get(varX),na.rm=T),
               q0.25 = quantile(get(varX),probs=0.25,na.rm=T),
               q0.75 = quantile(get(varX),probs=0.75,na.rm=T))
 
@@ -52,6 +61,7 @@ for(varX in vars){
   plot.list[[i]] <- ggplot(sumryX)+
     # geom_ribbon(aes(x = year + 2016, ymin = q0.25, ymax = q0.75,fill= harScen), alpha = 0.3)+
     geom_line(aes(x = year+ 2016, y = medi, color = harScen)) + 
+    geom_line(aes(x = year+ 2016, y = mean, color = harScen),linetype=2) + 
     xlab("year") + ylab(varX)
 
   print(varX)
