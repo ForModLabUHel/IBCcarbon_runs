@@ -264,8 +264,8 @@ runModel <- function(sampleID, outType="dTabs",
     initPrebas$yassoRun <- rep(1,initPrebas$nSites)
     initPrebas$soilC[,1,,,] <- initSoilC
   }
-  print(paste0("harvest scenario", harvScen))
-  print(paste0("harvest intensity", harvInten))
+  print(paste0("harvest scenario ", harvScen))
+  print(paste0("harvest intensity ", harvInten))
   HarvLimX <- HarvLim1[1:nYears,]
   
   if(harvScen %in% c("adapt","adaptNoAdH","adaptTapio")){
