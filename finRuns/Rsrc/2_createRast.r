@@ -14,7 +14,7 @@ if(regSets=="forCent"){
 data.IDs <- data.IDs[segID!=0]
 setkey(data.IDs,segID)
 
-if(harvestscenarios %in% c("protect","protectNoAdH")){
+if(harvScen %in% c("protect","protectNoAdH")){
   load(paste0("input/maakunta/maakunta_",r_no,"_IDsBuffer.rdata"))
   setkey(buf.IDs,segID,x,y)
   setkey(data.IDs,segID,x,y)
@@ -29,14 +29,16 @@ if(harvestscenarios %in% c("protect","protectNoAdH")){
 nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
 
 
-pdf(paste0("plots/histRast_",r_no,"_",
-           harvestscenarios,"_",rcpfile,".pdf"))
+pdf(paste0("plots/histRast_",r_no,
+           "_harscen",harvScen,
+           "_harInten",harvInten,"_",
+           rcpfile,".pdf"))
 
 if(!exists("varXs")) varXs <- c(varNames[varSel], specialVars)
 
 for(varX in varXs){
   # varX <- varXs[1]
-  fileXs <- list.files(path = paste0(pathtoken,pathFiles), pattern = paste0(varX,"_",harvestscenarios,"_",rcps))
+  fileXs <- list.files(path = paste0(pathtoken,pathFiles), pattern = paste0(varX,"_",harvScen,"_",rcps))
   if(length(fileXs) != nSamples) stop(paste0(nSamples-length(fileXs)," files missing"))
 
   outX <- data.table()
@@ -55,22 +57,28 @@ for(varX in varXs){
   rastX <- rasterFromXYZ(tabX[,.(x,y,per1)])
   crs(rastX) <- crsX
   writeRaster(rastX,filename = paste0("rasters/forCent",r_no,"/",
-                                      varX,"_",min(per1),"-",max(per1),"_",
-                                      harvestscenarios,"_",rcpfile,".tiff"),overwrite=T)
+                                      varX,"_",min(per1),"-",max(per1),
+                                      "_harscen",harvScen,
+                                      "_harInten",harvInten,"_",
+                                      rcpfile,".tiff"),overwrite=T)
   hist(rastX, main = paste(varX,"per1"))
   
   rastX <- rasterFromXYZ(tabX[,.(x,y,per2)])
   crs(rastX) <- crsX
   writeRaster(rastX,filename = paste0("rasters/forCent",r_no,"/",
-                                      varX,"_",min(per2),"-",max(per2),"_",
-                                      harvestscenarios,"_",rcpfile,".tiff"),overwrite=T)
+                                      varX,"_",min(per2),"-",max(per2),
+                                      "_harscen",harvScen,
+                                      "_harInten",harvInten,"_",
+                                      rcpfile,".tiff"),overwrite=T)
   hist(rastX, main = paste(varX,"per2"))
   
   rastX <- rasterFromXYZ(tabX[,.(x,y,per3)])
   crs(rastX) <- crsX
   writeRaster(rastX,filename = paste0("rasters/forCent",r_no,"/",
-                          varX,"_",min(per3),"-",max(per3),"_",
-                          harvestscenarios,"_",rcpfile,".tiff"),overwrite=T)
+                          varX,"_",min(per3),"-",max(per3),
+                          "_harscen",harvScen,
+                          "_harInten",harvInten,"_",
+                          rcpfile,".tiff"),overwrite=T)
   hist(rastX, main = paste(varX,"per3"))
  
   # if(varX!="DeadWoodVolume")  file.remove(paste0(pathFiles,fileXs))
@@ -83,8 +91,10 @@ dev.off()
 ###soilType raster
 print("creating site type raster")
 npp = raster(paste0("rasters/forCent",r_no,"/",
-                    "npp_",min(per1),"-",max(per1),"_",
-                    harvestscenarios,"_",rcpfile,".tif"))
+                    "npp_",min(per1),"-",max(per1),
+                    "_harscen",harvScen,
+                    "_harInten",harvInten,"_",
+                    rcpfile,".tif"))
 
 fertX <- data.all[,.(segID,fert)]
 setkey(fertX,segID)
@@ -143,7 +153,7 @@ Sys.chmod(f, (file.info(f)$mode | "0777"),use_umask=FALSE)
 #     ids <- raster("/scratch/project_2000994/MVMIsegments/segment-IDs/la_seg2.img")
 #     idx <- unique(extract(ids,NA_points[,1:2]))
 #     savepath <- paste0("/scratch/project_2000994/PREBASruns/finRuns/rasters/forCent12/NApoints/NApoints",
-#                        years[i],"_",harvestscenarios,"_",rcpfile, ".rdata")
+#                        years[i],"_",harvScen,"_",rcpfile, ".rdata")
 #     save(idx,NA_points, file=savepath)  
 #   }
 # }

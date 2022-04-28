@@ -24,8 +24,9 @@ if(soilSyke){
 ##!!###step to reduce the size of the peat raster 
 ###load npp first outside loop to get peatX
 npp = raster(paste0("rasters/forCent",r_no,"/",
-                    "npp_",min(per1),"-",max(per1),"_",
-                    harvestscenarios,"_",rcpfile,".tif"))
+                    "npp_",min(per1),"-",max(per1),
+                    "_harscen",harvScen,
+                    "_harInten",harvInten,rcpfile,".tif"))
 peatX <- crop(finPeats,npp)
 ##!!## end
 
@@ -37,17 +38,20 @@ fert=raster(paste0("rasters/forCent",r_no,"/",
 for (i in 1:3) {
   curr = paste0("per",i)
   npp = raster(paste0("rasters/forCent",r_no,"/",
-                      "npp_",min(get(curr)),"-",max(get(curr)),"_",
-                      harvestscenarios,"_",rcpfile,".tif"))
+                      "npp_",min(get(curr)),"-",max(get(curr)),
+                      "_harscen",harvScen,
+                      "_harInten",harvInten,rcpfile,".tif"))
   #writeRaster(peatX,filename = paste0("rasters/forCent",r_no,"/","/peatXtif"))
   nep = raster(paste0("rasters/forCent",r_no,"/",
-                      "NEP sp_",min(get(curr)),"-",max(get(curr)),"_",
-                      harvestscenarios,"_",rcpfile,".tif"))
+                      "NEP sp_",min(get(curr)),"-",max(get(curr)),
+                      "_harscen",harvScen,
+                      "_harInten",harvInten,rcpfile,".tif"))
   nep = processPeat(peatX,fert,npp,nep,drPeatID,1)
   nep = processPeat(peatX,fert,npp,nep,drPeatID,2)
   writeRaster(nep,filename = paste0(pathFiles,
-                                    "nepProcPeat_",min(get(curr)),"-",max(get(curr)),"_",
-                                    harvestscenarios,"_",rcpfile,".tif"))
+                                    "nepProcPeat_",min(get(curr)),"-",max(get(curr)),
+                                    "_harscen",harvScen,
+                                    "_harInten",harvInten,rcpfile,".tif"))
 }
 
 # procPeat outputs to rasters and plots
