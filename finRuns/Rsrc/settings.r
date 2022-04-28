@@ -27,10 +27,13 @@ library(DescTools)
 # r_no = regions = 2  ### forest center ID
 nCores <- 6  ####  number of cores
 sampleForPlots <- 1
-
+###management and intesity of harvest
+if(!exists("harvScen")) harvScen = "Base"#c("Base", Low","MaxSust")
+if(!exists("harvInten")) harvInten = "Base"#c("NoHarv","Base")
 # Missing from varOuts: 
 # MinPeat-index, NEPdrPeat
-
+if(!exists("mortMod")) mortMod=1
+if(!exists("mortMod")) mortMod=1
 if(!exists("mortMod")) mortMod=1
 if(!exists("siteTypes")) siteTypes=1:20
 if(!exists("landClassX")) landClassX=1:3
@@ -96,7 +99,7 @@ domSPrun = 0   ### 1 -> run only dominant layer
 startingYear = 2015
 endingYear = 2051
 if(!exists("nYears")) nYears = endingYear-startingYear
-if(!exists("harvestscenarios")) harvestscenarios = "Base"#c("Low","MaxSust","NoHarv","Base")
+
 rcps = "CurrClim" #c("CanESM2.rcp45.rdata","CanESM2.rcp85.rdata")#c("CurrClim","CanESM2.rcp26.rdata")#,"CanESM2.rcp45.rdata","CanESM2.rcp85.rdata")
 
 nSitesRun = 20000  ###aproximative number of samples for set runs

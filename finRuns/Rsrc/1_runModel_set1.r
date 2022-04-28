@@ -18,8 +18,8 @@ toMem <- ls()
 # print(sampleIDs)
 # sampleIDs <- c(66,342,395)
 mclapply(sampleIDs, function(jx) {
-  runModel(jx)  ## Do nothing for 10 seconds
-}, mc.cores = nCores,mc.silent=FALSE)      ## Split this job across 10 cores
+  runModel(jx,harvScen=harvScen,harvInten=harvInten)
+}, mc.cores = nCores,mc.silent=FALSE)      
 
 # models outputs to NAs, outputDT, initSoilC and plots
 Sys.chmod(list.dirs("NAs"), "0777",use_umask=FALSE)

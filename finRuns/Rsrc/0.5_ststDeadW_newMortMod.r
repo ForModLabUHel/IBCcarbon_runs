@@ -2,7 +2,8 @@
 mortMod=3
 if(!exists("maaks")) maaks <- 1:19 
 if(!exists("sampleID")) sampleID <- 1#498 #136
-if(!exists("harvestscenarios")) harvestscenarios <- "Base"
+if(!exists("harvScen")) harvScen <- "Base"
+if(!exists("harvInten")) harvInten <- "Base"
 if(!exists("regSets")) regSets = "maakunta"
 if(!exists("minDharvX")) minDharvX <- 15
 if(!exists("compHarvX")) compHarvX=0.

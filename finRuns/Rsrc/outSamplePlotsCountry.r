@@ -79,11 +79,11 @@ print(ggplot(meanCountry)+
   geom_line(aes(x = year+ 2016, y = get(varX), color = harScen)) + 
   xlab("year") + ylab(varX))
 
-print(ggplot(meanCountry)+
-        # geom_ribbon(aes(x = year + 2016, ymin = q0.25, ymax = q0.75,fill= harScen), alpha = 0.3)+
-        geom_line(aes(x = year+ 2016, y = get(varX)*countryArea/1e6,
-                      color = harScen)) + 
-        xlab("year") + ylab(varX))
+# print(ggplot(meanCountry)+
+#         # geom_ribbon(aes(x = year + 2016, ymin = q0.25, ymax = q0.75,fill= harScen), alpha = 0.3)+
+#         geom_line(aes(x = year+ 2016, y = get(varX)*countryArea/1e6,
+#                       color = harScen)) + 
+#         xlab("year") + ylab(varX))
 
 }
 dev.off()
@@ -99,9 +99,9 @@ regionNames$regIDs <- as.factor(regionNames$regIDs)
 meanRegion <- merge(meanRegion,regionNames)
 
 pdf(paste0("outSample/plots/plots_Scenarios.pdf"))
-for(scenX in scens){
-  for(varX in vars){
-    # i=i+1
+for(varX in vars){
+  for(scenX in scens){
+      # i=i+1
     print(ggplot(meanRegion[harScen==scenX])+
             # geom_ribbon(aes(x = year + 2016, ymin = q0.25, ymax = q0.75,fill= harScen), alpha = 0.3)+
       geom_line(aes(x = year+ 2016, y = get(varX), color = regNames)) + 

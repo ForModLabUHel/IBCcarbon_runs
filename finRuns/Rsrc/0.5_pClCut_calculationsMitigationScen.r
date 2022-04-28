@@ -9,7 +9,8 @@ for(r_no in 1:19){
 # r_no = regions = 4 ### forest center ID (metakeskus) 1:15
   regSets <- "maakunta"
   nSetRuns = 10 #number of set runs
-  harvestscenarios= "Base"		##management scenarios it can be  ### c("Low","MaxSust","NoHarv","Base")
+  harvScen= "Base"		##management scenarios it can be  ### c("Low","MaxSust","NoHarv","Base")
+  harvInten = "Base"
   rcpfile= "CurrClim"
   # compHarvX= 3
   # minDharvX = 15
