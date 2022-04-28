@@ -1204,7 +1204,7 @@ specialVarProc <- function(sampleX,region,r_no,harvScen,harvInten,rcpfile,sample
   domSpecies <- pX
   save(domSpecies,file=paste0("outputDT/forCent",r_no,"/domSpecies",
                               "_harscen",harvScen,
-                              "_harInten",harvInten,
+                              "_harInten",harvInten,"_",
                               rcpfile,"_",
                               "sampleID",sampleID,".rdata"))
   # rm(domSpecies); gc()
@@ -1219,7 +1219,7 @@ specialVarProc <- function(sampleX,region,r_no,harvScen,harvInten,rcpfile,sample
   
   save(domAge,file=paste0("outputDT/forCent",r_no,"/domAge",
                           "_harscen",harvScen,
-                          "_harInten",harvInten,
+                          "_harInten",harvInten,"_",
                           rcpfile,"_",
                           "sampleID",sampleID,".rdata"))
   ###deciduous Volume Vdec
@@ -1233,7 +1233,7 @@ specialVarProc <- function(sampleX,region,r_no,harvScen,harvInten,rcpfile,sample
   Vdec <- pX
   save(Vdec,file=paste0("outputDT/forCent",r_no,"/Vdec",
                         "_harscen",harvScen,
-                        "_harInten",harvInten,
+                        "_harInten",harvInten,"_",
                         rcpfile,"_",
                         "sampleID",sampleID,".rdata"))
 
@@ -1247,7 +1247,7 @@ specialVarProc <- function(sampleX,region,r_no,harvScen,harvInten,rcpfile,sample
   WenergyWood <- merge(pX,p3)
   save(WenergyWood,file=paste0("outputDT/forCent",r_no,"/WenergyWood",
                                "_harscen",harvScen,
-                               "_harInten",harvInten,
+                               "_harInten",harvInten,"_",
                                rcpfile,"_",
                         "sampleID",sampleID,".rdata"))
   ####VenergyWood
@@ -1260,7 +1260,7 @@ specialVarProc <- function(sampleX,region,r_no,harvScen,harvInten,rcpfile,sample
   VenergyWood <- merge(pX,p3)
   save(VenergyWood,file=paste0("outputDT/forCent",r_no,
                     "/VenergyWood","_harscen",harvScen,
-                    "_harInten",harvInten,
+                    "_harInten",harvInten,"_",
                     rcpfile,"_",
                                "sampleID",sampleID,".rdata"))
   ####GVgpp
@@ -1274,7 +1274,7 @@ specialVarProc <- function(sampleX,region,r_no,harvScen,harvInten,rcpfile,sample
   save(GVgpp,file=paste0("outputDT/forCent",r_no,
                                "/GVgpp",
                          "_harscen",harvScen,
-                         "_harInten",harvInten,
+                         "_harInten",harvInten,"_",
                          rcpfile,"_",
                                "sampleID",sampleID,".rdata"))
   ####GVw
@@ -1288,7 +1288,7 @@ specialVarProc <- function(sampleX,region,r_no,harvScen,harvInten,rcpfile,sample
   save(GVw,file=paste0("outputDT/forCent",r_no,
                          "/GVw","_harscen",harvScen,
                        "_harInten",harvInten,
-                       rcpfile,"_",
+                       ,"_",rcpfile,"_",
                          "sampleID",sampleID,".rdata"))
   ####Wtot
   outX <- data.table(segID=sampleX$segID,apply(region$multiOut[,,c(24,25,31,32,33),,1],1:2,sum))
@@ -1300,7 +1300,7 @@ specialVarProc <- function(sampleX,region,r_no,harvScen,harvInten,rcpfile,sample
   Wtot <- merge(pX,p3)
   save(Wtot,file=paste0("outputDT/forCent",r_no,"/Wtot",
                         "_harscen",harvScen,
-                        "_harInten",harvInten,
+                        "_harInten",harvInten,"_",
                         rcpfile,"_",
                                "sampleID",sampleID,".rdata"))
   rm(domSpecies,domAge,Vdec,WenergyWood,Wtot,pX,p1,p2,p3); gc()

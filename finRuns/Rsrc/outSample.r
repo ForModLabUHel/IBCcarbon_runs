@@ -4,7 +4,7 @@ devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_
 source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
 
 ####run Base scenario 
-harvestscenarios="Base"
+harvScen="Base"
 nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
 set.seed(1)
 ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
@@ -93,15 +93,15 @@ setkey(datAll,segID,year)
 datAll <- merge(datAll,datX)
 datAll$year <- as.numeric(as.character(datAll$year))
 datAll$maakID <- r_no 
-datAll$harScen <- harvestscenarios
+datAll$harScen <- harvScen
 datAllBase <- datAll
-print(harvestscenarios)
+print(harvScen)
 
 #Run protect scenarios
 scens <- c("protect")#,#"protectNoAdH")
 datAllScen <- data.table()
 toMem <- ls()
-for(harvestscenarios in scens){
+for(harvScen in scens){
   nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
   set.seed(1)
   ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
@@ -190,9 +190,9 @@ for(harvestscenarios in scens){
   datAll <- merge(datAll,datX)
   datAll$year <- as.numeric(as.character(datAll$year))
   datAll$maakID <- r_no 
-  datAll$harScen <- harvestscenarios
+  datAll$harScen <- harvScen
   datAllScen <- rbind(datAllScen,datAll)
-  print(harvestscenarios)
+  print(harvScen)
 }
 areasProtect <- data.table(segID=region$siteInfo[,1],area=region$areas)
 datAllScenProtect <- datAllScen
@@ -202,7 +202,7 @@ scens <- c("Low", "NoHarv", "MaxSust",
            "Mitigation")
 datAllScen <- data.table()
 toMem <- ls()
-for(harvestscenarios in scens){
+for(harvScen in scens){
   nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
   
   set.seed(1)
@@ -298,9 +298,9 @@ for(harvestscenarios in scens){
   
   datAll$year <- as.numeric(as.character(datAll$year))
   datAll$maakID <- r_no 
-  datAll$harScen <- harvestscenarios
+  datAll$harScen <- harvScen
   datAllScen <- rbind(datAllScen,datAll)
-  print(harvestscenarios)
+  print(harvScen)
   # rm(list=setdiff(ls(), c(toMem,"toMem"))); gc()
 }
 areas <- data.table(segID=region$siteInfo[,1],area=region$areas)
