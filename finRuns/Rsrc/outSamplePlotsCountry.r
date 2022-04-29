@@ -35,7 +35,7 @@ for(r_no in regions){
   setkey(datAllScenNormProtect,segID)
   datAllScenNorm <- merge(datAllScenNorm,areas)
   datAllScenNormProtect <- merge(datAllScenNormProtect,areasProtect)
-  vars <- colnames(datAllScenNorm)[!colnames(datAllScenNorm) %in% c("segID","area","year","maakID","harScen")]
+  vars <- colnames(datAllScenNorm)[!colnames(datAllScenNorm) %in% c("segID","area","year","maakID","harScen","harvInten")]
   # datAllScenNorm[,normFact:=area*length(areas$area)/sum(areas$area)]
   datAllScenNorm[, vars] <- 
     datAllScenNorm[ ,lapply(.SD, `*`, area*length(areas$area)/sum(areas$area)), .SDcols = vars]
@@ -45,10 +45,10 @@ for(r_no in regions){
   
   
   meanScenProtect <- 
-    datAllScenNormProtect[ ,lapply(.SD, mean,na.rm=T), .SDcols = vars,by=.(harScen,year)]
+    datAllScenNormProtect[ ,lapply(.SD, mean,na.rm=T), .SDcols = vars,by=.(harScen,year,harvInten)]
   
   meanScen <- 
-    datAllScenNorm[ ,lapply(.SD, mean,na.rm=T), .SDcols = vars,by=.(harScen,year)]
+    datAllScenNorm[ ,lapply(.SD, mean,na.rm=T), .SDcols = vars,by=.(harScen,year,harvInten)]
   
   meanScenProtect$region=r_no
   meanScen$region=r_no
@@ -67,7 +67,7 @@ countryArea <- sum(areaAllRegions)
 
     meanCountry <- meanScenNorm[ ,lapply(.SD, sum), .SDcols = vars,by=.(harScen,year)]
 
-save(meanCountry,meanRegion,
+save(meanCountry,meanRegion,countryArea,
      file = paste0("outSample/country",
                    run_settings,".rdata"))
 
