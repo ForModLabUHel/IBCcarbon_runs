@@ -65,8 +65,8 @@ for(varX in vars){
 
   plot.list[[i]] <- ggplot(sumryX)+
     # geom_ribbon(aes(x = year + 2016, ymin = q0.25, ymax = q0.75,fill= harScen), alpha = 0.3)+
-    geom_line(aes(x = year+ 2016, y = medi, color = harScen)) + 
-    geom_line(aes(x = year+ 2016, y = mean, color = harScen),linetype=2) + 
+    geom_line(aes(x = year+ 2016, y = medi, color = harScen,linetype=harvInten)) +
+    geom_line(aes(x = year+ 2016, y = mean, color = harScen,linetype=harvInten)) +
     xlab("year") + ylab(varX)
 
   print(varX)
