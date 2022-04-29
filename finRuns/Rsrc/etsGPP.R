@@ -110,7 +110,7 @@ for(ijx in 1:15){
   
   
   # Loop management scenarios ------------------------------------------------
-  harscen = harvestscenarios
+  harscen = harvScen
   # print(date())
   # print(harscen)
   i = i + 1

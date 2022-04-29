@@ -252,7 +252,7 @@ runModel <- function(sampleID, outType="dTabs",
   # save(initPrebas,HarvLim1,file=paste0("test1",harvScen,".rdata"))
   # region <- regionPrebas(initPrebas)
   ###run PREBAS
-  if(harvScen !="Base"){
+  if(harvScen !="Base" & harvInten != "Base"){
     if(outType!="uncRun"){
       if(!harvScen %in% c("protect","protectNoAdH")){
         if(identical(landClassX,1:3)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to3.rdata"))

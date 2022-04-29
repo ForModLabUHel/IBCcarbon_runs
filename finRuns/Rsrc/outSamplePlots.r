@@ -16,7 +16,7 @@ setkey(areasProtect,segID)
 setkey(datAllScenNormProtect,segID)
 datAllScenNorm <- merge(datAllScenNorm,areas)
 datAllScenNormProtect <- merge(datAllScenNormProtect,areasProtect)
-vars <- colnames(datAllScenNorm)[!colnames(datAllScenNorm) %in% c("segID","area","year","maakID","harScen","harvIntent")]
+vars <- colnames(datAllScenNorm)[!colnames(datAllScenNorm) %in% c("segID","area","year","maakID","harScen","harvInten")]
 # datAllScenNorm[,normFact:=area*length(areas$area)/sum(areas$area)]
 datAllScenNorm[, vars] <- 
   datAllScenNorm[ ,lapply(.SD, `*`, area*length(areas$area)/sum(areas$area)), .SDcols = vars]
@@ -35,25 +35,30 @@ i=0
 #          "GVw","WtotTrees" )
 for(varX in vars){
   i=i+1
-  sumryX <- datAllScenNorm %>%   
-    group_by(year, harScen,harvInten) %>%
-    summarise(medi = median(get(varX),na.rm=T),
-              mean = mean(get(varX),na.rm=T),
-              q0.25 = quantile(get(varX),probs=0.25,na.rm=T),
-              q0.75 = quantile(get(varX),probs=0.75,na.rm=T))
-
-  sumryXProtect <- datAllScenNormProtect %>%   
-    group_by(year, harScen) %>%
-    summarise(medi = median(get(varX),na.rm=T),
-              mean = mean(get(varX),na.rm=T),
-              q0.25 = quantile(get(varX),probs=0.25,na.rm=T),
-              q0.75 = quantile(get(varX),probs=0.75,na.rm=T))
-
+  sumryX <- datAllScenNorm[,.(median(get(varX),na.rm=T),
+                      mean(get(varX),na.rm=T),
+                      quantile(get(varX),probs=0.25,na.rm=T),
+                      quantile(get(varX),probs=0.75,na.rm=T)),
+                    by=.(year, harScen,harvInten)]
+  setnames(sumryX,c("V1","V2","V3","V4"),
+           c("medi","mean","q0.25","q0.75"))
+  
+  sumryXProtect <- datAllScenNormProtect[,
+                          .(median(get(varX),na.rm=T),
+                             mean(get(varX),na.rm=T),
+                 quantile(get(varX),probs=0.25,na.rm=T),
+               quantile(get(varX),probs=0.75,na.rm=T)),
+                      by=.(year, harScen,harvInten)]
+  setnames(sumryXProtect,c("V1","V2","V3","V4"),
+           c("medi","mean","q0.25","q0.75"))
+  
   sumryX <- rbind(sumryX,sumryXProtect)
+  
   plot.list[[i]] <- ggplot(sumryX)+
-    geom_line(aes(x = year+ 2016, y = q0.25, color = harScen),linetype=2) +
-    geom_line(aes(x = year+ 2016, y = q0.75, color = harScen),linetype=3) +
-    geom_line(aes(x = year+ 2016, y = medi, color = harScen)) +
+    # ggplot(sumryX[harScen=="Base"])+
+    geom_line(aes(x = year+ 2016, y = q0.25, color = harScen,linetype=harvInten)) +
+    geom_line(aes(x = year+ 2016, y = q0.75, color = harScen,linetype=harvInten)) +
+    geom_line(aes(x = year+ 2016, y = medi, color = harScen,linetype=harvInten)) +
     xlab("year") + ylab(varX)
   
   i=i+1
