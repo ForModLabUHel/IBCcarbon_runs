@@ -208,9 +208,114 @@ for(harvInten in harvIntensities){
 areasProtect <- data.table(segID=region$siteInfo[,1],area=region$areas)
 datAllScenProtect <- datAllScen
 
+###run Base scenario with other intensities
+scens <- "Base"
+datAllScen <- data.table()
+toMem <- ls()
+for(harvInten in c("Low","MaxSust")){
+  for(harvScen in scens){
+    nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
+    set.seed(1)
+    ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
+    toMem <- ls()
+    modRun <- runModel(sampleID,outType="testRun",
+                       harvScen=harvScen,harvInten=harvInten)
+    region <- modRun$region
+    rm(modRun); gc()
+    datAll <- data.table()
+    segID <- region$siteInfo[,1]
+    for(i in 1:length(varSel)){
+      datX <- outProcFun(region,varSel[i],funX[i])
+      datX <- melt(datX,"segID")
+      setnames(datX,c("variable","value"),c("year",varNames[varSel[i]]))
+      if(i ==1){
+        datAll <- datX
+      }else{
+        setkey(datX,segID,year)
+        setkey(datAll,segID,year)
+        datAll <- merge(datAll,datX)
+      }
+    }
+    ####proc Spec vars
+    ###dominant Species
+    datX <- domFun(region,varX="species")  
+    setnames(datX,c("segID",1:region$maxYears))
+    datX <- melt(datX,"segID")
+    setnames(datX,c("variable","value"),c("year","domSp"))
+    setkey(datX,segID,year)
+    setkey(datAll,segID,year)
+    datAll <- merge(datAll,datX)
+    ###age dominant species
+    datX <- domFun(region,varX="age")
+    setnames(datX,c("segID",1:region$maxYears))
+    datX <- melt(datX,"segID")
+    setnames(datX,c("variable","value"),c("year","ageDom"))
+    setkey(datX,segID,year)
+    setkey(datAll,segID,year)
+    datAll <- merge(datAll,datX)
+    ###deciduous Volume Vdec
+    datX <- vDecFun(region)
+    setnames(datX,c("segID",1:region$maxYears))
+    datX <- melt(datX,"segID")
+    setnames(datX,c("variable","value"),c("year","Vdec"))
+    setkey(datX,segID,year)
+    setkey(datAll,segID,year)
+    datAll <- merge(datAll,datX)
+    ####WenergyWood
+    datX <- data.table(segID=segID,apply(region$multiEnergyWood[,,,2],1:2,sum))
+    setnames(datX,c("segID",1:region$maxYears))
+    datX <- melt(datX,"segID")
+    setnames(datX,c("variable","value"),c("year","WenergyWood"))
+    setkey(datX,segID,year)
+    setkey(datAll,segID,year)
+    datAll <- merge(datAll,datX)
+    ####VenergyWood
+    datX <- data.table(segID=segID,apply(region$multiEnergyWood[,,,1],1:2,sum))
+    setnames(datX,c("segID",1:region$maxYears))
+    datX <- melt(datX,"segID")
+    setnames(datX,c("variable","value"),c("year","VenergyWood"))
+    setkey(datX,segID,year)
+    setkey(datAll,segID,year)
+    datAll <- merge(datAll,datX)
+    ####GVgpp
+    datX <- data.table(segID=segID,region$GVout[,,3])
+    setnames(datX,c("segID",1:region$maxYears))
+    datX <- melt(datX,"segID")
+    setnames(datX,c("variable","value"),c("year","GVgpp"))
+    setkey(datX,segID,year)
+    setkey(datAll,segID,year)
+    datAll <- merge(datAll,datX)
+    ####GVw
+    datX <- data.table(segID=segID,region$GVout[,,4])
+    setnames(datX,c("segID",1:region$maxYears))
+    datX <- melt(datX,"segID")
+    setnames(datX,c("variable","value"),c("year","GVw"))
+    setkey(datX,segID,year)
+    setkey(datAll,segID,year)
+    datAll <- merge(datAll,datX)
+    ####Wtot
+    datX <- data.table(segID=segID,apply(region$multiOut[,,c(24,25,31,32,33),,1],1:2,sum))
+    setnames(datX,c("segID",1:region$maxYears))
+    datX <- melt(datX,"segID")
+    setnames(datX,c("variable","value"),c("year","WtotTrees"))
+    setkey(datX,segID,year)
+    setkey(datAll,segID,year)
+    datAll <- merge(datAll,datX)
+    datAll$year <- as.numeric(as.character(datAll$year))
+    datAll$maakID <- r_no 
+    datAll$harScen <- harvScen
+    datAll$harvInten <- harvInten
+    datAllScen <- rbind(datAllScen,datAll)
+    
+    print(paste0("harvest scenario ", harvScen))
+    print(paste0("harvest intensity ", harvInten))
+  }
+}
+
+
+######run adapt and Mitigation
 scens <- c("adapt",
            "Mitigation")
-datAllScen <- data.table()
 toMem <- ls()
 for(harvInten in harvIntensities){
   for(harvScen in scens){

@@ -16,7 +16,7 @@ setkey(areasProtect,segID)
 setkey(datAllScenNormProtect,segID)
 datAllScenNorm <- merge(datAllScenNorm,areas)
 datAllScenNormProtect <- merge(datAllScenNormProtect,areasProtect)
-vars <- colnames(datAllScenNorm)[!colnames(datAllScenNorm) %in% c("segID","area","year","maakID","harScen")]
+vars <- colnames(datAllScenNorm)[!colnames(datAllScenNorm) %in% c("segID","area","year","maakID","harScen","harvIntent")]
 # datAllScenNorm[,normFact:=area*length(areas$area)/sum(areas$area)]
 datAllScenNorm[, vars] <- 
   datAllScenNorm[ ,lapply(.SD, `*`, area*length(areas$area)/sum(areas$area)), .SDcols = vars]
@@ -36,7 +36,7 @@ i=0
 for(varX in vars){
   i=i+1
   sumryX <- datAllScenNorm %>%   
-    group_by(year, harScen) %>%
+    group_by(year, harScen,harvInten) %>%
     summarise(medi = median(get(varX),na.rm=T),
               mean = mean(get(varX),na.rm=T),
               q0.25 = quantile(get(varX),probs=0.25,na.rm=T),
