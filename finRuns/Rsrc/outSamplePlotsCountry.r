@@ -67,16 +67,26 @@ countryArea <- sum(areaAllRegions)
 
     meanCountry <- meanScenNorm[ ,lapply(.SD, sum), .SDcols = vars,by=.(harScen,year)]
 
-save(meanCountry,meanRegion,countryArea,
+    meanCountry$CbalState=NA
+    meanCountry[year %in% 2:max(meanCountry$year)]$CbalState=
+    -(meanCountry[year %in% 2:max(meanCountry$year),
+                (WtotTrees+soilC+GVw)] -
+      meanCountry[year %in% 1:(max(meanCountry$year)-1),
+                  (WtotTrees+soilC+GVw)])*44/12/1e9*countryArea
+    
+    meanCountry[,CbalFluxes:=(-NEP*10+WenergyWood+WroundWood)*
+                    44/12*countryArea/1e9]
+    
+    save(meanCountry,meanRegion,countryArea,
      file = paste0("outSample/country",
                    run_settings,".rdata"))
-
 pdf(paste0("outSample/plots/plots_country.pdf"))
+
 for(varX in vars){
   # i=i+1
-print(ggplot(meanCountry)+
+  print(ggplot(meanCountry)+
   # geom_ribbon(aes(x = year + 2016, ymin = q0.25, ymax = q0.75,fill= harScen), alpha = 0.3)+
-  geom_line(aes(x = year+ 2016, y = get(varX), color = harScen)) + 
+  geom_line(aes(x = year+ 2016, y = get(varX), color = harScen,linetype=harvInten)) + 
   xlab("year") + ylab(varX))
 
 # print(ggplot(meanCountry)+
@@ -84,8 +94,12 @@ print(ggplot(meanCountry)+
 #         geom_line(aes(x = year+ 2016, y = get(varX)*countryArea/1e6,
 #                       color = harScen)) + 
 #         xlab("year") + ylab(varX))
-
 }
+print(ggplot(meanCountry)+
+        # geom_ribbon(aes(x = year + 2016, ymin = q0.25, ymax = q0.75,fill= harScen), alpha = 0.3)+
+        geom_line(aes(x = year+ 2016, y = CbalFluxes, color = harScen),linetype=1) + 
+        geom_line(aes(x = year+ 2016, y = CbalState, color = harScen),linetype=2) +
+        xlab("year") + ylab("C balance"))
 dev.off()
 
 
@@ -106,7 +120,6 @@ for(varX in vars){
             # geom_ribbon(aes(x = year + 2016, ymin = q0.25, ymax = q0.75,fill= harScen), alpha = 0.3)+
       geom_line(aes(x = year+ 2016, y = get(varX), color = regNames)) + 
       xlab("year") + ylab(varX)+ ggtitle(scenX))
-    
   }
 }
 dev.off()
