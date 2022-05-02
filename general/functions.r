@@ -140,12 +140,6 @@ runModel <- function(sampleID, outType="dTabs",
     initPrebas$initCLcutRatio[jj,3] <- 0.2
   }
   
-  # initSoil <- aperm(initPrebas$soilC,c(3:5,1,2))
-  # initSoil[,,1,,1] <- initSoilCstst[[r_no]]
-  # initSoil <- aperm(initSoil,c(4,5,1:3))
-  # initPrebas$soilC <- initSoil
-  # if(exists("soilCststXX")) initPrebas$soilC[,1,,,] <- soilCststXX[[sampleID]]$soilC
-  
   ##here mix years for weather inputs for Curr Climate
   if(rcpfile=="CurrClim"){
     #if(outType=="uncRun"){
@@ -252,7 +246,7 @@ runModel <- function(sampleID, outType="dTabs",
   # save(initPrebas,HarvLim1,file=paste0("test1",harvScen,".rdata"))
   # region <- regionPrebas(initPrebas)
   ###run PREBAS
-  if(harvScen !="Base" & harvInten != "Base"){
+  if(!(harvScen =="Base" & harvInten == "Base")){
     if(outType!="uncRun"){
       if(!harvScen %in% c("protect","protectNoAdH")){
         if(identical(landClassX,1:3)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to3.rdata"))
