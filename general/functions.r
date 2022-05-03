@@ -333,7 +333,15 @@ runModel <- function(sampleID, outType="dTabs",
       }
     }
     ###run yasso (starting from steady state) using PREBAS litter
-    region <- yassoPREBASin(region,initSoilC)
+    # region <- yassoPREBASin(region,initSoilC)
+    if (is.na(minDharvX)) {
+      region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
+                             cutAreas =cutArX,compHarv=compHarvX)
+    } else {
+      region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
+                             minDharv = minDharvX,cutAreas =cutArX,
+                             compHarv=compHarvX)
+    }
     # out <- region$multiOut[,,,,1]
   }
   print(paste("all runs done",sampleID))

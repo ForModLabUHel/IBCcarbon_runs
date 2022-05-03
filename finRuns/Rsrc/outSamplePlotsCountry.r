@@ -42,10 +42,10 @@ for(r_no in regions){
   
   datAllScenNormProtect[, vars] <- 
     datAllScenNormProtect[ ,lapply(.SD, `*`, area*length(areasProtect$area)/sum(areasProtect$area)), .SDcols = vars]
-  
-  
+
   meanScenProtect <- 
-    datAllScenNormProtect[ ,lapply(.SD, mean,na.rm=T), .SDcols = vars,by=.(harScen,year,harvInten)]
+    datAllScenNormProtect[ ,lapply(.SD, mean,na.rm=T),
+                .SDcols = vars,by=.(harScen,year,harvInten)]
   
   meanScen <- 
     datAllScenNorm[ ,lapply(.SD, mean,na.rm=T), .SDcols = vars,by=.(harScen,year,harvInten)]
@@ -65,9 +65,9 @@ countryArea <- sum(areaAllRegions)
     meanScenNorm[, vars] <- 
       meanRegion[ ,lapply(.SD, `*`, area/countryArea), .SDcols = vars]
 
-    meanCountry <- meanScenNorm[ ,lapply(.SD, sum), .SDcols = vars,by=.(harScen,year)]
+    meanCountry <- meanScenNorm[ ,lapply(.SD, sum), .SDcols = vars,by=.(harScen,year,harvInten)]
 
-    meanCountry$CbalState=NA
+    meanCountry$CbalState=0
     meanCountry[year %in% 2:max(meanCountry$year)]$CbalState=
     -(meanCountry[year %in% 2:max(meanCountry$year),
                 (WtotTrees+soilC+GVw)] -
@@ -76,6 +76,7 @@ countryArea <- sum(areaAllRegions)
     
     meanCountry[,CbalFluxes:=(-NEP*10+WenergyWood+WroundWood)*
                     44/12*countryArea/1e9]
+    meanCountry[year ==1]$CbalState=NA
     
     save(meanCountry,meanRegion,countryArea,
      file = paste0("outSample/country",
@@ -97,9 +98,14 @@ for(varX in vars){
 }
 print(ggplot(meanCountry)+
         # geom_ribbon(aes(x = year + 2016, ymin = q0.25, ymax = q0.75,fill= harScen), alpha = 0.3)+
-        geom_line(aes(x = year+ 2016, y = CbalFluxes, color = harScen),linetype=1) + 
-        geom_line(aes(x = year+ 2016, y = CbalState, color = harScen),linetype=2) +
-        xlab("year") + ylab("C balance"))
+        # geom_line(aes(x = year+ 2016, y = CbalFluxes, color = harScen,linetype=harvInten)) + 
+        geom_line(aes(x = year+ 2016, y = CbalState, color = harScen,linetype=harvInten)) +
+        xlab("year") + ylab("C balance (State)"))
+print(ggplot(meanCountry)+
+        # geom_ribbon(aes(x = year + 2016, ymin = q0.25, ymax = q0.75,fill= harScen), alpha = 0.3)+
+        geom_line(aes(x = year+ 2016, y = CbalFluxes, color = harScen,linetype=harvInten)) +
+        # geom_line(aes(x = year+ 2016, y = CbalState, color = harScen,linetype=harvInten)) +
+        xlab("year") + ylab("C balance (Fluxes)"))
 dev.off()
 
 
