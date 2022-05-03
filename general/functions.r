@@ -334,6 +334,8 @@ runModel <- function(sampleID, outType="dTabs",
     }
     ###run yasso (starting from steady state) using PREBAS litter
     # region <- yassoPREBASin(region,initSoilC)
+    initPrebas$yassoRun <- rep(1,initPrebas$nSites)
+    initPrebas$soilC[,1,,,] <- initSoilC
     if (is.na(minDharvX)) {
       region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
                              cutAreas =cutArX,compHarv=compHarvX)
