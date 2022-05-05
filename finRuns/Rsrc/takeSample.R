@@ -3,9 +3,13 @@ library(ggplot2)
 library(data.table)
 
 # load("C:/Users/checcomi/Documents/research/IBC-carbon/test/data.all_maakunta_5.rdata")
+if(!exists("minDharvX")) minDharvX <- 999
+if(!exists("landClassX")) landClassX <- 1
+if(!exists("mortMod")) mortMod <- 3
 if(!exists("r_no")) r_no <- 4
 if(!exists("sampleID")) sampleID=5
-if(!exists("harvestscenarios")) harvestscenarios <- "Base"
+if(!exists("harvScen")) harvScen <- "Base"
+if(!exists("harvInten")) harvInten <- "Base"
 
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
 source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
@@ -28,7 +32,7 @@ for(i in 1:length(ageClass)){
 }
 
 tabX <- sampleXin[,.N,by=class]
-tabX[,classNew:=class-3]
+tabX[,classNew:=class-2]
 tabX[classNew<1,classNew:=length(ageClass) + classNew]
 
 
@@ -72,9 +76,10 @@ hist(sampleXuni$ba,freq=0,col=3,add=T)
 
 varSel <- c(varSel,14)
 funX <- c(funX,"baWmean")
-sampleToRun <- "sampleXin"
-harvestscenarios <- "Base"
-scens <- c("Base", "NoHarv", "Low", "MaxSust")
+sampleToRun <- "sampleXyoung"
+# harvScen <- "Base"
+# harvInten <- "Base"
+# <- c("Base", "NoHarv", "Low", "MaxSust")
            # "adapt","adaptNoAdH","adaptTapio",
            # "Mitigation","MitigationNoAdH")
            # "protect","protectNoAdH")
@@ -85,10 +90,11 @@ for(sampleToRun in c("sampleXuni","sampleXyoung","sampleXin")){
   # setkey(sampleXrun,NULL)
   
   ####run Base
-  for(harvestscenarios in scens){
-    # harvestscenarios="NoHarv"
-    
-    if(harvestscenarios=="Base"){
+  for(harvScen in scens){
+    if(harvScen=="Base"){
+      modRun <- runModel(sampleID,outType="testRun",forceSaveInitSoil=F,
+                         harvScen=harvScen,harvInten=harvInten)
+      
       modRun <- runModelSampleIn(outType="testRun",sampleX=sampleXrun,initSoilC=NA)
       initSoilC=modRun$initSoilC
     }else{

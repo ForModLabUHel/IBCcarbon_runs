@@ -70,9 +70,10 @@ countryArea <- sum(areaAllRegions)
     meanCountry$CbalState=0
     meanCountry[year %in% 2:max(meanCountry$year)]$CbalState=
     -(meanCountry[year %in% 2:max(meanCountry$year),
-                (WtotTrees+soilC+GVw)] -
+                (WtotTrees+soilC+GVw+Wdb)] -
       meanCountry[year %in% 1:(max(meanCountry$year)-1),
-                  (WtotTrees+soilC+GVw)])*44/12/1e9*countryArea
+                  (WtotTrees+soilC+GVw+Wdb)])*44/12/1e9*
+      countryArea
     
     meanCountry[,CbalFluxes:=(-NEP*10+WenergyWood+WroundWood)*
                     44/12*countryArea/1e9]
@@ -81,15 +82,14 @@ countryArea <- sum(areaAllRegions)
     save(meanCountry,meanRegion,countryArea,
      file = paste0("outSample/country",
                    run_settings,".rdata"))
-pdf(paste0("outSample/plots/plots_country.pdf"))
 
+pdf(paste0("outSample/plots/plots_country.pdf"))
 for(varX in vars){
   # i=i+1
   print(ggplot(meanCountry)+
   # geom_ribbon(aes(x = year + 2016, ymin = q0.25, ymax = q0.75,fill= harScen), alpha = 0.3)+
   geom_line(aes(x = year+ 2016, y = get(varX), color = harScen,linetype=harvInten)) + 
   xlab("year") + ylab(varX))
-
 # print(ggplot(meanCountry)+
 #         # geom_ribbon(aes(x = year + 2016, ymin = q0.25, ymax = q0.75,fill= harScen), alpha = 0.3)+
 #         geom_line(aes(x = year+ 2016, y = get(varX)*countryArea/1e6,
@@ -118,15 +118,37 @@ setkey(meanRegion,regIDs)
 regionNames$regIDs <- as.factor(regionNames$regIDs)
 meanRegion <- merge(meanRegion,regionNames)
 
-pdf(paste0("outSample/plots/plots_Scenarios.pdf"))
+pdf(paste0("outSample/plots/plots_ScenariosCountry.pdf"))
 for(varX in vars){
   for(scenX in scens){
       # i=i+1
-    print(ggplot(meanRegion[harScen==scenX])+
+    print(ggplot(meanCountry[harScen==scenX])+
             # geom_ribbon(aes(x = year + 2016, ymin = q0.25, ymax = q0.75,fill= harScen), alpha = 0.3)+
-      geom_line(aes(x = year+ 2016, y = get(varX), color = regNames)) + 
+      geom_line(aes(x = year+ 2016, y = get(varX), color = harvInten)) + 
       xlab("year") + ylab(varX)+ ggtitle(scenX))
   }
 }
 dev.off()
 
+# for(r_no in 1:19){
+# pdf(paste0("outSample/plots/plots_Scenarios_",
+#            regionNames[r_no]$regNames,".pdf"))
+# for(varX in vars){
+#   for(scenX in scens){
+#     # i=i+1
+#     print(ggplot(meanRegion[harScen==scenX & regIDs==r_no])+
+#             # geom_ribbon(aes(x = year + 2016, ymin = q0.25, ymax = q0.75,fill= harScen), alpha = 0.3)+
+#             geom_line(aes(x = year+ 2016, y = get(varX), color = harvInten)) + 
+#             xlab("year") + ylab(varX)+ ggtitle(scenX))
+#   }
+# }
+# dev.off()
+# }
+# 
+
+# write.csv(meanCountry,file="MeanCountryAllRuns.csv")
+# write.csv(meanCountry[harScen=="Base" & harvInten=="Base"],
+#           file="MeanCountryBaseRuns.csv")
+# write.csv(meanRegion,file="MeanRegionAllRuns.csv")
+# write.csv(meanRegion[harScen=="Base" & harvInten=="Base"],
+#           file="MeanRegionBaseRuns.csv")
