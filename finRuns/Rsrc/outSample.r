@@ -3,6 +3,8 @@ if(!exists("landClassX")) landClassX <- 1
 if(!exists("mortMod")) mortMod <- 3
 if(!exists("r_no")) r_no <- 4
 if(!exists("sampleID")) sampleID=3
+if(!exists("outDyr")) outDyr="outSample"
+
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
 source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
 
@@ -529,7 +531,7 @@ areas <- data.table(segID=region$siteInfo[,1],area=region$areas)
 datAllScen <- rbind(datAllScen1,datAllScen)
 
 if(minDharvX>100) addHarv="NO"
-fileName <- paste0("outSampleOrig/r_no",r_no,
+fileName <- paste0(outDyr,"/r_no",r_no,
           "_addHarv",addHarv,"_landClassX",landClassX,
           "_mortMod",mortMod,
           ".rdata")
@@ -540,11 +542,7 @@ Sys.chmod(list.dirs("initSoilC"), "0777",use_umask=FALSE)
 f <- list.files("initSoilC", all.files = TRUE, full.names = TRUE, recursive = TRUE)
 Sys.chmod(f, (file.info(f)$mode | "0777"),use_umask=FALSE)
 
-Sys.chmod(list.dirs("outSample"), "0777",use_umask=FALSE)
-f <- list.files("outSample", all.files = TRUE, full.names = TRUE, recursive = TRUE)
+Sys.chmod(list.dirs(outDyr), "0777",use_umask=FALSE)
+f <- list.files(outDyr, all.files = TRUE, full.names = TRUE, recursive = TRUE)
 Sys.chmod(f, (file.info(f)$mode | "0777"),use_umask=FALSE)
 
-
-Sys.chmod(list.dirs("outSampleOrig"), "0777",use_umask=FALSE)
-f <- list.files("outSampleOrig", all.files = TRUE, full.names = TRUE, recursive = TRUE)
-Sys.chmod(f, (file.info(f)$mode | "0777"),use_umask=FALSE)
