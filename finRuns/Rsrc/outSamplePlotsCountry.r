@@ -10,7 +10,7 @@ setwd("/scratch/project_2000994/PREBASruns/finRuns")
 run_settings <- "_addHarvNO_landClassX1_mortMod3"
 r_no=1
 regionNames <- fread("/scratch/project_2000994/PREBASruns/metadata/maakunta/maakunta_names.txt")
-
+outDyr <- "outSampleHcF1.2"
 
 meanRegion <- data.table()
 # areasCountry <- data.table()
@@ -25,7 +25,7 @@ for(r_no in regions){
   
   areaRegion <- sum(data.all$area,na.rm=T)
   areaAllRegions <- c(areaAllRegions,areaRegion)
-  load(paste0("outSample/r_no",r_no,run_settings,".rdata"))
+  load(paste0(outDyr,"/r_no",r_no,run_settings,".rdata"))
   
   datAllScenNorm <- datAllScen
   datAllScenNormProtect <- datAllScenProtect
@@ -80,10 +80,10 @@ countryArea <- sum(areaAllRegions)
     meanCountry[year ==1]$CbalState=NA
     
     save(meanCountry,meanRegion,countryArea,
-     file = paste0("outSample/country",
+     file = paste0(outDyr,"/country",
                    run_settings,".rdata"))
 
-pdf(paste0("outSample/plots/plots_country.pdf"))
+pdf(paste0(outDyr,"/plots/plots_country.pdf"))
 for(varX in vars){
   # i=i+1
   print(ggplot(meanCountry)+
@@ -118,7 +118,7 @@ setkey(meanRegion,regIDs)
 regionNames$regIDs <- as.factor(regionNames$regIDs)
 meanRegion <- merge(meanRegion,regionNames)
 
-pdf(paste0("outSample/plots/plots_ScenariosCountry.pdf"))
+pdf(paste0(outDyr,"/plots/plots_ScenariosCountry.pdf"))
 for(varX in vars){
   for(scenX in scens){
       # i=i+1
@@ -146,9 +146,9 @@ dev.off()
 # }
 # 
 
-# write.csv(meanCountry,file="MeanCountryAllRuns.csv")
-# write.csv(meanCountry[harScen=="Base" & harvInten=="Base"],
-#           file="MeanCountryBaseRuns.csv")
-# write.csv(meanRegion,file="MeanRegionAllRuns.csv")
-# write.csv(meanRegion[harScen=="Base" & harvInten=="Base"],
-#           file="MeanRegionBaseRuns.csv")
+write.csv(meanCountry,file=paste0(outDyr,"/plots/MeanCountryAllRuns.csv"))
+write.csv(meanCountry[harScen=="Base" & harvInten=="Base"],
+          file=paste0(outDyr,"/plots/MeanCountryBaseRuns.csv"))
+write.csv(meanRegion,file=paste0(outDyr,"/plots/MeanRegionAllRuns.csv"))
+write.csv(meanRegion[harScen=="Base" & harvInten=="Base"],
+          file=paste0(outDyr,"/plots/MeanRegionBaseRuns.csv"))
