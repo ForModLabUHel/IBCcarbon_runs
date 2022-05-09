@@ -18,8 +18,8 @@ ststDeadW<-FALSE
 
 outType <- "uncRun" # Setting for the runModel-function
 if(uncSeg) outType <- "uncSeg"
-harvscen<- "Base" #"Base", adapt","protect","protectNoAdH","adaptNoAdH","adaptTapio"
-harvinten<- "Base" # "Base", "Low", "MaxSust", "NoHarv" 
+#harvscen<- "Base" #"Base", adapt","protect","protectNoAdH","adaptNoAdH","adaptTapio"
+#harvinten<- "Base" # "Base", "Low", "MaxSust", "NoHarv" 
   
 ##### From GitHub
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
