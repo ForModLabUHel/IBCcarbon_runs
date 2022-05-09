@@ -268,6 +268,59 @@ UncOutProcSeg <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
   return(outX)
 } 
 
+uncVariables <- function(ops = ops, sampleIDs = sampleIDs, rage = 0.1,
+                         uncInput = TRUE, uncSiteType = TRUE, uncAge = TRUE){
+  if(uncInput){ # Input uncertainty covariance matrix
+    load(url("https://raw.githubusercontent.com/ForModLabUHel/satRuns/master/data/inputUncer.rdata"))
+    CovX <- errData$all$sigmaFSVda
+    C <- chol(CovX)
+  }
+  if(uncSiteType){
+    ###load the fittet probit models to estimate the Site fertility class
+    load(url("https://raw.githubusercontent.com/ForModLabUHel/satRuns/master/data/step.probit.rdata"))
+  }
+  
+  for(ij in sampleIDs){ 
+    if(uncInput){
+      X <- copy(ops[[ij]])
+      X <- cbind(X$ba, X$dbh, X$h/10, X$pine, X$spruce, X$birch) # h as decimeters in data.all -> convert to meters as in cov matrix C
+      mx <- ncol(X)
+      Y <- X + matrix(rnorm(nrow(X)*mx),nrow(X),mx)%*%C
+      Y <- distr_correction(Y,X)
+      ops[[ij]][,':=' (ba=Y[,1],dbh=Y[,2],h=Y[,3]*10,pine=Y[,4],
+                       spruce=Y[,5],birch=Y[,6])] # the height converted back to meters
+    } 
+    if(uncSiteType){
+      ###load the fittet probit models to estimate the Site fertility class
+      #load(url("https://raw.githubusercontent.com/ForModLabUHel/satRuns/master/data/step.probit.rdata"))
+      ####generate sample input data
+      dataSample <- data.table(st=ops[[ij]]$fert,
+                               H=ops[[ij]]$h,
+                               D=ops[[ij]]$dbh,
+                               BAtot=ops[[ij]]$ba,
+                               BApPer=ops[[ij]]$pine)
+      modX <- step.probit[["all"]]
+      ###run model -> returns the probability for each site type so you can sample using that probability
+      ###model inputs:
+      # st = site type
+      # H = average height
+      # D = average dbh
+      #BAtot = total basal area
+      #BApPer = % of pine basal area
+      probs <- predict(modX,type='p',dataSample)
+      str <- matrix(0,nrow(ops[[ij]]),1)
+      for(ri in 1:nrow(ops[[ij]])){
+        str[ri] <- sample(1:5,1,prob = probs[ri,])
+      }
+      ops[[ij]][,fert:=str]
+    } 
+    if(uncAge){
+      ops[[ij]][,age:=ops[[ij]]$age*(1+rage*rnorm(nrow(ops[[ij]])))]
+    }
+  } # end for(ij in sampleIDs)
+  return(ops)
+}
+
 
 processPeatUQ <- function(peatXf, fertf, nppf, nepf, peatval, fertval, EC1, EC2) {
   # peatXf = raster with peat soils
