@@ -52,9 +52,9 @@ parPath <- "/scratch/project_2000994/PREBASruns/metadata/paramUnc/"
 # Cut the joutomaa off
 #extrLandclass <- 3
 data.all <- data.all[which(!data.all$landclass%in%extrLandclass),]#!=3 & data.all$landclass!=2),]
+print(paste("Leave landclass(es)",extrLandclass,"out"))
 # No harvests on "kitumaa", set here as conservation area
 data.all$cons[which(data.all$landclass==2)]<-1
-print(paste("Leave landclass(es)",extrLandclass,"out"))
 #print("Leave landclass(es) out:")
 #print(extrLandclass)
 

@@ -154,8 +154,9 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
     ###load site type raster
     fert<-modOut$multiOut[,1,"sitetype",1,1]
     
-    N2O <- NEP#data.frame()
-    CH4 <- NEP#data.frame()
+    N2O <- data.frame(matrix(0,nrow = nrow(NEP), ncol = ncol(NEP)-1))
+    CH4 <- data.frame(matrix(0,nrow = nrow(NEP), ncol = ncol(NEP)-1))
+    #CH4 <- NEP#data.frame()
     #####Loop along periods
     for(curr in 2:(nYears+1)) {
       #curr <- paste0("per",i)
@@ -165,19 +166,19 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
       nep <- processPeatUQ(peatX,fert,npp,nep,drPeatID,1,EC1,EC2)
       nep <- processPeatUQ(peatX,fert,npp,nep,drPeatID,2,EC1,EC2)
       NEP[,curr] <- nep
-      N2O[,curr] <- processPeatUQ_N2O_CH4(peatX, fert, drPeatID, type = "N2O")
-      CH4[,curr] <- processPeatUQ_N2O_CH4(peatX, fert, drPeatID, type = "CH4")
+      N2O[,curr-1] <- processPeatUQ_N2O_CH4(peatX, fert, drPeatID, type = "N2O")
+      CH4[,curr-1] <- processPeatUQ_N2O_CH4(peatX, fert, drPeatID, type = "CH4")
     }  
     NEP <- colMeans(NEP[which(!is.na(NEP[,2])),])
-    N2O <- colMeans(N2O[which(!is.na(N2O[,2])),])
-    CH4 <- colMeans(CH4[which(!is.na(CH4[,2])),])
+    N2O <- colMeans(N2O[which(!is.na(N2O[,1])),])
+    CH4 <- colMeans(CH4[which(!is.na(CH4[,1])),])
     #xx[which(varsX == "NEP"),] <- NEP[2:(nYears+1)]
     xx[(nVarSel+6),1:nYears] <- NEP[-1]
-    varsX[(nVarSel+6)] <- "NEPprocPeat [g C m−2 year−1]"
-    xx[(nVarSel+7),1:nYears] <- N2O[-1]
-    varsX[(nVarSel+7)] <- "N2O [g N2O m−2 year−1]"
-    xx[(nVarSel+8),1:nYears] <- CH4[-1]
-    varsX[(nVarSel+8)] <- "CH4 [g CH4 m−2 year−1]"
+    varsX[(nVarSel+6)] <- "NEPprocPeat [g C]"
+    xx[(nVarSel+7),1:nYears] <- N2O
+    varsX[(nVarSel+7)] <- "N2O [g N2O]"
+    xx[(nVarSel+8),1:nYears] <- CH4
+    varsX[(nVarSel+8)] <- "CH4 [g CH4]"
     
   }
   
