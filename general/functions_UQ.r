@@ -51,16 +51,17 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
   nYears <-  max(modOut$nYears)
   nSites <-  max(modOut$nSites)
   nVarSel <- length(varSel)
-  varsX <- rep(NA,(nVarSel+5))
-  xx <- matrix(NA,(nVarSel+5),nYears)
+  varsX <- rep(NA,(nVarSel+8))
+  xx <- matrix(NA,(nVarSel+8),nYears)
   for (ij in 1:nVarSel) {
     # print(varSel[ij])
     if(funX[ij]=="baWmean"){
-      outX <- colMeans(baWmean(modOut,varSel[ij]))
+      outX <- baWmean(modOut,varSel[ij])
     }
     if(funX[ij]=="sum"){
-      outX <- colMeans(apply(modOut$multiOut[,,varSel[ij],,1],1:2,sum))
+      outX <- apply(modOut$multiOut[,,varSel[ij],,1],1:2,sum)
     }
+    outX <- colMeans(outX[!is.na(outX[,1]),])
     ####test plot
     # print(outX)
     #outX <- c(mean(outX[simYear1]),mean(outX[simYear2]),mean(outX[simYear3]))
@@ -72,7 +73,8 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
   
   ####process and save special variables: 
   ###age
-  outX <- colMeans(modOut$multiOut[,1:nYears,7,1,1])
+  outX <- modOut$multiOut[,1:nYears,7,1,1]
+  outX <- colMeans(outX[!is.na(outX[,1]),])
   #  outX <- c(mean(modOut$multiOut[,simYear1,7,1,1]),
   #    mean(modOut$multiOut[,simYear2,7,1,1]),
   #    mean(modOut$multiOut[,simYear3,7,1,1]))
@@ -82,7 +84,8 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
   #                         harscen,"_",rcpfile,"_",
   #                         "sampleID",sampleID,".rdata"))
   ####VenergyWood
-  outX <- colMeans(apply(modOut$multiEnergyWood[,,,1],1:2,sum))
+  outX <- apply(modOut$multiEnergyWood[,,,1],1:2,sum)
+  outX <- colMeans(outX[!is.na(outX[,1]),])
   # outX <- c(mean(outX[simYear1]),mean(outX[simYear2]),mean(outX[simYear3]))
   xx[(nVarSel+2),1:nYears] <- outX
   varsX[(nVarSel+2)] <- "VenergyWood"
@@ -92,7 +95,8 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
   #                              "/VenergyWood_",harscen,"_",rcpfile,"_",
   #                              "sampleID",sampleID,".rdata"))
   ####GVbiomass
-  outX <- colMeans(modOut$GVout[,,4])
+  outX <- modOut$GVout[,,4]
+  outX <- colMeans(outX[!is.na(outX[,1]),])
   #outX <- c(mean(outX[simYear1]),
   #     mean(outX[simYear2]),
   #     mean(outX[simYear3]))
@@ -110,7 +114,8 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
   xx[(nVarSel+4),1:nYears] <- outX
   varsX[(nVarSel+4)] <- "Wtot"
   
-  outX <- colMeans(apply(modOut$multiEnergyWood[,,,2],1:2,sum))
+  outX <- apply(modOut$multiEnergyWood[,,,2],1:2,sum)
+  outX <- colMeans(outX[!is.na(outX[,1]),])
   #print(outX)
   xx[(nVarSel+5),1:nYears] <- outX
   varsX[(nVarSel+5)] <- "Wenergywood"
@@ -122,7 +127,7 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
   # if(sampleID==sampleForPlots){dev.off()}
   
   if("NEP" %in% varsX){
-    print(paste0("peatland postprocessing ", sampleID))
+    print(paste0("peatland postprocessing sampleID", sampleID))
     #### Peatland post-processing
     coords <- cbind(sampleX$x, sampleX$y)
     marginX= 1:2#(length(dim(out$annual[,,varSel,]))-1)
@@ -149,29 +154,29 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
     ###load site type raster
     fert<-modOut$multiOut[,1,"sitetype",1,1]
     
-    N2O <- data.frame()
-    CH4 <- data.frame()
+    N2O <- NEP#data.frame()
+    CH4 <- NEP#data.frame()
     #####Loop along periods
     for(curr in 2:(nYears+1)) {
       #curr <- paste0("per",i)
       npp <- NPP[,..curr]
       nep <- NEP[,..curr]
       
-      nep = processPeatUQ(peatX,fert,npp,nep,drPeatID,1,EC1,EC2)
-      nep = processPeatUQ(peatX,fert,npp,nep,drPeatID,2,EC1,EC2)
+      nep <- processPeatUQ(peatX,fert,npp,nep,drPeatID,1,EC1,EC2)
+      nep <- processPeatUQ(peatX,fert,npp,nep,drPeatID,2,EC1,EC2)
       NEP[,curr] <- nep
       N2O[,curr] <- processPeatUQ_N2O_CH4(peatX, fert, drPeatID, type = "N2O")
       CH4[,curr] <- processPeatUQ_N2O_CH4(peatX, fert, drPeatID, type = "CH4")
     }  
-    NEP <- colMeans(NEP)
-    N2O <- colMeans(N2O)
-    CH4 <- colMeans(CH4)
+    NEP <- colMeans(NEP[which(!is.na(NEP[,2])),])
+    N2O <- colMeans(N2O[which(!is.na(N2O[,2])),])
+    CH4 <- colMeans(CH4[which(!is.na(CH4[,2])),])
     #xx[which(varsX == "NEP"),] <- NEP[2:(nYears+1)]
-    xx[(nVarSel+6),1:nYears] <- NEP
+    xx[(nVarSel+6),1:nYears] <- NEP[-1]
     varsX[(nVarSel+6)] <- "NEPprocPeat [g C m−2 year−1]"
-    xx[(nVarSel+7),1:nYears] <- N2O
+    xx[(nVarSel+7),1:nYears] <- N2O[-1]
     varsX[(nVarSel+7)] <- "N2O [g N2O m−2 year−1]"
-    xx[(nVarSel+8),1:nYears] <- CH4
+    xx[(nVarSel+8),1:nYears] <- CH4[-1]
     varsX[(nVarSel+8)] <- "CH4 [g CH4 m−2 year−1]"
     
   }
@@ -354,7 +359,7 @@ processPeatUQ <- function(peatXf, fertf, nppf, nepf, peatval, fertval, EC1, EC2)
 processPeatUQ_N2O_CH4 <- function(peatXf, fertf, peatval, type = "N2O") {
   
   drPeatInd <- peatXf == peatval # & fertf == fertval  ###selecting the pixels that match the conditions of peat and siteType
-  emission <- 0*drPeatInd  ### zero vector  
+  emission <- matrix(0,nrow = length(fertf),1) ### zero vector  
   ###calculate the new NEP according to the siteType (fertval)
   if(type == "N2O"){
     emission[which(drPeatInd & fertf<=3)] <- 0.23 + 0.04*rnorm(1) #g N2O m−2 year−1
