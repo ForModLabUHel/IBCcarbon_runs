@@ -307,7 +307,7 @@ processPeatUQ_N2O_CH4 <- function(peatXf, fertf, peatval, type = "N2O") {
     emission[which(drPeatInd & fertf<=3)] <- 0.23 + 0.04*rnorm(1) #g N2O m−2 year−1
     emission[which(drPeatInd & fertf>3)] <- 0.077 + 0.004*rnorm(1) #g N2O m−2 year−1
     emission[drPeatInd == 0] <- 0
-  } elseif (type == "CH4"){
+  } else if (type == "CH4"){
     emission[drPeatInd > 0] <- 0.34 + 0.12 * rnorm(1) #g CH4 m-2 year-1
     emission[drPeatInd == 0] <- 0
   }
