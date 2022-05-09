@@ -214,7 +214,7 @@ if(uncRun){# sample model parameters, HcFactor and peatland emission coefficient
   if(!uncSeg & !loadUnc){ # if region level uncertainty run, sample input variables
     # sample input values for the samples
     if(uncInput){
-      print(paste0("input uncertainties for ",length(sampleIDs)," samples sets..."))
+      print(paste0("input uncertainties for ",length(sampleIDs)," sample sets..."))
       ops <-  uncVariables(ops=copy(ops), sampleIDs = sampleIDs) 
       print("... done.")
     }
