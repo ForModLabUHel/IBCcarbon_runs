@@ -160,8 +160,8 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
       nep = processPeatUQ(peatX,fert,npp,nep,drPeatID,1,EC1,EC2)
       nep = processPeatUQ(peatX,fert,npp,nep,drPeatID,2,EC1,EC2)
       NEP[,curr] <- nep
-      N2O[,curr] <- processPeatUQ_N2O_CH4(peatX, fert, peatval, type = "N2O")
-      CH4[,curr] <- processPeatUQ_N2O_CH4(peatX, fert, peatval, type = "CH4")
+      N2O[,curr] <- processPeatUQ_N2O_CH4(peatX, fert, drPeatID, type = "N2O")
+      CH4[,curr] <- processPeatUQ_N2O_CH4(peatX, fert, drPeatID, type = "CH4")
     }  
     NEP <- colMeans(NEP)
     N2O <- colMeans(N2O)

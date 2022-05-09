@@ -53,8 +53,7 @@ parPath <- "/scratch/project_2000994/PREBASruns/metadata/paramUnc/"
 data.all <- data.all[which(!data.all$landclass%in%extrLandclass),]#!=3 & data.all$landclass!=2),]
 # No harvests on "kitumaa", set here as conservation area
 data.all$cons[which(data.all$landclass==2)]<-1
-print("Leave landclass(es) out:")
-print(extrLandclass)
+print(paste("Leave landclass(es)",extrLandclas,"out"))
 
 set.seed(10)
 if(uncRun){ # load distribution data
@@ -212,7 +211,7 @@ if(uncRun){# sample model parameters, HcFactor and peatland emission coefficient
   if(!uncSeg & !loadUnc){ # if region level uncertainty run, sample input variables
     # sample input values for the samples
     if(uncInput){
-      print(paste0("input uncertainties for ",length(sampleIDs),"..."))
+      print(paste0("input uncertainties for ",length(sampleIDs)," samples sets..."))
       ops <-  uncVariables(ops=copy(ops), sampleIDs = sampleIDs) 
       print("... done.")
     }
