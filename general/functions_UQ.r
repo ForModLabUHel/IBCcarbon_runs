@@ -174,11 +174,11 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
     CH4 <- colMeans(CH4[which(!is.na(CH4[,1])),])
     #xx[which(varsX == "NEP"),] <- NEP[2:(nYears+1)]
     xx[(nVarSel+6),1:nYears] <- NEP[-1]
-    varsX[(nVarSel+6)] <- "NEPprocPeat [g C]"
+    varsX[(nVarSel+6)] <- "NEPprocPeat [g C/m2]"
     xx[(nVarSel+7),1:nYears] <- N2O
-    varsX[(nVarSel+7)] <- "N2O [g N2O]"
+    varsX[(nVarSel+7)] <- "N2O [g N2O/m2]"
     xx[(nVarSel+8),1:nYears] <- CH4
-    varsX[(nVarSel+8)] <- "CH4 [g CH4]"
+    varsX[(nVarSel+8)] <- "CH4 [g CH4/m2]"
     
   }
   

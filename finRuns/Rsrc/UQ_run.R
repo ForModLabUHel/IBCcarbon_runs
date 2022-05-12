@@ -289,7 +289,8 @@ for(nii in 1:niter){
   #sampleXs <- mclapply(sampleIDs[(1+(nii-1)*nParRuns):(nii*nParRuns)], function(jx) {
   print("start runModel")
   if(testRun){ # if needed to test an individual sample
-    sampleXs <- lapply(sampleIDs, function(jx) { runModel(jx, outType=outType, harvScen=harvscen ,harvInten=harvinten)})
+    sampleXs <- lapply(sampleIDs, function(jx) { 
+      runModel(jx, outType=outType, harvScen=harvscen ,harvInten=harvinten)})
     #sampleXs <- runModel(sampleIDs,outType=outType)
     #print(sampleXs[[1]])
   } else if(uncSeg){
