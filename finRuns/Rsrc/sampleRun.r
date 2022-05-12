@@ -1,8 +1,9 @@
 if(!exists("r_no")) r_no <- 4
 if(!exists("sampleID")) sampleID=3
-if(!exists("harvestscenarios")) harvestscenarios <- "Base"
+if(!exists("harvScen")) harvScen <- "Base"
+if(!exists("harvScen")) harvInten <- "Base"
 # if(!exists("mortMod")) mortMod <- 3
-
+# HcFactor=1.
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
 source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
 
@@ -21,5 +22,6 @@ ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
 
 toMem <- ls()
 
-sampleX <- runModel(sampleID,outType="testRun")
+sampleX <- runModel(sampleID,outType="testRun",
+                  harvScen=harvScen,harvInten=harvInten)
 # sampleX <- runModel(sampleID,outType="uncSeg")
