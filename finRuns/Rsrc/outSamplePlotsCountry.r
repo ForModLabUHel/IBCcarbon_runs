@@ -35,7 +35,7 @@ for(r_no in regions){
   setkey(datAllScenNormProtect,segID)
   datAllScenNorm <- merge(datAllScenNorm,areas)
   datAllScenNormProtect <- merge(datAllScenNormProtect,areasProtect)
-  vars <- colnames(datAllScenNorm)[!colnames(datAllScenNorm) %in% c("segID","area","year","maakID","harScen","harvInten")]
+  vars <- colnames(datAllScenNorm)[!colnames(datAllScenNorm) %in% c("segID","area","year","maakID","harScen","harvInten","cons")]
   # datAllScenNorm[,normFact:=area*length(areas$area)/sum(areas$area)]
   datAllScenNorm[, vars] <- 
     datAllScenNorm[ ,lapply(.SD, `*`, area*length(areas$area)/sum(areas$area)), .SDcols = vars]
