@@ -337,8 +337,8 @@ for(nii in 1:niter){
     }
     
     save(area_total,sampleOutput,file=paste0("uncRuns/regRuns/samplexout_reg",r_no,
-                                             "_",harvscen,"_",                                    
-                                             "samplesize",nSitesRunr,"_iters",nSamplesr,
+                                             "_",harvscen,"_",harvinten,                                    
+                                             "_samplesize",nSitesRunr,"_iters",nSamplesr,
                                              "_pr",uncPCrobas,"_Xr",uncInput,"_ager",uncAge,
                                              "_Cr",uncClim,"_str",uncSiteType,".rdata")) 
     
@@ -400,7 +400,7 @@ for(nii in 1:niter){
       }
     }
     save(sampleOutput,file=paste0("uncRuns/segRuns/samplexout_uncSeg_reg",r_no,
-                                  "_iters",nSamplesr,"_",harvscen,                                    
+                                  "_iters",nSamplesr,"_",harvscen,"_",harvinten,                                    
                                   #"_pr",uncPCrobas,"_Xr",uncInput,"_ager",uncAge,
                                   #"_Cr",uncClim,"_str",uncSiteType,
                                   ".rdata")) 
