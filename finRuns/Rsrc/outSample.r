@@ -260,8 +260,8 @@ for(harvInten in harvIntensities){
     setkey(datAll,segID,year)
     datAll <- merge(datAll,datX)
     ####BioIndicators
-    # HSIcaper
     bioInd <- calBioIndices(region)
+    # HSIcaper
     datX <- data.table(segID=segID,bioInd$HSIcaper)
     setnames(datX,c("segID",1:region$maxYears))
     datX <- melt(datX,"segID")
@@ -270,7 +270,6 @@ for(harvInten in harvIntensities){
     setkey(datAll,segID,year)
     datAll <- merge(datAll,datX)
     # HSIhg
-    bioInd <- calBioIndices(region)
     datX <- data.table(segID=segID,bioInd$HSIhg)
     setnames(datX,c("segID",1:region$maxYears))
     datX <- melt(datX,"segID")
@@ -279,7 +278,6 @@ for(harvInten in harvIntensities){
     setkey(datAll,segID,year)
     datAll <- merge(datAll,datX)
     # HSIttwo
-    bioInd <- calBioIndices(region)
     datX <- data.table(segID=segID,bioInd$HSIttwo)
     setnames(datX,c("segID",1:region$maxYears))
     datX <- melt(datX,"segID")
@@ -288,7 +286,6 @@ for(harvInten in harvIntensities){
     setkey(datAll,segID,year)
     datAll <- merge(datAll,datX)
     # HSIswo
-    bioInd <- calBioIndices(region)
     datX <- data.table(segID=segID,bioInd$HSIswo)
     setnames(datX,c("segID",1:region$maxYears))
     datX <- melt(datX,"segID")
@@ -297,7 +294,6 @@ for(harvInten in harvIntensities){
     setkey(datAll,segID,year)
     datAll <- merge(datAll,datX)
     # HSIltt
-    bioInd <- calBioIndices(region)
     datX <- data.table(segID=segID,bioInd$HSIltt)
     setnames(datX,c("segID",1:region$maxYears))
     datX <- melt(datX,"segID")
@@ -306,7 +302,6 @@ for(harvInten in harvIntensities){
     setkey(datAll,segID,year)
     datAll <- merge(datAll,datX)
     # HSIfs
-    bioInd <- calBioIndices(region)
     datX <- data.table(segID=segID,bioInd$HSIfs)
     setnames(datX,c("segID",1:region$maxYears))
     datX <- melt(datX,"segID")
@@ -422,8 +417,8 @@ for(harvInten in c("Low","MaxSust")){
     setkey(datAll,segID,year)
     datAll <- merge(datAll,datX)
     ####BioIndicators
-    # HSIcaper
     bioInd <- calBioIndices(region)
+    # HSIcaper
     datX <- data.table(segID=segID,bioInd$HSIcaper)
     setnames(datX,c("segID",1:region$maxYears))
     datX <- melt(datX,"segID")
@@ -432,7 +427,6 @@ for(harvInten in c("Low","MaxSust")){
     setkey(datAll,segID,year)
     datAll <- merge(datAll,datX)
     # HSIhg
-    bioInd <- calBioIndices(region)
     datX <- data.table(segID=segID,bioInd$HSIhg)
     setnames(datX,c("segID",1:region$maxYears))
     datX <- melt(datX,"segID")
@@ -441,7 +435,6 @@ for(harvInten in c("Low","MaxSust")){
     setkey(datAll,segID,year)
     datAll <- merge(datAll,datX)
     # HSIttwo
-    bioInd <- calBioIndices(region)
     datX <- data.table(segID=segID,bioInd$HSIttwo)
     setnames(datX,c("segID",1:region$maxYears))
     datX <- melt(datX,"segID")
@@ -450,7 +443,6 @@ for(harvInten in c("Low","MaxSust")){
     setkey(datAll,segID,year)
     datAll <- merge(datAll,datX)
     # HSIswo
-    bioInd <- calBioIndices(region)
     datX <- data.table(segID=segID,bioInd$HSIswo)
     setnames(datX,c("segID",1:region$maxYears))
     datX <- melt(datX,"segID")
@@ -459,7 +451,6 @@ for(harvInten in c("Low","MaxSust")){
     setkey(datAll,segID,year)
     datAll <- merge(datAll,datX)
     # HSIltt
-    bioInd <- calBioIndices(region)
     datX <- data.table(segID=segID,bioInd$HSIltt)
     setnames(datX,c("segID",1:region$maxYears))
     datX <- melt(datX,"segID")
@@ -468,7 +459,6 @@ for(harvInten in c("Low","MaxSust")){
     setkey(datAll,segID,year)
     datAll <- merge(datAll,datX)
     # HSIfs
-    bioInd <- calBioIndices(region)
     datX <- data.table(segID=segID,bioInd$HSIfs)
     setnames(datX,c("segID",1:region$maxYears))
     datX <- melt(datX,"segID")
@@ -583,8 +573,8 @@ for(harvInten in harvIntensities){
     setkey(datAll,segID,year)
     datAll <- merge(datAll,datX)
     ####BioIndicators
-    # HSIcaper
     bioInd <- calBioIndices(region)
+    # HSIcaper
     datX <- data.table(segID=segID,bioInd$HSIcaper)
     setnames(datX,c("segID",1:region$maxYears))
     datX <- melt(datX,"segID")
@@ -593,7 +583,6 @@ for(harvInten in harvIntensities){
     setkey(datAll,segID,year)
     datAll <- merge(datAll,datX)
     # HSIhg
-    bioInd <- calBioIndices(region)
     datX <- data.table(segID=segID,bioInd$HSIhg)
     setnames(datX,c("segID",1:region$maxYears))
     datX <- melt(datX,"segID")
@@ -602,7 +591,6 @@ for(harvInten in harvIntensities){
     setkey(datAll,segID,year)
     datAll <- merge(datAll,datX)
     # HSIttwo
-    bioInd <- calBioIndices(region)
     datX <- data.table(segID=segID,bioInd$HSIttwo)
     setnames(datX,c("segID",1:region$maxYears))
     datX <- melt(datX,"segID")
@@ -611,7 +599,6 @@ for(harvInten in harvIntensities){
     setkey(datAll,segID,year)
     datAll <- merge(datAll,datX)
     # HSIswo
-    bioInd <- calBioIndices(region)
     datX <- data.table(segID=segID,bioInd$HSIswo)
     setnames(datX,c("segID",1:region$maxYears))
     datX <- melt(datX,"segID")
@@ -620,7 +607,6 @@ for(harvInten in harvIntensities){
     setkey(datAll,segID,year)
     datAll <- merge(datAll,datX)
     # HSIltt
-    bioInd <- calBioIndices(region)
     datX <- data.table(segID=segID,bioInd$HSIltt)
     setnames(datX,c("segID",1:region$maxYears))
     datX <- melt(datX,"segID")
@@ -629,7 +615,6 @@ for(harvInten in harvIntensities){
     setkey(datAll,segID,year)
     datAll <- merge(datAll,datX)
     # HSIfs
-    bioInd <- calBioIndices(region)
     datX <- data.table(segID=segID,bioInd$HSIfs)
     setnames(datX,c("segID",1:region$maxYears))
     datX <- melt(datX,"segID")
@@ -745,8 +730,8 @@ for(harvInten in "Base"){
     setkey(datAll,segID,year)
     datAll <- merge(datAll,datX)
     ####BioIndicators
-    # HSIcaper
     bioInd <- calBioIndices(region)
+    # HSIcaper
     datX <- data.table(segID=segID,bioInd$HSIcaper)
     setnames(datX,c("segID",1:region$maxYears))
     datX <- melt(datX,"segID")
@@ -755,7 +740,6 @@ for(harvInten in "Base"){
     setkey(datAll,segID,year)
     datAll <- merge(datAll,datX)
     # HSIhg
-    bioInd <- calBioIndices(region)
     datX <- data.table(segID=segID,bioInd$HSIhg)
     setnames(datX,c("segID",1:region$maxYears))
     datX <- melt(datX,"segID")
@@ -764,7 +748,6 @@ for(harvInten in "Base"){
     setkey(datAll,segID,year)
     datAll <- merge(datAll,datX)
     # HSIttwo
-    bioInd <- calBioIndices(region)
     datX <- data.table(segID=segID,bioInd$HSIttwo)
     setnames(datX,c("segID",1:region$maxYears))
     datX <- melt(datX,"segID")
@@ -773,7 +756,6 @@ for(harvInten in "Base"){
     setkey(datAll,segID,year)
     datAll <- merge(datAll,datX)
     # HSIswo
-    bioInd <- calBioIndices(region)
     datX <- data.table(segID=segID,bioInd$HSIswo)
     setnames(datX,c("segID",1:region$maxYears))
     datX <- melt(datX,"segID")
@@ -782,7 +764,6 @@ for(harvInten in "Base"){
     setkey(datAll,segID,year)
     datAll <- merge(datAll,datX)
     # HSIltt
-    bioInd <- calBioIndices(region)
     datX <- data.table(segID=segID,bioInd$HSIltt)
     setnames(datX,c("segID",1:region$maxYears))
     datX <- melt(datX,"segID")
@@ -791,7 +772,6 @@ for(harvInten in "Base"){
     setkey(datAll,segID,year)
     datAll <- merge(datAll,datX)
     # HSIfs
-    bioInd <- calBioIndices(region)
     datX <- data.table(segID=segID,bioInd$HSIfs)
     setnames(datX,c("segID",1:region$maxYears))
     datX <- melt(datX,"segID")
