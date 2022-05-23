@@ -357,22 +357,18 @@ processPeatUQ <- function(peatXf, fertf, nppf, nepf, littersumf, peatval, fertva
   # fertval = soilType ID -> tells which siteType you want to treat
   
   if(fertval==1){
-    drPeatNeg <- peatXf == peatval & fertf <= 3  ###selecting the pixels that match the conditions of peat and siteType
+    drPeatNeg <- which(peatXf == peatval & fertf <= 3)  ###selecting the pixels that match the conditions of peat and siteType
   } else if (fertval==2){
-    drPeatNeg <- peatXf == peatval & fertf > 3  ###selecting the pixels that match the conditions of peat and siteType
+    drPeatNeg <- which(peatXf == peatval & fertf > 3)  ###selecting the pixels that match the conditions of peat and siteType
   }
-  drPeatNeg[drPeatNeg==0] <- NA  ### assign NA to the remaining pixels
   drPeat <- nppf[drPeatNeg]  ###raster with only the pixel of interest
   
   ###calculate the new NEP according to the siteType (fertval)
-  #if (fertval <= 3) {         
   if(fertval == 1){
     drPeat <- drPeat + EC1*12/44 - littersumf[drPeatNeg]/10#-240 #g C m-2 year-1  
   } else if(fertval == 2){
-    #} else if (fertval > 3) {
     drPeat <- drPeat + EC2*12/44 - littersumf[drPeatNeg]/10#70
   }
-  #}
   nepf[drPeatNeg] <- drPeat
   return(nepf)#merge(drPeat,nepf))
 }
