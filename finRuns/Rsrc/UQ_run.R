@@ -168,7 +168,7 @@ if(uncRun & !uncSeg & uncHarv){
   harvestLimsr[,1] <- (1+0.02*rnorm(nSamplesr))*harvestLims[1]
   harvestLimsr[,2] <- (1+0.02*rnorm(nSamplesr))*harvestLims[2]
 }
-print(harvestLimsr)
+#print(harvestLimsr)
 
 if(uncRun & !loadUnc){
   resampleYears <-  t(matrix(1:nYears,nYears,1000))# save enought of random weather series
