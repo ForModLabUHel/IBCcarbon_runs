@@ -47,7 +47,8 @@ distr_correction <- function(Y,Xtrue,Xdiscr=FALSE){
 
 
 UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
-                       modOut,sampleID=1,finPeats=finPeats,sampleX=sampleX,EC1=-240,EC2=70){
+                       modOut,sampleID=1,finPeats=finPeats,
+                       sampleX=sampleX,EC1=-240,EC2=70){
   nYears <-  max(modOut$nYears)
   nSites <-  max(modOut$nSites)
   nVarSel <- length(varSel)
@@ -146,6 +147,12 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
     #pX <- data.table(p1,p2[,2],p3[,2]) # can be the same segment multiple times
     assign("NEP",pX)
     
+    px <- 0
+    for(li in 26:29){ # litter input
+      pX <- pX + data.table(data.table(segID=sampleX$segID,apply(modOut$multiOut[,,li,,1],marginX,sum)))
+    }
+    assign("LitterSum", pX)
+    print(LitterSum)
     ##!!###step to reduce the size of the peat raster 
     ###load npp first outside loop to get peatX
     peatX <- extract(finPeats, coords)
@@ -156,18 +163,26 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
     
     N2O <- data.frame(matrix(0,nrow = nrow(NEP), ncol = ncol(NEP)-1))
     CH4 <- data.frame(matrix(0,nrow = nrow(NEP), ncol = ncol(NEP)-1))
+
+    ECN2O1 <- 0.23 + 0.04*rnorm(1) #g N2O m−2 year−1
+    ECN2O2 <- 0.077 + 0.004*rnorm(1) #g N2O m−2 year−1
+    ECCH4 <- 0.34 + 0.12 * rnorm(1)
     #CH4 <- NEP#data.frame()
     #####Loop along periods
+
     for(curr in 2:(nYears+1)) {
       #curr <- paste0("per",i)
       npp <- NPP[,..curr]
       nep <- NEP[,..curr]
+      littersum <- LitterSum[,..curr]
       
-      nep <- processPeatUQ(peatX,fert,npp,nep,drPeatID,1,EC1,EC2)
-      nep <- processPeatUQ(peatX,fert,npp,nep,drPeatID,2,EC1,EC2)
+      nep <- processPeatUQ(peatX,fert,npp,nep,littersum,drPeatID,1,EC1,EC2)
+      nep <- processPeatUQ(peatX,fert,npp,nep,littersum,drPeatID,2,EC1,EC2)
       NEP[,curr] <- nep
-      N2O[,curr-1] <- processPeatUQ_N2O_CH4(peatX, fert, drPeatID, type = "N2O")
-      CH4[,curr-1] <- processPeatUQ_N2O_CH4(peatX, fert, drPeatID, type = "CH4")
+      N2O[,curr-1] <- processPeatUQ_N2O_CH4(peatX, fert, drPeatID, type = "N2O", 
+                                            ECN2O1 = ECN2O1, ECN2O2 = ECN2O2)
+      CH4[,curr-1] <- processPeatUQ_N2O_CH4(peatX, fert, drPeatID, type = "CH4",
+                                            ECCH4 = ECCH4)
     }  
     NEP <- colMeans(NEP[which(!is.na(NEP[,2])),])
     N2O <- colMeans(N2O[which(!is.na(N2O[,1])),])
@@ -328,7 +343,7 @@ uncVariables <- function(ops = ops, sampleIDs = sampleIDs, rage = 0.1,
 }
 
 
-processPeatUQ <- function(peatXf, fertf, nppf, nepf, peatval, fertval, EC1, EC2) {
+processPeatUQ <- function(peatXf, fertf, nppf, nepf, littersumf, peatval, fertval, EC1, EC2) {
   # peatXf = raster with peat soils
   # fertf =  soilType
   # nppf = npp
@@ -347,27 +362,28 @@ processPeatUQ <- function(peatXf, fertf, nppf, nepf, peatval, fertval, EC1, EC2)
   ###calculate the new NEP according to the siteType (fertval)
   #if (fertval <= 3) {         
   if(fertval == 1){
-    drPeat <- drPeat + EC1*12/44#-240 #g C m-2 year-1  
+    drPeat <- drPeat + EC1*12/44 - littersumf#-240 #g C m-2 year-1  
   } else if(fertval == 2){
     #} else if (fertval > 3) {
-    drPeat <- drPeat + EC2*12/44#70
+    drPeat <- drPeat + EC2*12/44 - littersumf#70
   }
   #}
   nepf[drPeatNeg] <- drPeat
   return(nepf)#merge(drPeat,nepf))
 }
 
-processPeatUQ_N2O_CH4 <- function(peatXf, fertf, peatval, type = "N2O") {
+processPeatUQ_N2O_CH4 <- function(peatXf, fertf, peatval, type = "N2O", 
+                                  ECN2O1 = 0.23, ECN2O2 = 0.077, ECCH4 = 0.34) {
   
   drPeatInd <- peatXf == peatval # & fertf == fertval  ###selecting the pixels that match the conditions of peat and siteType
   emission <- matrix(0,nrow = length(fertf),1) ### zero vector  
   ###calculate the new NEP according to the siteType (fertval)
   if(type == "N2O"){
-    emission[which(drPeatInd & fertf<=3)] <- 0.23 + 0.04*rnorm(1) #g N2O m−2 year−1
-    emission[which(drPeatInd & fertf>3)] <- 0.077 + 0.004*rnorm(1) #g N2O m−2 year−1
+    emission[which(drPeatInd & fertf<=3)] <- ECN2O1 #g N2O m−2 year−1
+    emission[which(drPeatInd & fertf>3)] <- ECN2O2 #g N2O m−2 year−1
     emission[drPeatInd == 0] <- 0
   } else if (type == "CH4"){
-    emission[drPeatInd > 0] <- 0.34 + 0.12 * rnorm(1) #g CH4 m-2 year-1
+    emission[drPeatInd > 0] <- ECCH4 #g CH4 m-2 year-1
     emission[drPeatInd == 0] <- 0
   }
   

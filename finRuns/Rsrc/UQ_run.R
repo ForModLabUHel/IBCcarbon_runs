@@ -163,6 +163,13 @@ if(uncRun & !uncSeg & uncPeat){
   EC2 <- matrix(70, 1, nSamplesr)#70
 }
 
+harvestLimsr <- t(matrix(harvestLims,2,nSamplesr))
+if(uncRun & !uncSeg & uncHarv){
+  harvestLimsr[,1] <- (1+0.02*rnorm(nSamplesr))*harvestLims[1]
+  harvestLimsr[,2] <- (1+0.02*rnorm(nSamplesr))*harvestLims[2]
+}
+print(paste("Harvest lims = ",harvestLimsr[1:3,]))
+
 if(uncRun & !loadUnc){
   resampleYears <-  t(matrix(1:nYears,nYears,1000))# save enought of random weather series
   if(uncClim){ # weather for iterations
