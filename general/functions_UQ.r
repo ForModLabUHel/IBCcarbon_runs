@@ -147,12 +147,16 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
     #pX <- data.table(p1,p2[,2],p3[,2]) # can be the same segment multiple times
     assign("NEP",pX)
     
-    px <- 0
-    for(li in 26:29){ # litter input
-      pX <- pX + data.table(data.table(segID=sampleX$segID,apply(modOut$multiOut[,,li,,1],marginX,sum)))
+    px <- data.table(data.table(segID=sampleX$segID,apply(modOut$multiOut[,,26,,1],marginX,sum)))
+    for(li in 27:29){ # litter input
+      pX[,-1] <- pX[,-1] + data.table(data.table(apply(modOut$multiOut[,,li,,1],marginX,sum)))
     }
     assign("LitterSum", pX)
-    print(LitterSum)
+    #print(LitterSum)
+    print(c(nrow(LitterSum),ncol(LitterSum)))
+    print(c(nrow(NPP),ncol(NPP)))
+    print(c(nrow(NEP),ncol(NEP)))
+                      
     ##!!###step to reduce the size of the peat raster 
     ###load npp first outside loop to get peatX
     peatX <- extract(finPeats, coords)
