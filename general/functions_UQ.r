@@ -147,15 +147,16 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
     #pX <- data.table(p1,p2[,2],p3[,2]) # can be the same segment multiple times
     assign("NEP",pX)
     
-    px <- data.table(data.table(segID=sampleX$segID,apply(modOut$multiOut[,,26,,1],marginX,sum)))
+    pX <- data.table(data.table(apply(modOut$multiOut[,,26,,1],marginX,sum)))
     for(li in 27:29){ # litter input
-      pX[,-1] <- pX[,-1] + data.table(data.table(apply(modOut$multiOut[,,li,,1],marginX,sum)))
+      pX <- pX + data.table(data.table(apply(modOut$multiOut[,,li,,1],marginX,sum)))
     }
+    pX <- data.table(segID=sampleX$segID,pX)
     assign("LitterSum", pX)
     #print(LitterSum)
-    print(c(nrow(LitterSum),ncol(LitterSum)))
-    print(c(nrow(NPP),ncol(NPP)))
-    print(c(nrow(NEP),ncol(NEP)))
+    #print(c(nrow(LitterSum),ncol(LitterSum)))
+    #print(c(nrow(NPP),ncol(NPP)))
+    #print(c(nrow(NEP),ncol(NEP)))
                       
     ##!!###step to reduce the size of the peat raster 
     ###load npp first outside loop to get peatX
@@ -178,7 +179,7 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
       #curr <- paste0("per",i)
       npp <- NPP[,..curr]
       nep <- NEP[,..curr]
-      littersum <- LitterSum[,..curr]
+      littersum <- data.table(LitterSum[,..curr])
       
       nep <- processPeatUQ(peatX,fert,npp,nep,littersum,drPeatID,1,EC1,EC2)
       nep <- processPeatUQ(peatX,fert,npp,nep,littersum,drPeatID,2,EC1,EC2)
@@ -366,10 +367,10 @@ processPeatUQ <- function(peatXf, fertf, nppf, nepf, littersumf, peatval, fertva
   ###calculate the new NEP according to the siteType (fertval)
   #if (fertval <= 3) {         
   if(fertval == 1){
-    drPeat <- drPeat + EC1*12/44 - littersumf#-240 #g C m-2 year-1  
+    drPeat <- drPeat + EC1*12/44 - littersumf[drPeatNeg]/10#-240 #g C m-2 year-1  
   } else if(fertval == 2){
     #} else if (fertval > 3) {
-    drPeat <- drPeat + EC2*12/44 - littersumf#70
+    drPeat <- drPeat + EC2*12/44 - littersumf[drPeatNeg]/10#70
   }
   #}
   nepf[drPeatNeg] <- drPeat

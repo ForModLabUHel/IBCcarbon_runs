@@ -55,7 +55,8 @@ runModel <- function(sampleID, outType="dTabs",
     sampleX[,area := 16^2/10000] 
     cA <- 1/nrow(sampleX) #area_tot/nrow(sampleX) 
     harvestLims <- harvestLimsr[sampleID,]
-    print(paste("sampleID",sampleID,"harvestLims =",harvestLims))
+    print(paste("sampleID",sampleID,"harvestLims ="))
+    print(harvestLims)
   } else {
     sampleX[,area := N*16^2/10000] 
   }
