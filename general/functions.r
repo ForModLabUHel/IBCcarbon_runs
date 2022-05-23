@@ -1408,10 +1408,10 @@ testPlot <- function(outX,titleX,areas){
 
 
 ####Function to process NEP for drained peatlands (used in 2.1_procNep.r)
-processPeat <- function(peatXf, fertf, nppf, nepf, peatval, fertval) {
+processPeat <- function(peatXf, fertf, npp_lit, nepf, peatval, fertval) {
   # peatXf = raster with peat soils
   # fertf = raster with soilType
-  # nppf = raster of npp
+  # npp_lit = raster of npp - litterfall (NEP= NPP - coeffSoil - lit)
   # nepf= raster with nep
   # peatval = ID to identify the drained peatlands -> tells which peat soil you want to treat
   # fertval = soilType ID -> tells which siteType you want to treat
@@ -1419,14 +1419,14 @@ processPeat <- function(peatXf, fertf, nppf, nepf, peatval, fertval) {
   # rasters may be off by a couple pixels, resize:
   if (any(dim(fertf) < dim(peatXf))) {peatXf <- crop(peatXf,fertf)} 
   if (any(dim(peatXf) < dim(fertf))) {fertf <- crop(fertf,peatXf)}
-  if (any(dim(fertf) < dim(nppf))) {nppf <- crop(nppf,fertf)} 
-  if (any(dim(peatXf) < dim(nppf))) {nppf <- crop(nppf,peatXf)}
+  if (any(dim(fertf) < dim(npp_lit))) {npp_lit <- crop(npp_lit,fertf)} 
+  if (any(dim(peatXf) < dim(npp_lit))) {npp_lit <- crop(npp_lit,peatXf)}
   if (any(dim(fertf) < dim(nepf))) {nepf <- crop(nepf,fertf)} 
   if (any(dim(peatXf) < dim(nepf))) {nepf <- crop(nepf,peatXf)}
   # mask out pixels where peatXf == peatval and fertx == fertval
   drPeatNeg <- peatXf == peatval & fertf == fertval  ###selecting the pixels that match the conditions of peat and siteType
   drPeatNeg[drPeatNeg==0] <- NA  ### assign NA to the remaining pixels
-  drPeat <- mask(nppf, drPeatNeg)  ###raster with only the pixel of interest
+  drPeat <- mask(npp_lit, drPeatNeg)  ###raster with only the pixel of interest
   
   ###calculate the new NEP according to the siteType (fertval)
   if (fertval < 3) {         
