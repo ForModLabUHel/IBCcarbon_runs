@@ -99,6 +99,58 @@ setnames(datX,c("variable","value"),c("year","WtotTrees"))
 setkey(datX,segID,year)
 setkey(datAll,segID,year)
 datAll <- merge(datAll,datX)
+####BioIndicators
+bioInd <- calBioIndices(region)
+# HSIcaper
+datX <- data.table(segID=segID,bioInd$HSIcaper)
+setnames(datX,c("segID",1:region$maxYears))
+datX <- melt(datX,"segID")
+setnames(datX,c("variable","value"),c("year","HSIcaper"))
+setkey(datX,segID,year)
+setkey(datAll,segID,year)
+datAll <- merge(datAll,datX)
+# HSIhg
+datX <- data.table(segID=segID,bioInd$HSIhg)
+setnames(datX,c("segID",1:region$maxYears))
+datX <- melt(datX,"segID")
+setnames(datX,c("variable","value"),c("year","HSIhg"))
+setkey(datX,segID,year)
+setkey(datAll,segID,year)
+datAll <- merge(datAll,datX)
+# HSIttwo
+datX <- data.table(segID=segID,bioInd$HSIttwo)
+setnames(datX,c("segID",1:region$maxYears))
+datX <- melt(datX,"segID")
+setnames(datX,c("variable","value"),c("year","HSIttwo"))
+setkey(datX,segID,year)
+setkey(datAll,segID,year)
+datAll <- merge(datAll,datX)
+# HSIlswo
+datX <- data.table(segID=segID,bioInd$HSIlswo)
+setnames(datX,c("segID",1:region$maxYears))
+datX <- melt(datX,"segID")
+setnames(datX,c("variable","value"),c("year","HSIlswo"))
+setkey(datX,segID,year)
+setkey(datAll,segID,year)
+datAll <- merge(datAll,datX)
+# HSIltt
+datX <- data.table(segID=segID,bioInd$HSIltt)
+setnames(datX,c("segID",1:region$maxYears))
+datX <- melt(datX,"segID")
+setnames(datX,c("variable","value"),c("year","HSIltt"))
+setkey(datX,segID,year)
+setkey(datAll,segID,year)
+datAll <- merge(datAll,datX)
+# HSIfs
+datX <- data.table(segID=segID,bioInd$HSIfs)
+setnames(datX,c("segID",1:region$maxYears))
+datX <- melt(datX,"segID")
+setnames(datX,c("variable","value"),c("year","HSIfs"))
+setkey(datX,segID,year)
+setkey(datAll,segID,year)
+datAll <- merge(datAll,datX)
+
+####put data all together
 datAll$year <- as.numeric(as.character(datAll$year))
 datAll$maakID <- r_no 
 datAll$harScen <- harvScen
@@ -106,6 +158,8 @@ datAll$harvInten <- harvInten
 datAllBase <- datAll
 print(paste0("harvest scenario ", harvScen))
 print(paste0("harvest intensity ", harvInten))
+
+
 
 #Run protect scenarios
 scens <- c("protect")#,#"protectNoAdH")
@@ -200,6 +254,57 @@ for(harvInten in harvIntensities){
     setkey(datX,segID,year)
     setkey(datAll,segID,year)
     datAll <- merge(datAll,datX)
+    ####BioIndicators
+    bioInd <- calBioIndices(region)
+    # HSIcaper
+    datX <- data.table(segID=segID,bioInd$HSIcaper)
+    setnames(datX,c("segID",1:region$maxYears))
+    datX <- melt(datX,"segID")
+    setnames(datX,c("variable","value"),c("year","HSIcaper"))
+    setkey(datX,segID,year)
+    setkey(datAll,segID,year)
+    datAll <- merge(datAll,datX)
+    # HSIhg
+    datX <- data.table(segID=segID,bioInd$HSIhg)
+    setnames(datX,c("segID",1:region$maxYears))
+    datX <- melt(datX,"segID")
+    setnames(datX,c("variable","value"),c("year","HSIhg"))
+    setkey(datX,segID,year)
+    setkey(datAll,segID,year)
+    datAll <- merge(datAll,datX)
+    # HSIttwo
+    datX <- data.table(segID=segID,bioInd$HSIttwo)
+    setnames(datX,c("segID",1:region$maxYears))
+    datX <- melt(datX,"segID")
+    setnames(datX,c("variable","value"),c("year","HSIttwo"))
+    setkey(datX,segID,year)
+    setkey(datAll,segID,year)
+    datAll <- merge(datAll,datX)
+    # HSIlswo
+    datX <- data.table(segID=segID,bioInd$HSIlswo)
+    setnames(datX,c("segID",1:region$maxYears))
+    datX <- melt(datX,"segID")
+    setnames(datX,c("variable","value"),c("year","HSIlswo"))
+    setkey(datX,segID,year)
+    setkey(datAll,segID,year)
+    datAll <- merge(datAll,datX)
+    # HSIltt
+    datX <- data.table(segID=segID,bioInd$HSIltt)
+    setnames(datX,c("segID",1:region$maxYears))
+    datX <- melt(datX,"segID")
+    setnames(datX,c("variable","value"),c("year","HSIltt"))
+    setkey(datX,segID,year)
+    setkey(datAll,segID,year)
+    datAll <- merge(datAll,datX)
+    # HSIfs
+    datX <- data.table(segID=segID,bioInd$HSIfs)
+    setnames(datX,c("segID",1:region$maxYears))
+    datX <- melt(datX,"segID")
+    setnames(datX,c("variable","value"),c("year","HSIfs"))
+    setkey(datX,segID,year)
+    setkey(datAll,segID,year)
+    datAll <- merge(datAll,datX)
+
     datAll$year <- as.numeric(as.character(datAll$year))
     datAll$maakID <- r_no 
     datAll$harScen <- harvScen
@@ -306,6 +411,57 @@ for(harvInten in c("Low","MaxSust")){
     setkey(datX,segID,year)
     setkey(datAll,segID,year)
     datAll <- merge(datAll,datX)
+    ####BioIndicators
+    bioInd <- calBioIndices(region)
+    # HSIcaper
+    datX <- data.table(segID=segID,bioInd$HSIcaper)
+    setnames(datX,c("segID",1:region$maxYears))
+    datX <- melt(datX,"segID")
+    setnames(datX,c("variable","value"),c("year","HSIcaper"))
+    setkey(datX,segID,year)
+    setkey(datAll,segID,year)
+    datAll <- merge(datAll,datX)
+    # HSIhg
+    datX <- data.table(segID=segID,bioInd$HSIhg)
+    setnames(datX,c("segID",1:region$maxYears))
+    datX <- melt(datX,"segID")
+    setnames(datX,c("variable","value"),c("year","HSIhg"))
+    setkey(datX,segID,year)
+    setkey(datAll,segID,year)
+    datAll <- merge(datAll,datX)
+    # HSIttwo
+    datX <- data.table(segID=segID,bioInd$HSIttwo)
+    setnames(datX,c("segID",1:region$maxYears))
+    datX <- melt(datX,"segID")
+    setnames(datX,c("variable","value"),c("year","HSIttwo"))
+    setkey(datX,segID,year)
+    setkey(datAll,segID,year)
+    datAll <- merge(datAll,datX)
+    # HSIlswo
+    datX <- data.table(segID=segID,bioInd$HSIlswo)
+    setnames(datX,c("segID",1:region$maxYears))
+    datX <- melt(datX,"segID")
+    setnames(datX,c("variable","value"),c("year","HSIlswo"))
+    setkey(datX,segID,year)
+    setkey(datAll,segID,year)
+    datAll <- merge(datAll,datX)
+    # HSIltt
+    datX <- data.table(segID=segID,bioInd$HSIltt)
+    setnames(datX,c("segID",1:region$maxYears))
+    datX <- melt(datX,"segID")
+    setnames(datX,c("variable","value"),c("year","HSIltt"))
+    setkey(datX,segID,year)
+    setkey(datAll,segID,year)
+    datAll <- merge(datAll,datX)
+    # HSIfs
+    datX <- data.table(segID=segID,bioInd$HSIfs)
+    setnames(datX,c("segID",1:region$maxYears))
+    datX <- melt(datX,"segID")
+    setnames(datX,c("variable","value"),c("year","HSIfs"))
+    setkey(datX,segID,year)
+    setkey(datAll,segID,year)
+    datAll <- merge(datAll,datX)
+    
     datAll$year <- as.numeric(as.character(datAll$year))
     datAll$maakID <- r_no 
     datAll$harScen <- harvScen
@@ -411,6 +567,57 @@ for(harvInten in harvIntensities){
     setkey(datX,segID,year)
     setkey(datAll,segID,year)
     datAll <- merge(datAll,datX)
+    ####BioIndicators
+    bioInd <- calBioIndices(region)
+    # HSIcaper
+    datX <- data.table(segID=segID,bioInd$HSIcaper)
+    setnames(datX,c("segID",1:region$maxYears))
+    datX <- melt(datX,"segID")
+    setnames(datX,c("variable","value"),c("year","HSIcaper"))
+    setkey(datX,segID,year)
+    setkey(datAll,segID,year)
+    datAll <- merge(datAll,datX)
+    # HSIhg
+    datX <- data.table(segID=segID,bioInd$HSIhg)
+    setnames(datX,c("segID",1:region$maxYears))
+    datX <- melt(datX,"segID")
+    setnames(datX,c("variable","value"),c("year","HSIhg"))
+    setkey(datX,segID,year)
+    setkey(datAll,segID,year)
+    datAll <- merge(datAll,datX)
+    # HSIttwo
+    datX <- data.table(segID=segID,bioInd$HSIttwo)
+    setnames(datX,c("segID",1:region$maxYears))
+    datX <- melt(datX,"segID")
+    setnames(datX,c("variable","value"),c("year","HSIttwo"))
+    setkey(datX,segID,year)
+    setkey(datAll,segID,year)
+    datAll <- merge(datAll,datX)
+    # HSIlswo
+    datX <- data.table(segID=segID,bioInd$HSIlswo)
+    setnames(datX,c("segID",1:region$maxYears))
+    datX <- melt(datX,"segID")
+    setnames(datX,c("variable","value"),c("year","HSIlswo"))
+    setkey(datX,segID,year)
+    setkey(datAll,segID,year)
+    datAll <- merge(datAll,datX)
+    # HSIltt
+    datX <- data.table(segID=segID,bioInd$HSIltt)
+    setnames(datX,c("segID",1:region$maxYears))
+    datX <- melt(datX,"segID")
+    setnames(datX,c("variable","value"),c("year","HSIltt"))
+    setkey(datX,segID,year)
+    setkey(datAll,segID,year)
+    datAll <- merge(datAll,datX)
+    # HSIfs
+    datX <- data.table(segID=segID,bioInd$HSIfs)
+    setnames(datX,c("segID",1:region$maxYears))
+    datX <- melt(datX,"segID")
+    setnames(datX,c("variable","value"),c("year","HSIfs"))
+    setkey(datX,segID,year)
+    setkey(datAll,segID,year)
+    datAll <- merge(datAll,datX)
+    
     datAll$year <- as.numeric(as.character(datAll$year))
     datAll$maakID <- r_no 
     datAll$harScen <- harvScen
@@ -517,6 +724,57 @@ for(harvInten in "Base"){
     setkey(datX,segID,year)
     setkey(datAll,segID,year)
     datAll <- merge(datAll,datX)
+    ####BioIndicators
+    bioInd <- calBioIndices(region)
+    # HSIcaper
+    datX <- data.table(segID=segID,bioInd$HSIcaper)
+    setnames(datX,c("segID",1:region$maxYears))
+    datX <- melt(datX,"segID")
+    setnames(datX,c("variable","value"),c("year","HSIcaper"))
+    setkey(datX,segID,year)
+    setkey(datAll,segID,year)
+    datAll <- merge(datAll,datX)
+    # HSIhg
+    datX <- data.table(segID=segID,bioInd$HSIhg)
+    setnames(datX,c("segID",1:region$maxYears))
+    datX <- melt(datX,"segID")
+    setnames(datX,c("variable","value"),c("year","HSIhg"))
+    setkey(datX,segID,year)
+    setkey(datAll,segID,year)
+    datAll <- merge(datAll,datX)
+    # HSIttwo
+    datX <- data.table(segID=segID,bioInd$HSIttwo)
+    setnames(datX,c("segID",1:region$maxYears))
+    datX <- melt(datX,"segID")
+    setnames(datX,c("variable","value"),c("year","HSIttwo"))
+    setkey(datX,segID,year)
+    setkey(datAll,segID,year)
+    datAll <- merge(datAll,datX)
+    # HSIlswo
+    datX <- data.table(segID=segID,bioInd$HSIlswo)
+    setnames(datX,c("segID",1:region$maxYears))
+    datX <- melt(datX,"segID")
+    setnames(datX,c("variable","value"),c("year","HSIlswo"))
+    setkey(datX,segID,year)
+    setkey(datAll,segID,year)
+    datAll <- merge(datAll,datX)
+    # HSIltt
+    datX <- data.table(segID=segID,bioInd$HSIltt)
+    setnames(datX,c("segID",1:region$maxYears))
+    datX <- melt(datX,"segID")
+    setnames(datX,c("variable","value"),c("year","HSIltt"))
+    setkey(datX,segID,year)
+    setkey(datAll,segID,year)
+    datAll <- merge(datAll,datX)
+    # HSIfs
+    datX <- data.table(segID=segID,bioInd$HSIfs)
+    setnames(datX,c("segID",1:region$maxYears))
+    datX <- melt(datX,"segID")
+    setnames(datX,c("variable","value"),c("year","HSIfs"))
+    setkey(datX,segID,year)
+    setkey(datAll,segID,year)
+    datAll <- merge(datAll,datX)
+    
     datAll$year <- as.numeric(as.character(datAll$year))
     datAll$maakID <- r_no 
     datAll$harScen <- harvScen
