@@ -54,6 +54,10 @@ runModel <- function(sampleID, outType="dTabs",
     area_tot <- sum(data.all$area) # ha
     sampleX[,area := 16^2/10000] 
     cA <- 1/nrow(sampleX) #area_tot/nrow(sampleX) 
+    print("harvestLims:") 
+    print(harvestLims)
+    #harvestLims <- (1+0.02*rnorm(1))*harvestLims
+    #print(paste0("New harvestLims =",harvestLims))
   } else {
     sampleX[,area := N*16^2/10000] 
   }
@@ -526,6 +530,7 @@ create_prebas_input.f = function(r_no, clim, data.sample, nYears,
   #domSPrun=0 initialize model for mixed forests according to data inputs 
   #domSPrun=1 initialize model only for dominant species 
   nSites <- nrow(data.sample)
+  print(paste0("input HcFactor = ",HcFactorX))
   ###site Info matrix. nrow = nSites, cols: 1 = siteID; 2 = climID; 3=site type;
   ###4 = nLayers; 5 = nSpecies;
   ###6=SWinit;   7 = CWinit; 8 = SOGinit; 9 = Sinit
