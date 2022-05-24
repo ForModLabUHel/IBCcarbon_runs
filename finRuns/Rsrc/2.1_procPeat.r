@@ -62,7 +62,7 @@ for (i in 1:3) {
                       "NEP sp_",min(get(curr)),"-",max(get(curr)),
                       "_harscen",harvScen,
                       "_harInten",harvInten,rcpfile,".tif"))
-  npp_lit <- npp - lit_cWoody - lit_fol - lit_fr - lit_fWoody
+  npp_lit <- npp - lit_cWoody/10 - lit_fol/10 - lit_fr/10 - lit_fWoody/10
   nep = processPeat(peatX,fert,npp_lit,nep,drPeatID,1)
   nep = processPeat(peatX,fert,npp_lit,nep,drPeatID,2)
   writeRaster(nep,filename = paste0(pathFiles,
