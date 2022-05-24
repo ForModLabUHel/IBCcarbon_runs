@@ -30,6 +30,7 @@ sampleForPlots <- 1
 ###management and intesity of harvest
 if(!exists("harvScen")) harvScen = "Base"#c("Base", Low","MaxSust")
 if(!exists("harvInten")) harvInten = "Base"#c("NoHarv","Base")
+
 # Missing from varOuts: 
 # MinPeat-index, NEPdrPeat
 if(!exists("mortMod")) mortMod=1

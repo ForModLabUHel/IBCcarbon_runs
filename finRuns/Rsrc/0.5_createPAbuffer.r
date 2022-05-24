@@ -82,6 +82,8 @@ newIDs <- max(data.all$maakuntaID) + 1:length(toSplit$maakuntaID)
 tabX <- cbind(toSplit$maakuntaID,
               newIDs)
 buf.IDs$newMaakuntaID <- newIDs[match(buf.IDs$maakuntaID,tabX)]
+setnames(buf.IDs,"consBuf","newCons")
+setnames(buffDat,"Wbuffer","newCons")
 
 save(buf.IDs,buffDat, 
      file=paste0(pathX,"maakunta_",r_no,"_IDsBuffer.rdata"))

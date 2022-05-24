@@ -7,35 +7,54 @@
 ## ---------------------------------------------------------------------
 runModel <- function(sampleID, outType="dTabs",
           harvScen,harvInten,easyInit=FALSE,
-          forceSaveInitSoil=F){
+          forceSaveInitSoil=F, cons10run = F){
   # outType determines the type of output:
   # dTabs -> standard run, mod outputs saved as data.tables 
   # testRun-> test run reports the mod out and initPrebas as objects
   # ststDeadW -> initialize the dead Wood volume;
   # uncRun -> reports the output table for the regional uncertainty run
   # uncSeg -> reports the list of output table for the segment uncertainty run
+  # cons10run -> flag for conservation areas 10% run
   
   # print(date())
   print(paste("start sample ID",sampleID))
   
+  initilizeSoil=T ###flag for soil initialization 
+  procInSample=F
   ####in the protection scenarios consider buffer to protection areas
-  if(harvScen %in% c("protect","protectNoAdH")){
+  ####if cons10run == TRUE run the model considering 10% area is conservation area according to zonation results
+  if(harvScen %in% c("protect","protectNoAdH") & cons10run==FALSE ){
     # sampleX$cons[sampleX$Wbuffer==1] <- 1
+    load(paste0("input/maakunta/maakunta_",r_no,"_IDsBuffer.rdata"))
+    xDat <- buffDat
+    procInSample = T
+    initilizeSoil = F
+  }
+  if(cons10run){
+    load(paste0("input/maakunta/maakunta_",r_no,"_IDsCons10.rdata"))
+    xDat <- cons10Dat
+    procInSample = T
+    initilizeSoil = F
+  }
+  if(procInSample){  
     if(identical(landClassX,1:3)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to3.rdata"))
     if(identical(landClassX,1)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1.rdata"))
-    load(paste0("input/maakunta/maakunta_",r_no,"_IDsBuffer.rdata"))
-    setnames(buffDat,"nPix","N")
-    buffDat[,area:=N*16^2/10000]
+    setnames(xDat,"nPix","N")
+    xDat[,area:=N*16^2/10000]
     setkey(ops[[sampleID]],maakuntaID)
-    setkey(buffDat,maakuntaID)
-    maakX <- ops[[sampleID]]$maakuntaID[which(ops[[sampleID]]$maakuntaID %in% buffDat$maakuntaID)]
-    posX <- which(ops[[sampleID]]$maakuntaID %in% buffDat$maakuntaID)
-    ops[[sampleID]][maakuntaID %in% maakX]$N <- buffDat[maakuntaID %in% maakX]$N
-    ops[[sampleID]][maakuntaID %in% maakX]$area <- buffDat[maakuntaID %in% maakX]$area
+    setkey(xDat,maakuntaID)
+    maakX <- ops[[sampleID]]$maakuntaID[which(ops[[sampleID]]$maakuntaID %in% xDat$maakuntaID)]
+    posX <- which(ops[[sampleID]]$maakuntaID %in% xDat$maakuntaID)
+    ops[[sampleID]][maakuntaID %in% maakX]$N <- xDat[maakuntaID %in% maakX]$N
+    ops[[sampleID]][maakuntaID %in% maakX]$area <- xDat[maakuntaID %in% maakX]$area
 
-    selX <- buffDat[!maakuntaID %in% maakX &
-                       oldMaakID %in%maakX]
+    selX <- xDat[!maakuntaID %in% maakX &
+                     oldMaakID %in% maakX]
     ops[[sampleID]][,oldMaakID:=maakuntaID]
+    
+    selX$newCons <- NULL
+    selX$Wbuffer <- NULL
+    ops[[sampleID]]$Wbuffer <- NULL
     
     sampleX <- rbind(ops[[sampleID]],selX)
     sampleX$segID <- sampleX$maakuntaID
@@ -45,7 +64,7 @@ runModel <- function(sampleID, outType="dTabs",
     x0 <- which(sampleX$N==0)    
     sampleX <- sampleX[-x0]
     initSoilC <- initSoilC[-x0,,,]
-    # data.all <- rbind(data.all[!maakuntaID %in% buffDat$maakuntaID],buffDat)
+    # data.all <- rbind(data.all[!maakuntaID %in% xDat$maakuntaID],xDat)
   }else{
     sampleX <- ops[[sampleID]]
   }
@@ -246,17 +265,19 @@ runModel <- function(sampleID, outType="dTabs",
   # save(initPrebas,HarvLim1,file=paste0("test1",harvScen,".rdata"))
   # region <- regionPrebas(initPrebas)
   ###run PREBAS
-  if(!(harvScen =="Base" & harvInten == "Base")){
-    if(outType!="uncRun"){
-      if(!harvScen %in% c("protect","protectNoAdH")){
-        if(identical(landClassX,1:3)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to3.rdata"))
-        if(identical(landClassX,1)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1.rdata"))
+  if(initilizeSoil){
+    if(!(harvScen =="Base" & harvInten == "Base")){
+      if(outType!="uncRun"){
+        if(!harvScen %in% c("protect","protectNoAdH")){
+          if(identical(landClassX,1:3)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to3.rdata"))
+          if(identical(landClassX,1)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1.rdata"))
+        }
+      }else{
+        load(paste0("initSoilCunc/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
       }
-    }else{
-      load(paste0("initSoilCunc/forCent",r_no,"/initSoilC_",sampleID,".rdata"))
+      initPrebas$yassoRun <- rep(1,initPrebas$nSites)
+      initPrebas$soilC[,1,,,] <- initSoilC
     }
-    initPrebas$yassoRun <- rep(1,initPrebas$nSites)
-    initPrebas$soilC[,1,,,] <- initSoilC
   }
   print(paste0("harvest scenario ", harvScen))
   print(paste0("harvest intensity ", harvInten))
@@ -321,7 +342,7 @@ runModel <- function(sampleID, outType="dTabs",
   
   print(paste("runModel",sampleID))
   ##calculate steady state carbon from prebas litter 
-  if(harvScen=="Base" & harvInten =="Base"){
+  if(harvScen=="Base" & harvInten =="Base" & initilizeSoil){
     initSoilC <- stXX_GV(region, 1)
     print(paste("initSoilC",sampleID))
     if(outType!="testRun" | forceSaveInitSoil){

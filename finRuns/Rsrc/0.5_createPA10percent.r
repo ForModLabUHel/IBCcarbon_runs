@@ -5,7 +5,7 @@ library(sf)
 library(stars)
 library(dplyr)
 
-# r_no <- 5
+# r_no <- 1
 
 pathX <- "/scratch/project_2000994/PREBASruns/finRuns/input/maakunta/"
 # pathX <- "C:/Users/checcomi/Downloads/New folder/"
@@ -73,7 +73,7 @@ for(i in 1:nX){
   outCons10 <- inCons10 <- data.all[maakuntaID==ID]
   outCons10[maakuntaID==ID,nPix:=nPix-nCons]
   inCons10$oldMaakID <- outCons10$oldMaakID <- ID
-  inCons10$cons = inCons10$Wbuffer=1
+  inCons10$cons = inCons10$cons10=1
   inCons10$nPix = nCons
   inCons10$maakuntaID = newID
   cons10Dat <- rbind(cons10Dat,inCons10)
@@ -88,6 +88,8 @@ newIDs <- max(data.all$maakuntaID) + 1:length(toSplit$maakuntaID)
 tabX <- cbind(toSplit$maakuntaID,
               newIDs)
 cons10.IDs$newMaakuntaID <- newIDs[match(cons10.IDs$maakuntaID,tabX)]
+setnames(cons10.IDs,"cons10","newCons")
+setnames(cons10Dat,"cons10","newCons")
 
 save(cons10.IDs,cons10Dat, 
      file=paste0(pathX,"maakunta_",r_no,"_IDsCons10.rdata"))
