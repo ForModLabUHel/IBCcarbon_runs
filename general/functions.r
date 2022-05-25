@@ -287,10 +287,13 @@ runModel <- function(sampleID, outType="dTabs",
       }else{ # if UncRun or uncSeg
         load(paste0("initSoilCunc/forCent",r_no,"/initSoilC_",outType,"_",sampleID,".rdata"))
       }
-      initPrebas$yassoRun <- rep(1,initPrebas$nSites)
-      initPrebas$soilC[,1,,,] <- initSoilC
+      # initPrebas$yassoRun <- rep(1,initPrebas$nSites)
+      # initPrebas$soilC[,1,,,] <- initSoilC
     }
   }
+  initPrebas$yassoRun <- rep(1,initPrebas$nSites)
+  if(exists("initSoilC")) initPrebas$soilC[,1,,,] <- initSoilC
+  
   print(paste0("harvest scenario ", harvScen))
   print(paste0("harvest intensity ", harvInten))
   HarvLimX <- HarvLim1[1:nYears,]
