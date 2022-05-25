@@ -41,13 +41,30 @@ for (i in 1:3) {
                       "npp_",min(get(curr)),"-",max(get(curr)),
                       "_harscen",harvScen,
                       "_harInten",harvInten,rcpfile,".tif"))
+  lit_cWoody <- raster(paste0("rasters/forCent",r_no,"/",
+                              "Litter_cWoody_",min(get(curr)),"-",max(get(curr)),
+                              "_harscen",harvScen,
+                              "_harInten",harvInten,rcpfile,".tif"))
+  lit_fol <- raster(paste0("rasters/forCent",r_no,"/",
+                           "Litter_fol_",min(get(curr)),"-",max(get(curr)),
+                           "_harscen",harvScen,
+                           "_harInten",harvInten,rcpfile,".tif"))
+  lit_fr <- raster(paste0("rasters/forCent",r_no,"/",
+                          "Litter_fr_",min(get(curr)),"-",max(get(curr)),
+                          "_harscen",harvScen,
+                          "_harInten",harvInten,rcpfile,".tif"))
+  lit_fWoody <- raster(paste0("rasters/forCent",r_no,"/",
+                              "Litter_fWoody_",min(get(curr)),"-",max(get(curr)),
+                              "_harscen",harvScen,
+                              "_harInten",harvInten,rcpfile,".tif"))
   #writeRaster(peatX,filename = paste0("rasters/forCent",r_no,"/","/peatXtif"))
   nep = raster(paste0("rasters/forCent",r_no,"/",
                       "NEP sp_",min(get(curr)),"-",max(get(curr)),
                       "_harscen",harvScen,
                       "_harInten",harvInten,rcpfile,".tif"))
-  nep = processPeat(peatX,fert,npp,nep,drPeatID,1)
-  nep = processPeat(peatX,fert,npp,nep,drPeatID,2)
+  npp_lit <- npp - lit_cWoody/10 - lit_fol/10 - lit_fr/10 - lit_fWoody/10
+  nep = processPeat(peatX,fert,npp_lit,nep,drPeatID,1)
+  nep = processPeat(peatX,fert,npp_lit,nep,drPeatID,2)
   writeRaster(nep,filename = paste0(pathFiles,
                                     "nepProcPeat_",min(get(curr)),"-",max(get(curr)),
                                     "_harscen",harvScen,

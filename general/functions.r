@@ -19,7 +19,6 @@ runModel <- function(sampleID, outType="dTabs",
   # print(date())
   print(paste("start sample ID",sampleID))
   
-  
   initilizeSoil=T ###flag for soil initialization 
   procInSample=F
   ####in the protection scenarios consider buffer to protection areas
@@ -48,9 +47,9 @@ runModel <- function(sampleID, outType="dTabs",
     posX <- which(ops[[sampleID]]$maakuntaID %in% xDat$maakuntaID)
     ops[[sampleID]][maakuntaID %in% maakX]$N <- xDat[maakuntaID %in% maakX]$N
     ops[[sampleID]][maakuntaID %in% maakX]$area <- xDat[maakuntaID %in% maakX]$area
-    
+
     selX <- xDat[!maakuntaID %in% maakX &
-                   oldMaakID %in% maakX]
+                     oldMaakID %in% maakX]
     ops[[sampleID]][,oldMaakID:=maakuntaID]
     
     selX$newCons <- NULL
@@ -278,17 +277,19 @@ runModel <- function(sampleID, outType="dTabs",
   # save(initPrebas,HarvLim1,file=paste0("test1",harvScen,".rdata"))
   # region <- regionPrebas(initPrebas)
   ###run PREBAS
-  if(!(harvScen =="Base" & harvInten == "Base")){
-    if(outType!="uncRun"){
-      if(!harvScen %in% c("protect","protectNoAdH")){
-        if(identical(landClassX,1:3)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to3.rdata"))
-        if(identical(landClassX,1)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1.rdata"))
+  if(initilizeSoil){
+    if(!(harvScen =="Base" & harvInten == "Base")){
+      if(outType!="uncRun"){
+        if(!harvScen %in% c("protect","protectNoAdH")){
+          if(identical(landClassX,1:3)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to3.rdata"))
+          if(identical(landClassX,1)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1.rdata"))
+        }
+      }else{ # if UncRun or uncSeg
+        load(paste0("initSoilCunc/forCent",r_no,"/initSoilC_",outType,"_",sampleID,".rdata"))
       }
-    }else{ # if UncRun or uncSeg
-      load(paste0("initSoilCunc/forCent",r_no,"/initSoilC_",outType,"_",sampleID,".rdata"))
+      initPrebas$yassoRun <- rep(1,initPrebas$nSites)
+      initPrebas$soilC[,1,,,] <- initSoilC
     }
-    initPrebas$yassoRun <- rep(1,initPrebas$nSites)
-    initPrebas$soilC[,1,,,] <- initSoilC
   }
   print(paste0("harvest scenario ", harvScen))
   print(paste0("harvest intensity ", harvInten))
@@ -353,7 +354,7 @@ runModel <- function(sampleID, outType="dTabs",
   
   print(paste("runModel",sampleID))
   ##calculate steady state carbon from prebas litter 
-  if(harvScen=="Base" & harvInten =="Base"){
+  if(harvScen=="Base" & harvInten =="Base" & initilizeSoil){
     initSoilC <- stXX_GV(region, 1)
     print(paste("initSoilC",sampleID))
     if(outType!="testRun" | forceSaveInitSoil){
@@ -1306,10 +1307,10 @@ testPlot <- function(outX,titleX,areas){
 
 
 ####Function to process NEP for drained peatlands (used in 2.1_procNep.r)
-processPeat <- function(peatXf, fertf, nppf, nepf, peatval, fertval) {
+processPeat <- function(peatXf, fertf, npp_lit, nepf, peatval, fertval) {
   # peatXf = raster with peat soils
   # fertf = raster with soilType
-  # nppf = raster of npp
+  # npp_lit = raster of npp - litterfall (NEP= NPP - coeffSoil - lit)
   # nepf= raster with nep
   # peatval = ID to identify the drained peatlands -> tells which peat soil you want to treat
   # fertval = soilType ID -> tells which siteType you want to treat
@@ -1317,14 +1318,14 @@ processPeat <- function(peatXf, fertf, nppf, nepf, peatval, fertval) {
   # rasters may be off by a couple pixels, resize:
   if (any(dim(fertf) < dim(peatXf))) {peatXf <- crop(peatXf,fertf)} 
   if (any(dim(peatXf) < dim(fertf))) {fertf <- crop(fertf,peatXf)}
-  if (any(dim(fertf) < dim(nppf))) {nppf <- crop(nppf,fertf)} 
-  if (any(dim(peatXf) < dim(nppf))) {nppf <- crop(nppf,peatXf)}
+  if (any(dim(fertf) < dim(npp_lit))) {npp_lit <- crop(npp_lit,fertf)} 
+  if (any(dim(peatXf) < dim(npp_lit))) {npp_lit <- crop(npp_lit,peatXf)}
   if (any(dim(fertf) < dim(nepf))) {nepf <- crop(nepf,fertf)} 
   if (any(dim(peatXf) < dim(nepf))) {nepf <- crop(nepf,peatXf)}
   # mask out pixels where peatXf == peatval and fertx == fertval
   drPeatNeg <- peatXf == peatval & fertf == fertval  ###selecting the pixels that match the conditions of peat and siteType
   drPeatNeg[drPeatNeg==0] <- NA  ### assign NA to the remaining pixels
-  drPeat <- mask(nppf, drPeatNeg)  ###raster with only the pixel of interest
+  drPeat <- mask(npp_lit, drPeatNeg)  ###raster with only the pixel of interest
   
   ###calculate the new NEP according to the siteType (fertval)
   if (fertval < 3) {         

@@ -17,7 +17,8 @@ set.seed(1)
 ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
 toMem <- ls()
 modRun <- runModel(sampleID,outType="testRun",forceSaveInitSoil=T,
-                   harvScen=harvScen,harvInten=harvInten)
+                   harvScen=harvScen,harvInten=harvInten,
+                   cons10run=cons10run)
 region <- modRun$region
 rm(modRun); gc()
 datAll <- data.table()
@@ -172,7 +173,8 @@ for(harvInten in harvIntensities){
     ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
     toMem <- ls()
     modRun <- runModel(sampleID,outType="testRun",
-                       harvScen=harvScen,harvInten=harvInten)
+                       harvScen=harvScen,harvInten=harvInten,
+                       cons10run=cons10run)
     region <- modRun$region
     rm(modRun); gc()
     datAll <- data.table()
@@ -329,7 +331,8 @@ for(harvInten in c("Low","MaxSust")){
     ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
     toMem <- ls()
     modRun <- runModel(sampleID,outType="testRun",
-                       harvScen=harvScen,harvInten=harvInten)
+                       harvScen=harvScen,harvInten=harvInten,
+                       cons10run=cons10run)
     region <- modRun$region
     rm(modRun); gc()
     datAll <- data.table()
@@ -485,7 +488,8 @@ for(harvInten in harvIntensities){
     ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
     toMem <- ls()
     modRun <- runModel(sampleID,outType="testRun",
-                       harvScen=harvScen,harvInten=harvInten)
+                       harvScen=harvScen,harvInten=harvInten,
+                       cons10run=cons10run)
     region <- modRun$region
     rm(modRun); gc()
     datAll <- data.table()
@@ -642,7 +646,8 @@ for(harvInten in "Base"){
     ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
     toMem <- ls()
     modRun <- runModel(sampleID,outType="testRun",
-                       harvScen=harvScen,harvInten=harvInten)
+                       harvScen=harvScen,harvInten=harvInten,
+                       cons10run=cons10run)
     region <- modRun$region
     rm(modRun); gc()
     datAll <- data.table()
