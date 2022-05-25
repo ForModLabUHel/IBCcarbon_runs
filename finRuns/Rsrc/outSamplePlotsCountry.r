@@ -10,7 +10,7 @@ setwd("/scratch/project_2000994/PREBASruns/finRuns")
 run_settings <- "_addHarvNO_landClassX1_mortMod3"
 r_no=1
 regionNames <- fread("/scratch/project_2000994/PREBASruns/metadata/maakunta/maakunta_names.txt")
-outDyr <- "outSampleHcF1.2"
+outDyr <- "outSampleHcF1.2_cons10run"
 
 meanRegion <- data.table()
 # areasCountry <- data.table()
@@ -83,10 +83,11 @@ countryArea <- sum(areaAllRegions)
      file = paste0(outDyr,"/country",
                    run_settings,".rdata"))
 
+    dataPlot <- meanCountry[harScen!="adaptTapio"]
 pdf(paste0(outDyr,"/plots/plots_country.pdf"))
 for(varX in vars){
   # i=i+1
-  print(ggplot(meanCountry)+
+  print(ggplot(dataPlot)+
   # geom_ribbon(aes(x = year + 2016, ymin = q0.25, ymax = q0.75,fill= harScen), alpha = 0.3)+
   geom_line(aes(x = year+ 2016, y = get(varX), color = harScen,linetype=harvInten)) + 
   xlab("year") + ylab(varX))
@@ -96,12 +97,12 @@ for(varX in vars){
 #                       color = harScen)) + 
 #         xlab("year") + ylab(varX))
 }
-print(ggplot(meanCountry)+
+print(ggplot(dataPlot)+
         # geom_ribbon(aes(x = year + 2016, ymin = q0.25, ymax = q0.75,fill= harScen), alpha = 0.3)+
         # geom_line(aes(x = year+ 2016, y = CbalFluxes, color = harScen,linetype=harvInten)) + 
         geom_line(aes(x = year+ 2016, y = CbalState, color = harScen,linetype=harvInten)) +
         xlab("year") + ylab("C balance (State)"))
-print(ggplot(meanCountry)+
+print(ggplot(dataPlot)+
         # geom_ribbon(aes(x = year + 2016, ymin = q0.25, ymax = q0.75,fill= harScen), alpha = 0.3)+
         geom_line(aes(x = year+ 2016, y = CbalFluxes, color = harScen,linetype=harvInten)) +
         # geom_line(aes(x = year+ 2016, y = CbalState, color = harScen,linetype=harvInten)) +
