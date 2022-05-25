@@ -297,7 +297,7 @@ for(nii in 1:niter){
   print("start runModel")
   if(testRun){ # if needed to test an individual sample
     sampleXs <- lapply(sampleIDs, function(jx) { 
-      runModel(jx, outType=outType, harvScen=harvscen ,harvInten=harvinten)})
+      runModel(jx, outType=outType, harvScen=harvscen ,harvInten=harvinten, cons10run = zon10)})
     #sampleXs <- runModel(sampleIDs,outType=outType)
     #print(sampleXs[[1]])
   } else if(uncSeg){
@@ -306,7 +306,7 @@ for(nii in 1:niter){
       mc.cores = nCores,mc.silent=FALSE)      ## Split this job across 10 cores
   } else {
     sampleXs <- mclapply(sampleIDs[(1+(nii-1)*nParRuns):(nii*nParRuns)], function(jx) {
-      runModel(jx, outType=outType, harvScen=harvscen ,harvInten=harvinten)}, 
+      runModel(jx, outType=outType, harvScen=harvscen ,harvInten=harvinten, cons10run = zon10)}, 
       mc.cores = nCores,mc.silent=FALSE)      ## Split this job across 10 cores
   }
   timeRun <- Sys.time() - startRun
