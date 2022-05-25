@@ -16,6 +16,8 @@ library(sf)
     ##periodx is the period of time for the scenario (2017-2025, 2026-2033, 2034-2050)
     ##harvscenx is the harvest scenario (Base, Low, MaxSust, NoHarv)
     ##climscenx is the climate scenario (CurrClim)
+    ##conx is the shapefile of the country that will be cropped based on areax
+    ##savex is the pathway where you'd like to save the file
 
 ##Extraction Function
 extractraster <- function(areax, pathdata, VARx, periodx, harvscenx, climscenx, conx, savex){
