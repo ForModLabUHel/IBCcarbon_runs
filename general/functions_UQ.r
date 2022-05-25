@@ -362,7 +362,7 @@ processPeatUQ <- function(peatXf, fertf, nppf, nepf, littersumf, peatval, fertva
     drPeatNeg <- which(peatXf == peatval & fertf > 3)  ###selecting the pixels that match the conditions of peat and siteType
   }
   drPeat <- nppf[drPeatNeg,]  ###raster with only the pixel of interest
-  print(paste0("Fraction of peatland pixels", fertval," = ",nrow(drPeat)/nrow(nppf)))
+  #print(paste0("Fraction of peatland pixels", fertval," = ",nrow(drPeat)/nrow(nppf)))
   ###calculate the new NEP according to the siteType (fertval)
   if(fertval == 1){
     drPeat <- drPeat + EC1*12/44 - littersumf[drPeatNeg,]/10#-240 #g C m-2 year-1  
