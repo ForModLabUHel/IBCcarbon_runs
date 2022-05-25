@@ -147,9 +147,9 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
     #pX <- data.table(p1,p2[,2],p3[,2]) # can be the same segment multiple times
     assign("NEP",pX)
     
-    pX <- data.table(data.table(apply(modOut$multiOut[,,26,,1],marginX,sum)))
+    pX <- data.table(apply(modOut$multiOut[,,26,,1],marginX,sum))
     for(li in 27:29){ # litter input
-      pX <- pX + data.table(data.table(apply(modOut$multiOut[,,li,,1],marginX,sum)))
+      pX <- pX + data.table(apply(modOut$multiOut[,,li,,1],marginX,sum))
     }
     pX <- data.table(segID=sampleX$segID,pX)
     assign("LitterSum", pX)

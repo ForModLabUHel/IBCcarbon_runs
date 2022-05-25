@@ -163,7 +163,7 @@ if(uncRun & !uncSeg & uncPeat){
   EC2 <- matrix(70, 1, nSamplesr)#70
 }
 
-harvestLimsr <- data.frame(t(matrix(harvestLims,2,nSamplesr)))
+harvestLimsr <- data.table(t(matrix(harvestLims,2,nSamplesr)))
 if(uncRun & !uncSeg & uncHarv){
   harvestLimsr[,1] <- (1+0.02*rnorm(nSamplesr))*harvestLims[1]
   harvestLimsr[,2] <- (1+0.02*rnorm(nSamplesr))*harvestLims[2]
