@@ -6,10 +6,11 @@ library(data.table)
 # landClassX = 1
 # mortMod=3
 # regions <- 1:19 #c(8, 3,9,10,13,14,15,19)
-# setwd("/scratch/project_2000994/PREBASruns/finRuns")
-# run_settings <- "_addHarvNO_landClassX1_mortMod3"
+setwd("/scratch/project_2000994/PREBASruns/finRuns")
+run_settings <- paste0("_addHarvNO","_landClassX",landClassX,
+"_mortMod",mortMod)
 # r_no=1
-# regionNames <- fread("/scratch/project_2000994/PREBASruns/metadata/maakunta/maakunta_names.txt")
+regionNames <- fread("/scratch/project_2000994/PREBASruns/metadata/maakunta/maakunta_names.txt")
 # outDyr <- "outSampleHcF1.2_cons10run"
 
 meanRegion <- data.table()
