@@ -57,7 +57,7 @@ runModel <- function(sampleID, outType="dTabs",
     selX$Wbuffer <- NULL
     ops[[sampleID]]$Wbuffer <- NULL
     
-    sampleX <- rbind(ops[[sampleID]],selX)
+    sampleX <- rbind(ops[[sampleID]],selX,fill=T)
     sampleX$segID <- sampleX$maakuntaID
     initSoilC <- abind(initSoilC,initSoilC[posX,,,],along=1)
     
