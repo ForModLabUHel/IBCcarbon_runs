@@ -5,17 +5,19 @@ if(!exists("r_no")) r_no <- 4
 if(!exists("sampleID")) sampleID=3
 if(!exists("outDyr")) outDyr="outSample"
 
-devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
-source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
-
 harvIntensities <- c("Base","MaxSust","Low")
+
+toMem <- ls()
+
 ####run Base scenario & intensity
 harvScen="Base"
 harvInten = "Base"
+devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
+source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
 nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
 set.seed(1)
 ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
-toMem <- ls()
+# toMem <- ls()
 modRun <- runModel(sampleID,outType="testRun",forceSaveInitSoil=T,
                    harvScen=harvScen,harvInten=harvInten,
                    cons10run=cons10run)
@@ -160,18 +162,23 @@ datAllBase <- datAll
 print(paste0("harvest scenario ", harvScen))
 print(paste0("harvest intensity ", harvInten))
 
-
+toMem <- c(toMem,"datAllBase")
+rm(list=setdiff(ls(), c(toMem,"toMem"))); gc()
 
 #Run protect scenarios
+devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
+source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
 scens <- c("protect")#,#"protectNoAdH")
 datAllScen <- data.table()
-toMem <- ls()
+# toMem <- ls()
 for(harvInten in harvIntensities){
   for(harvScen in scens){
+    devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
+    source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
     nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
     set.seed(1)
     ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
-    toMem <- ls()
+    # toMem <- ls()
     modRun <- runModel(sampleID,outType="testRun",
                        harvScen=harvScen,harvInten=harvInten,
                        cons10run=cons10run)
@@ -306,7 +313,7 @@ for(harvInten in harvIntensities){
     setkey(datX,segID,year)
     setkey(datAll,segID,year)
     datAll <- merge(datAll,datX)
-
+    
     datAll$year <- as.numeric(as.character(datAll$year))
     datAll$maakID <- r_no 
     datAll$harScen <- harvScen
@@ -320,16 +327,21 @@ for(harvInten in harvIntensities){
 areasProtect <- data.table(segID=region$siteInfo[,1],area=region$areas)
 datAllScenProtect <- datAllScen
 
+toMem <- c(toMem,"areasProtect","datAllScenProtect")
+rm(list=setdiff(ls(), c(toMem,"toMem"))); gc()
+
 ###run Base scenario with other intensities
 scens <- "Base"
 datAllScen <- data.table()
-toMem <- ls()
+# toMem <- ls()
 for(harvInten in c("Low","MaxSust")){
   for(harvScen in scens){
+    devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
+    source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
     nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
     set.seed(1)
     ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
-    toMem <- ls()
+    # toMem <- ls()
     modRun <- runModel(sampleID,outType="testRun",
                        harvScen=harvScen,harvInten=harvInten,
                        cons10run=cons10run)
@@ -475,18 +487,22 @@ for(harvInten in c("Low","MaxSust")){
     print(paste0("harvest intensity ", harvInten))
   }
 }
+toMem <- c(toMem,"datAllScen")
+rm(list=setdiff(ls(), c(toMem,"toMem"))); gc()
 
 
 ######run adapt and Mitigation
 scens <- c("adapt",
            "Mitigation")
-toMem <- ls()
+# toMem <- ls()
 for(harvInten in harvIntensities){
   for(harvScen in scens){
+    devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
+    source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
     nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
     set.seed(1)
     ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
-    toMem <- ls()
+    # toMem <- ls()
     modRun <- runModel(sampleID,outType="testRun",
                        harvScen=harvScen,harvInten=harvInten,
                        cons10run=cons10run)
@@ -635,16 +651,21 @@ for(harvInten in harvIntensities){
 areas <- data.table(segID=region$siteInfo[,1],area=region$areas)
 datAllScen1 <- rbind(datAllBase,datAllScen)
 
+toMem <- c(toMem,"datAllScen1","areas")
+rm(list=setdiff(ls(), c(toMem,"toMem"))); gc()
+
 scens <- c("NoHarv",
            "adaptTapio")
 datAllScen <- data.table()
-toMem <- ls()
+# toMem <- ls()
 for(harvInten in "Base"){
   for(harvScen in scens){
+    devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
+    source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
     nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
     set.seed(1)
     ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
-    toMem <- ls()
+    # toMem <- ls()
     modRun <- runModel(sampleID,outType="testRun",
                        harvScen=harvScen,harvInten=harvInten,
                        cons10run=cons10run)
@@ -795,9 +816,9 @@ datAllScen <- rbind(datAllScen1,datAllScen)
 
 if(minDharvX>100) addHarv="NO"
 fileName <- paste0(outDyr,"/r_no",r_no,
-          "_addHarv",addHarv,"_landClassX",landClassX,
-          "_mortMod",mortMod,
-          ".rdata")
+                   "_addHarv",addHarv,"_landClassX",landClassX,
+                   "_mortMod",mortMod,
+                   ".rdata")
 save(datAllScen,areas,datAllScenProtect,areasProtect, file=fileName)
 
 
