@@ -356,7 +356,7 @@ runModel <- function(sampleID, outType="dTabs",
     }
   }
   
-  print(paste("runModel",sampleID))
+  print(paste("runModel",sampleID,"completed"))
   ##calculate steady state carbon from prebas litter 
   if(harvScen=="Base" & harvInten =="Base" & initilizeSoil){
     initSoilC <- stXX_GV(region, 1)
