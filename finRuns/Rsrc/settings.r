@@ -102,7 +102,7 @@ if(!exists("nYears")) nYears = endingYear-startingYear
 
 rcps = "CurrClim" #c("CanESM2.rcp45.rdata","CanESM2.rcp85.rdata")#c("CurrClim","CanESM2.rcp26.rdata")#,"CanESM2.rcp45.rdata","CanESM2.rcp85.rdata")
 
-nSitesRun = 20000  ###aproximative number of samples for set runs
+if(!exists("nSitesRun")) nSitesRun = 20000  ###aproximative number of samples for set runs
 # nSetRuns = 10 #number of set runs
 
 ####period for model output calculations
