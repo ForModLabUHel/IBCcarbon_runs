@@ -73,7 +73,7 @@ for(i in 1:nX){
   buffDat <- rbind(buffDat,inBuf)
   buffDat <- rbind(buffDat,outBuf)
   # gg[maakuntaID == ID & consBuf==1,maakuntaID := newID]
-  if(i %% 100==0) print(paste0(i," of ",nX))
+  if(i %% 1000==0) print(paste0(i," of ",nX))
 }
 
 buf.IDs <- gg[maakuntaID %in% toSplit$maakuntaID & consBuf==1]
