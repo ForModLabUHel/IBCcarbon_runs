@@ -156,23 +156,23 @@ write.csv(meanRegion[harScen=="Base" & harvInten=="Base"],
 
 
 #####compare runs +10% cons areas vs. actual situation
-# dat1 <- fread(file="outSampleHcF1.2/plots/MeanCountryAllRuns.csv")
-# dat1$cons = "actual"
-# 
-# dat2 <- fread(file="outSampleHcF1.2_cons10run/plots/MeanCountryAllRuns.csv")
-# dat2$cons = "+10%"
-# datAll <- rbind(dat1,dat2)
-# names(dat2)
-# 
-# scens2 <- scens[-which(scens%in%c("adaptTapio","NoHarv"))]
-# pdf(paste0(outDyr,"/plots/plots_ScenariosCountry2.pdf"))
-# for(varX in vars){
-#   for(scenX in scens2){
-#     # i=i+1
-#     print(ggplot(datAll[harScen==scenX])+
-#             # geom_ribbon(aes(x = year + 2016, ymin = q0.25, ymax = q0.75,fill= harScen), alpha = 0.3)+
-#             geom_line(aes(x = year+ 2016, y = get(varX), color = cons,linetype=harvInten)) + 
-#             xlab("year") + ylab(varX)+ ggtitle(scenX))
-#   }
-# }
-# dev.off()
+dat1 <- fread(file="outSampleHcF1.2/plots/MeanCountryAllRuns.csv")
+dat1$cons = "actual"
+
+dat2 <- fread(file="outSampleHcF1.2_cons10run/plots/MeanCountryAllRuns.csv")
+dat2$cons = "+10%"
+datAll <- rbind(dat1,dat2)
+names(dat2)
+
+scens2 <- scens[-which(scens%in%c("adaptTapio","NoHarv"))]
+pdf(paste0(outDyr,"/plots/plots_ScenariosCountry2.pdf"))
+for(varX in vars){
+  for(scenX in scens2){
+    # i=i+1
+    print(ggplot(datAll[harScen==scenX])+
+            # geom_ribbon(aes(x = year + 2016, ymin = q0.25, ymax = q0.75,fill= harScen), alpha = 0.3)+
+            geom_line(aes(x = year+ 2016, y = get(varX), color = cons,linetype=harvInten)) +
+            xlab("year") + ylab(varX)+ ggtitle(scenX))
+  }
+}
+dev.off()
