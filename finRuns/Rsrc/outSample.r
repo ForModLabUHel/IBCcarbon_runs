@@ -20,7 +20,7 @@ ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
 # toMem <- ls()
 modRun <- runModel(sampleID,outType="testRun",forceSaveInitSoil=T,
                    harvScen=harvScen,harvInten=harvInten,
-                   cons10run=cons10run)
+                   cons10run=cons10run,landClassUnman=landClassUnman)
 region <- modRun$region
 rm(modRun); gc()
 datAll <- data.table()
@@ -181,7 +181,7 @@ for(harvInten in harvIntensities){
     # toMem <- ls()
     modRun <- runModel(sampleID,outType="testRun",
                        harvScen=harvScen,harvInten=harvInten,
-                       cons10run=cons10run)
+                       cons10run=cons10run,landClassUnman=landClassUnman)
     region <- modRun$region
     rm(modRun); gc()
     datAll <- data.table()
@@ -344,7 +344,7 @@ for(harvInten in c("Low","MaxSust")){
     # toMem <- ls()
     modRun <- runModel(sampleID,outType="testRun",
                        harvScen=harvScen,harvInten=harvInten,
-                       cons10run=cons10run)
+                       cons10run=cons10run,landClassUnman=landClassUnman)
     region <- modRun$region
     rm(modRun); gc()
     datAll <- data.table()
@@ -505,7 +505,7 @@ for(harvInten in harvIntensities){
     # toMem <- ls()
     modRun <- runModel(sampleID,outType="testRun",
                        harvScen=harvScen,harvInten=harvInten,
-                       cons10run=cons10run)
+                       cons10run=cons10run,landClassUnman=landClassUnman)
     region <- modRun$region
     rm(modRun); gc()
     datAll <- data.table()
@@ -668,7 +668,7 @@ for(harvInten in "Base"){
     # toMem <- ls()
     modRun <- runModel(sampleID,outType="testRun",
                        harvScen=harvScen,harvInten=harvInten,
-                       cons10run=cons10run)
+                       cons10run=cons10run,landClassUnman=landClassUnman)
     region <- modRun$region
     rm(modRun); gc()
     datAll <- data.table()
