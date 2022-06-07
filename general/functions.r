@@ -8,7 +8,8 @@
 runModel <- function(sampleID, outType="dTabs",
                      harvScen,harvInten,easyInit=FALSE,
                      forceSaveInitSoil=F, cons10run = F,
-                     procDrPeat=F,coeffPeat1=-240,coeffPeat2=70){
+                     procDrPeat=F,coeffPeat1=-240,coeffPeat2=70,
+                     landClassUnman=NULL){
   # outType determines the type of output:
   # dTabs -> standard run, mod outputs saved as data.tables 
   # testRun-> test run reports the mod out and initPrebas as objects
@@ -83,6 +84,10 @@ runModel <- function(sampleID, outType="dTabs",
   sampleX[,id:=climID]
   HarvLimX <- harvestLims * sum(sampleX$area)/sum(data.all$area)
   nSample = nrow(sampleX)#200#nrow(data.all)
+  
+  # leave unmaned land classes in landClassUnman
+  if(!is.null(landClassUnman)) sampleX[landclass %in% landClassUnman]$cons=1
+  
   ## ---------------------------------------------------------
   i = 0
   rcpfile = rcps
