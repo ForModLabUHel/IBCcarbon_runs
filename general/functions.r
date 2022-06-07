@@ -9,6 +9,8 @@ runModel <- function(sampleID, outType="dTabs",
                      harvScen,harvInten,easyInit=FALSE,
                      forceSaveInitSoil=F, cons10run = F,
                      procDrPeat=F,coeffPeat1=-240,coeffPeat2=70,
+                     coefCH4 = 0.34,#g m-2 y-1
+                     coefN20_1 = 0.23,coefN20_2 = 0.077,#g m-2 y-1
                      landClassUnman=NULL){
   # outType determines the type of output:
   # dTabs -> standard run, mod outputs saved as data.tables 
@@ -395,6 +397,16 @@ runModel <- function(sampleID, outType="dTabs",
     siteDrPeat1 <- which(sampleX$pseudoptyp==400 & region$siteInfo[,3]<3)
     siteDrPeat2 <- which(sampleX$pseudoptyp==400 & region$siteInfo[,3]>=3)
     
+    ###CH4 <- N20
+    # converts coeef to ha
+    coefCH4 = coefCH4/1000*10000 #g m-2 y-1 -> kg ha-1
+    coefN20_1 = coefN20_1/1000*10000 #g m-2 y-1 -> kg ha-1
+    coefN20_2 = coefN20_2/1000*10000 #g m-2 y-1 -> kg ha-1
+    region$CH4emisDrPeat_kgyear = coefCH4*region$areas[siteDrPeat1] +
+      coefCH4*region$areas[siteDrPeat2]
+    region$N2OemisDrPeat_kgyear = coefN20_1*region$areas[siteDrPeat1] +
+      coefN20_2*region$areas[siteDrPeat2]
+    
     region$multiOut[siteDrPeat1,,46,,1] = 0.
     region$multiOut[siteDrPeat1,,46,,1] = region$multiOut[siteDrPeat1,,18,,1] - 
       region$multiOut[siteDrPeat1,,26,,1]/10 - region$multiOut[siteDrPeat1,,27,,1]/10 - 
@@ -408,6 +420,8 @@ runModel <- function(sampleID, outType="dTabs",
       region$multiOut[siteDrPeat2,,28,,1]/10 - region$multiOut[siteDrPeat2,,29,,1]/10
     region$multiOut[siteDrPeat2,,46,1,1] = region$multiOut[siteDrPeat2,,46,1,1] + 
       coeffPeat2 +  region$GVout[siteDrPeat2,,5]
+    
+    
   }
   #####start initialize deadWood volume
   ## identify managed and unmanaged forests
