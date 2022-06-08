@@ -816,9 +816,8 @@ datAllScen <- rbind(datAllScen1,datAllScen)
 
 if(minDharvX>100) addHarv="NO"
 fileName <- paste0(outDyr,"/r_no",r_no,
-                   "_addHarv",addHarv,"_landClassX",landClassX,
-                   "_mortMod",mortMod,
-                   ".rdata")
+                "_addHarv",addHarv,"_landClassX",range(landClassX)[1],
+                "to",range(landClassX)[2],"_mortMod",mortMod,".rdata")
 save(datAllScen,areas,datAllScenProtect,areasProtect, file=fileName)
 
 
