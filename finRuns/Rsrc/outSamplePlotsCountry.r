@@ -7,8 +7,8 @@ library(data.table)
 # mortMod=3
 # regions <- 1:19 #c(8, 3,9,10,13,14,15,19)
 setwd("/scratch/project_2000994/PREBASruns/finRuns")
-run_settings <- paste0("_addHarvNO","_landClassX",landClassX,
-"_mortMod",mortMod)
+run_settings <- paste0("_addHarvNO","_landClassX",range(landClassX)[1],
+                       "to",range(landClassX)[2],"_mortMod",mortMod)
 regionNames <- fread("/scratch/project_2000994/PREBASruns/metadata/maakunta/maakunta_names.txt")
 # outDyr <- "outSampleHcF1.2_cons10run"
 
