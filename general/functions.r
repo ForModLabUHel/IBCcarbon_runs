@@ -396,8 +396,8 @@ runModel <- function(sampleID, outType="dTabs",
   
   #####process drained Peat
   if(procDrPeat){
-    siteDrPeat1 <- which(sampleX$pseudoptyp==400 & region$siteInfo[,3]<3)
-    siteDrPeat2 <- which(sampleX$pseudoptyp==400 & region$siteInfo[,3]>=3)
+    siteDrPeat1 <- which(sampleX$pseudoptyp==400 & region$siteInfo[,3]<4)
+    siteDrPeat2 <- which(sampleX$pseudoptyp==400 & region$siteInfo[,3]>=4)
     
     ###CH4 <- N20
     # converts coeef to ha
