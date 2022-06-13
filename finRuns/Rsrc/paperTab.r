@@ -3,8 +3,8 @@ library(data.table)
 library(ggplot2)
 
 setwd("C:/Users/minunno/Documents/research/IBC-carbon/plots/")
-pathXcons10 <- "outSampleHcF1.2/country_addHarvNO_landClassX1to2_mortMod3.rdata"
-pathX <- "outSampleHcF1.2_cons10run/country_addHarvNO_landClassX1to2_mortMod3.rdata"
+pathXcons10 <- "outSampleHcF1.2_cons10run/country_addHarvNO_landClassX1to2_mortMod3.rdata"
+pathX <- "outSampleHcF1.2/country_addHarvNO_landClassX1to2_mortMod3.rdata"
 regNames <- fread("maakunta_names.txt")
 setnames(regNames,"regIDs","region")
 setkey(regNames,"region")
