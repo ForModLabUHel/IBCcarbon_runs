@@ -30,7 +30,7 @@ for(klk in maaks){
   ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
   toMem <- ls()
   
-  runModel(sampleID,outType="ststDeadW")
+  runModel(sampleID,outType="ststDeadW",harvScen="Base",harvInten="Base")
   
   print(paste("region",r_no,"completed"))
   rm(list=setdiff(ls(), c(toMem,"toMem")))
