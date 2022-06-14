@@ -423,8 +423,6 @@ runModel <- function(sampleID, outType="dTabs",
       region$multiOut[siteDrPeat2,,28,,1]/10 - region$multiOut[siteDrPeat2,,29,,1]/10
     region$multiOut[siteDrPeat2,,46,1,1] = region$multiOut[siteDrPeat2,,46,1,1] + 
       coeffPeat2 +  region$GVout[siteDrPeat2,,5]
-    
-    
   }
   #####start initialize deadWood volume
   ## identify managed and unmanaged forests
