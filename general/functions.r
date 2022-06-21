@@ -317,7 +317,7 @@ runModel <- function(sampleID, outType="dTabs",
     # HarvLimX[,2]=0.
     # initPrebas$energyCut <- rep(0,length(initPrebas$energyCut))
     if(harvScen=="adaptTapio"){
-      region <- regionPrebas(initPrebas,
+      region <- regionPrebas(initPrebas,compHarv=compHarvX,
                              fertThin = fertThin,nYearsFert = nYearsFert)
     }else{
       region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
