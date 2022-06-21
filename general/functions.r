@@ -11,7 +11,7 @@ runModel <- function(sampleID, outType="dTabs",
                      procDrPeat=F,coeffPeat1=-240,coeffPeat2=70,
                      coefCH4 = 0.34,#g m-2 y-1
                      coefN20_1 = 0.23,coefN20_2 = 0.077,#g m-2 y-1
-                     landClassUnman=NULL){
+                     landClassUnman=NULL,compHarvX=compHarvX){
   # outType determines the type of output:
   # dTabs -> standard run, mod outputs saved as data.tables 
   # testRun-> test run reports the mod out and initPrebas as objects
@@ -311,8 +311,6 @@ runModel <- function(sampleID, outType="dTabs",
   if(harvScen %in% c("adapt","adaptNoAdH","adaptTapio")){
     if(harvScen=="adaptNoAdH"){
       compHarvX=0.
-    }else{
-      compHarvX=3.
     }
     # HarvLimX[,2]=0.
     # initPrebas$energyCut <- rep(0,length(initPrebas$energyCut))
@@ -327,8 +325,6 @@ runModel <- function(sampleID, outType="dTabs",
   }else if(harvScen %in% c("Mitigation","MitigationNoAdH")){
     if(harvScen=="MitigationNoAdH"){
       compHarvX=0.
-    }else{
-      compHarvX=3.
     }
     HarvLimX[,2]=0.
     initPrebas$energyCut <- rep(0,length(initPrebas$energyCut))
@@ -343,8 +339,6 @@ runModel <- function(sampleID, outType="dTabs",
   }else if(harvScen %in% c("protect","protectNoAdH")){
     if(harvScen=="protectNoAdH"){
       compHarvX=0.
-    }else{
-      compHarvX=3.
     }
     ####no energy cuts
     HarvLimX[,2]=0.
