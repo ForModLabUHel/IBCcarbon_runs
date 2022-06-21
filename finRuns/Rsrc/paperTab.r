@@ -155,3 +155,6 @@ for(ij in 1:19){
 dev.off()
 
 write.csv(tabRegion,file="tabRegions.csv")
+
+
+
