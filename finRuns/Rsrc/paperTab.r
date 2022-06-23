@@ -135,9 +135,9 @@ for(varX in c("volGrowth_tot","Cstock_tot","Cbal_tot")){
 }
 
 pdf(file = "plotsCountry.pdf")
-  plotList$volGrowth_tot
-  plotList$Cstock_tot
-  plotList$Cbal_tot
+  print(plotList$volGrowth_tot)
+  print(plotList$Cstock_tot)
+  print(plotList$Cbal_tot)
 dev.off()
 write.csv(tabCountry,file="tabCountry.csv")
 
