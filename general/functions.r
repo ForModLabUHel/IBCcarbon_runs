@@ -27,7 +27,7 @@ runModel <- function(sampleID, outType="dTabs",
   procInSample=F
   ####in the protection scenarios consider buffer to protection areas
   ####if cons10run == TRUE run the model considering 10% area is conservation area according to zonation results
-  if(harvScen %in% c("protect","protectNoAdH") & cons10run==FALSE ){
+  if(harvScen %in% c("protect","protectNoAdH","protectTapio") & cons10run==FALSE ){
     # sampleX$cons[sampleX$Wbuffer==1] <- 1
     load(paste0("input/maakunta/maakunta_",r_no,"_IDsBuffer.rdata"))
     xDat <- buffDat
@@ -158,7 +158,7 @@ runModel <- function(sampleID, outType="dTabs",
   ### do not replant pine in sitetypes 1 and 2
   ### do not replant spruce in sitetypes higher than 3
   ### ensure minimum 20% birch at replanting
-  if(harvScen %in% c("adapt","protect","protectNoAdH",
+  if(harvScen %in% c("adapt","protect","protectNoAdH","protectTapio",
                      "adaptNoAdH","adaptTapio")){
     sitesXs <- which(initPrebas$siteInfo[,3]>3)
     jj <- which(initPrebas$initCLcutRatio[sitesXs,2]>0.)
@@ -289,7 +289,7 @@ runModel <- function(sampleID, outType="dTabs",
   if(initilizeSoil){
     if(!(harvScen =="Base" & harvInten == "Base")){
       if(outType!="uncRun"){
-        if(!harvScen %in% c("protect","protectNoAdH")){
+        if(!harvScen %in% c("protect","protectNoAdH","protectTapio")){
           if(identical(landClassX,1:3)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to3.rdata"))
           if(identical(landClassX,1:2)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to2.rdata"))
           if(identical(landClassX,1)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1.rdata"))
@@ -322,7 +322,7 @@ runModel <- function(sampleID, outType="dTabs",
                              cutAreas = cutArX,compHarv=compHarvX,
                              fertThin = fertThin,nYearsFert = nYearsFert)
     }
-  }else if(harvScen %in% c("Mitigation","MitigationNoAdH")){
+  }else if(harvScen %in% c("Mitigation","MitigationNoAdH","MitigationTapio")){
     if(harvScen=="MitigationNoAdH"){
       compHarvX=0.
     }
@@ -333,20 +333,29 @@ runModel <- function(sampleID, outType="dTabs",
     initPrebas$inDclct <- ClcutX$inDclct
     initPrebas$inAclct <- ClcutX$inAclct
     initPrebas$thinInt <- rep(thinIntX,initPrebas$nSites)
-    region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
-                           cutAreas =cutArX,compHarv=compHarvX,
-                           ageHarvPrior = ageHarvPriorX)
-  }else if(harvScen %in% c("protect","protectNoAdH")){
+    if(harvScen=="MitigationTapio"){
+      region <- regionPrebas(initPrebas,compHarv=compHarvX)
+    }else{
+      region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
+                             cutAreas =cutArX,compHarv=compHarvX,
+                             ageHarvPrior = ageHarvPriorX)
+    }
+  }else if(harvScen %in% c("protect","protectNoAdH","protectTapio")){
     if(harvScen=="protectNoAdH"){
       compHarvX=0.
     }
     ####no energy cuts
     HarvLimX[,2]=0.
     initPrebas$energyCut <- rep(0,length(initPrebas$energyCut))
-    region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
+    if(harvScen=="protectTapio"){
+      region <- regionPrebas(initPrebas,compHarv=compHarvX,
+                           compHarv=compHarvX,oldLayer = 1)
+    }else{
+      region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
                            cutAreas =cutArX,compHarv=compHarvX,
                            ageHarvPrior = ageHarvPriorX,
                            oldLayer = 1)
+    }
   }else{
     ##Don't pass minDharvX if NA
     if (is.na(minDharvX)) {
@@ -713,7 +722,7 @@ create_prebas_input.f = function(r_no, clim, data.sample, nYears,
   
   # initVar[,6,] <- as.numeric(data.sample[,hc])
   
-  if(harv %in% c("adapt","protect","protectNoAdH",
+  if(harv %in% c("adapt","protect","protectNoAdH","protectTapio",
                  "adaptNoAdH","adaptTapio")){
     ####always the 3 species layers in this two scenarios
     ###check which BA ==0. and set to 0 the rest of the variable

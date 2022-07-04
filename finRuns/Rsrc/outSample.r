@@ -168,11 +168,17 @@ rm(list=setdiff(ls(), c(toMem,"toMem"))); gc()
 #Run protect scenarios
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
 source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
-scens <- c("protect")#,#"protectNoAdH")
+# scens <- c("protect","protectTapio")  #protectNoAdH")
 datAllScen <- data.table()
+harvIntenXs <- c("Base","Low","MaxSust","Base")
+harvScenXs <- c("protect","protect","protect","protectTapio")
 # toMem <- ls()
-for(harvInten in harvIntensities){
-  for(harvScen in scens){
+for(i in 1:4){
+  harvInten <- harvIntenXs[i]
+  harvScen <- harvScenXs[i]
+  
+# for(harvInten in harvIntensities){
+  # for(harvScen in scens){
     devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
     source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
     nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
@@ -322,7 +328,8 @@ for(harvInten in harvIntensities){
     
     print(paste0("harvest scenario ", harvScen))
     print(paste0("harvest intensity ", harvInten))
-  }
+  # }
+# }
 }
 areasProtect <- data.table(segID=region$siteInfo[,1],area=region$areas)
 datAllScenProtect <- datAllScen
@@ -655,7 +662,7 @@ toMem <- c(toMem,"datAllScen1","areas")
 rm(list=setdiff(ls(), c(toMem,"toMem"))); gc()
 
 scens <- c("NoHarv",
-           "adaptTapio")
+           "adaptTapio","MitigationTapio")
 datAllScen <- data.table()
 # toMem <- ls()
 for(harvInten in "Base"){
