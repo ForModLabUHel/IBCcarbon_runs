@@ -348,7 +348,7 @@ runModel <- function(sampleID, outType="dTabs",
     HarvLimX[,2]=0.
     initPrebas$energyCut <- rep(0,length(initPrebas$energyCut))
     if(harvScen=="protectTapio"){
-      region <- regionPrebas(initPrebas,compHarv=compHarvX,
+      region <- regionPrebas(initPrebas,
                            compHarv=compHarvX,oldLayer = 1)
     }else{
       region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
