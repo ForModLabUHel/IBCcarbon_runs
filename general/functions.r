@@ -357,14 +357,19 @@ runModel <- function(sampleID, outType="dTabs",
                            oldLayer = 1)
     }
   }else{
-    ##Don't pass minDharvX if NA
-    if (is.na(minDharvX)) {
-      region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
-                             cutAreas =cutArX,compHarv=compHarvX)
-    } else {
-      region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
-                             minDharv = minDharvX,cutAreas =cutArX,
-                             compHarv=compHarvX)
+    if(harvScen=="baseTapio"){
+      region <- regionPrebas(initPrebas,compHarv=compHarvX)
+    }else{
+      ##Don't pass minDharvX if NA
+      if (is.na(minDharvX)) {
+        region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
+                               cutAreas =cutArX,compHarv=compHarvX)
+      } else {
+        region <- regionPrebas(initPrebas, HarvLim = as.numeric(HarvLimX),
+                               minDharv = minDharvX,cutAreas =cutArX,
+                               compHarv=compHarvX)
+      }
+      
     }
   }
   
