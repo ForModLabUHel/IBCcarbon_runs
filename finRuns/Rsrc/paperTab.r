@@ -129,6 +129,38 @@ createPlot <- function(varX,dataX){
   
 return(allPlots)}
 
+
+
+
+####plotFunction
+createPlotTapio <- function(dataX,
+        harscensIn = c("adaptTapio","protectTapio",
+                       "NoHarv","MitigationTapio")){
+  # filter data
+  dataX <- dataX[harScen %in% harscensIn]
+  dataX <- dataX[!(harScen == "NoHarv" & protAreas=="+10%")]
+  
+  ylimX <- dataX[,range(volGrowth_tot,na.rm=T)]
+  p1 <- ggplot(dataX) +
+      geom_point(aes(x=period,y=volGrowth_tot,col=protAreas,shape=harScen))+
+      ggtitle("Tapio") + ylab("volGrowth_tot")+ ylim(ylimX)
+  # varX <- "Cstock_tot"
+  ylimX <- dataX[,range(Cstock_tot,na.rm=T)]
+  p2 <- ggplot(dataX) +
+    geom_point(aes(x=period,y=Cstock_tot,col=protAreas,shape=harScen))+
+    ggtitle("Tapio") + ylab("Cstock_tot")+ ylim(ylimX)
+  # varX <- "Cbal_tot"
+  ylimX <- dataX[,range(Cbal_tot,na.rm=T)]
+  p3 <- ggplot(dataX) +
+    geom_point(aes(x=period,y=Cbal_tot,col=protAreas,shape=harScen))+
+    ggtitle("Tapio") + ylab("Cbal_tot")+ ylim(ylimX)
+  
+  allPlots <- ggarrange(p1,p2,p3,common.legend = T)
+  
+return(allPlots)}
+
+
+
 plotList <- list()
 for(varX in c("volGrowth_tot","Cstock_tot","Cbal_tot")){
   plotList[[varX]] <- createPlot(varX,tabCountry)  
@@ -138,6 +170,7 @@ pdf(file = "plotsCountry.pdf")
   print(plotList$volGrowth_tot)
   print(plotList$Cstock_tot)
   print(plotList$Cbal_tot)
+  print(createPlotTapio(tabCountry))
 dev.off()
 write.csv(tabCountry,file="tabCountry.csv")
 
@@ -150,6 +183,7 @@ for(ij in 1:19){
     px <- annotate_figure(plotList[[varX]], top = text_grob(regNames[ij], 
                                           color = "red", face = "bold", size = 14))
     print(px)
+    print(createPlotTapio(tabRegion[region==ij]))
   }
 }
 dev.off()
