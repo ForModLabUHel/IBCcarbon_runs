@@ -183,8 +183,8 @@ for(ij in 1:19){
     px <- annotate_figure(plotList[[varX]], top = text_grob(regNames[ij], 
                                           color = "red", face = "bold", size = 14))
     print(px)
-    print(createPlotTapio(tabRegion[region==ij]))
   }
+  print(createPlotTapio(tabRegion[region==ij]))
 }
 dev.off()
 
