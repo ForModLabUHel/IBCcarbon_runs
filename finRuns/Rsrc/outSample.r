@@ -662,7 +662,7 @@ toMem <- c(toMem,"datAllScen1","areas")
 rm(list=setdiff(ls(), c(toMem,"toMem"))); gc()
 
 scens <- c("NoHarv",
-           "adaptTapio","MitigationTapio")
+           "adaptTapio","MitigationTapio","baseTapio")
 datAllScen <- data.table()
 # toMem <- ls()
 for(harvInten in "Base"){
