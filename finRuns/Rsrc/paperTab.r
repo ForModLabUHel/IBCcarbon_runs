@@ -135,7 +135,7 @@ return(allPlots)}
 ####plotFunction
 createPlotTapio <- function(dataX,
         harscensIn = c("adaptTapio","protectTapio",
-                       "NoHarv","MitigationTapio")){
+                       "NoHarv","MitigationTapio","baseTapio")){
   # filter data
   dataX <- dataX[harScen %in% harscensIn]
   dataX <- dataX[!(harScen == "NoHarv" & protAreas=="+10%")]
