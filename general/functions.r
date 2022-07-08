@@ -328,11 +328,13 @@ runModel <- function(sampleID, outType="dTabs",
     }
     HarvLimX[,2]=0.
     initPrebas$energyCut <- rep(0,length(initPrebas$energyCut))
+###set parameters to increase rotation length of 25% (start)
     load(paste0("input/",regSets,"/pClCut_mitigation/ClCutplots_maak",r_no,".rdata"))
     ClcutX <- updatePclcut(initPrebas,pClCut)
     initPrebas$inDclct <- ClcutX$inDclct
     initPrebas$inAclct <- ClcutX$inAclct
     initPrebas$thinInt <- rep(thinIntX,initPrebas$nSites)
+###set parameters to increase rotation length of 25% (end)
     if(harvScen=="MitigationTapio"){
       region <- regionPrebas(initPrebas,compHarv=compHarvX)
     }else{
@@ -347,6 +349,15 @@ runModel <- function(sampleID, outType="dTabs",
     ####no energy cuts
     HarvLimX[,2]=0.
     initPrebas$energyCut <- rep(0,length(initPrebas$energyCut))
+    
+    ###set parameters to increase rotation length of 25% (start)
+    load(paste0("input/",regSets,"/pClCut_mitigation/ClCutplots_maak",r_no,".rdata"))
+    ClcutX <- updatePclcut(initPrebas,pClCut)
+    initPrebas$inDclct <- ClcutX$inDclct
+    initPrebas$inAclct <- ClcutX$inAclct
+    initPrebas$thinInt <- rep(thinIntX,initPrebas$nSites)
+    ###set parameters to increase rotation length of 25% (end)
+    
     if(harvScen=="protectTapio"){
       region <- regionPrebas(initPrebas,
                            compHarv=compHarvX,oldLayer = 1)
