@@ -312,8 +312,13 @@ runModel <- function(sampleID, outType="dTabs",
     if(harvScen=="adaptNoAdH"){
       compHarvX=0.
     }
-    # HarvLimX[,2]=0.
-    # initPrebas$energyCut <- rep(0,length(initPrebas$energyCut))
+    ###set parameters to decrease rotation length of 25% (start)
+    load(paste0("input/",regSets,"/pClCut_adapt/ClCutplots_maak",r_no,".rdata"))
+    ClcutX <- updatePclcut(initPrebas,pClCut)
+    initPrebas$inDclct <- ClcutX$inDclct
+    initPrebas$inAclct <- ClcutX$inAclct
+    initPrebas$thinInt <- rep(thinIntX,initPrebas$nSites)
+    ###set parameters to decrease rotation length of 25% (end)
     if(harvScen=="adaptTapio"){
       region <- regionPrebas(initPrebas,compHarv=compHarvX,
                              fertThin = fertThin,nYearsFert = nYearsFert)
