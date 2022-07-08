@@ -83,7 +83,8 @@ countryArea <- sum(areaAllRegions)
      file = paste0(outDyr,"/country",
                    run_settings,".rdata"))
 
-    dataPlot <- meanCountry[harScen!="adaptTapio"]
+    # dataPlot <- meanCountry[harScen!="adaptTapio"]
+    dataPlot <- meanCountry
 pdf(paste0(outDyr,"/plots/plots_country.pdf"))
 for(varX in vars){
   # i=i+1
@@ -164,7 +165,7 @@ dat2$cons = "+10%"
 datAll <- rbind(dat1,dat2)
 names(dat2)
 
-scens2 <- scens[-which(scens%in%c("adaptTapio","NoHarv"))]
+scens2 <- scens#[-which(scens%in%c("adaptTapio","NoHarv"))]
 pdf(paste0(outDyr,"/plots/plots_ScenariosCountry2.pdf"))
 for(varX in vars){
   for(scenX in scens2){
