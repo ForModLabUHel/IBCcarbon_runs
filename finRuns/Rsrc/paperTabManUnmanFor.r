@@ -189,7 +189,7 @@ for(r_no in c(1,3:19)){
     
     new.data.all <- rbind(xx,cons10Dat)
     
-    areaRegion <- sum(new.data.all$area,na.rm=T)
+    areaRegion <- sum(data.all$area,na.rm=T)
     areaRegionManFor <- sum(new.data.all[cons==0]$area,na.rm=T)*sum(data.all$area,na.rm=T)/sum(new.data.all$area,na.rm=T)
     areaRegionUnmanFor <- sum(new.data.all[cons==1]$area,na.rm=T)*sum(data.all$area,na.rm=T)/sum(new.data.all$area,na.rm=T)
     
@@ -345,29 +345,44 @@ save(tabRegion,tabCountry,file="manUnmanForRes.rdata")
 tabCountry$period <- factor(tabCountry$period,levels = periods)
 tabRegion$period <- factor(tabRegion$period,levels = periods)
 
+
+varX="Cstock_tot"
+dataX <- tabCountry
+# ylimX <- dataX[,range(get(varX),na.rm=T)]
+p1 <- ggplot(dataX[harScen=="Base" & cons==0]) +
+  geom_point(aes(x=period,y=get(varX),col=protAreas,shape=harvInten))+
+  ggtitle("Base") + ylab(varX)#+ ylim(ylimX) 
+
+p2 <- ggplot(dataX[harScen=="Base" & cons==1]) +
+  geom_point(aes(x=period,y=get(varX),col=protAreas,shape=harvInten))+
+  ggtitle("Base") + ylab(varX)#+ ylim(ylimX) 
+
+
+
+
 ####plotFunction
 createPlot <- function(varX,dataX){
-  ylimX <- dataX[,range(get(varX),na.rm=T)]
+  # ylimX <- dataX[,range(get(varX),na.rm=T)]
   p1 <- ggplot(dataX[harScen=="Base"]) +
     geom_point(aes(x=period,y=get(varX),col=protAreas,shape=harvInten))+
-    ggtitle("Base") + ylab(varX)+ ylim(ylimX) + 
-    geom_point(data=dataX[harScen=="NoHarv"],
-               aes(x=period,y=get(varX),col=protAreas,shape="NoHarv"))
+    ggtitle("Base") + ylab(varX)#+ ylim(ylimX) + 
+  # geom_point(data=dataX[harScen=="NoHarv"],
+  #            aes(x=period,y=get(varX),col=protAreas,shape="NoHarv"))
   
   harscenX <- "Mitigation"
   p2 <- ggplot(dataX[harScen==harscenX]) +
     geom_point(aes(x=period,y=get(varX),col=protAreas,shape=harvInten))+
-    ylim(ylimX) + ylab(varX)+ggtitle(harscenX)
+    ylab(varX)+ggtitle(harscenX) #ylim(ylimX) +
   
   harscenX <- "adapt"
   p3 <- ggplot(dataX[harScen==harscenX]) +
     geom_point(aes(x=period,y=get(varX),col=protAreas,shape=harvInten))+
-    ylim(ylimX) + ylab(varX)+ggtitle(harscenX)
+    ylab(varX)+ggtitle(harscenX) #ylim(ylimX) + 
   
   harscenX <- "protect"
   p4 <- ggplot(dataX[harScen==harscenX]) +
     geom_point(aes(x=period,y=get(varX),col=protAreas,shape=harvInten))+
-    ylim(ylimX) + ylab(varX)+ggtitle(harscenX)
+    ylab(varX)+ggtitle(harscenX) #ylim(ylimX) + 
   
   allPlots <- ggarrange(p1,p2,p3,p4,common.legend = T)
   
@@ -384,24 +399,26 @@ createPlotTapio <- function(dataX,
   dataX <- dataX[harScen %in% harscensIn]
   dataX <- dataX[!(harScen == "NoHarv" & protAreas=="+10%")]
   
-  ylimX <- dataX[,range(volGrowth_tot,na.rm=T)]
+  # ylimX <- dataX[,range(volGrowth_tot,na.rm=T)]
   p1 <- ggplot(dataX) +
     geom_point(aes(x=period,y=volGrowth_tot,col=protAreas,shape=harScen))+
-    ggtitle("Tapio") + ylab("volGrowth_tot")+ ylim(ylimX)
+    ggtitle("Tapio") + ylab("volGrowth_tot") #+ ylim(ylimX)
   # varX <- "Cstock_tot"
-  ylimX <- dataX[,range(Cstock_tot,na.rm=T)]
+  # ylimX <- dataX[,range(Cstock_tot,na.rm=T)]
   p2 <- ggplot(dataX) +
     geom_point(aes(x=period,y=Cstock_tot,col=protAreas,shape=harScen))+
-    ggtitle("Tapio") + ylab("Cstock_tot")+ ylim(ylimX)
+    ggtitle("Tapio") + ylab("Cstock_tot")#+ ylim(ylimX)
   # varX <- "Cbal_tot"
-  ylimX <- dataX[,range(Cbal_tot,na.rm=T)]
+  # ylimX <- dataX[,range(Cbal_tot,na.rm=T)]
   p3 <- ggplot(dataX) +
     geom_point(aes(x=period,y=Cbal_tot,col=protAreas,shape=harScen))+
-    ggtitle("Tapio") + ylab("Cbal_tot")+ ylim(ylimX)
+    ggtitle("Tapio") + ylab("Cbal_tot")#+ ylim(ylimX)
   
   allPlots <- ggarrange(p1,p2,p3,common.legend = T)
   
   return(allPlots)}
+
+
 
 
 
@@ -410,15 +427,17 @@ for(varX in c("volGrowth_tot","Cstock_tot","Cbal_tot")){
   plotList[[varX]] <- createPlot(varX,tabCountry)  
 }
 
-pdf(file = "plotsCountry.pdf")
+
+pdf(file = "manUnmanPlotsCountry.pdf")
 print(plotList$volGrowth_tot)
 print(plotList$Cstock_tot)
 print(plotList$Cbal_tot)
 print(createPlotTapio(tabCountry))
 dev.off()
-write.csv(tabCountry,file="tabCountry.csv")
 
-pdf(file = "plotsRegions.pdf")
+
+
+pdf(file = "manUnmanPlotsRegions.pdf")
 regNames <- unique(tabRegion$regNames)
 for(ij in 1:19){
   i <- regNames[ij]
@@ -431,8 +450,3 @@ for(ij in 1:19){
   print(createPlotTapio(tabRegion[region==ij]))
 }
 dev.off()
-
-write.csv(tabRegion,file="tabRegions.csv")
-
-
-
