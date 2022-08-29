@@ -19,7 +19,7 @@ set.seed(1)
 ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
 # toMem <- ls()
 modRun <- runModel(sampleID,outType="testRun",forceSaveInitSoil=T,
-                   harvScen=harvScen,harvInten=harvInten,compHarvX = 0,
+                   harvScen=harvScen,harvInten=harvInten,compHarvX = compHarvX,
                    cons10run=cons10run,landClassUnman=landClassUnman)
 region <- modRun$region
 rm(modRun); gc()
@@ -185,7 +185,7 @@ for(i in 1:4){
     set.seed(1)
     ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
     # toMem <- ls()
-    modRun <- runModel(sampleID,outType="testRun",compHarvX = 0,
+    modRun <- runModel(sampleID,outType="testRun",compHarvX = compHarvX,
                        harvScen=harvScen,harvInten=harvInten,
                        cons10run=cons10run,landClassUnman=landClassUnman)
     region <- modRun$region
@@ -349,7 +349,7 @@ for(harvInten in c("Low","MaxSust")){
     set.seed(1)
     ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
     # toMem <- ls()
-    modRun <- runModel(sampleID,outType="testRun",compHarvX = 0,
+    modRun <- runModel(sampleID,outType="testRun",compHarvX = compHarvX,
                        harvScen=harvScen,harvInten=harvInten,
                        cons10run=cons10run,landClassUnman=landClassUnman)
     region <- modRun$region
@@ -510,7 +510,7 @@ for(harvInten in harvIntensities){
     set.seed(1)
     ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
     # toMem <- ls()
-    modRun <- runModel(sampleID,outType="testRun",compHarvX = 0,
+    modRun <- runModel(sampleID,outType="testRun",compHarvX = compHarvX,
                        harvScen=harvScen,harvInten=harvInten,
                        cons10run=cons10run,landClassUnman=landClassUnman)
     region <- modRun$region
@@ -673,7 +673,7 @@ for(harvInten in "Base"){
     set.seed(1)
     ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
     # toMem <- ls()
-    modRun <- runModel(sampleID,outType="testRun",compHarvX = 0,
+    modRun <- runModel(sampleID,outType="testRun",compHarvX = compHarvX,
                        harvScen=harvScen,harvInten=harvInten,
                        cons10run=cons10run,landClassUnman=landClassUnman)
     region <- modRun$region
