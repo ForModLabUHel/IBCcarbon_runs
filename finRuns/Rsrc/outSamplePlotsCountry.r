@@ -7,7 +7,7 @@ library(data.table)
 # mortMod=3
 # regions <- 1:19 #c(8, 3,9,10,13,14,15,19)
 setwd("/scratch/project_2000994/PREBASruns/finRuns")
-run_settings <- paste0(#"_clcutArFact",clcutArFact,
+run_settings <- paste0("_clcutArFact",clcutArFact,
   "_addHarv",compHarvX,"_landClassX",range(landClassX)[1],
   "to",range(landClassX)[2],"_mortMod",mortMod)
 
