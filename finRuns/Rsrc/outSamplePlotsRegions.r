@@ -12,8 +12,10 @@ library(data.table)
 # regionNames <- fread("/scratch/project_2000994/PREBASruns/metadata/maakunta/maakunta_names.txt")
 # outDyr <- "outSampleHcF1.2_cons10run"
 setwd("/scratch/project_2000994/PREBASruns/finRuns")
-run_settings <- paste0("_addHarvNO","_landClassX",landClassX,
-                       "_mortMod",mortMod)
+run_settings <- paste0(#"_clcutArFact",clcutArFact,
+          "_addHarv",compHarvX,"_landClassX",range(landClassX)[1],
+          "to",range(landClassX)[2],"_mortMod",mortMod)
+
 regionNames <- fread("/scratch/project_2000994/PREBASruns/metadata/maakunta/maakunta_names.txt")
 
 for(r_no in 1:19){
