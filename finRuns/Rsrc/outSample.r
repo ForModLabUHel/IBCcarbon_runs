@@ -821,8 +821,8 @@ for(harvInten in "Base"){
 areas <- data.table(segID=region$siteInfo[,1],area=region$areas)
 datAllScen <- rbind(datAllScen1,datAllScen)
 
-if(minDharvX>100) addHarv="NO"
-if(minDharvX<100) addHarv=compHarvX
+# if(minDharvX>100) compHarvX="NO"
+# if(minDharvX<100) addHarv=compHarvX
 fileName <- paste0(outDyr,"/r_no",r_no,
                 "_addHarv",compHarvX,"_landClassX",range(landClassX)[1],
                 "to",range(landClassX)[2],"_mortMod",mortMod,".rdata")
