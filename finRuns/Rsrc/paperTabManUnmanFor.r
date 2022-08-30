@@ -13,7 +13,8 @@ library(data.table)
 setwd("/scratch/project_2000994/PREBASruns/finRuns")
 source("Rsrc/fra/outSampleSettings.r")
 cons10run=F
-run_settings <- paste0("_addHarvNO","_landClassX",range(landClassX)[1],
+run_settings <- paste0("_clcutArFact",clcutArFact,
+                       "_addHarv",compHarvX,"_landClassX",range(landClassX)[1],
                        "to",range(landClassX)[2],"_mortMod",mortMod)
 regionNames <- fread("/scratch/project_2000994/PREBASruns/metadata/maakunta/maakunta_names.txt")
 
@@ -157,8 +158,6 @@ library(data.table)
 setwd("/scratch/project_2000994/PREBASruns/finRuns")
 source("Rsrc/fra/outSampleSettings.r")
 cons10run=T
-run_settings <- paste0("_addHarvNO","_landClassX",range(landClassX)[1],
-                       "to",range(landClassX)[2],"_mortMod",mortMod)
 regionNames <- fread("/scratch/project_2000994/PREBASruns/metadata/maakunta/maakunta_names.txt")
 
 meanRegion <- data.table()
