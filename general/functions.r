@@ -12,7 +12,7 @@ runModel <- function(sampleID, outType="dTabs",
                      coefCH4 = 0.34,#g m-2 y-1
                      coefN20_1 = 0.23,coefN20_2 = 0.077,#g m-2 y-1
                      landClassUnman=NULL,compHarvX = 0,
-                     initVar=NULL){
+                     initVar=NULL,initSoilC=NULL){
   # outType determines the type of output:
   # dTabs -> standard run, mod outputs saved as data.tables 
   # testRun-> test run reports the mod out and initPrebas as objects
@@ -24,7 +24,13 @@ runModel <- function(sampleID, outType="dTabs",
   # print(date())
   print(paste("start sample ID",sampleID))
   
-  initilizeSoil=T ###flag for soil initialization 
+  ###flag for soil initialization
+  if(is.null(initSoilC)){
+    initilizeSoil=T
+  }else{
+    initilizeSoil=F
+  }
+   
   procInSample=F
   ####in the protection scenarios consider buffer to protection areas
   ####if cons10run == TRUE run the model considering 10% area is conservation area according to zonation results
@@ -41,10 +47,12 @@ runModel <- function(sampleID, outType="dTabs",
     procInSample = T
     initilizeSoil = F
   }
-  if(procInSample){  
-    if(identical(landClassX,1:3)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to3.rdata"))
-    if(identical(landClassX,1:2)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to2.rdata"))
-    if(identical(landClassX,1)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1.rdata"))
+  if(procInSample){
+    if(is.null(initSoilC)){
+      if(identical(landClassX,1:3)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to3.rdata"))
+      if(identical(landClassX,1:2)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to2.rdata"))
+      if(identical(landClassX,1)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1.rdata"))
+    }
     setnames(xDat,"nPix","N")
     xDat[,area:=N*16^2/10000]
     setkey(ops[[sampleID]],maakuntaID)
@@ -292,9 +300,11 @@ runModel <- function(sampleID, outType="dTabs",
     if(!(harvScen =="Base" & harvInten == "Base")){
       if(outType!="uncRun"){
         if(!harvScen %in% c("protect","protectNoAdH","protectTapio")){
-          if(identical(landClassX,1:3)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to3.rdata"))
-          if(identical(landClassX,1:2)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to2.rdata"))
-          if(identical(landClassX,1)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1.rdata"))
+          if(is.null(initSoilC)){
+            if(identical(landClassX,1:3)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to3.rdata"))
+            if(identical(landClassX,1:2)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to2.rdata"))
+            if(identical(landClassX,1)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1.rdata"))
+          }
         }
       }else{ # if UncRun or uncSeg
         load(paste0("initSoilCunc/forCent",r_no,"/initSoilC_",outType,"_",sampleID,".rdata"))
@@ -304,7 +314,7 @@ runModel <- function(sampleID, outType="dTabs",
     }
   }
   initPrebas$yassoRun <- rep(1,initPrebas$nSites)
-  if(exists("initSoilC")) initPrebas$soilC[,1,,,] <- initSoilC
+  if(!is.null(initSoilC)) initPrebas$soilC[,1,,,] <- initSoilC
   
   print(paste0("harvest scenario ", harvScen))
   print(paste0("harvest intensity ", harvInten))
