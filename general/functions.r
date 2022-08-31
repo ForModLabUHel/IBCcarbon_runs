@@ -72,12 +72,16 @@ runModel <- function(sampleID, outType="dTabs",
     
     sampleX <- rbind(ops[[sampleID]],selX)
     sampleX$segID <- sampleX$maakuntaID
-    initSoilC <- abind(initSoilC,initSoilC[posX,,,],along=1)
+    if(is.null(initSoilC)){
+      initSoilC <- abind(initSoilC,initSoilC[posX,,,],along=1)
+      ###remove N==0 -> all seggment within the buffer
+      x0 <- which(sampleX$N==0)    
+      sampleX <- sampleX[-x0]
+      initSoilC <- initSoilC[-x0,,,]
+      # if(!is.null(initVar)) initVar <- initVar[-x0,,]
+    } 
     
-    ###remove N==0 -> all seggment within the buffer
-    x0 <- which(sampleX$N==0)    
-    sampleX <- sampleX[-x0]
-    initSoilC <- initSoilC[-x0,,,]
+    
     # data.all <- rbind(data.all[!maakuntaID %in% xDat$maakuntaID],xDat)
   }else{
     sampleX <- ops[[sampleID]]
