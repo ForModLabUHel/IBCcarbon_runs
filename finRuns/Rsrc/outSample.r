@@ -24,13 +24,14 @@ modRun <- runModel(sampleID,outType="testRun",forceSaveInitSoil=T,
                    cons10run=cons10run,landClassUnman=landClassUnman)
 
 reInitVar <- modRun$region$multiOut[,reInitSim,c(4,7,11:14,16),,1]
-reInitSoilc <- modRun$region$soilC[,reInitSim,,,]
-startingYear <- 2021
+reInitSoilC <- modRun$region$soilC[,reInitSim,,,]
+startingYear <- yearReInit
+nYears = endingYear-startingYear
 source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
 modRun2 <- runModel(sampleID,outType="testRun",forceSaveInitSoil=T,
                    harvScen=harvScen,harvInten=harvInten,compHarvX = compHarvX,
                    cons10run=cons10run,landClassUnman=landClassUnman,
-                   initVar=reInitVar,initSoilC=reInitSoilc)
+                   initVar=reInitVar,initSoilC=reInitSoilC)
 
 region <- modRun$region
 rm(modRun); gc()
