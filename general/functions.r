@@ -41,7 +41,7 @@ runModel <- function(sampleID, outType="dTabs",
     procInSample = T
     initilizeSoil = F
   }
-  if(cons10run & reInit==F){
+  if(cons10run){
     load(paste0("input/maakunta/maakunta_",r_no,"_IDsCons10.rdata"))
     xDat <- cons10Dat
     procInSample = T
@@ -72,13 +72,15 @@ runModel <- function(sampleID, outType="dTabs",
     
     sampleX <- rbind(ops[[sampleID]],selX)
     sampleX$segID <- sampleX$maakuntaID
-    initSoilC <- abind(initSoilC,initSoilC[posX,,,],along=1)
-
-    ###remove N==0 -> all seggment within the buffer
-    x0 <- which(sampleX$N==0)    
-    sampleX <- sampleX[-x0]
-    initSoilC <- initSoilC[-x0,,,]
-
+    if(reInit==F){
+      initSoilC <- abind(initSoilC,initSoilC[posX,,,],along=1)
+      
+      ###remove N==0 -> all seggment within the buffer
+      x0 <- which(sampleX$N==0)    
+      sampleX <- sampleX[-x0]
+      initSoilC <- initSoilC[-x0,,,]
+    }
+    
     # data.all <- rbind(data.all[!maakuntaID %in% xDat$maakuntaID],xDat)
   }else{
     sampleX <- ops[[sampleID]]

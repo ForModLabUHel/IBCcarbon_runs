@@ -31,7 +31,7 @@ source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/maste
 modRun2 <- runModel(sampleID,outType="testRun",forceSaveInitSoil=T,
                    harvScen=harvScen,harvInten=harvInten,compHarvX = compHarvX,
                    cons10run=cons10run,landClassUnman=landClassUnman,
-                   initVar=reInitVar,initSoilC=reInitSoilC)
+                   initVar=reInitVar,initSoilC=reInitSoilC, reInit=T)
 
 region <- modRun$region
 rm(modRun); gc()
