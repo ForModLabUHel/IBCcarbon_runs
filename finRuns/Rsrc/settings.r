@@ -45,7 +45,7 @@ if(!exists("thinIntX")) thinIntX=0.9
 if(!exists("thinFactX")) thinFactX=0.2
 if(!exists("clcutArX") & regSets=="forCent") clcutArX <- NA
 if(!exists("clcutArX") & regSets=="maakunta") clcutArX <- 1
-if(!exists("clcutArFact")) clcutArFact <- 1 ###multiplication factor to increase or decrease the clearcutting area
+if(!exists("clcutArFact")) clcutArFact <- 2 ###multiplication factor to increase or decrease the clearcutting area
 ####Hcmodel bias for all maakunta regions
 HcFactorAll <- rep(1,19)#c(1.2,0.8,0.8,1.2,1.2,0.8,1.2,1.2,0.8,
                  # 0.8,1.2,0.8,0.8,1.2,0.8,1.2,0.8,1.2,1.2)
