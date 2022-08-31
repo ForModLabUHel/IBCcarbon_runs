@@ -6,6 +6,7 @@ if(!exists("sampleID")) sampleID=3
 if(!exists("outDyr")) outDyr="outSample"
 
 harvIntensities <- c("Base","MaxSust","Low")
+reInitSim <- yearReInit - startingYear  ####calculate simulation year to reInitialize the model
 
 toMem <- ls()
 
@@ -21,6 +22,10 @@ ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
 modRun <- runModel(sampleID,outType="testRun",forceSaveInitSoil=T,
                    harvScen=harvScen,harvInten=harvInten,compHarvX = compHarvX,
                    cons10run=cons10run,landClassUnman=landClassUnman)
+
+reInitVar <- modRun$region$multiOut[,reInitSim,c(4,7,11:14,16),,1]
+reInitSoilc <- modRun$region$soilC[,reInitSim,,,]
+
 region <- modRun$region
 rm(modRun); gc()
 datAll <- data.table()

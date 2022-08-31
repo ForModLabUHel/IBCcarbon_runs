@@ -11,7 +11,8 @@ runModel <- function(sampleID, outType="dTabs",
                      procDrPeat=F,coeffPeat1=-240,coeffPeat2=70,
                      coefCH4 = 0.34,#g m-2 y-1
                      coefN20_1 = 0.23,coefN20_2 = 0.077,#g m-2 y-1
-                     landClassUnman=NULL,compHarvX = 0){
+                     landClassUnman=NULL,compHarvX = 0,
+                     initVar=NULL){
   # outType determines the type of output:
   # dTabs -> standard run, mod outputs saved as data.tables 
   # testRun-> test run reports the mod out and initPrebas as objects
@@ -144,7 +145,8 @@ runModel <- function(sampleID, outType="dTabs",
   ## Second, continue now starting from soil SS
   initPrebas = create_prebas_input.f(r_no, clim, data.sample, nYears = nYears,
                                      startingYear = startingYear,domSPrun=domSPrun,
-                                     harv=harvScen, HcFactorX=HcFactor)
+                                     harv=harvScen, HcFactorX=HcFactor,
+                                     initVar=NULL)
   
   if(outType %in% c("uncRun","uncSeg")){
     initPrebas$pPRELES <- pPRELES
@@ -613,7 +615,9 @@ sample_data.f = function(data.all, nSample) {
 # StartingYear = climate data that detrermines simulation period must have year greater than this.
 create_prebas_input.f = function(r_no, clim, data.sample, nYears,
                                  startingYear=0,domSPrun=0,
-                                 harv, HcFactorX=HcFactor) { # dat = climscendataset
+                                 harv, HcFactorX=HcFactor, 
+                                 initVar=NULL) { 
+  # dat = climscendataset
   #domSPrun=0 initialize model for mixed forests according to data inputs 
   #domSPrun=1 initialize model only for dominant species 
   nSites <- nrow(data.sample)
@@ -635,110 +639,112 @@ create_prebas_input.f = function(r_no, clim, data.sample, nYears,
   ###Initialise model
   # initVardension nSites,variables, nLayers
   # variables: 1 = species; 2 = Age; 3 = H; 4=dbh; 5 = ba; 6 = Hc
-  initVar <- array(NA, dim=c(nSites,7,3))
-  data.sample[,baP:= (ba * pine/(pine+spruce+decid))]
-  data.sample[,baSP:= (ba * spruce/(pine+spruce+decid))]
-  data.sample[,baB:= (ba * decid/(pine+spruce+decid))]
-  data.sample[,dbhP:= dbh]
-  data.sample[,dbhSP:= dbh]
-  data.sample[,h:= h/10]
-  data.sample[,hP:= h]
-  data.sample[,hSP:= h]
-  
-  data.sample[,N:=ba/(pi*(dbh/2)^2/10000)]
-  
-  areas <- data.sample$area
-  
-  initVar[,1,] <- as.numeric(rep(1:3,each=nSites))
-  initVar[,2,] <- round(as.numeric(data.sample[,age]))
-  initVar[,3,] <- as.numeric(data.sample[,h])
-  # initVar[,3,][which(initVar[,3,]<1.5)] <- 1.5  ####if H < 1.5 set to 1.5
-  initVar[,4,] <- as.numeric(data.sample[,dbh])
-  
-  if(domSPrun==1){
-    ##initialize model only for dominant species##
-    initVar[,5,] = 0.
-    ix = unlist(data.sample[, which.max(c(pine, spruce, decid)), by=1:nrow(data.sample)] [, 2])
-    for(jx in 1:nSites) initVar[jx,5,ix[jx]] = as.numeric(data.sample[, ba])[jx]
-  } else{
-    ###initialize model for mixed forest runs
-    initVar[,5,1] <- as.numeric(data.sample[,(ba * pine/(pine+spruce+decid))])
-    initVar[,5,2] <- as.numeric(data.sample[,(ba * spruce/(pine+spruce+decid))])
-    initVar[,5,3] <- as.numeric(data.sample[,(ba * decid/(pine+spruce+decid))])
+  HcFactorInit = FALSE #flag that activate the rescaling  of Hc
+  if(is.null(initVar)){
+    HcFactorInit <- TRUE 
+    initVar <- array(NA, dim=c(nSites,7,3))
+    data.sample[,baP:= (ba * pine/(pine+spruce+decid))]
+    data.sample[,baSP:= (ba * spruce/(pine+spruce+decid))]
+    data.sample[,baB:= (ba * decid/(pine+spruce+decid))]
+    data.sample[,dbhP:= dbh]
+    data.sample[,dbhSP:= dbh]
+    data.sample[,h:= h/10]
+    data.sample[,hP:= h]
+    data.sample[,hSP:= h]
     
-    if(TRUE){ #### if true will vary H and D of pine and spruce using siteType
+    data.sample[,N:=ba/(pi*(dbh/2)^2/10000)]
+    
+    areas <- data.sample$area
+    
+    initVar[,1,] <- as.numeric(rep(1:3,each=nSites))
+    initVar[,2,] <- round(as.numeric(data.sample[,age]))
+    initVar[,3,] <- as.numeric(data.sample[,h])
+    # initVar[,3,][which(initVar[,3,]<1.5)] <- 1.5  ####if H < 1.5 set to 1.5
+    initVar[,4,] <- as.numeric(data.sample[,dbh])
+    
+    if(domSPrun==1){
+      ##initialize model only for dominant species##
+      initVar[,5,] = 0.
+      ix = unlist(data.sample[, which.max(c(pine, spruce, decid)), by=1:nrow(data.sample)] [, 2])
+      for(jx in 1:nSites) initVar[jx,5,ix[jx]] = as.numeric(data.sample[, ba])[jx]
+    } else{
+      ###initialize model for mixed forest runs
+      initVar[,5,1] <- as.numeric(data.sample[,(ba * pine/(pine+spruce+decid))])
+      initVar[,5,2] <- as.numeric(data.sample[,(ba * spruce/(pine+spruce+decid))])
+      initVar[,5,3] <- as.numeric(data.sample[,(ba * decid/(pine+spruce+decid))])
       
-      ###increase spruceP dbh 10% for spruceP sitetype 1:2
-      minDelta <- 0.75
-      data.sample[pine>0. & spruce >0. & fert<2.5,X:=pmax(minDelta,(ba-1.1*baSP-baB)/baP)]
-      data.sample[pine>0. & spruce >0. & fert<2.5,dbhSP:=1.1*dbh]
-      data.sample[pine>0. & spruce >0. & fert<2.5 & X==minDelta,dbhSP:=dbh*(ba-minDelta* baP-baB)/baSP]
-      data.sample[pine>0. & spruce >0. & fert<2.5,dbhP:=X*dbh]
-      data.sample[pine>0. & spruce >0. & fert<2.5 & dbhP<0.5,dbhSP:=pmax(0.5,((ba-(0.5/dbh)*baP-baB)/baSP))]
-      data.sample[pine>0. & spruce >0. & fert<2.5 & dbhP<0.5,dbhP:=0.5]
-      
-      # data.sample[pine>0. & spruce >0. & fert<2.5 & baSP <= baP,dbhSP:=dbh * (ba - 0.9*baP - baB)/baSP]
-      # data.sample[pine>0. & spruce >0. & fert<2.5 & baSP <= baP,dbhP:=pmax(0.9*dbh,0.3)]
-      
-      ####increase spruce h 10% for spruce sitetype 1:2
-      data.sample[pine>0. & spruce >0. & fert<2.5, X:=pmax(minDelta,(ba-1.1*baSP-baB)/baP)]
-      data.sample[pine>0. & spruce >0. & fert<2.5,hSP:=1.1*h]
-      data.sample[pine>0. & spruce >0. & fert<2.5 & X==minDelta,hSP:=h*(ba-minDelta* baP-baB)/baSP]
-      data.sample[pine>0. & spruce >0. & fert<2.5, hP:=X*h]
-      data.sample[pine>0. & spruce >0. & fert<2.5 & hSP<1.5,hSP:=1.5]
-      data.sample[pine>0. & spruce >0. & fert<2.5 & hP<1.5,hP:=1.5]
-      
-      # data.sample[pine>0. & spruce >0. & fert<2.5 & baSP <= baP,hSP:=h * (ba - 0.9*baP - baB)/baSP]
-      # data.sample[pine>0. & spruce >0. & fert<2.5 & baSP <= baP,hP:=pmax(0.9*h,1.3)]
-      #  
-      ####increase spruce dbh 5% for spruce sitetype 3
-      data.sample[pine>0. & spruce >0. & fert==3, X:=pmax(minDelta,(ba-1.05*baSP-baB)/baP)]
-      data.sample[pine>0. & spruce >0. & fert==3, dbhP:=X*dbh]   
-      data.sample[pine>0. & spruce >0. & fert==3, dbhSP:=1.05*dbh]
-      data.sample[pine>0. & spruce >0. & fert==3 & X==minDelta,dbhSP:=dbh*(ba-minDelta* baP-baB)/baSP]
-      data.sample[pine>0. & spruce >0. & fert==3 & dbhP<0.5,dbhSP:=pmax(1.5,((ba-(0.5/dbh)*baP-baB)/baSP)*dbh)]
-      data.sample[pine>0. & spruce >0. & fert==3 & dbhP<0.5,dbhP:=0.5]
-      
-      # data.sample[pine>0. & spruce >0. & fert==3 & baSP <= baP,dbhSP:=pmin(25,(dbh * (ba - 0.95*baP - baB)/baSP))]
-      # data.sample[pine>0. & spruce >0. & fert==3 & baSP <= baP,dbhP:=pmax(0.95*dbh,0.3)]
-      
-      ####increase spruce h 5% for spruce sitetype 3
-      data.sample[pine>0. & spruce >0. & fert==3, X:=pmax(minDelta,(ba-1.05*baSP-baB)/baP)]
-      data.sample[pine>0. & spruce >0. & fert==3, hP:=X*h]
-      data.sample[pine>0. & spruce >0. & fert==3, hSP:=1.05*h]
-      data.sample[pine>0. & spruce >0. & fert==3 & X==minDelta,hSP:=h*(ba-minDelta* baP-baB)/baSP]
-      data.sample[pine>0. & spruce >0. & fert==3 & hSP<1.5, hSP:=1.5]
-      data.sample[pine>0. & spruce >0. & fert==3 & hP<1.5, hP:=1.5]
-      
-      # data.sample[pine>0. & spruce >0. & fert==3 & baSP <= baP,hSP:=pmin(30.,(h * (ba - 0.95*baP - baB)/baSP))]
-      # data.sample[pine>0. & spruce >0. & fert==3 & baSP <= baP,hP:=pmax(0.95*h,1.3)]
-      
-      ####increase pine dbh 10% for sitetype >= 4
-      data.sample[pine>0. & spruce >0. & fert>3.5, X:=pmax(minDelta,(ba-1.1*baP-baB)/baSP)]
-      data.sample[pine>0. & spruce >0. & fert>3.5, dbhSP:=X*dbh]
-      data.sample[pine>0. & spruce >0. & fert>3.5, dbhP:=1.1*dbh]
-      data.sample[pine>0. & spruce >0. & fert>3.5 & X==minDelta,dbhP:=dbh*(ba-minDelta*baSP-baB)/baP]
-      data.sample[pine>0. & spruce >0. & fert>3.5 & dbhSP<0.5,dbhP:=pmax(1.5,((ba-(0.5/dbh)*baSP-baB)/baP)*dbh)]
-      data.sample[pine>0. & spruce >0. & fert>3.5 & dbhSP<0.5,dbhSP:=0.5]
-      # data.sample[pine>0. & spruce >0. & fert>3.5 & baP <= baSP,dbhP:=dbh * (ba - 0.9*baSP - baB)/baP]
-      # data.sample[pine>0. & spruce >0. & fert>3.5 & baP <= baSP,dbhSP:=pmax(0.9*dbh,0.3)]
-      ####increase pine h 10% for sitetype >= 4
-      data.sample[pine>0. & spruce >0. & fert>3.5, X:=pmax(minDelta,(ba-1.1*baP-baB)/baSP)]
-      data.sample[pine>0. & spruce >0. & fert>3.5,hSP:=X*h]
-      data.sample[pine>0. & spruce >0. & fert>3.5,hP:=1.1*h]
-      data.sample[pine>0. & spruce >0. & fert>3.5 & X==minDelta,hP:=h*(ba-minDelta*baSP-baB)/baP]
-      data.sample[pine>0. & spruce >0. & fert>3.5 & hP<1.5,hP:=1.5]
-      data.sample[pine>0. & spruce >0. & fert>3.5 & hSP<1.5,hSP:=1.5]
-      # data.sample[pine>0. & spruce >0. & fert>3.5 & baP <= baSP,hP:=h * (ba - 0.9*baSP - baB)/baP]
-      # data.sample[pine>0. & spruce >0. & fert>3.5 & baP <= baSP,hSP:=pmax(0.9*h,1.3)]
-      
-      initVar[,3,1] <- as.numeric(data.sample[,hP])
-      initVar[,3,2] <- as.numeric(data.sample[,hSP])
-      initVar[,4,1] <- as.numeric(data.sample[,dbhP])
-      initVar[,4,2] <- as.numeric(data.sample[,dbhSP])
-      
+      if(TRUE){ #### if true will vary H and D of pine and spruce using siteType
+        
+        ###increase spruceP dbh 10% for spruceP sitetype 1:2
+        minDelta <- 0.75
+        data.sample[pine>0. & spruce >0. & fert<2.5,X:=pmax(minDelta,(ba-1.1*baSP-baB)/baP)]
+        data.sample[pine>0. & spruce >0. & fert<2.5,dbhSP:=1.1*dbh]
+        data.sample[pine>0. & spruce >0. & fert<2.5 & X==minDelta,dbhSP:=dbh*(ba-minDelta* baP-baB)/baSP]
+        data.sample[pine>0. & spruce >0. & fert<2.5,dbhP:=X*dbh]
+        data.sample[pine>0. & spruce >0. & fert<2.5 & dbhP<0.5,dbhSP:=pmax(0.5,((ba-(0.5/dbh)*baP-baB)/baSP))]
+        data.sample[pine>0. & spruce >0. & fert<2.5 & dbhP<0.5,dbhP:=0.5]
+        
+        # data.sample[pine>0. & spruce >0. & fert<2.5 & baSP <= baP,dbhSP:=dbh * (ba - 0.9*baP - baB)/baSP]
+        # data.sample[pine>0. & spruce >0. & fert<2.5 & baSP <= baP,dbhP:=pmax(0.9*dbh,0.3)]
+        
+        ####increase spruce h 10% for spruce sitetype 1:2
+        data.sample[pine>0. & spruce >0. & fert<2.5, X:=pmax(minDelta,(ba-1.1*baSP-baB)/baP)]
+        data.sample[pine>0. & spruce >0. & fert<2.5,hSP:=1.1*h]
+        data.sample[pine>0. & spruce >0. & fert<2.5 & X==minDelta,hSP:=h*(ba-minDelta* baP-baB)/baSP]
+        data.sample[pine>0. & spruce >0. & fert<2.5, hP:=X*h]
+        data.sample[pine>0. & spruce >0. & fert<2.5 & hSP<1.5,hSP:=1.5]
+        data.sample[pine>0. & spruce >0. & fert<2.5 & hP<1.5,hP:=1.5]
+        
+        # data.sample[pine>0. & spruce >0. & fert<2.5 & baSP <= baP,hSP:=h * (ba - 0.9*baP - baB)/baSP]
+        # data.sample[pine>0. & spruce >0. & fert<2.5 & baSP <= baP,hP:=pmax(0.9*h,1.3)]
+        #  
+        ####increase spruce dbh 5% for spruce sitetype 3
+        data.sample[pine>0. & spruce >0. & fert==3, X:=pmax(minDelta,(ba-1.05*baSP-baB)/baP)]
+        data.sample[pine>0. & spruce >0. & fert==3, dbhP:=X*dbh]   
+        data.sample[pine>0. & spruce >0. & fert==3, dbhSP:=1.05*dbh]
+        data.sample[pine>0. & spruce >0. & fert==3 & X==minDelta,dbhSP:=dbh*(ba-minDelta* baP-baB)/baSP]
+        data.sample[pine>0. & spruce >0. & fert==3 & dbhP<0.5,dbhSP:=pmax(1.5,((ba-(0.5/dbh)*baP-baB)/baSP)*dbh)]
+        data.sample[pine>0. & spruce >0. & fert==3 & dbhP<0.5,dbhP:=0.5]
+        
+        # data.sample[pine>0. & spruce >0. & fert==3 & baSP <= baP,dbhSP:=pmin(25,(dbh * (ba - 0.95*baP - baB)/baSP))]
+        # data.sample[pine>0. & spruce >0. & fert==3 & baSP <= baP,dbhP:=pmax(0.95*dbh,0.3)]
+        
+        ####increase spruce h 5% for spruce sitetype 3
+        data.sample[pine>0. & spruce >0. & fert==3, X:=pmax(minDelta,(ba-1.05*baSP-baB)/baP)]
+        data.sample[pine>0. & spruce >0. & fert==3, hP:=X*h]
+        data.sample[pine>0. & spruce >0. & fert==3, hSP:=1.05*h]
+        data.sample[pine>0. & spruce >0. & fert==3 & X==minDelta,hSP:=h*(ba-minDelta* baP-baB)/baSP]
+        data.sample[pine>0. & spruce >0. & fert==3 & hSP<1.5, hSP:=1.5]
+        data.sample[pine>0. & spruce >0. & fert==3 & hP<1.5, hP:=1.5]
+        
+        # data.sample[pine>0. & spruce >0. & fert==3 & baSP <= baP,hSP:=pmin(30.,(h * (ba - 0.95*baP - baB)/baSP))]
+        # data.sample[pine>0. & spruce >0. & fert==3 & baSP <= baP,hP:=pmax(0.95*h,1.3)]
+        
+        ####increase pine dbh 10% for sitetype >= 4
+        data.sample[pine>0. & spruce >0. & fert>3.5, X:=pmax(minDelta,(ba-1.1*baP-baB)/baSP)]
+        data.sample[pine>0. & spruce >0. & fert>3.5, dbhSP:=X*dbh]
+        data.sample[pine>0. & spruce >0. & fert>3.5, dbhP:=1.1*dbh]
+        data.sample[pine>0. & spruce >0. & fert>3.5 & X==minDelta,dbhP:=dbh*(ba-minDelta*baSP-baB)/baP]
+        data.sample[pine>0. & spruce >0. & fert>3.5 & dbhSP<0.5,dbhP:=pmax(1.5,((ba-(0.5/dbh)*baSP-baB)/baP)*dbh)]
+        data.sample[pine>0. & spruce >0. & fert>3.5 & dbhSP<0.5,dbhSP:=0.5]
+        # data.sample[pine>0. & spruce >0. & fert>3.5 & baP <= baSP,dbhP:=dbh * (ba - 0.9*baSP - baB)/baP]
+        # data.sample[pine>0. & spruce >0. & fert>3.5 & baP <= baSP,dbhSP:=pmax(0.9*dbh,0.3)]
+        ####increase pine h 10% for sitetype >= 4
+        data.sample[pine>0. & spruce >0. & fert>3.5, X:=pmax(minDelta,(ba-1.1*baP-baB)/baSP)]
+        data.sample[pine>0. & spruce >0. & fert>3.5,hSP:=X*h]
+        data.sample[pine>0. & spruce >0. & fert>3.5,hP:=1.1*h]
+        data.sample[pine>0. & spruce >0. & fert>3.5 & X==minDelta,hP:=h*(ba-minDelta*baSP-baB)/baP]
+        data.sample[pine>0. & spruce >0. & fert>3.5 & hP<1.5,hP:=1.5]
+        data.sample[pine>0. & spruce >0. & fert>3.5 & hSP<1.5,hSP:=1.5]
+        # data.sample[pine>0. & spruce >0. & fert>3.5 & baP <= baSP,hP:=h * (ba - 0.9*baSP - baB)/baP]
+        # data.sample[pine>0. & spruce >0. & fert>3.5 & baP <= baSP,hSP:=pmax(0.9*h,1.3)]
+        
+        initVar[,3,1] <- as.numeric(data.sample[,hP])
+        initVar[,3,2] <- as.numeric(data.sample[,hSP])
+        initVar[,4,1] <- as.numeric(data.sample[,dbhP])
+        initVar[,4,2] <- as.numeric(data.sample[,dbhSP])
+      }
     }
-    
   }
   
   # initVar[,6,] <- as.numeric(data.sample[,hc])
@@ -815,7 +821,7 @@ create_prebas_input.f = function(r_no, clim, data.sample, nYears,
   ## Set to match climate data years
   if(!exists("ftTapioParX")) ftTapioParX = ftTapio
   if(!exists("tTapioParX")) tTapioParX = tTapio
-  initVar[,6,] <- aaply(initVar,1,findHcNAs,pHcM)[,6,]*HcFactorX
+  if(HcFactorInit) initVar[,6,] <- aaply(initVar,1,findHcNAs,pHcM)[,6,]*HcFactorX
   initPrebas <- InitMultiSite(nYearsMS = rep(nYears,nSites),siteInfo=siteInfo,
                               # litterSize = litterSize,#pAWEN = parsAWEN,
                               pCROBAS = pCrobasX,

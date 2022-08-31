@@ -111,6 +111,7 @@ per1=2017:2025
 per2=2026:2033
 per3=2034:2050
 simYear1 = per1 - startingYear
+simYear1 <- simYear1[simYear1>0]
 simYear2 = per2 - startingYear
 simYear3 = per3 - startingYear
 colsOut1 = c(paste("V", simYear1, sep=""))
