@@ -634,6 +634,7 @@ create_prebas_input.f = function(r_no, clim, data.sample, nYears,
   #domSPrun=0 initialize model for mixed forests according to data inputs 
   #domSPrun=1 initialize model only for dominant species 
   nSites <- nrow(data.sample)
+  areas <- data.sample$area
   ###site Info matrix. nrow = nSites, cols: 1 = siteID; 2 = climID; 3=site type;
   ###4 = nLayers; 5 = nSpecies;
   ###6=SWinit;   7 = CWinit; 8 = SOGinit; 9 = Sinit
@@ -666,8 +667,6 @@ create_prebas_input.f = function(r_no, clim, data.sample, nYears,
     data.sample[,hSP:= h]
     
     data.sample[,N:=ba/(pi*(dbh/2)^2/10000)]
-    
-    areas <- data.sample$area
     
     initVar[,1,] <- as.numeric(rep(1:3,each=nSites))
     initVar[,2,] <- round(as.numeric(data.sample[,age]))
