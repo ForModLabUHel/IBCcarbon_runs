@@ -157,8 +157,8 @@ runModel <- function(sampleID, outType="dTabs",
   ## Second, continue now starting from soil SS
   initPrebas = create_prebas_input.f(r_no, clim, data.sample, nYears = nYears,
                                      startingYear = startingYear,domSPrun=domSPrun,
-                                     harv=harvScen, HcFactorX=HcFactor,
-                                     initVar=initVar)
+                                     harv=harvScen, HcFactorX=HcFactor
+                                     )
   
   if(outType %in% c("uncRun","uncSeg")){
     initPrebas$pPRELES <- pPRELES
