@@ -12,6 +12,7 @@ runModel <- function(sampleID, outType="dTabs",
                      coefCH4 = 0.34,#g m-2 y-1
                      coefN20_1 = 0.23,coefN20_2 = 0.077,#g m-2 y-1
                      landClassUnman=NULL,compHarvX = 0,
+                     initSoilC=NULL,
                      outModReStart=NULL,reStartYear=NULL){
   # outType determines the type of output:
   # dTabs -> standard run, mod outputs saved as data.tables 
@@ -629,7 +630,7 @@ sample_data.f = function(data.all, nSample) {
 create_prebas_input.f = function(r_no, clim, data.sample, nYears,
                                  startingYear=0,domSPrun=0,
                                  harv, HcFactorX=HcFactor, 
-                                 outModReStart=NULL,outModsoilC=NULL
+                                 outModReStart=NULL,initSoilC=NULL
                                  ) { 
   # dat = climscendataset
   #domSPrun=0 initialize model for mixed forests according to data inputs 
@@ -851,8 +852,8 @@ create_prebas_input.f = function(r_no, clim, data.sample, nYears,
   if(!is.null(outModReStart)){
     if(!is.null(outModReStart$multiOut)) initPrebas$multiOut <- outModReStart$multiOut
     if(!is.null(outModReStart$siteInfo)) initPrebas$siteInfo <- outModReStart$siteInfo
-    if(!is.null(outModReStart$soilC)) initPrebas$soilC <- outModReStart$soilC
   }
+  if(!is.null(initSoilC)) initPrebas$soilC <- initSoilC
   
   return(initPrebas)
 }
