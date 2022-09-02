@@ -12,7 +12,7 @@ runModel <- function(sampleID, outType="dTabs",
                      coefCH4 = 0.34,#g m-2 y-1
                      coefN20_1 = 0.23,coefN20_2 = 0.077,#g m-2 y-1
                      landClassUnman=NULL,compHarvX = 0,
-                     outModReStart=NULL,reInit=F){
+                     outModReStart=NULL,reStartYear=NULL){
   # outType determines the type of output:
   # dTabs -> standard run, mod outputs saved as data.tables 
   # testRun-> test run reports the mod out and initPrebas as objects
