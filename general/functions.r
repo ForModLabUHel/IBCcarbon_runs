@@ -12,7 +12,7 @@ runModel <- function(sampleID, outType="dTabs",
                      coefCH4 = 0.34,#g m-2 y-1
                      coefN20_1 = 0.23,coefN20_2 = 0.077,#g m-2 y-1
                      landClassUnman=NULL,compHarvX = 0,
-                     initVar=NULL,initSoilC=NULL,reInit=F){
+                     outModReStart=NULL,reInit=F){
   # outType determines the type of output:
   # dTabs -> standard run, mod outputs saved as data.tables 
   # testRun-> test run reports the mod out and initPrebas as objects
@@ -74,12 +74,12 @@ runModel <- function(sampleID, outType="dTabs",
     sampleX$segID <- sampleX$maakuntaID
     x0 <- which(sampleX$N==0)    
     sampleX <- sampleX[-x0]
-    if(reInit==F){
+    # if(reInit==F){
       initSoilC <- abind(initSoilC,initSoilC[posX,,,],along=1)
       
       ###remove N==0 -> all seggment within the buffer
       initSoilC <- initSoilC[-x0,,,]
-    }
+    # }
     
     # data.all <- rbind(data.all[!maakuntaID %in% xDat$maakuntaID],xDat)
   }else{
@@ -629,7 +629,8 @@ sample_data.f = function(data.all, nSample) {
 create_prebas_input.f = function(r_no, clim, data.sample, nYears,
                                  startingYear=0,domSPrun=0,
                                  harv, HcFactorX=HcFactor, 
-                                 initVar=NULL) { 
+                                 outModReStart=NULL,outModsoilC=NULL
+                                 ) { 
   # dat = climscendataset
   #domSPrun=0 initialize model for mixed forests according to data inputs 
   #domSPrun=1 initialize model only for dominant species 
@@ -653,9 +654,6 @@ create_prebas_input.f = function(r_no, clim, data.sample, nYears,
   ###Initialise model
   # initVardension nSites,variables, nLayers
   # variables: 1 = species; 2 = Age; 3 = H; 4=dbh; 5 = ba; 6 = Hc
-  HcFactorInit = FALSE #flag that activate the rescaling  of Hc
-  if(is.null(initVar)){
-    HcFactorInit <- TRUE 
     initVar <- array(NA, dim=c(nSites,7,3))
     data.sample[,baP:= (ba * pine/(pine+spruce+decid))]
     data.sample[,baSP:= (ba * spruce/(pine+spruce+decid))]
@@ -757,7 +755,6 @@ create_prebas_input.f = function(r_no, clim, data.sample, nYears,
         initVar[,4,2] <- as.numeric(data.sample[,dbhSP])
       }
     }
-  }
   
   # initVar[,6,] <- as.numeric(data.sample[,hc])
   
@@ -833,7 +830,7 @@ create_prebas_input.f = function(r_no, clim, data.sample, nYears,
   ## Set to match climate data years
   if(!exists("ftTapioParX")) ftTapioParX = ftTapio
   if(!exists("tTapioParX")) tTapioParX = tTapio
-  if(HcFactorInit) initVar[,6,] <- aaply(initVar,1,findHcNAs,pHcM)[,6,]*HcFactorX
+  initVar[,6,] <- aaply(initVar,1,findHcNAs,pHcM)[,6,]*HcFactorX
   initPrebas <- InitMultiSite(nYearsMS = rep(nYears,nSites),siteInfo=siteInfo,
                               # litterSize = litterSize,#pAWEN = parsAWEN,
                               pCROBAS = pCrobasX,
@@ -850,7 +847,14 @@ create_prebas_input.f = function(r_no, clim, data.sample, nYears,
                               CO2=clim$CO2[, 1:(nYears*365)],
                               yassoRun = 1,
                               mortMod = mortMod)
-  initPrebas
+  
+  if(!is.null(outModReStart)){
+    if(!is.null(outModReStart$multiOut)) initPrebas$multiOut <- outModReStart$multiOut
+    if(!is.null(outModReStart$siteInfo)) initPrebas$siteInfo <- outModReStart$siteInfo
+    if(!is.null(outModReStart$soilC)) initPrebas$soilC <- outModReStart$soilC
+  }
+  
+  return(initPrebas)
 }
 
 yasso.mean.climate.f = function(dat, data.sample, startingYear, nYears){
