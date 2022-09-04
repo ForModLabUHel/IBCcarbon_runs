@@ -81,6 +81,10 @@ runModel <- function(sampleID, outType="dTabs",
     if(is.null(initSoilCreStart) | harvScen %in% c("protect","protectNoAdH","protectTapio")){
       initSoilC <- abind(initSoilC,initSoilC[posX,,,],along=1)
       initSoilC <- initSoilC[-x0,,,]
+      if(!is.null(initSoilCreStart)){
+        initSoilCreStart <- abind(initSoilCreStart,initSoilCreStart[posX,,,,],along=1)
+        initSoilCreStart <- initSoilCreStart[-x0,,,,]
+      }
       if(!is.null(outModReStart)){
         outModReStart$multiOut <- abind(outModReStart$multiOut,outModReStart$multiOut[posX,,,,],along=1)
         outModReStart$multiOut <- outModReStart$multiOut[-x0,,,,]
