@@ -28,7 +28,7 @@ reStartMod$siteInfo <- modRun$region$siteInfo
 reStartMod$multiOut <- modRun$region$multiOut
 reStartMod$initClearcut <- modRun$region$initClearcut
 reStartSoil = modRun$region$soilC
-
+toMem <- c(toMem,"reStartSoil","reStartMod")
 region <- modRun$region
 rm(modRun); gc()
 datAll <- data.table()
