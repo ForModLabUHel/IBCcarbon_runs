@@ -12,7 +12,8 @@ runModel <- function(sampleID, outType="dTabs",
                      coefCH4 = 0.34,#g m-2 y-1
                      coefN20_1 = 0.23,coefN20_2 = 0.077,#g m-2 y-1
                      landClassUnman=NULL,compHarvX = 0,
-                     initSoilC=NULL,
+                     funX = regionPrebas,
+                     initSoilCreStart=NULL,
                      outModReStart=NULL,reStartYear=NULL){
   # outType determines the type of output:
   # dTabs -> standard run, mod outputs saved as data.tables 
@@ -26,10 +27,12 @@ runModel <- function(sampleID, outType="dTabs",
   print(paste("start sample ID",sampleID))
   
   ###flag for soil initialization
-  if(is.null(initSoilC)){
+  if(is.null(initSoilCreStart)){
     initilizeSoil=T
+    initSoilC <- NULL
   }else{
     initilizeSoil=F
+    initSoilC <- initSoilCreStart[,1,,,]
   }
    
   procInSample=F
@@ -75,12 +78,12 @@ runModel <- function(sampleID, outType="dTabs",
     sampleX$segID <- sampleX$maakuntaID
     x0 <- which(sampleX$N==0)    
     sampleX <- sampleX[-x0]
-    # if(reInit==F){
+    if(is.null(initSoilCreStart)){
       initSoilC <- abind(initSoilC,initSoilC[posX,,,],along=1)
       
       ###remove N==0 -> all seggment within the buffer
       initSoilC <- initSoilC[-x0,,,]
-    # }
+    }
     
     # data.all <- rbind(data.all[!maakuntaID %in% xDat$maakuntaID],xDat)
   }else{
@@ -157,8 +160,9 @@ runModel <- function(sampleID, outType="dTabs",
   ## Second, continue now starting from soil SS
   initPrebas = create_prebas_input.f(r_no, clim, data.sample, nYears = nYears,
                                      startingYear = startingYear,domSPrun=domSPrun,
-                                     harv=harvScen, HcFactorX=HcFactor
-                                     )
+                                     harv=harvScen, HcFactorX=HcFactor,
+                                     initSoilC=initSoilCreStart,
+                                     outModReStart=outModReStart)
   
   if(outType %in% c("uncRun","uncSeg")){
     initPrebas$pPRELES <- pPRELES
