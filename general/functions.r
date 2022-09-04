@@ -856,6 +856,7 @@ create_prebas_input.f = function(r_no, clim, data.sample, nYears,
   if(!is.null(outModReStart)){
     if(!is.null(outModReStart$multiOut)) initPrebas$multiOut <- outModReStart$multiOut
     if(!is.null(outModReStart$siteInfo)) initPrebas$siteInfo <- outModReStart$siteInfo
+    if(!is.null(outModReStart$siteInfo)) initPrebas$initClearCut <- outModReStart$initClearCut
   }
   if(!is.null(initSoilC)) initPrebas$soilC <- initSoilC
   
