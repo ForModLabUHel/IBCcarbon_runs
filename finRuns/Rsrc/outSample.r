@@ -22,16 +22,12 @@ modRun <- runModel(sampleID,outType="testRun",forceSaveInitSoil=T,
                    harvScen=harvScen,harvInten=harvInten,compHarvX = compHarvX,
                    cons10run=cons10run,landClassUnman=landClassUnman)
 
-reInitSim <- yearReInit - startingYear  ####calculate simulation year to reInitialize the model
-reInitVar <- modRun$region$multiOut[,reInitSim,c(4,7,11:14,16),,1]
-reInitSoilC <- modRun$region$soilC[,reInitSim,,,]
-startingYear <- yearReInit
-nYears = endingYear-startingYear
-source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
-modRun2 <- runModel(sampleID,outType="testRun",forceSaveInitSoil=F,
-                   harvScen=harvScen,harvInten=harvInten,compHarvX = compHarvX,
-                   cons10run=cons10run,landClassUnman=landClassUnman,
-                   initVar=reInitVar,initSoilC=reInitSoilC, reInit=T)
+
+reStartMod <- list()
+reStartMod$siteInfo <- modRun$region$siteInfo
+reStartMod$multiOut <- modRun$region$multiOut
+reStartMod$initClearcut <- modRun$region$initClearcut
+reStartSoil = modRun$region$soilC
 
 region <- modRun$region
 rm(modRun); gc()
@@ -198,8 +194,10 @@ for(i in 1:4){
     ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
     # toMem <- ls()
     modRun <- runModel(sampleID,outType="testRun",compHarvX = compHarvX,
-                       harvScen=harvScen,harvInten=harvInten,
-                       cons10run=cons10run,landClassUnman=landClassUnman)
+                        harvScen=harvScen,harvInten=harvInten,
+                        cons10run=cons10run,landClassUnman=landClassUnman,
+                        outModReStart = reStartMod, initSoilCreStart = reStartSoil,
+                        funX = reStartRegionPrebas,reStartYear = 7)
     region <- modRun$region
     rm(modRun); gc()
     datAll <- data.table()
@@ -363,7 +361,9 @@ for(harvInten in c("Low","MaxSust")){
     # toMem <- ls()
     modRun <- runModel(sampleID,outType="testRun",compHarvX = compHarvX,
                        harvScen=harvScen,harvInten=harvInten,
-                       cons10run=cons10run,landClassUnman=landClassUnman)
+                       cons10run=cons10run,landClassUnman=landClassUnman,
+                       outModReStart = reStartMod, initSoilCreStart = reStartSoil,
+                       funX = reStartRegionPrebas,reStartYear = 7)
     region <- modRun$region
     rm(modRun); gc()
     datAll <- data.table()
@@ -524,7 +524,10 @@ for(harvInten in harvIntensities){
     # toMem <- ls()
     modRun <- runModel(sampleID,outType="testRun",compHarvX = compHarvX,
                        harvScen=harvScen,harvInten=harvInten,
-                       cons10run=cons10run,landClassUnman=landClassUnman)
+                       cons10run=cons10run,landClassUnman=landClassUnman,
+                       outModReStart = reStartMod, initSoilCreStart = reStartSoil,
+                       funX = reStartRegionPrebas,reStartYear = 7)
+    
     region <- modRun$region
     rm(modRun); gc()
     datAll <- data.table()
@@ -687,7 +690,9 @@ for(harvInten in "Base"){
     # toMem <- ls()
     modRun <- runModel(sampleID,outType="testRun",compHarvX = compHarvX,
                        harvScen=harvScen,harvInten=harvInten,
-                       cons10run=cons10run,landClassUnman=landClassUnman)
+                       cons10run=cons10run,landClassUnman=landClassUnman,
+                       outModReStart = reStartMod, initSoilCreStart = reStartSoil,
+                       funX = reStartRegionPrebas,reStartYear = 7)
     region <- modRun$region
     rm(modRun); gc()
     datAll <- data.table()
