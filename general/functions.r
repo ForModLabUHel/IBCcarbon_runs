@@ -78,11 +78,17 @@ runModel <- function(sampleID, outType="dTabs",
     sampleX$segID <- sampleX$maakuntaID
     x0 <- which(sampleX$N==0)    
     sampleX <- sampleX[-x0]
-    if(is.null(initSoilCreStart)){
+    if(is.null(initSoilCreStart) | harvScen %in% c("protect","protectNoAdH","protectTapio")){
       initSoilC <- abind(initSoilC,initSoilC[posX,,,],along=1)
-      
-      ###remove N==0 -> all seggment within the buffer
       initSoilC <- initSoilC[-x0,,,]
+      if(!is.null(outModReStart)){
+        outModReStart$multiOut <- abind(outModReStart$multiOut,outModReStart$multiOut[posX,,,,],along=1)
+        outModReStart$multiOut <- outModReStart$multiOut[-x0,,,,]
+        outModReStart$siteInfo <- abind(outModReStart$siteInfo,outModReStart$siteInfo[posX,],along=1)
+        outModReStart$siteInfo <- outModReStart$siteInfo[-x0,]
+        outModReStart$initClearcut <- abind(outModReStart$initClearcut,outModReStart$initClearcut[posX,],along=1)
+        outModReStart$initClearcut <- outModReStart$initClearcut[-x0,]
+      }
     }
     
     # data.all <- rbind(data.all[!maakuntaID %in% xDat$maakuntaID],xDat)
