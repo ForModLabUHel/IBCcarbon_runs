@@ -78,6 +78,7 @@ runModel <- function(sampleID, outType="dTabs",
     sampleX$segID <- sampleX$maakuntaID
     x0 <- which(sampleX$N==0)    
     sampleX <- sampleX[-x0]
+    segIDs <- sampleX$segID
     if(is.null(initSoilCreStart) | harvScen %in% c("protect","protectNoAdH","protectTapio")){
       initSoilC <- abind(initSoilC,initSoilC[posX,,,],along=1)
       initSoilC <- initSoilC[-x0,,,]
@@ -90,6 +91,8 @@ runModel <- function(sampleID, outType="dTabs",
         outModReStart$multiOut <- outModReStart$multiOut[-x0,,,,]
         outModReStart$siteInfo <- abind(outModReStart$siteInfo,outModReStart$siteInfo[posX,],along=1)
         outModReStart$siteInfo <- outModReStart$siteInfo[-x0,]
+        outModReStart$siteInfo[,1] <- segIDs
+        outModReStart$multiOut[,,1,,1] <- array(segIDs,dim=dim(outModReStart$multiOut[,,1,,1])) 
         outModReStart$initClearcut <- abind(outModReStart$initClearcut,outModReStart$initClearcut[posX,],along=1)
         outModReStart$initClearcut <- outModReStart$initClearcut[-x0,]
       }
