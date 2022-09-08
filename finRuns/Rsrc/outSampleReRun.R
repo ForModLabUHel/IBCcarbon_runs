@@ -377,8 +377,6 @@ for(i in 1:4){
 # areasProtect <- data.table(segID=region$siteInfo[,1],area=region$areas)
 # datAllScenProtect <- datAllScen
 
-toMem <- c(toMem,"areasProtect","datAllScenProtect")
-rm(list=setdiff(ls(), c(toMem,"toMem"))); gc()
 
 ###run Base scenario with other intensities
 scens <- "Base"
@@ -547,8 +545,6 @@ for(harvInten in c("Low","MaxSust")){
     }
   }
 }
-toMem <- c(toMem,"datAllScen")
-rm(list=setdiff(ls(), c(toMem,"toMem"))); gc()
 
 
 ######run adapt and Mitigation
@@ -718,11 +714,7 @@ for(harvInten in harvIntensities){
     }
   }
 }
-areas <- data.table(segID=region$siteInfo[,1],area=region$areas)
-datAllScen1 <- rbind(datAllBase,datAllScen)
 
-toMem <- c(toMem,"datAllScen1","areas")
-rm(list=setdiff(ls(), c(toMem,"toMem"))); gc()
 
 scens <- c("NoHarv",
            "adaptTapio","MitigationTapio","baseTapio")
