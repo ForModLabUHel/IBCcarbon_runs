@@ -1,12 +1,11 @@
+if(!exists("harScenX")) stop(print("you need to define harScenX"))
+if(!exists("harvIntenX")) stop(print("you need to define harvIntenX"))
+if(!exists("r_no")) stop(print("you need to define r_no"))
+
 setwd("/scratch/project_2000994/PREBASruns/finRuns")
 source("Rsrc/fra/outSampleSettings.r")
 
 # load("outSampleHcF1.2/r_no11_addHarvNO_landClassX1to2_mortMod3.rdata")
-
-harScenX = "adapt"
-harvIntenX = "Low"  
-r_no=12
-
 
 if(!exists("minDharvX")) minDharvX <- 999
 if(!exists("landClassX")) landClassX <- 1
