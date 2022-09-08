@@ -7,6 +7,10 @@ if(!exists("outDyr")) outDyr="outSample"
 
 harvIntensities <- c("Base","MaxSust","Low")
 
+fileName <- paste0(outDyr,"/r_no",r_no,"_clcutArFact",clcutArFact,
+                   "_addHarv",compHarvX,"_landClassX",range(landClassX)[1],
+                   "to",range(landClassX)[2],"_mortMod",mortMod,".rdata")
+
 toMem <- ls()
 
 ####run Base scenario & intensity
@@ -840,9 +844,6 @@ datAllScen <- rbind(datAllScen1,datAllScen)
 
 # if(minDharvX>100) compHarvX="NO"
 # if(minDharvX<100) addHarv=compHarvX
-fileName <- paste0(outDyr,"/r_no",r_no,"_clcutArFact",clcutArFact,
-                "_addHarv",compHarvX,"_landClassX",range(landClassX)[1],
-                "to",range(landClassX)[2],"_mortMod",mortMod,".rdata")
 save(datAllScen,areas,datAllScenProtect,areasProtect, file=fileName)
 
 
