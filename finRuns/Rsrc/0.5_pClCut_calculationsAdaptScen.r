@@ -5,7 +5,7 @@ factFert = -20 + factRotLength
 sampleID = 3 ###12 45    ####for region 13 take 3 and 6; region 12 sampleID c(23,440); region 11 sampleID c(23,150)
 toMem <- ls()
 
-for(r_no in 1:19){
+for(r_no in 9:19){
   
   # r_no = regions = 4 ### forest center ID (metakeskus) 1:15
   regSets <- "maakunta"
