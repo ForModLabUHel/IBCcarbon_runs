@@ -366,6 +366,7 @@ runModel <- function(sampleID, outType="dTabs",
     if(harvScen=="MitigationNoAdH"){
       compHarvX=0.
     }
+    thinFact = 0.2
     HarvLimX[,2]=0.
     initPrebas$energyCut <- rep(0,length(initPrebas$energyCut))
 ###set parameters to increase rotation length of 25% (start)
@@ -377,17 +378,18 @@ runModel <- function(sampleID, outType="dTabs",
 ###set parameters to increase rotation length of 25% (end)
     if(harvScen=="MitigationTapio"){
       region <- funX(initPrebas,compHarv=compHarvX,
-                     startSimYear=reStartYear)
+                     startSimYear=reStartYear,thinFact=thinFact)
     }else{
       region <- funX(initPrebas, HarvLim = as.numeric(HarvLimX),
                              cutAreas =cutArX,compHarv=compHarvX,
                              ageHarvPrior = ageHarvPriorX,
-                     startSimYear=reStartYear)
+                     startSimYear=reStartYear,thinFact=thinFact)
     }
   }else if(harvScen %in% c("protect","protectNoAdH","protectTapio")){
     if(harvScen=="protectNoAdH"){
       compHarvX=0.
     }
+    thinFact = 0.2
     ####no energy cuts
     HarvLimX[,2]=0.
     initPrebas$energyCut <- rep(0,length(initPrebas$energyCut))
@@ -403,12 +405,12 @@ runModel <- function(sampleID, outType="dTabs",
     if(harvScen=="protectTapio"){
       region <- funX(initPrebas,
                            compHarv=compHarvX,oldLayer = 1,
-                     startSimYear=reStartYear)
+                     startSimYear=reStartYear,thinFact=thinFact)
     }else{
       region <- funX(initPrebas, HarvLim = as.numeric(HarvLimX),
                            cutAreas =cutArX,compHarv=compHarvX,
                            ageHarvPrior = ageHarvPriorX,
-                           oldLayer = 1,
+                           oldLayer = 1,thinFact=thinFact,
                      startSimYear=reStartYear)
     }
   }else{
