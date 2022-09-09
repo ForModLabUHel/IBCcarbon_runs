@@ -1,6 +1,6 @@
 library(minpack.lm)
 
-factRotLength = -10
+factRotLength = -7 ###numbers of years to reduce rotation length
 factFert = -20 + factRotLength
 sampleID = 3 ###12 45    ####for region 13 take 3 and 6; region 12 sampleID c(23,440); region 11 sampleID c(23,150)
 toMem <- ls()
