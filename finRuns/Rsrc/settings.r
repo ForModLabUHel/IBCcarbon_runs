@@ -56,8 +56,8 @@ if(!exists("fertThin")) fertThin=3 ###flag that indicates to which TapioType of 
 if(!exists("nYearsFert")) nYearsFert=20 ###number of years for which the fertilization has effect
 
 ###reduce krein parameter in order to increase mortality
-pCrobasX <- pCROB
-pCrobasX[17,1:3] <- pCROB[17,1:3]*0.7
+if(!exists("pCrobasX")) pCrobasX <- pCROB
+pCrobasX[17,1:3] <- pCROB[17,1:3]
 
 varOuts <- c("NEP","GPPtrees", "npp", "grossGrowth", 
              "soilC", "V", "age", "WroundWood","VroundWood",
