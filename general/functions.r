@@ -366,7 +366,7 @@ runModel <- function(sampleID, outType="dTabs",
     if(harvScen=="MitigationNoAdH"){
       compHarvX=0.
     }
-    thinFact = 0.2
+    thinFact = 0.2 ##thinning factor used in the additional harvests to compensate
     HarvLimX[,2]=0.
     initPrebas$energyCut <- rep(0,length(initPrebas$energyCut))
 ###set parameters to increase rotation length of 25% (start)
@@ -389,7 +389,7 @@ runModel <- function(sampleID, outType="dTabs",
     if(harvScen=="protectNoAdH"){
       compHarvX=0.
     }
-    thinFact = 0.2
+    thinFact = 0.2 ##thinning factor used in the additional harvests to compensate
     ####no energy cuts
     HarvLimX[,2]=0.
     initPrebas$energyCut <- rep(0,length(initPrebas$energyCut))
