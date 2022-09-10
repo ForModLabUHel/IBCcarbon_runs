@@ -1,7 +1,10 @@
+library(Rprebasso)
 library(minpack.lm)
 
 factRotLength = 0.25
 sampleID = 3 ###12 45    ####for region 13 take 3 and 6; region 12 sampleID c(23,440); region 11 sampleID c(23,150)
+pathX <- "input/maakunta/pClCut_mitigation/"
+
 if(!exists("regions")) regions <- 1:19
 toMem <- ls()
 
@@ -20,8 +23,6 @@ for(r_no in regions){
   
   devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/sampleRun.r")
   out <- sampleX$region
-  pathX <- "input/maakunta/pClCut_mitigation/"
-  library(Rprebasso)
   
   # setwd("C:/Users/checcomi/Documents/research/IBC-carbon/testRun/")
   # load("testOut.rdata")
