@@ -1690,7 +1690,7 @@ calNewDclcut <- function(out,
   sitesB2 <- which(siteType<=2 & domSp==3)
   sitesB3 <- which(siteType>=3 & domSp==3)
   
-  # pdf(paste0(pathX,"ClCutplots_maak",r_no,".pdf"))
+  pdf(paste0(pathX,"ClCutplots_maak",r_no,".pdf"))
   for(j in 1:7){
     sites <- get(spSite[j])
     spX <- spXs[j]
@@ -1762,7 +1762,7 @@ calNewDclcut <- function(out,
     
     print(j)
   }
-  # dev.off()
+  dev.off()
   if(fact<2 & fact>0.){
     newClCut_pine[,c(2,4)] <- ClCut_pine[,c(2,4)]*(1+fact)
     newClCut_spruce[,c(2,4)] <- ClCut_spruce[,c(2,4)]*(1+fact)
