@@ -1661,8 +1661,10 @@ pMortSpecies <- function(modOut,minX=0.1,maxX=0.9,stepX=0.1,rangeYear=5){
 
 
 #### function to calculate the new parameters of the ClearCuts
-#### increasing the rotation length
+#### increasing or decreasing the rotation length
 #### out=multi prebas run output
+### fact is the factor used to increase the rotation (percentage)
+########or to decrease (# negative number of years)  
 calNewDclcut <- function(out,
                          ClCut_pine,
                          ClCut_spruce,
@@ -1688,7 +1690,7 @@ calNewDclcut <- function(out,
   sitesB2 <- which(siteType<=2 & domSp==3)
   sitesB3 <- which(siteType>=3 & domSp==3)
   
-  pdf(paste0(pathX,"ClCutplots_maak",r_no,".pdf"))
+  # pdf(paste0(pathX,"ClCutplots_maak",r_no,".pdf"))
   for(j in 1:7){
     sites <- get(spSite[j])
     spX <- spXs[j]
@@ -1700,54 +1702,67 @@ calNewDclcut <- function(out,
     
     dataX <- dataX[age>0. & d>0]
     
-    fitMod = nlsLM(d ~ a*(1-exp(b*age))^c,
-                   start = list(a = 60,b=-0.07,c=1.185),
-                   data = dataX)
     
-    modD <- data.table(age=seq(0,300,0.5))    
-    modD$d=predict(fitMod, list(age = modD$age))
-    
-    px <- coef(fitMod)
-    a=px[1];b=px[2];c=px[3]
-    # 
-    dd=dClcut
-    aa= log(1-(dd/a)^(1/c))/b
-    if(any(is.na(aa))) aa[is.na(aa)] <- aClcut[is.na(aa)]
-    predict(fitMod, list(age = aa))
-    
+    ###update the age of clearcut according to the factor (could be percentage(if increasing) or # years(if decreasing))
     if(fact<2 & fact>0.){
-      age2 <- (1+fact) * aa
+      newAge <- (1+fact) * aClcut
     }else{
-      age2 <- aa + fact 
+      newAge <- aClcut + fact 
     } 
-    d2 <- predict(fitMod, list(age = age2))
-    d2
+
     
+    if(nrow(dataX) > 10){ ####check if there are enough data to fit the model
+    ###fit age vs D model
+      fitMod = nlsLM(d ~ a*(1-exp(b*age))^c,
+                     start = list(a = 60,b=-0.07,c=1.185),
+                     data = dataX)
+
+      ###generate D data using the model      
+      modD <- data.table(age=seq(0,300,0.5))    
+      modD$d=predict(fitMod, list(age = modD$age))
+      
+      px <- coef(fitMod)
+      a=px[1];b=px[2];c=px[3]
+      # 
+      dd=dClcut
+
+      ###using the fitted model and inverting it
+      ###calculate the age at which 
+      ###the dClcut dbh correspond
+      aa= log(1-(dd/a)^(1/c))/b
+      
+      d2 <- predict(fitMod, list(age = aa))
+      if(any(is.na(d2))){ ####if there are NAs use the ratio between the age new and aClcut to calculate the new dbh for clearcut
+        d2[is.na(aa)] <- newAge[is.na(aa)]/aClcut[is.na(aa)]*dClcut[is.na(aa)]
+      }
+    }else{
+      ####if there are not data to fit the age vs dbh model increase or decrease DBH according to the factor
+      if(fact<2 & fact>0.){
+        d2 <- dClcut*(1+(fact*0.5))
+      }else{
+        d2 <- dClcut*0.9
+      } 
+    }
+    # predict(fitMod, list(age = aa))
+    # 
+###create Plots for testing     
     dataX[,plot(age,d,pch='.',ylim=c(0,45),xlim=c(0,300))]
     lines(modD$age,modD$d,col=4)
-    points(aa,dd,col=3,pch=c(1,20))
-    points(age2,d2,col=2,pch=c(1,20))
-    abline(v=aClcut,col=3,lty=1:2)
-    abline(v=aClcut*1.25,col=2,lty=1:2)
+    points(aClcut,dClcut,col=3,pch=c(1,20))
+    points(newAge,d2,col=2,pch=c(1,20))
     legend("bottomright",cex=0.8,
-           pch=c(1,1,1,20,1,NA),
-           legend=c("standard","+25%",
-                    "ETs<1000","ETS>1000",
-                    "D","age"),
-           col= c(3,2,1,1,1,1),
-           lty=c(NA,NA,NA,NA,NA,1)
+           pch=c(20,20,NA),
+           legend=c("tapio","new","pch is for siteTypes"),
+           col= c(3,2,NA)
     )
-    legend("topleft",cex=0.5,
-           c(paste0("ETSmean = ",ETSmean))
-    )
-    
+
     if(tabX[j]=="ClCut_pine") newClCut_pine[indX[j],c(1,3)] <- d2
     if(tabX[j]=="ClCut_spruce") newClCut_spruce[indX[j],c(1,3)] <- d2
     if(tabX[j]=="ClCut_birch") newClCut_birch[indX[j],c(1,3)] <- d2
     
     print(j)
   }
-  dev.off()
+  # dev.off()
   if(fact<2 & fact>0.){
     newClCut_pine[,c(2,4)] <- ClCut_pine[,c(2,4)]*(1+fact)
     newClCut_spruce[,c(2,4)] <- ClCut_spruce[,c(2,4)]*(1+fact)
