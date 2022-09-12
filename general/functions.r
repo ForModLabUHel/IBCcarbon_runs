@@ -63,8 +63,8 @@ runModel <- function(sampleID, outType="dTabs",
     setkey(xDat,maakuntaID)
     maakX <- ops[[sampleID]]$maakuntaID[which(ops[[sampleID]]$maakuntaID %in% xDat$maakuntaID)]
     posX <- which(ops[[sampleID]]$maakuntaID %in% xDat$maakuntaID)
-    ops[[sampleID]][maakuntaID %in% maakX]$N <- xDat[maakuntaID %in% maakX]$N
-    ops[[sampleID]][maakuntaID %in% maakX]$area <- xDat[maakuntaID %in% maakX]$area
+    ops[[sampleID]][which(maakuntaID %in% maakX)]$N <- xDat[which(maakuntaID %in% maakX)]$N
+    ops[[sampleID]][which(maakuntaID %in% maakX)]$area <- xDat[which(maakuntaID %in% maakX)]$area
     
     selX <- xDat[!maakuntaID %in% maakX &
                    oldMaakID %in% maakX]
