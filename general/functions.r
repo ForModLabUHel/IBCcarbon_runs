@@ -64,11 +64,10 @@ runModel <- function(sampleID, outType="dTabs",
     # setkey(xDat,maakuntaID)
     posX <- which(ops[[sampleID]]$maakuntaID %in% xDat$maakuntaID)
     maakX <- ops[[sampleID]][posX]$maakuntaID
-    
-    d1 <- merge(ops[[sampleID]],xDat,by="maakuntaID",all.x=T)
-    ops[[sampleID]][posX]$area <- d1[posX]$area.y
-    ops[[sampleID]][posX]$N <- d1[posX]$N.y
-    rm(d1);gc()    
+    myXdat <- semi_join(xDat[maakuntaID %in% maakX],ops[[sampleID]],by="maakuntaID")
+    for(ijf in 1:nrow(myXdat)){
+      ops[[sampleID]][maakuntaID ==myXdat$maakuntaID[ijf]]$area <- myXdat$area[ijf]
+    }
     
     selX <- xDat[!maakuntaID %in% maakX &
                    oldMaakID %in% maakX]
