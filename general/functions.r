@@ -67,6 +67,7 @@ runModel <- function(sampleID, outType="dTabs",
     myXdat <- semi_join(xDat[maakuntaID %in% maakX],ops[[sampleID]],by="maakuntaID")
     for(ijf in 1:nrow(myXdat)){
       ops[[sampleID]][maakuntaID ==myXdat$maakuntaID[ijf]]$area <- myXdat$area[ijf]
+      ops[[sampleID]][maakuntaID ==myXdat$maakuntaID[ijf]]$N <- myXdat$N[ijf]
     }
     
     selX <- xDat[!maakuntaID %in% maakX &
