@@ -59,12 +59,16 @@ runModel <- function(sampleID, outType="dTabs",
     }
     setnames(xDat,"nPix","N")
     xDat[,area:=N*16^2/10000]
-    setkey(ops[[sampleID]],maakuntaID)
-    setkey(xDat,maakuntaID)
-    maakX <- ops[[sampleID]]$maakuntaID[which(ops[[sampleID]]$maakuntaID %in% xDat$maakuntaID)]
+    
+    # setkey(ops[[sampleID]],maakuntaID)
+    # setkey(xDat,maakuntaID)
     posX <- which(ops[[sampleID]]$maakuntaID %in% xDat$maakuntaID)
-    ops[[sampleID]][which(maakuntaID %in% maakX)]$N <- xDat[which(maakuntaID %in% maakX)]$N
-    ops[[sampleID]][which(maakuntaID %in% maakX)]$area <- xDat[which(maakuntaID %in% maakX)]$area
+    maakX <- ops[[sampleID]][posX]
+    
+    d1 <- merge(ops[[sampleID]],xDat,by="maakuntaID",all.x=T)
+    ops[[sampleID]][posX]$area <- d1[posX]$area.y
+    ops[[sampleID]][posX]$N <- d1[posX]$N.y
+    rm(d1);gc()    
     
     selX <- xDat[!maakuntaID %in% maakX &
                    oldMaakID %in% maakX]
