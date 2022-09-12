@@ -63,7 +63,7 @@ runModel <- function(sampleID, outType="dTabs",
     # setkey(ops[[sampleID]],maakuntaID)
     # setkey(xDat,maakuntaID)
     posX <- which(ops[[sampleID]]$maakuntaID %in% xDat$maakuntaID)
-    maakX <- ops[[sampleID]][posX]
+    maakX <- ops[[sampleID]][posX]$maakuntaID
     
     d1 <- merge(ops[[sampleID]],xDat,by="maakuntaID",all.x=T)
     ops[[sampleID]][posX]$area <- d1[posX]$area.y
