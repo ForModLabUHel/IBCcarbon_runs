@@ -901,8 +901,8 @@ create_prebas_input.f = function(r_no, clim, data.sample, nYears,
     ###reineke for managed forests
     ### reineke + empirical mod for conservation areas
     if(mortMod==13){
-      iniPrebas$mortMod = rep(1,nrow(data.sample))
-      iniPrebas$mortMod[data.sample$cons==1] <- 3 
+      initPrebas$mortMod = rep(1,nrow(data.sample))
+      initPrebas$mortMod[data.sample$cons==1] <- 3 
     }
     if(!is.null(outModReStart$multiOut)){
       initPrebas$multiOut <- outModReStart$multiOut
