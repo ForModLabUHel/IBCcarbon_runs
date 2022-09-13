@@ -25,7 +25,7 @@ runModel <- function(sampleID, outType="dTabs",
   
   # print(date())
   print(paste("start sample ID",sampleID))
-  
+  mortModFlag <- mortMod  
   ###flag for soil initialization
   if(is.null(initSoilCreStart)){
     initilizeSoil=T
@@ -195,8 +195,9 @@ runModel <- function(sampleID, outType="dTabs",
   ##### mortMod=1 (reineke) for managed forests
   ##### mortMod=3 (reineke + empirical model) for unmanaged forests
   if(mortMod==13){
-    mortMod <- rep(1,dim(initPrebas$multiOut)[1])
-    mortMod[initPrebas$ClCut==0] <- 3
+    initPrebas$mortMod <- rep(1,dim(initPrebas$multiOut)[1])
+    initPrebas$mortMod[initPrebas$ClCut==0] <- 3
+    mortModFlag=1
   }
   
   
@@ -521,7 +522,7 @@ runModel <- function(sampleID, outType="dTabs",
     return("deadWood volume at steady state saved")
   }else{
     load(paste0("initDeadWVss/reg",
-                r_no,"_deadWV_mortMod",mortMod,".rdata"))
+                r_no,"_deadWV_mortMod",mortModFlag,".rdata"))
     region$multiOut[manFor,,8,1:3,1] <- region$multiOut[manFor,,8,1:3,1] + 
       aperm(replicate(length(manFor),(manDeadW$ssDeadW[1:nYears,])),c(3,1:2))
     region$multiOut[unmanFor,,8,1:3,1] <- region$multiOut[unmanFor,,8,1:3,1] + 
