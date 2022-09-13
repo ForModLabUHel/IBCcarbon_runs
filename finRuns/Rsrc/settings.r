@@ -12,10 +12,10 @@ if(CSCrun){
   .libPaths(c("/projappl/project_2000994/project_rpackages", .libPaths()))
   libpath <- .libPaths()[1]
 }
-library(data.table)
-library(plyr)
-library(dplyr)
-library(abind)
+require(data.table)
+require(plyr)
+require(dplyr)
+require(abind)
 require(sm)
 
 ###choose PREBAS version
