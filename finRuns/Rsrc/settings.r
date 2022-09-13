@@ -20,6 +20,13 @@ if(CSCrun){
 }
 ###choose PREBAS version
 vPREBAS <- "master"   #### choose PREBAS version to run the model  "master" "v0.2.x"
+install.packages("sm")
+install.packages("dplyr")
+install.packages("plyr")
+install.packages("data.table")
+install.packages("Matrix")
+install.packages("zoo")
+install.packages("abind")
 devtools::install_github("ForModLabUHel/Rprebasso", ref=vPREBAS)
 
 library(Rprebasso)
