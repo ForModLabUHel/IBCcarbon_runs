@@ -2,7 +2,6 @@ CSCrun=T
 
 library(raster)
 library(rgdal)
-library(devtools)
 library(parallel)
 library(ggplot2)
 library(readxl)
@@ -12,6 +11,7 @@ if(CSCrun){
   .libPaths(c("/projappl/project_2000994/project_rpackages", .libPaths()))
   libpath <- .libPaths()[1]
 }
+require(devtools)
 require(data.table)
 require(plyr)
 require(dplyr)
