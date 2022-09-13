@@ -8,7 +8,7 @@ library(readxl)
 
 ###load packages in CSC project folder
 # if(CSCrun){
-if(TRUE){
+if(CSCrun){
     .libPaths(c("/projappl/project_2000994/project_rpackages", .libPaths()))
   libpath <- .libPaths()[1]
 }
