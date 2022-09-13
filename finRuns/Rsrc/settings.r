@@ -11,6 +11,7 @@ if(CSCrun){
   .libPaths(c("/projappl/project_2000994/project_rpackages", .libPaths()))
   libpath <- .libPaths()[1]
 }
+install.packages("devtools")
 require(devtools)
 require(data.table)
 require(plyr)
