@@ -2,15 +2,15 @@ CSCrun=T
 
 library(raster)
 library(rgdal)
-# library(data.table)
+library(data.table)
 library(devtools)
-# library(plyr)
-# library(dplyr)
+library(plyr)
+library(dplyr)
 # library(reshape2)
 library(parallel)
 library(ggplot2)
-# library(abind)
-# require(sm)
+library(abind)
+require(sm)
 library(readxl)
 
 ###load packages in CSC project folder
@@ -18,14 +18,6 @@ if(CSCrun){
   .libPaths(c("/projappl/project_2000994/project_rpackages", .libPaths()))
   libpath <- .libPaths()[1]
 }
-# install.packages("sm")
-# install.packages("dplyr")
-# install.packages("plyr")
-# install.packages("data.table")
-# install.packages("Matrix")
-# install.packages("zoo")
-# install.packages("abind")
-
 ###choose PREBAS version
 vPREBAS <- "master"   #### choose PREBAS version to run the model  "master" "v0.2.x"
 devtools::install_github("ForModLabUHel/Rprebasso", ref=vPREBAS)
