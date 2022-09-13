@@ -197,7 +197,7 @@ runModel <- function(sampleID, outType="dTabs",
   if(mortMod==13){
     initPrebas$mortMod <- rep(1,dim(initPrebas$multiOut)[1])
     initPrebas$mortMod[initPrebas$ClCut==0] <- 3
-    mortModFlag=1
+    mortModFlag=3
   }
   
   
