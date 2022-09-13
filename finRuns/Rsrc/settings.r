@@ -2,15 +2,15 @@ CSCrun=T
 
 library(raster)
 library(rgdal)
-library(data.table)
+# library(data.table)
 library(devtools)
-library(plyr)
-library(dplyr)
+# library(plyr)
+# library(dplyr)
 # library(reshape2)
 library(parallel)
 library(ggplot2)
-library(abind)
-require(sm)
+# library(abind)
+# require(sm)
 library(readxl)
 
 ###load packages in CSC project folder
