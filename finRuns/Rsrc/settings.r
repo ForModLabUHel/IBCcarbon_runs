@@ -20,7 +20,7 @@ require(sm)
 
 ###choose PREBAS version
 vPREBAS <- "master"   #### choose PREBAS version to run the model  "master" "v0.2.x"
-devtools::install_github("ForModLabUHel/Rprebasso", ref=vPREBAS)
+install_github("ForModLabUHel/Rprebasso", ref=vPREBAS)
 
 library(Rprebasso)
 library(DescTools)

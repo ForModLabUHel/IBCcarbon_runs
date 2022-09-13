@@ -1,3 +1,9 @@
+###load packages in CSC project folder
+if(CSCrun){
+  .libPaths(c("/projappl/project_2000994/project_rpackages", .libPaths()))
+  libpath <- .libPaths()[1]
+}
+require(devtools)
 if(!exists("minDharvX")) minDharvX <- 999
 if(!exists("landClassX")) landClassX <- 1
 if(!exists("mortMod")) mortMod <- 3
@@ -16,7 +22,7 @@ toMem <- ls()
 ####run Base scenario & intensity
 harvScen="Base"
 harvInten = "Base"
-devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
+source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
 source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
 nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
 set.seed(1)
@@ -178,7 +184,7 @@ toMem <- c(toMem,"datAllBase")
 rm(list=setdiff(ls(), c(toMem,"toMem"))); gc()
 
 #Run protect scenarios
-devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
+source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
 source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
 # scens <- c("protect","protectTapio")  #protectNoAdH")
 datAllScen <- data.table()
@@ -191,7 +197,7 @@ for(i in 1:4){
   
 # for(harvInten in harvIntensities){
   # for(harvScen in scens){
-    devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
+    source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
     source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
     nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
     set.seed(1)
@@ -357,7 +363,7 @@ datAllScen <- data.table()
 # toMem <- ls()
 for(harvInten in c("Low","MaxSust")){
   for(harvScen in scens){
-    devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
+    source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
     source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
     nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
     set.seed(1)
@@ -520,7 +526,7 @@ scens <- c("adapt",
 # toMem <- ls()
 for(harvInten in harvIntensities){
   for(harvScen in scens){
-    devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
+    source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
     source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
     nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
     set.seed(1)
@@ -686,7 +692,7 @@ datAllScen <- data.table()
 # toMem <- ls()
 for(harvInten in "Base"){
   for(harvScen in scens){
-    devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
+    source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
     source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
     nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
     set.seed(1)
