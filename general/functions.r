@@ -191,6 +191,15 @@ runModel <- function(sampleID, outType="dTabs",
   opsna <- which(is.na(initPrebas$multiInitVar))
   initPrebas$multiInitVar[opsna] <- 0.
   
+  ##### if the mortality model flag is 13 uses 
+  ##### mortMod=1 (reineke) for managed forests
+  ##### mortMod=3 (reineke + empirical model) for unmanaged forests
+  if(mortMod==13){
+    mortMod <- rep(1,nSites)
+    mortMod[initPrebas$ClCut==0] <- 3
+  }
+  
+  
   ### for adapt and protect scenario Replanting schemes 
   ### do not replant pine in sitetypes 1 and 2
   ### do not replant spruce in sitetypes higher than 3
