@@ -195,7 +195,7 @@ runModel <- function(sampleID, outType="dTabs",
   ##### mortMod=1 (reineke) for managed forests
   ##### mortMod=3 (reineke + empirical model) for unmanaged forests
   if(mortMod==13){
-    mortMod <- rep(1,initPrebas$nSites)
+    mortMod <- rep(1,dim(initPrebas$multiOut)[1])
     mortMod[initPrebas$ClCut==0] <- 3
   }
   
