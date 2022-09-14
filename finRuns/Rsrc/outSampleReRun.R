@@ -27,29 +27,30 @@ print(harScenX)
 print(harvIntenX)
 
 ####run Base scenario & intensity
-harvScen="Base"
-harvInten = "Base"
-devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
-source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
-nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
-set.seed(1)
-ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
-# toMem <- ls()
-modRun <- runModel(sampleID,outType="testRun",forceSaveInitSoil=T,
-                   harvScen=harvScen,harvInten=harvInten,compHarvX = compHarvX,
-                   cons10run=cons10run,landClassUnman=landClassUnman)
-
-
-reStartMod <- list()
-reStartMod$siteInfo <- modRun$region$siteInfo
-reStartMod$multiOut <- modRun$region$multiOut
-reStartMod$initClearcut <- modRun$region$initClearcut
-reStartSoil = modRun$region$soilC
-toMem <- c(toMem,"reStartSoil","reStartMod")
-region <- modRun$region
-rm(modRun); gc()
-
 if(harScenX =="Base" & harvIntenX == "Base"){
+  harvScen="Base"
+  harvInten = "Base"
+  devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
+  source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
+  nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
+  set.seed(1)
+  ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
+  # toMem <- ls()
+  modRun <- runModel(sampleID,outType="testRun",forceSaveInitSoil=T,
+                     harvScen=harvScen,harvInten=harvInten,compHarvX = compHarvX,
+                     cons10run=cons10run,landClassUnman=landClassUnman)
+  
+  
+  reStartMod <- list()
+  reStartMod$siteInfo <- modRun$region$siteInfo
+  reStartMod$multiOut <- modRun$region$multiOut
+  reStartMod$initClearcut <- modRun$region$initClearcut
+  reStartSoil = modRun$region$soilC
+  save(reStartMod,reStartSoil,file=paste("restartRun_",r_no,".rdata"))
+  toMem <- c(toMem,"reStartSoil","reStartMod")
+  region <- modRun$region
+  rm(modRun); gc()
+
   datAll <- data.table()
   segID <- region$siteInfo[,1]
   for(i in 1:length(varSel)){
@@ -202,6 +203,8 @@ if(harScenX =="Base" & harvIntenX == "Base"){
     datAllScen = datAllBase
   }
   save(datAllScen,areas,datAllScenProtect,areasProtect, file=fileName)
+}else{
+  load(file=paste("restartRun_",r_no,".rdata"))
 }
 
 
