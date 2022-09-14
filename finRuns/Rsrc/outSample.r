@@ -850,7 +850,8 @@ datAllScen <- rbind(datAllScen1,datAllScen)
 
 # if(minDharvX>100) compHarvX="NO"
 # if(minDharvX<100) addHarv=compHarvX
-save(datAllScen,areas,datAllScenProtect,areasProtect, file=fileName)
+allRunsCompleted=T
+save(datAllScen,areas,allRunsCompleted,datAllScenProtect,areasProtect, file=fileName)
 
 
 Sys.chmod(list.dirs("initSoilC"), "0777",use_umask=FALSE)

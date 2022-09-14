@@ -190,10 +190,16 @@ if(harScenX =="Base" & harvIntenX == "Base"){
   print(paste0("harvest intensity ", harvInten))
   
   toMem <- c(toMem,"datAllBase")
-  rm(list=setdiff(ls(), c(toMem,"toMem"))); gc()
+  # rm(list=setdiff(ls(), c(toMem,"toMem"))); gc()
   
-  load(fileName)
-  datAllScen[harScen==harScenX & harvInten==harvIntenX] = datAllBase
+  if(file.exists(fileName)) load(fileName)
+  if(!exists("datAllScenProtect")) datAllScenProtect <- NULL
+  if(!exists("areasProtect")) areasProtect <- NULL
+  if(!exists("datAllScen")){
+    datAllScen[harScen==harScenX & harvInten==harvIntenX] = datAllBase
+  }else{
+    datAllScen = datAllBase
+  }
   save(datAllScen,areas,datAllScenProtect,areasProtect, file=fileName)
 }
 
