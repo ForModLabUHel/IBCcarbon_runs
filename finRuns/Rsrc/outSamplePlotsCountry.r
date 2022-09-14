@@ -20,7 +20,7 @@ meanRegion <- data.table()
 # dataCountry <- data.table()
 # dataProtectCountry <- data.table()
 areaAllRegions <- NULL
-for(r_no in c(1:5,7:19)){
+for(r_no in 1:19){
 
   devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
   source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
