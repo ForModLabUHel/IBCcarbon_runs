@@ -103,11 +103,11 @@ for(varX in vars){
 print(ggplot(dataPlot)+
         # geom_ribbon(aes(x = year + 2016, ymin = q0.25, ymax = q0.75,fill= harScen), alpha = 0.3)+
         # geom_line(aes(x = year+ 2016, y = CbalFluxes, color = harScen,linetype=harvInten)) + 
-        geom_line(aes(x = year+ 2016, y = CbalState, color = harScen,linetype=harvInten)) +
+        geom_line(aes(x = year+ 2015, y = CbalState, color = harScen,linetype=harvInten)) +
         xlab("year") + ylab("C balance (State)"))
 print(ggplot(dataPlot)+
         # geom_ribbon(aes(x = year + 2016, ymin = q0.25, ymax = q0.75,fill= harScen), alpha = 0.3)+
-        geom_line(aes(x = year+ 2016, y = CbalFluxes, color = harScen,linetype=harvInten)) +
+        geom_line(aes(x = year+ 2015, y = CbalFluxes, color = harScen,linetype=harvInten)) +
         # geom_line(aes(x = year+ 2016, y = CbalState, color = harScen,linetype=harvInten)) +
         xlab("year") + ylab("C balance (Fluxes)"))
 dev.off()
@@ -128,7 +128,7 @@ for(varX in vars){
       # i=i+1
     print(ggplot(meanCountry[harScen==scenX])+
             # geom_ribbon(aes(x = year + 2016, ymin = q0.25, ymax = q0.75,fill= harScen), alpha = 0.3)+
-      geom_line(aes(x = year+ 2016, y = get(varX), color = harvInten)) + 
+      geom_line(aes(x = year+ 2015, y = get(varX), color = harvInten)) + 
       xlab("year") + ylab(varX)+ ggtitle(scenX))
   }
 }
@@ -174,7 +174,7 @@ for(varX in vars){
     # i=i+1
     print(ggplot(datAll[harScen==scenX])+
             # geom_ribbon(aes(x = year + 2016, ymin = q0.25, ymax = q0.75,fill= harScen), alpha = 0.3)+
-            geom_line(aes(x = year+ 2016, y = get(varX), color = cons,linetype=harvInten)) +
+            geom_line(aes(x = year+ 2015, y = get(varX), color = cons,linetype=harvInten)) +
             xlab("year") + ylab(varX)+ ggtitle(scenX))
   }
 }
