@@ -195,6 +195,7 @@ if(harScenX =="Base" & harvIntenX == "Base"){
   if(file.exists(fileName)) load(fileName)
   if(!exists("datAllScenProtect")) datAllScenProtect <- NULL
   if(!exists("areasProtect")) areasProtect <- NULL
+  if(!exists("areas")) areas <- data.table(segID=region$siteInfo[,1],area=region$areas)
   if(exists("datAllScen")){
     datAllScen[harScen==harScenX & harvInten==harvIntenX] = datAllBase
   }else{
