@@ -129,6 +129,9 @@ meanCountry <-
 write.csv(meanCountry,file=paste0(outDyr,"/plots/MeanCountry_ManUnman.csv"))
 write.csv(meanRegion,file=paste0(outDyr,"/plots/MeanRegion_ManUnman.csv"))
 
+save(meanCountry,meanRegion,
+     file = paste0(outDyr,"/country",
+                   run_settings,"_ManUnman.rdata"))
 
 # 
 # present <- 1:5
