@@ -1,7 +1,7 @@
 
 #####process conservation areas
 
-library(ggpubr)
+# library(ggpubr)
 # library(dplyr)
 # library(ggplot2)
 # library(data.table)
