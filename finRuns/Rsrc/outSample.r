@@ -1,9 +1,3 @@
-###load packages in CSC project folder
-if(CSCrun){
-  .libPaths(c("/projappl/project_2000994/project_rpackages", .libPaths()))
-  libpath <- .libPaths()[1]
-}
-require(devtools)
 if(!exists("minDharvX")) minDharvX <- 999
 if(!exists("landClassX")) landClassX <- 1
 if(!exists("mortMod")) mortMod <- 3
