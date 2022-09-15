@@ -6,6 +6,7 @@ library(parallel)
 library(ggplot2)
 library(readxl)
 library(ggpubr)
+library(httr)
 
 ###load packages in CSC project folder
 # if(CSCrun){
