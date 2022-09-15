@@ -19,6 +19,7 @@ meanRegion <- data.table()
 # areasProtectCountry <- data.table()
 # dataCountry <- data.table()
 # dataProtectCountry <- data.table()
+strangeSites <- NULL
 areaAllRegions <- NULL
 for(r_no in 1:19){
 
@@ -28,6 +29,26 @@ for(r_no in 1:19){
   areaRegion <- sum(data.all$area,na.rm=T)
   areaAllRegions <- c(areaAllRegions,areaRegion)
   load(paste0(outDyr,"/r_no",r_no,run_settings,".rdata"))
+  
+  ###filter data
+  if(r_no==1){
+    strangeSites <- unique(datAllScenProtect$segID[which(datAllScenProtect$VroundWood==Inf)])
+    if(length(strangeSites)>0){
+      datAllScen <- datAllScen[!segID %in% strangeSites]
+      areas <- areas[!segID %in% strangeSites]
+      datAllScenProtect <- datAllScenProtect[!segID %in% strangeSites]
+      areasProtect <- areasProtect[!segID %in% strangeSites]
+    }
+  }
+  if(r_no==6){
+    strangeSites <- 1295343
+    # datAllScen <- datAllScen[!segID %in% strangeSites]
+    # areas <- areas[!segID %in% strangeSites]
+    datAllScenProtect <- datAllScenProtect[!segID %in% strangeSites]
+    areasProtect <- areasProtect[!segID %in% strangeSites]
+  } 
+  ###end filter data
+  
   
   datAllScenNorm <- datAllScen
   datAllScenNormProtect <- datAllScenProtect

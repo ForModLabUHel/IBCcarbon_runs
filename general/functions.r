@@ -195,8 +195,8 @@ runModel <- function(sampleID, outType="dTabs",
   ##### mortMod=1 (reineke) for managed forests
   ##### mortMod=3 (reineke + empirical model) for unmanaged forests
   if(mortMod==13){
-    initPrebas$mortMod <- rep(1,dim(initPrebas$multiOut)[1])
-    initPrebas$mortMod[initPrebas$ClCut==0] <- 3
+    initPrebas$mortMod <- c(1,3)#rep(1,dim(initPrebas$multiOut)[1])
+    # initPrebas$mortMod[initPrebas$ClCut==0] <- 3
     mortModFlag=3
   }
   
@@ -901,8 +901,8 @@ create_prebas_input.f = function(r_no, clim, data.sample, nYears,
     ###reineke for managed forests
     ### reineke + empirical mod for conservation areas
     if(mortMod==13){
-      initPrebas$mortMod = rep(1,nrow(data.sample))
-      initPrebas$mortMod[data.sample$cons==1] <- 3 
+      initPrebas$mortMod = c(1,3)#rep(1,nrow(data.sample))
+      # initPrebas$mortMod[data.sample$cons==1] <- 3 
     }
     if(!is.null(outModReStart$multiOut)){
       initPrebas$multiOut <- outModReStart$multiOut
