@@ -31,22 +31,61 @@ for(r_no in 1:19){
   load(paste0(outDyr,"/r_no",r_no,run_settings,".rdata"))
   
   ###filter data
-  if(r_no==1){
-    strangeSites <- unique(datAllScenProtect$segID[which(datAllScenProtect$VroundWood==Inf)])
-    if(length(strangeSites)>0){
-      datAllScen <- datAllScen[!segID %in% strangeSites]
-      areas <- areas[!segID %in% strangeSites]
+  if(cons10run==F){
+    if(r_no==1){
+      strangeSites <- unique(datAllScenProtect$segID[which(datAllScenProtect$VroundWood==Inf)])
+      if(length(strangeSites)>0){
+        datAllScen <- datAllScen[!segID %in% strangeSites]
+        areas <- areas[!segID %in% strangeSites]
+        datAllScenProtect <- datAllScenProtect[!segID %in% strangeSites]
+        areasProtect <- areasProtect[!segID %in% strangeSites]
+      }
+    }
+    if(r_no==6){
+      strangeSites <- 1295343
+      # datAllScen <- datAllScen[!segID %in% strangeSites]
+      # areas <- areas[!segID %in% strangeSites]
       datAllScenProtect <- datAllScenProtect[!segID %in% strangeSites]
       areasProtect <- areasProtect[!segID %in% strangeSites]
+    } 
+    if(r_no==7){
+      strangeSites <- unique(datAllScen$segID[which(datAllScen$Rh>1e26)])
+      if(length(strangeSites)>0){
+        datAllScen[segID %in% strangeSites,soilC:=NA]
+        datAllScen[segID %in% strangeSites,Rh:=NA]
+        datAllScen[segID %in% strangeSites,NEP:=NA]
+        # datAllScen[segID %in% strangeSites,npp:=NA]
+      }
+      datAllScen[npp< - 0.5,npp:=NA]
+    }
+    if(r_no==14){
+      strangeSites <- unique(datAllScen$segID[which(datAllScen$VroundWood==Inf)])
+      if(length(strangeSites)>0){
+        datAllScen <- datAllScen[!segID %in% strangeSites]
+        areas <- areas[!segID %in% strangeSites]
+        datAllScenProtect <- datAllScenProtect[!segID %in% strangeSites]
+        areasProtect <- areasProtect[!segID %in% strangeSites]
+      }
+    }
+  }else{
+    if(r_no==7){
+      strangeSites <- unique(datAllScen$segID[which(datAllScen$Rh>1e10)])
+      if(length(strangeSites)>0){
+        datAllScen[segID %in% strangeSites,soilC:=NA]
+        datAllScen[segID %in% strangeSites,Rh:=NA]
+        datAllScen[segID %in% strangeSites,NEP:=NA]
+      }
+      datAllScen[npp< - 0.5,npp:=NA]
+      
+      strangeSites <- unique(datAllScen$segID[which(datAllScen$VroundWood==Inf)])
+      if(length(strangeSites)>0){
+        datAllScen <- datAllScen[!segID %in% strangeSites]
+        areas <- areas[!segID %in% strangeSites]
+        datAllScenProtect <- datAllScenProtect[!segID %in% strangeSites]
+        areasProtect <- areasProtect[!segID %in% strangeSites]
+      }
     }
   }
-  if(r_no==6){
-    strangeSites <- 1295343
-    # datAllScen <- datAllScen[!segID %in% strangeSites]
-    # areas <- areas[!segID %in% strangeSites]
-    datAllScenProtect <- datAllScenProtect[!segID %in% strangeSites]
-    areasProtect <- areasProtect[!segID %in% strangeSites]
-  } 
   ###end filter data
   
   
