@@ -91,6 +91,12 @@ for(r_no in 1:19){
         datAllScenProtect <- datAllScenProtect[!segID %in% strangeSites]
         areasProtect <- areasProtect[!segID %in% strangeSites]
       }
+      
+      ddd <- which(datAllScen$VenergyWood>1e6)
+      datAllScen$VenergyWood[ddd] <- NA
+      ddd <- which(datAllScenProtect$VenergyWood>1e6)
+      datAllScenProtect$VenergyWood[ddd] <- NA
+      
     }
   }
   ###end filter data
