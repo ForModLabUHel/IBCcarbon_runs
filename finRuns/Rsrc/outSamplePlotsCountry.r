@@ -84,6 +84,13 @@ for(r_no in 1:19){
         datAllScenProtect <- datAllScenProtect[!segID %in% strangeSites]
         areasProtect <- areasProtect[!segID %in% strangeSites]
       }
+      strangeSites <- unique(datAllScen$segID[which(datAllScen$V==Inf)])
+      if(length(strangeSites)>0){
+        datAllScen <- datAllScen[!segID %in% strangeSites]
+        areas <- areas[!segID %in% strangeSites]
+        datAllScenProtect <- datAllScenProtect[!segID %in% strangeSites]
+        areasProtect <- areasProtect[!segID %in% strangeSites]
+      }
     }
   }
   ###end filter data
