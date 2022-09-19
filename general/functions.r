@@ -321,7 +321,7 @@ runModel <- function(sampleID, outType="dTabs",
   fThinX <- cbind(fThinX[1:nYears],0.)
   cutArX <- cbind(clcutArX,tendX)
   cutArX <- cbind(cutArX,fThinX)
-  if(harvInten == "Low"){ cutArX <- cutArX * 0.6}
+  if(harvInten == "Low"){ cutArX <- cutArX * 1}
   if(harvInten == "MaxSust"){cutArX <- cutArX * 1.2}
   if(harvScen == "NoHarv"){cutArX <- cutArX * 0.}
   
