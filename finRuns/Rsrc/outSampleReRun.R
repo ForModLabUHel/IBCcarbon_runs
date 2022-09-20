@@ -43,6 +43,7 @@ if(harScenX =="Base" & harvIntenX == "Base"){
   
   reStartMod <- list()
   reStartMod$siteInfo <- modRun$region$siteInfo
+  reStartMod$GVout <- modRun$region$GVout
   reStartMod$multiOut <- modRun$region$multiOut
   reStartMod$initClearcut <- modRun$region$initClearcut
   reStartSoil = modRun$region$soilC

@@ -29,6 +29,7 @@ modRun <- runModel(sampleID,outType="testRun",forceSaveInitSoil=T,
 
 reStartMod <- list()
 reStartMod$siteInfo <- modRun$region$siteInfo
+reStartMod$GVout <- modRun$region$GVout
 reStartMod$multiOut <- modRun$region$multiOut
 reStartMod$initClearcut <- modRun$region$initClearcut
 reStartSoil = modRun$region$soilC
