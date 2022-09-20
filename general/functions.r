@@ -907,6 +907,7 @@ create_prebas_input.f = function(r_no, clim, data.sample, nYears,
     if(!is.null(outModReStart$multiOut)){
       initPrebas$multiOut <- outModReStart$multiOut
       initPrebas$multiOut[,,8,,] = 0
+      initPrebas$GVout <- outModReStart$GVout
     } 
     if(!is.null(outModReStart$siteInfo)) initPrebas$siteInfo <- outModReStart$siteInfo
     if(!is.null(outModReStart$initClearcut)) initPrebas$initClearcut <- outModReStart$initClearcut
