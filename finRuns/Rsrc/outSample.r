@@ -202,7 +202,7 @@ for(i in 1:4){
                         harvScen=harvScen,harvInten=harvInten,
                         cons10run=cons10run,landClassUnman=landClassUnman,
                         outModReStart = reStartMod, initSoilCreStart = reStartSoil,
-                        funX = reStartRegionPrebas,reStartYear = 7)
+                        funPreb = reStartRegionPrebas,reStartYear = 7)
     region <- modRun$region
     rm(modRun); gc()
     datAll <- data.table()
@@ -368,7 +368,7 @@ for(harvInten in c("Low","MaxSust")){
                        harvScen=harvScen,harvInten=harvInten,
                        cons10run=cons10run,landClassUnman=landClassUnman,
                        outModReStart = reStartMod, initSoilCreStart = reStartSoil,
-                       funX = reStartRegionPrebas,reStartYear = 7)
+                       funPreb = reStartRegionPrebas,reStartYear = 7)
     region <- modRun$region
     rm(modRun); gc()
     datAll <- data.table()
@@ -531,7 +531,7 @@ for(harvInten in harvIntensities){
                        harvScen=harvScen,harvInten=harvInten,
                        cons10run=cons10run,landClassUnman=landClassUnman,
                        outModReStart = reStartMod, initSoilCreStart = reStartSoil,
-                       funX = reStartRegionPrebas,reStartYear = 7)
+                       funPreb = reStartRegionPrebas,reStartYear = 7)
     
     region <- modRun$region
     rm(modRun); gc()
@@ -697,7 +697,7 @@ for(harvInten in "Base"){
                        harvScen=harvScen,harvInten=harvInten,
                        cons10run=cons10run,landClassUnman=landClassUnman,
                        outModReStart = reStartMod, initSoilCreStart = reStartSoil,
-                       funX = reStartRegionPrebas,reStartYear = 7)
+                       funPreb = reStartRegionPrebas,reStartYear = 7)
     region <- modRun$region
     rm(modRun); gc()
     datAll <- data.table()
