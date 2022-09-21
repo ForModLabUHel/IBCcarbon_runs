@@ -12,7 +12,7 @@ runModel <- function(sampleID, outType="dTabs",
                      coefCH4 = 0.34,#g m-2 y-1
                      coefN20_1 = 0.23,coefN20_2 = 0.077,#g m-2 y-1
                      landClassUnman=NULL,compHarvX = 0,
-                     funX = regionPrebas,
+                     funPreb = regionPrebas,
                      initSoilCreStart=NULL,
                      outModReStart=NULL,reStartYear=1){
   # outType determines the type of output:
@@ -369,11 +369,11 @@ runModel <- function(sampleID, outType="dTabs",
     initPrebas$thinInt <- rep(thinIntX,initPrebas$nSites)
     ###set parameters to decrease rotation length of 25% (end)
     if(harvScen=="adaptTapio"){
-      region <- funX(initPrebas,compHarv=compHarvX,
+      region <- funPreb(initPrebas,compHarv=compHarvX,
                     fertThin = fertThin,nYearsFert = nYearsFert,
                      startSimYear=reStartYear)
     }else{
-      region <- funX(initPrebas, HarvLim = as.numeric(HarvLimX),
+      region <- funPreb(initPrebas, HarvLim = as.numeric(HarvLimX),
                              cutAreas = cutArX,compHarv=compHarvX,
                              fertThin = fertThin,nYearsFert = nYearsFert,
                      startSimYear=reStartYear)
@@ -393,10 +393,10 @@ runModel <- function(sampleID, outType="dTabs",
     initPrebas$thinInt <- rep(thinIntX,initPrebas$nSites)
 ###set parameters to increase rotation length of 25% (end)
     if(harvScen=="MitigationTapio"){
-      region <- funX(initPrebas,compHarv=compHarvX,
+      region <- funPreb(initPrebas,compHarv=compHarvX,
                      startSimYear=reStartYear,thinFact=thinFact)
     }else{
-      region <- funX(initPrebas, HarvLim = as.numeric(HarvLimX),
+      region <- funPreb(initPrebas, HarvLim = as.numeric(HarvLimX),
                              cutAreas =cutArX,compHarv=compHarvX,
                              ageHarvPrior = ageHarvPriorX,
                      startSimYear=reStartYear,thinFact=thinFact)
@@ -419,11 +419,11 @@ runModel <- function(sampleID, outType="dTabs",
     ###set parameters to increase rotation length of 25% (end)
     
     if(harvScen=="protectTapio"){
-      region <- funX(initPrebas,
+      region <- funPreb(initPrebas,
                            compHarv=compHarvX,oldLayer = 1,
                      startSimYear=reStartYear,thinFact=thinFact)
     }else{
-      region <- funX(initPrebas, HarvLim = as.numeric(HarvLimX),
+      region <- funPreb(initPrebas, HarvLim = as.numeric(HarvLimX),
                            cutAreas =cutArX,compHarv=compHarvX,
                            ageHarvPrior = ageHarvPriorX,
                            oldLayer = 1,thinFact=thinFact,
@@ -431,16 +431,16 @@ runModel <- function(sampleID, outType="dTabs",
     }
   }else{
     if(harvScen=="baseTapio"){
-      region <- funX(initPrebas,compHarv=compHarvX,
+      region <- funPreb(initPrebas,compHarv=compHarvX,
                      startSimYear=reStartYear)
     }else{
       ##Don't pass minDharvX if NA
       if (is.na(minDharvX)) {
-        region <- funX(initPrebas, HarvLim = as.numeric(HarvLimX),
+        region <- funPreb(initPrebas, HarvLim = as.numeric(HarvLimX),
                                cutAreas =cutArX,compHarv=compHarvX,
                        startSimYear=reStartYear)
       } else {
-        region <- funX(initPrebas, HarvLim = as.numeric(HarvLimX),
+        region <- funPreb(initPrebas, HarvLim = as.numeric(HarvLimX),
                                minDharv = minDharvX,cutAreas =cutArX,
                                compHarv=compHarvX,
                        startSimYear=reStartYear)
@@ -468,11 +468,11 @@ runModel <- function(sampleID, outType="dTabs",
     initPrebas$yassoRun <- rep(1,initPrebas$nSites)
     initPrebas$soilC[,1,,,] <- initSoilC
     if (is.na(minDharvX)) {
-      region <- funX(initPrebas, HarvLim = as.numeric(HarvLimX),
+      region <- funPreb(initPrebas, HarvLim = as.numeric(HarvLimX),
                              cutAreas =cutArX,compHarv=compHarvX,
                      startSimYear=reStartYear)
     } else {
-      region <- funX(initPrebas, HarvLim = as.numeric(HarvLimX),
+      region <- funPreb(initPrebas, HarvLim = as.numeric(HarvLimX),
                              minDharv = minDharvX,cutAreas =cutArX,
                              compHarv=compHarvX,
                      startSimYear=reStartYear)
