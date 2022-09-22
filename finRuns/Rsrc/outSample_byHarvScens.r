@@ -176,7 +176,7 @@ if(harvScen=="Base"){
   print(paste0("harvest scenario ", harvScen))
   print(paste0("harvest intensity ", harvInten))
   
-  toMem <- c(toMem,"datAllBase")
+  toMem <- c(toMem,"datAllScen")
   rm(list=setdiff(ls(), c(toMem,"toMem"))); gc()
   ###run Base scenario with other intensities
   scens <- "Base"
