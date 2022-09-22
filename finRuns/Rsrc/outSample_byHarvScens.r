@@ -352,6 +352,7 @@ if(harvScen=="Base"){
 }
 
 if(harvScen=="protect"){
+  harvScenTorun <- harvScen
   load(paste("restartRun_",r_no,".rdata"))
   datAllScen <- data.table()
   harvIntenXs <- c("Base","Low","MaxSust","Base")
