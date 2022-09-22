@@ -180,7 +180,7 @@ if(harvScen=="Base"){
   rm(list=setdiff(ls(), c(toMem,"toMem"))); gc()
   ###run Base scenario with other intensities
   scens <- "Base"
-  datAllScen <- data.table()
+  # datAllScen <- data.table()
   # toMem <- ls()
   for(harvInten in c("Low","MaxSust")){
     for(harvScen in scens){
