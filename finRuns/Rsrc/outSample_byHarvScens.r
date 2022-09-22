@@ -521,7 +521,7 @@ if(harvScen=="protect"){
   areasProtect <- data.table(segID=region$siteInfo[,1],area=region$areas)
   datAllScenProtect <- datAllScen
   print("protect runs completed")
-  save(datAllScenProtect,areasProtect,file=paste0(fileName,"_",harvScen,".rdata"))
+  save(datAllScenProtect,areasProtect,file=paste0(fileName,"_",harvScenTorun,".rdata"))
   
   Sys.chmod(list.dirs("initSoilC"), "0777",use_umask=FALSE)
   f <- list.files("initSoilC", all.files = TRUE, full.names = TRUE, recursive = TRUE)
