@@ -429,7 +429,6 @@ runModel <- function(sampleID, outType="dTabs",
                            oldLayer = 1,thinFact=thinFact,
                      startSimYear=reStartYear)
     }
-    print("I'm here")
   }else{
     if(harvScen=="baseTapio"){
       region <- funPreb(initPrebas,compHarv=compHarvX,
