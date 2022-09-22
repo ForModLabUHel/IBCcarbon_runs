@@ -172,7 +172,7 @@ if(harvScen=="Base"){
   datAll$maakID <- r_no 
   datAll$harScen <- harvScen
   datAll$harvInten <- harvInten
-  datAllBase <- datAll
+  datAllScen <- datAll
   print(paste0("harvest scenario ", harvScen))
   print(paste0("harvest intensity ", harvInten))
   
