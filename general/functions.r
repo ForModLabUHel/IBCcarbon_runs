@@ -351,7 +351,8 @@ runModel <- function(sampleID, outType="dTabs",
     }
   }
   initPrebas$yassoRun <- rep(1,initPrebas$nSites)
-  if(!is.null(initSoilC)) initPrebas$soilC[,1,,,] <- initSoilC
+  nx <- dim(initSoilC)[3]
+  if(!is.null(initSoilC)) initPrebas$soilC[,1,,1:nx,] <- initSoilC
   
   print(paste0("harvest scenario ", harvScen))
   print(paste0("harvest intensity ", harvInten))
