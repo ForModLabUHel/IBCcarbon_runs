@@ -905,14 +905,14 @@ create_prebas_input.f = function(r_no, clim, data.sample, nYears,
       # initPrebas$mortMod[data.sample$cons==1] <- 3 
     }
     if(!is.null(outModReStart$multiOut)){
-      initPrebas$multiOut <- outModReStart$multiOut
+      initPrebas$multiOut[,,,1:3,] <- outModReStart$multiOut
       initPrebas$multiOut[,,8,,] = 0
       initPrebas$GVout <- outModReStart$GVout
     } 
     if(!is.null(outModReStart$siteInfo)) initPrebas$siteInfo <- outModReStart$siteInfo
     if(!is.null(outModReStart$initClearcut)) initPrebas$initClearcut <- outModReStart$initClearcut
   }
-  if(!is.null(initSoilC)) initPrebas$soilC <- initSoilC
+  if(!is.null(initSoilC)) initPrebas$soilC[,,,,1:3] <- initSoilC
   
   return(initPrebas)
 }
