@@ -874,12 +874,12 @@ create_prebas_input.f = function(r_no, clim, data.sample, nYears,
                        value.var="CO2")[, -1])
   }
   siteInfo[, 2]  = match(as.numeric(siteInfo[, 2]), as.numeric(rownames(clim[[1]])))
-  if(harv %in% c("protect","protectNoAdH","protectTapio")){
-    siteInfo[, 8] <- siteInfo[, 8]+1
-    oldLayer <- initVar[,,1]
-    oldLayer[,4] <- 1
-    initVar <- abind(initVar,oldLayer,along=3)
-  }
+  # if(harv %in% c("protect","protectNoAdH","protectTapio")){
+  #   siteInfo[, 8] <- siteInfo[, 8]+1
+  #   oldLayer <- initVar[,,1]
+  #   oldLayer[,4] <- 1
+  #   initVar <- abind(initVar,oldLayer,along=3)
+  # }
   # siteInfo[, 2]  = match(siteInfo[,2], unique(dat$id))
   
   defaultThin=as.numeric(1-data.sample[, cons])
