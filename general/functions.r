@@ -693,6 +693,9 @@ create_prebas_input.f = function(r_no, clim, data.sample, nYears,
   siteInfo[,2] <- as.numeric(data.sample[,id])
   siteInfo[,3] <- data.sample[,fert]
   
+  if(harv %in% c("protect","protectNoAdH","protectTapio")){
+    siteInfo[,8] <- siteInfo[,8] + 1
+  }
   # litterSize <- matrix(0,3,3)
   # litterSize[1,1:2] <- 30
   # litterSize[1,3] <- 10
