@@ -88,6 +88,7 @@ runModel <- function(sampleID, outType="dTabs",
         !cons10run)){
       initSoilC <- abind(initSoilC,initSoilC[posX,,,],along=1)
       initSoilC <- initSoilC[-x0,,,]
+      
       if(!is.null(initSoilCreStart)){
         initSoilCreStart <- abind(initSoilCreStart,initSoilCreStart[posX,,,,],along=1)
         initSoilCreStart <- initSoilCreStart[-x0,,,,]
@@ -95,6 +96,8 @@ runModel <- function(sampleID, outType="dTabs",
       if(!is.null(outModReStart)){
         outModReStart$multiOut <- abind(outModReStart$multiOut,outModReStart$multiOut[posX,,,,],along=1)
         outModReStart$multiOut <- outModReStart$multiOut[-x0,,,,]
+        outModReStart$GVout <- abind(outModReStart$GVout,outModReStart$GVout[posX,,],along=1)
+        outModReStart$GVout <- outModReStart$GVout[-x0,,]
         outModReStart$siteInfo <- abind(outModReStart$siteInfo,outModReStart$siteInfo[posX,],along=1)
         outModReStart$siteInfo <- outModReStart$siteInfo[-x0,]
         outModReStart$siteInfo[,1] <- segIDs
@@ -352,7 +355,7 @@ runModel <- function(sampleID, outType="dTabs",
   }
   initPrebas$yassoRun <- rep(1,initPrebas$nSites)
   nx <- dim(initSoilC)[3]
-  if(!is.null(initSoilC)) initPrebas$soilC[,1,,1:nx,] <- initSoilC
+  if(!is.null(initSoilC)) initPrebas$soilC[,1,,,1:nx] <- initSoilC
   
   print(paste0("harvest scenario ", harvScen))
   print(paste0("harvest intensity ", harvInten))
