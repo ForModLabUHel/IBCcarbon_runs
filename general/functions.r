@@ -693,9 +693,6 @@ create_prebas_input.f = function(r_no, clim, data.sample, nYears,
   siteInfo[,2] <- as.numeric(data.sample[,id])
   siteInfo[,3] <- data.sample[,fert]
   
-  if(harv %in% c("protect","protectNoAdH","protectTapio")){
-    siteInfo[,8] <- siteInfo[,8] + 1
-  }
   # litterSize <- matrix(0,3,3)
   # litterSize[1,1:2] <- 30
   # litterSize[1,3] <- 10
@@ -873,6 +870,9 @@ create_prebas_input.f = function(r_no, clim, data.sample, nYears,
                        value.var="CO2")[, -1])
   }
   siteInfo[, 2]  = match(as.numeric(siteInfo[, 2]), as.numeric(rownames(clim[[1]])))
+  if(harv %in% c("protect","protectNoAdH","protectTapio")){
+    siteInfo[,8] <- 4
+  }
   # siteInfo[, 2]  = match(siteInfo[,2], unique(dat$id))
   
   defaultThin=as.numeric(1-data.sample[, cons])
