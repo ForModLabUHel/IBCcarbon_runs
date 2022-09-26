@@ -120,8 +120,6 @@ runModel <- function(sampleID, outType="dTabs",
     area_tot <- sum(data.all$area) # ha
     sampleX[,area := 16^2/10000] 
     cA <- 1/nrow(sampleX) #area_tot/nrow(sampleX) 
-    print(paste("sampleID",sampleID,"harvestLims ="))
-    print(harvestLimsr[sampleID,])
     harvestLims <- as.numeric(harvestLimsr[sampleID,])
     HarvLimMaak[,1]<-harvestLims[1]*HarvLimMaak[,1]
     HarvLimMaak[,2]<-harvestLims[2]*HarvLimMaak[,2]
