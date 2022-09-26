@@ -13,6 +13,9 @@ library(data.table)
 library(devtools)
 library(MASS)
 library(stringr)
+CSCrun=T
+devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/loadPackages.r")
+
 ststDeadW<-FALSE
 #source("localSettings.r")
 
@@ -22,16 +25,23 @@ if(uncSeg) outType <- "uncSeg"
 #harvinten<- "Base" # "Base", "Low", "MaxSust", "NoHarv" 
   
 ##### From GitHub
-devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
+source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
+#source_url("https://raw.githubusercontent.com/virpi-j/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
+
 HcFactor <- 1
+funXX<-funX
 #source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
-source_url("https://raw.githubusercontent.com/virpi-j/IBCcarbon_runs/master/general/functions.r")
+#source_url("https://raw.githubusercontent.com/virpi-j/IBCcarbon_runs/master/general/functions.r")
 source_url("https://raw.githubusercontent.com/virpi-j/IBCcarbon_runs/master/general/functions_UQ.r")
 
 
 nSitesRun <- nSitesRunr
 print(paste("start region",r_no,"run",outType,"- harvest scenario",harvscen,"-harvest intensity", harvinten,
 "- set size",nSitesRun,"- no of repetitions", nSamplesr))
+
+# Climate model and RCP names
+climMod <- c("CanESM2.","CNRM.","GFDL.","HadGEM2.","MIROC.")
+rcpx <- c("rcp45","rcp85")
 
 # Give new set of outputs ------------------------------------------------
 if(uncSeg){
@@ -53,33 +63,77 @@ parPath <- "/scratch/project_2000994/PREBASruns/metadata/paramUnc/"
 #extrLandclass <- 3
 data.all <- data.all[which(!data.all$landclass%in%extrLandclass),]#!=3 & data.all$landclass!=2),]
 print(paste("Leave landclass(es)",extrLandclass,"out"))
+
+finPeats <- raster("/scratch/project_2000994/MVMIsegments/segment-IDs/pseudopty.img")
+undrPeatID <- 700  ### ID = 700 for luke database; undrained peatland
+load(paste0("input/maakunta/maakunta_",r_no,"_IDsTab.rdata"))
+data.all <- cbind(data.all,data.IDs[match(data.all$segID, data.IDs$maakuntaID),4:5])
+if(file.exists(paste0("uncRuns/peatID_reg",r_no,".rdata"))){
+   load(paste0("uncRuns/peatID_reg",r_no,".rdata"))
+} else {
+  print("Extract peatIDs...")
+  peatIDs <-extract(finPeats, cbind(data.all$x,data.all$y))
+  print("Save peatIDs.")
+  save(peatIDs, file=paste0("uncRuns/peatID_reg",r_no,".rdata"))
+}
+data.all[,peatID:=peatIDs]
+areas_all <- data.table(areatot = sum(data.all$area), 
+                        area_min = sum(data.all$area[data.all$peatID==100]),
+                        area_drpeat = sum(data.all$area[data.all$peatID==400]),
+                        area_undrpeat = sum(data.all$area[data.all$peatID==700]),
+                        area_nonfor = sum(data.all$area[data.all$peatID==0]),
+                        area_min_cons = sum(data.all$area[data.all$peatID==100 & data.all$cons==1]),
+                        area_drpeat_cons = sum(data.all$area[data.all$peatID==400 & data.all$cons==1]),
+                        area_undrpeat_cons = sum(data.all$area[data.all$peatID==700 & data.all$cons==1]),
+                        area_nonfor_cons = sum(data.all$area[data.all$peatID==0 & data.all$cons==1]))
+if(ExcludeUndrPeatlands){
+  # Exclude undrained peatlands
+  undrpeatX <- data.all$peatID==undrPeatID
+  print(paste0("Discard undrained ", sum(data.all$area[(which(undrpeatX))])," ha (",
+             round(sum(data.all$area[(which(undrpeatX))])/sum(data.all$area)*1000)/10,
+             " percent of the whole area)"))
+  data.all <- copy(data.all[!undrpeatX,]) # cut off 
+}
+data.all[,consArea:=cons]
+#print(data.all[1:2,])
 # No harvests on "kitumaa", set here as conservation area
 data.all$cons[which(data.all$landclass==2)]<-1
-#print("Leave landclass(es) out:")
-#print(extrLandclass)
 
 set.seed(10)
+if(loadParids){ 
+  if(!uncSeg) {
+    load(paste0("uncRuns/regRuns/loadParids.rdata"))
+  } else {
+    load(paste0("uncRuns/segRuns/loadParids.rdata"))
+  }
+  print("Parameter set indexes loaded.")
+} else {
+    parids1 <- sample(1:999,1000, replace = TRUE)
+    parids2 <- sample(1:999,1000, replace = TRUE)
+    parids3 <- sample(1:999,1000, replace = TRUE)
+    climModids <- sample(1:length(climMod), 1000,replace=TRUE)
+}
+
 if(uncRun){ # load distribution data
   
   if(loadUnc){
     if(!uncSeg){
       load(paste0("uncRuns/regRuns/opsInd_reg",r_no,"_uncSeg",uncSeg,".rdata")) 
       sampleIDs <- 1:nSamplesr
-      area_total <- sum(data.all$area)
+      area_total <- areas_all[1,1]
       areas <- data.all$area
       areas <- areas/area_total
       #load(paste0("uncRuns/parids_reg",r_no,".rdata"))
     } else {
-      load(paste0("uncRuns/parids_reg",r_no,"uncSeg.rdata"))
+    #  load(paste0("uncRuns/parids_reg",r_no,"uncSeg.rdata"))
     }
-  } else {
-    parids <- sample(1:999,1000, replace = TRUE)
-    if(!uncSeg){
+  }# else {
+    #if(!uncSeg){
       #save(parids, file=paste0("uncRuns/parids_reg",r_no,".rdata"))
-    } else {
-      save(parids, file=paste0("uncRuns/parids_reg",r_no,"uncSeg.rdata"))
-    }
-  }
+    #} else {
+      #save(parids, file=paste0("uncRuns/parids_reg",r_no,"uncSeg.rdata"))
+    #}
+  #}
   #pCROBASr <- list()
   if(uncPCrobas){
     #pCROBASr <- uncParCrobas(nSamples = nSamplesr)
@@ -105,6 +159,7 @@ if(uncRun){ # load distribution data
 # Generate nSamples sample initial value sets
 if(!uncSeg & !loadUnc){ # sample pixel indices
   ops <- list()
+  
   sampleIDs <- 1:nSamplesr
   area_total <- sum(data.all$area)
   areas <- data.all$area
@@ -112,11 +167,11 @@ if(!uncSeg & !loadUnc){ # sample pixel indices
   #print(paste0("Sample size ",nSitesRunr," pixels"))
   #if(!loadUnc){
   opsInd <- list() #matrix(0, nSitesRun, nSamples) 
-  load(paste0("input/maakunta/maakunta_",r_no,"_IDsTab.rdata"))
+  #load(paste0("input/maakunta/maakunta_",r_no,"_IDsTab.rdata"))
   for(ij in 1:nSamplesr){ 
-    opsInd[[ij]] <- sample(1:nrow(data.all), nSitesRunr, replace = TRUE, prob = areas)
+    opsInd[[ij]] <- sample(1:nrow(data.all), nSitesRunr, replace = sampleReplace, prob = areas)
     ops[[ij]] <- copy(data.all[opsInd[[ij]],])
-    ops[[ij]] <- cbind(ops[[ij]],data.IDs[match(ops[[ij]]$segID, data.IDs$maakuntaID),4:5])
+    #ops[[ij]] <- cbind(ops[[ij]],data.IDs[match(ops[[ij]]$segID, data.IDs$maakuntaID),4:5])
   }
   #} else {
   #  load(paste0("input/maakunta/maakunta_",r_no,"_IDsTab.rdata"))
@@ -159,35 +214,39 @@ if(uncRun & !uncSeg & uncPeat){
     drPeatID <- 400  ### ID = 400 for luke database; 
   }
   #Emission coefficients for peatland post-processing
-  EC1 <- matrix(-240, 1, nSamplesr)#270  
-  EC2 <- matrix(70, 1, nSamplesr)#70
+  if(!loadParids){  
+    EC1 <- matrix(-240, 1, 1000)#270  
+    EC2 <- matrix(70, 1, 1000)#70
+  }
 }
 
-harvestLimsr <- data.table(t(matrix(harvestLims,2,nSamplesr)))
-if(uncRun & !uncSeg & uncHarv){
-  harvestLimsr[,1] <- (1+0.02*rnorm(nSamplesr))*harvestLims[1]
-  harvestLimsr[,2] <- (1+0.02*rnorm(nSamplesr))*harvestLims[2]
+harvestLimsr <- data.table(t(matrix(1,2,1000)))
+if((uncRun & uncHarv) & !loadParids){
+  harvestLimsr[-1,1] <- (hlimf[1]+0.02*rnorm(1000-1)) #roundwood
+  harvestLimsr[-1,2] <- (hlimf[2]+0.02*rnorm(1000-1)) #energywood
 }
-#print(harvestLimsr)
+#print(harvestLimsr[1:2,])
 
-if(uncRun & !loadUnc){
-  resampleYears <-  t(matrix(1:nYears,nYears,1000))# save enought of random weather series
+if(uncRun & !loadParids){
   if(uncClim){ # weather for iterations
-    for(ij in 1000){
-      resampleYears[ij,] <- sample(1:nYears,nYears,replace=T)
-    }
+    set.seed(NULL)
+    resampleYears <- matrix(sample(1:nYears,nYears*1000,replace=T),
+                            ncol = nYears,nrow = 1000)
+    #resampleYears[,1:(2021-2015)] <- matrix(1:(2021-2015),ncol = (2021-2015),nrow = 1000, byrow = T)
+    
     if(uncSeg) resampleYears1 <- resampleYears
   }
   if(uncSeg){
-    save(resampleYears1, file=paste0("uncRuns/segRuns/resampleyears_reg",r_no,".rdata"))
+    save(resampleYears1, file=paste0("uncRuns/segRuns/resampleyears.rdata"))
   } else {
-    save(resampleYears, file=paste0("uncRuns/regRuns/resampleyears_reg",r_no,".rdata"))
+    save(resampleYears, file=paste0("uncRuns/regRuns/resampleyears.rdata"))
   }
 } else {
   if(uncSeg){
-    load(paste0("uncRuns/segRuns/resampleyears_reg",r_no,".rdata"))
+    load("uncRuns/segRuns/resampleyears.rdata")
+    #resampleYears1 <- resampleYears
   } else {
-    load(paste0("uncRuns/regRuns/resampleyears_reg",r_no,".rdata"))
+    load("uncRuns/regRuns/resampleyears.rdata")
   }
 }
 
@@ -195,27 +254,37 @@ if(uncRun & !loadUnc){
 
 if(uncRun){# sample model parameters, HcFactor and peatland emission coefficients
   pCROBASr <- list()
-  pPRELr <- data.frame()
-  pYASr <- data.frame()
+  pPRELr <-  t(matrix(pPREL,ncol=nSamplesr,nrow=length(pPREL)))#data.frame()
+  pYASr <- t(matrix(pYAS,ncol=nSamplesr,nrow=length(pYAS)))#data.frame()
   for(ij in 1:nSamplesr){ 
-    pCROBASr[[ij]] <- pCROB
-    if(uncPCrobas){
-      pCROBASr[[ij]][parindCrob,1:3]<-t(rbind(pCROBpine[parids[ij],],pCROBspruce[parids[ij],],pCROBbirch[parids[ij],]))
+    pCROBASr[[ij]] <- pCrobasX#pCROB
+    if(uncPCrobas & ij>1){
+      pCROBASr[[ij]][parindCrob,1:3]<-t(rbind(pCROBpine[parids1[ij],],
+                                              pCROBspruce[parids1[ij],],
+                                              pCROBbirch[parids1[ij],]))
     }
-    pPRELr <- rbind(pPRELr, pPREL)
-    if(uncPPrel){
-      pPRELr[ij,parindPrel] <- pPREL_unc[parids[ij],]
+    #pPRELr <- rbind(pPRELr, pPREL)
+    if(uncPPrel & ij>1){
+      pPRELr[ij,parindPrel] <- pPREL_unc[parids2[ij],]
     }
-    if(uncPYas){
-      pYASr <- rbind(pYASr, pYas_unc[parids[ij],])
-    } else {
-      pYASr <- rbind(pYASr, pYAS)
+    if(uncPYas & ij>1){
+      pYASr[ij,] <- pYas_unc[parids3[ij],]
     }
     
-    if(uncPeat & !uncSeg){  
-      EC1[ij] <- -240 + 70*rnorm(1)#270  
-      EC2[ij] <- 70 + 30*rnorm(1)#70
+    if(uncPeat & !uncSeg & !loadParids){
+      EC1[ij] <- -240
+      EC2[ij] <- 70
+      if(ij>1){  
+        EC1[ij] <- -240 + 70*rnorm(1)#270  
+        EC2[ij] <- 70 + 30*rnorm(1)#70
+      }
     }
+  }
+  if(uncHcFactor & !loadParids){
+    HcFactorr <- matrix(1,1,1000)
+    HcFactorr[-1] <- 1 + rHcFactor*rnorm(1000-1)
+  } else if(!uncHcFactor) {
+    HcFactorr <- matrix(1,1,1000)
   }
   
   if(!uncSeg & !loadUnc){ # if region level uncertainty run, sample input variables
@@ -225,63 +294,118 @@ if(uncRun){# sample model parameters, HcFactor and peatland emission coefficient
       ops <-  uncVariables(ops=copy(ops), sampleIDs = sampleIDs) 
       print("... done.")
     }
-    if(uncHcFactor){
-      HcFactorr <- 1 + rHcFactor*rnorm(length(sampleIDs))
-    } else {
-      HcFactorr <- matrix(1,1,length(sampleIDs))
-    }
-    if(!testRun){
-      save(opsInd,parids,ops,EC1,EC2,HcFactorr,file=paste0("uncRuns/regRuns/opsInd_reg",r_no,"_uncSeg",uncSeg,".rdata")) 
+    
+      
+    if(!loadUnc){#testRun){
+      save(opsInd,ops,file=paste0("uncRuns/regRuns/opsInd_reg",r_no,"_uncSeg",uncSeg,".rdata"))
+      print(paste("opsInds saved for region",r_no))
     }
   } #if(!uncSeg & !loadUnc) 
 }
-
+  
+if(!loadParids){
+  if(!uncSeg){
+  save(opsInd,parids1,parids2,parids3,harvestLimsr,climModids,resampleYears,EC1,EC2,HcFactorr,
+         file=paste0("uncRuns/regRuns/loadParids.rdata")) 
+  } else {
+    save(parids1,parids2,parids3,harvestLimsr,climModids,resampleYears1,HcFactorr,
+         file=paste0("uncRuns/segRuns/loadParids.rdata")) 
+  }
+  print("Indexes of parameter sets saved.")
+}
 # load weather data  
-rcpfile = rcps
-if(rcpfile=="CurrClim"){
-  load(paste(climatepath, rcpfile,".rdata", sep=""))  
-  maxRday <- max(dat$rday)
-  xday <- c(dat$rday,(dat$rday+maxRday),(dat$rday+maxRday*2))
-  dat = rbind(dat,dat,dat)
-  dat[,rday:=xday]
-}else{
-  load(paste(climatepath, rcpfile,".rdata", sep=""))  
-}
+if(uncRCP == 0){
+  rcpfile = rcps
+  rcpsname <- rcpfile
+  if(rcpfile=="CurrClim"){
+    load(paste(climatepath, rcpfile,".rdata", sep=""))  
+    maxRday <- max(dat$rday)
+    xday <- c(dat$rday,(dat$rday+maxRday),(dat$rday+maxRday*2))
+    dat = rbind(dat,dat,dat)
+    dat[,rday:=xday]
+  }
+} else if(uncRCP==1){
+  rcpsname <- "RCP45"
+} else if(uncRCP==2){
+  rcpsname <- "RCP85"
+} 
 ##
-if(!uncSeg){
-  niter <- ceiling(nSamplesr/nParRuns)
-} else {
-  niter <- nSamplesr
-}
 sampleOutput <- list()
 
 if(uncSeg){
   pCROBASrseg <- copy(pCROBASr)
   pPRELrseg <- copy(pPRELr)
   pYASrseg <- copy(pYASr)
+  HcFactorrOr <- HcFactorr
 }
 
 #if(loadUnc){ # if needed to load previous sample
 #  load(paste0("uncRuns/opsInd_reg",r_no,"_uncSeg",uncSeg,".rdata")) 
 #}
-for(nii in 1:niter){
+nii0 <- 1
+if(uncSeg && file.exists(paste0("uncRuns/segRuns/samplexout_uncSeg_reg",r_no,
+                                             "_iters",nSamplesr,"_NoHarv.rdata"))){
+  load(paste0("uncRuns/segRuns/samplexout_uncSeg_reg",r_no,
+              "_iters",nSamplesr,"_NoHarv.rdata"))
+  #nii0<-(length(sampleOutput[[1]])-1)/3+1
+  nii0<-as.numeric(strsplit(colnames(sampleOutput[[1]])[length(sampleOutput[[1]])],"per3.")[[1]][2])+1
+}
+if(!uncSeg) {
+  ffilee <- paste0("uncRuns/regRuns/samplexout_reg",r_no,
+             "_",rcpsname,"_",harvscen,"_",harvinten,                                    
+             "_samplesize",nSitesRunr,"_iters",nSamplesr,
+             "_pr",uncPCrobas,"_Xr",uncInput,"_ager",uncAge,
+             "_Cr",uncClim,"_str",uncSiteType,".rdata")
+  print(paste("load ",ffilee))
+  if(file.exists(ffilee)){
+    load(ffilee)
+  #nii0<-(length(sampleOutput[[1]])-1)/3+1
+    nii0<-nrow(sampleOutput[[2]])+1
+  }
+}
+if(!uncSeg){
+  niter <- ceiling(nSamplesr/nParRuns)
+  nii0 <- ceiling(nii0/nParRuns)
+} else {
+  niter <- nSamplesr
+}
+if(nii0 > niter) nii0<-1
+print(paste("start from iteration",nii0))
+#if(!uncSeg){
+#  filee <- paste0("uncRuns/regRuns/samplexout_reg",r_no,
+#       "_",rcpsname,"_",hscen,"_",harvinten,                                    
+#       "_samplesize",nSitesRunr,"_iters",nSamplesr,
+#       "_pr",uncPCrobas,"_Xr",uncInput,"_ager",uncAge,
+#       "_Cr",uncClim,"_str",uncSiteType,".rdata")
+#  if(file.exists(filee)){
+#    load(filee)
+#    nii0<-(length(sampleOutput[[1]])-1)/3+1
+#  print(paste("start from iteration",nii0))
+#}
+niter2 <- niter
+if(uncSeg) niter2 <- 53
+
+for(nii in nii0:niter2){
   toMem <- ls()
   startRun <- Sys.time() 
-  print(paste0("Start running iter ",nii,"/",niter,"..."))
+  print(paste0("Start running iter ",nii,"/",niter2,"..."))
   if(uncSeg){ # load random input data
     resampleYears<-matrix(resampleYears1[nii,], nrow= tail(sampleIDs,n=1), 
                           ncol=length(resampleYears1[nii,]), byrow=TRUE)
     
     ops <- copy(ops_orig)
-    if(uncInput){
+
+    if(uncInput & nii>1){
       print(paste0("input uncertainties for ",length(sampleIDs),"..."))
       ops <-  uncVariables(ops=ops, sampleIDs = sampleIDs)
       print("... done.")
     }
-    if(uncHcFactor){
-      HcFactorr <- (1 + rHcFactor*rnorm(1))*matrix(1,1,length(sampleIDs))#length(sampleIDs))
-    } else {
-      HcFactorr <- matrix(1,1,length(sampleIDs))
+    if(uncInput & nii==1){
+      print("First iteration without input uncertainty.")
+    }
+    HcFactorr <- matrix(1,1,length(sampleIDs))
+    if(uncHcFactor & nii>1){
+      HcFactorr <- matrix(HcFactorrOr[nii],1,length(sampleIDs))#(1 + rHcFactor*rnorm(1))*matrix(1,1,length(sampleIDs))#length(sampleIDs))
     }
     for(ij in sampleIDs){ 
       pCROBASr[[ij]] <- pCROBASrseg[[nii]]
@@ -294,30 +418,73 @@ for(nii in 1:niter){
   
   #sampleXs <- lapply(sampleIDs[1:3], function(jx) { runModel(jx, outType=outType)})      
   #sampleXs <- mclapply(sampleIDs[(1+(nii-1)*nParRuns):(nii*nParRuns)], function(jx) {
+  #source_url("https://raw.githubusercontent.com/virpi-j/IBCcarbon_runs/master/general/functions.r")
+  source_url("https://raw.githubusercontent.com/virpi-j/IBCcarbon_runs/master/general/functions.r")
   print("start runModel")
   if(testRun){ # if needed to test an individual sample
-    sampleXs <- lapply(sampleIDs, function(jx) { 
-      runModel(jx, outType=outType, harvScen=harvscen ,harvInten=harvinten, cons10run = zon10)})
+    if(uncSeg){
+      sampleXs <- lapply(sampleIDs, function(jx) { 
+        runModel(jx, outType=outType, harvScen="Base",
+                 harvInten="Base")})
+#      sampleXs <- lapply(sampleIDs, function(jx) { 
+#        runModel(jx, outType=outType, harvScen="NoHarv",
+#                 harvInten="NoHarv")})
+      
+    }else{
+      harvScen<-harvscen
+      harvInten<-harvInten
+      easyInit=FALSE
+      forceSaveInitSoil=F 
+      cons10run = F
+      procDrPeat=T
+      coeffPeat1=-240
+      coeffPeat2=70
+      coefCH4 = 0.34#g m-2 y-1
+      coefN20_1 = 0.23
+      coefN20_2 = 0.077#g m-2 y-1
+      landClassUnman=NULL
+      compHarvX = 0
+      initVar=NULL
+      initSoilC=NULL
+      reInit=F
+      #funX = regionPrebas
+      initSoilCreStart=NULL
+      outModReStart=NULL
+      reStartYear=1
+      sampleXs <- lapply(sampleIDs, function(jx) { 
+        runModel(jx, outType=outType, harvScen=harvscen,
+                 harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat)})
+      
+    }
     #sampleXs <- runModel(sampleIDs,outType=outType)
     #print(sampleXs[[1]])
   } else if(uncSeg){
     sampleXs <- mclapply(sampleIDs, function(jx) {
-      runModel(jx, outType=outType, harvScen=harvscen ,harvInten=harvinten)}, 
+      runModel(jx, outType=outType, harvScen="Base" ,harvInten="Base")}, 
       mc.cores = nCores,mc.silent=FALSE)      ## Split this job across 10 cores
+    #sampleXs <- mclapply(sampleIDs, function(jx) {
+    #  runModel(jx, outType=outType, harvScen="NoHarv" ,harvInten="NoHarv")}, 
+    #  mc.cores = nCores,mc.silent=FALSE)      ## Split this job across 10 cores
   } else {
-    sampleXs <- mclapply(sampleIDs[(1+(nii-1)*nParRuns):(nii*nParRuns)], function(jx) {
-      runModel(jx, outType=outType, harvScen=harvscen ,harvInten=harvinten, cons10run = zon10)}, 
-      mc.cores = nCores,mc.silent=FALSE)      ## Split this job across 10 cores
+ #   sampleXs <- lapply(sampleIDs, function(jx) { 
+#      runModel(jx, outType=outType, harvScen=harvscen,
+#               harvInten=harvinten, cons10run = zon10)})
+    sampleXs <- mclapply(sampleIDs[(1+(nii-1)*nParRuns):(nii*nParRuns)], 
+                         function(jx) {
+      runModel(jx, outType=outType, harvScen=harvscen,
+              harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat)},
+              mc.cores = 4)
+##    mc.cores = parallel::detectCores()/2)
+##      mc.cores = nCores,mc.silent=FALSE)      ## Split this job across 10 cores
   }
   timeRun <- Sys.time() - startRun
-  
+  print(paste("time for runs",timeRun))
   if(!uncSeg){
-    print(sampleXs[[1]])
-    save(area_total,sampleXs,file=paste0("uncRuns/regRuns/samplexout_reg",r_no,
-                                         "_",harvscen,"_",                                    
-                                         "samplesize",nSitesRunr,"_iters",nSamplesr,
-                                         "_pr",uncPCrobas,"_Xr",uncInput,"_ager",uncAge,
-                                         "_Cr",uncClim,"_str",uncSiteType,".rdata")) 
+    print(sampleXs[[1]][1,])
+    hscen <- harvscen
+    if(zon10) hscen <- paste0(hscen,"zon10")
+    save(area_total,areas_all,sampleOutput,file=paste0("uncRuns/regRuns/samplexout_reg",r_no,
+                                             "_tmp.rdata")) 
     m <- ncol(sampleXs[[1]])
     n <- length(sampleXs)
     varNams <- names(sampleXs[[1]])
@@ -343,8 +510,8 @@ for(nii in 1:niter){
       names(sampleOutput)[j] <- varNams[j]
     }
     
-    save(area_total,sampleOutput,file=paste0("uncRuns/regRuns/samplexout_reg",r_no,
-                                             "_",harvscen,"_",harvinten,                                    
+    save(area_total,areas_all,sampleOutput,file=paste0("uncRuns/regRuns/samplexout_reg",r_no,
+                                             "_",rcpsname,"_",hscen,"_",harvinten,                                    
                                              "_samplesize",nSitesRunr,"_iters",nSamplesr,
                                              "_pr",uncPCrobas,"_Xr",uncInput,"_ager",uncAge,
                                              "_Cr",uncClim,"_str",uncSiteType,".rdata")) 
@@ -354,8 +521,9 @@ for(nii in 1:niter){
     m <- length(sampleOutput)
     print(paste(m,"variables"))
     n <- nrow(sampleOutput[[1]])
+    hscen <- harvscen
     pdf(file = paste0("uncRuns/regRuns/plots_reg",r_no,
-                      "_",harvscen,"_samplesize",nSitesRunr,"_iters",nSamplesr,
+                      "_",hscen,"_",harvinten,"_samplesize",nSitesRunr,"_iters",nSamplesr,
                       "_pr",uncPCrobas,"_Xr",uncInput,"_ager",uncAge,
                       "_Cr",uncClim,"_str",uncSiteType,
                       "_uncPeat",uncPeat,".pdf"))
@@ -382,36 +550,62 @@ for(nii in 1:niter){
     dev.off()
     print("plots made")
   } else { # if uncSeg
+    save(sampleXs, ops,file = paste0("uncRuns/segRuns/samplexouttmp_uncSeg_reg",
+                                r_no,"_NoHarv.rdata"))
     n <- length(sampleXs)
-    varNams <- names(sampleXs[[1]])
-    for(j in 1:length(varNams)){
-      x <- data.frame()
-      for(k in 1:n){
-        x <- rbind(x, sampleXs[[k]][[j]])
-        #rownames(x)[k] <- paste0(varNams[j],k)
-      }
-      if(ncol(x)==4){
-        setnames(x, c("segID",paste0(c("per1.","per2.","per3."),rep(nii,each=3))))
-      } else {
-        setnames(x, c("segID",paste0("iter",nii)))
-      }
-      
-      if(nii==1){
-        sampleOutput[[j]] <- x
-        names(sampleOutput)[j]<-varNams[j]
-      } else {
-        sampleOutput[[j]] <- cbind(sampleOutput[[j]], x[,-1])
-        if(ncol(x)==2){
-          names(sampleOutput[[j]])[nii+1] <- paste0("iter",nii)
+    if(length(sampleXs[[1]])>1){ # if results exist, save to sampleOutput
+      #if(nii==1){
+        varNams <- names(sampleXs[[1]])
+      #} else {
+      #  varNams <- names(sampleOutput)
+      #}
+      for(j in 1:length(varNams)){
+        x <- data.frame()
+        for(k in 1:n){
+          if(j==1 & length(sampleXs[[k]])==1){
+            sampleIDtmp <- k
+            print(paste("k id",k,"no result, run"))
+            sampleXss <- lapply(sampleIDtmp, function(jx) { 
+              runModel(jx, outType=outType, harvScen="Base",
+                     harvInten="Base")})
+            sampleXs[[k]]<-sampleXss[[1]]
+          }
+          x <- rbind(x, sampleXs[[k]][[j]])
+          #rownames(x)[k] <- paste0(varNams[j],k)
+        }
+        if(ncol(x)==4){
+          setnames(x, c("segID",paste0(c("per1.","per2.","per3."),rep(nii,each=3))))
+        } else {
+          setnames(x, c("segID",paste0("iter",nii)))
+        }
+        if(nii>1){
+          aa<-match(x$segID,sampleOutput[[j]]$segID)
+        }
+        if(nii==1){
+          sampleOutput[[j]] <- x
+          names(sampleOutput)[j]<-varNams[j]
+        } else {
+          if(ncol(x)==2){
+            xx<-matrix(NA,nrow(sampleOutput[[j]]),1)
+            xx[aa,]<-as.matrix(x[,-1])
+            sampleOutput[[j]] <- cbind(sampleOutput[[j]], xx)
+            niitmp <- ncol(sampleOutput[[j]])
+            names(sampleOutput[[j]])[niitmp] <- paste0("iter",nii)
+          }
+          if(ncol(x)==4){
+            xx<-matrix(NA,nrow(sampleOutput[[j]]),3)
+            xx[aa,]<-as.matrix(x[,-1])
+            sampleOutput[[j]] <- cbind(sampleOutput[[j]], xx)
+            niitmp <- ncol(sampleOutput[[j]])
+            names(sampleOutput[[j]])[(niitmp-2):niitmp]<-paste0(c("per1.","per2.","per3."),rep(nii,each=3))        
+          }   
         }
       }
-    }
-    save(sampleOutput,file=paste0("uncRuns/segRuns/samplexout_uncSeg_reg",r_no,
-                                  "_iters",nSamplesr,"_",harvscen,"_",harvinten,                                    
-                                  #"_pr",uncPCrobas,"_Xr",uncInput,"_ager",uncAge,
-                                  #"_Cr",uncClim,"_str",uncSiteType,
-                                  ".rdata")) 
+      hscen <- harvscen
     
+      save(sampleOutput,file=paste0("uncRuns/segRuns/samplexout_uncSeg_reg",r_no,
+                                  "_iters",nSamplesr,"_NoHarv.rdata")) 
+    }# If results exist  
   }
   print(paste0("Run time for ",length(sampleIDs)," samples of size ", nSitesRunr," = ",timeRun))
   print("End running...")

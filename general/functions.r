@@ -53,9 +53,13 @@ runModel <- function(sampleID, outType="dTabs",
   }
   if(procInSample){
     if(is.null(initSoilC)){
-      if(identical(landClassX,1:3)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to3.rdata"))
-      if(identical(landClassX,1:2)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to2.rdata"))
-      if(identical(landClassX,1)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1.rdata"))
+      if(outType=="uncRun"){
+        load(paste0("initSoilCunc/forCent",r_no,"/initSoilC_uncRun_",sampleID,".rdata"))
+      } else {
+        if(identical(landClassX,1:3)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to3.rdata"))
+        if(identical(landClassX,1:2)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to2.rdata"))
+        if(identical(landClassX,1)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1.rdata"))
+      }
     }
     setnames(xDat,"nPix","N")
     xDat[,area:=N*16^2/10000]
@@ -112,13 +116,22 @@ runModel <- function(sampleID, outType="dTabs",
     sampleX <- ops[[sampleID]]
   }
   
-  if(outType=="uncRun"){
+  if(outType %in% c("uncRun","uncSeg")){
     area_tot <- sum(data.all$area) # ha
     sampleX[,area := 16^2/10000] 
     cA <- 1/nrow(sampleX) #area_tot/nrow(sampleX) 
-    harvestLims <- harvestLimsr[sampleID,]
+    harvestLims <- as.numeric(harvestLimsr[sampleID,])
+    HarvLimMaak[,1]<-harvestLims[1]*HarvLimMaak[,1]
+    HarvLimMaak[,2]<-harvestLims[2]*HarvLimMaak[,2]
     print(paste("sampleID",sampleID,"harvestLims ="))
     print(harvestLims)
+    if(outType=="uncRun"){
+      coeffPeat1 <- EC1[sampleID]
+      coeffPeat2 <- EC2[sampleID]
+    }
+    if(uncRCP>0) {rcps <- paste0(climMod[climModids[sampleID]],rcpx[uncRCP])}
+    else {rcps <- "CurrClim"}
+    print(paste0("Climate model ",sampleID,": ",rcps))
   } else {
     sampleX[,area := N*16^2/10000] 
   }
@@ -132,17 +145,14 @@ runModel <- function(sampleID, outType="dTabs",
   ## ---------------------------------------------------------
   i = 0
   rcpfile = rcps
-  #if(outType != "uncRun"){
-  if(!outType %in% c("uncRun","uncSeg")){
-    load(paste(climatepath, rcpfile,".rdata", sep=""))  
-    if(rcpfile=="CurrClim"){
-      #####process data considering only current climate###
-      # dat <- dat[rday %in% 1:10958] #uncomment to select some years (10958 needs to be modified)
-      maxRday <- max(dat$rday)
-      xday <- c(dat$rday,(dat$rday+maxRday),(dat$rday+maxRday*2))
-      dat = rbind(dat,dat,dat)
-      dat[,rday:=xday]
-    }
+  load(paste(climatepath, rcpfile,".rdata", sep=""))  
+  if(rcpfile=="CurrClim"){
+    #####process data considering only current climate###
+    # dat <- dat[rday %in% 1:10958] #uncomment to select some years (10958 needs to be modified)
+    maxRday <- max(dat$rday)
+    xday <- c(dat$rday,(dat$rday+maxRday),(dat$rday+maxRday*2))
+    dat = rbind(dat,dat,dat)
+    dat[,rday:=xday]
   }
   ## Loop regions -------------------------------------------------------
   # for (r_no in regions) {
@@ -171,11 +181,13 @@ runModel <- function(sampleID, outType="dTabs",
   
   ###set parameters
   # if(outType %in% c("uncRun","uncSeg")){
+  ###set parameters
+  # if(outType %in% c("uncRun","uncSeg")){
   HcFactor <- 1
   if(outType %in% c("uncRun","uncSeg")){
     pCrobasX <- pCROBASr[[sampleID]]
-    pPRELES <- as.numeric(pPRELr[sampleID,])
-    pYAS <- as.numeric(pYASr[sampleID,])
+    pPRELES <- pPRELr[sampleID,]
+    pYAS <- pYASr[sampleID,]
     HcFactor <- HcFactorr[sampleID] 
     print(paste("sampleID",sampleID,"HcFactor =",HcFactor))
   }
