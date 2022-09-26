@@ -31,7 +31,7 @@ if(harvScen=="Base"){
   reStartMod <- list()
   reStartMod$siteInfo <- modRun$region$siteInfo
   reStartMod$GVout <- modRun$region$GVout[,1:reStartYearX,]
-  reStartMod$multiOut <- modRun$region$multiOut[,1:reStartYearX,,,,]
+  reStartMod$multiOut <- modRun$region$multiOut[,1:reStartYearX,,,]
   reStartMod$initClearcut <- modRun$region$initClearcut
   reStartSoil = modRun$region$soilC[,1:reStartYearX,,,]
   save(reStartMod,reStartSoil,file=paste0(outDyr,"/reStartData/restartRun_",r_no,".rdata"))
