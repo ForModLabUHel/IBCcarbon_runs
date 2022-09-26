@@ -48,165 +48,83 @@ distr_correction <- function(Y,Xtrue,Xdiscr=FALSE){
 
 UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
                        modOut,sampleID=1,finPeats=finPeats,
-                       sampleX=sampleX,EC1=-240,EC2=70){
+                       sampleX=sampleX,vname = "", evalSegs = 0){
+  if(length(evalSegs)==1) evalSegs <- 1:nrow(modOut$multiOut)
   nYears <-  max(modOut$nYears)
-  nSites <-  max(modOut$nSites)
+  nSites <-  length(evalSegs)
+  marginX= 1:2
+  #print(nSites)
   nVarSel <- length(varSel)
-  varsX <- rep(NA,(nVarSel+8))
-  xx <- matrix(NA,(nVarSel+8),nYears)
+  varsX <- rep(NA,(nVarSel+7))
+  xx <- matrix(NA,(nVarSel+7),nYears)
+
   for (ij in 1:nVarSel) {
-    # print(varSel[ij])
-    if(funX[ij]=="baWmean"){
-      outX <- baWmean(modOut,varSel[ij])
+    if(funXX[ij]=="baWmean"){
+      outX <- data.table(segID=sampleX$segID,baWmean(modOut,varSel[ij]))
+      #outX <- baWmean(modOut,varSel[ij])
     }
-    if(funX[ij]=="sum"){
-      outX <- apply(modOut$multiOut[,,varSel[ij],,1],1:2,sum)
+    if(funXX[ij]=="sum"){
+      #outX <- apply(modOut$multiOut[evalSegs,,varSel[ij],,1],1:2,sum)
+      outX <- data.table(segID=sampleX$segID,apply(modOut$multiOut[,,varSel[ij],,1],marginX,sum))
     }
-    outX <- colMeans(outX[!is.na(outX[,1]),])
-    ####test plot
-    # print(outX)
-    #outX <- c(mean(outX[simYear1]),mean(outX[simYear2]),mean(outX[simYear3]))
-    # names(outX) <- paste0("p",1:3)
-    varsX[ij] <- varNames[varSel[ij]]
-    xx[ij,1:nYears] <- outX
+    outX <- colMeans(outX,na.rm = TRUE)
+    varsX[ij] <- paste0(vname,varNames[varSel[ij]])
+    xx[ij,1:nYears] <- outX[-1]
     # assign(varNames[varSel[ij]],outX)
   }
   
   ####process and save special variables: 
   ###age
-  outX <- modOut$multiOut[,1:nYears,7,1,1]
-  outX <- colMeans(outX[!is.na(outX[,1]),])
-  #  outX <- c(mean(modOut$multiOut[,simYear1,7,1,1]),
-  #    mean(modOut$multiOut[,simYear2,7,1,1]),
-  #    mean(modOut$multiOut[,simYear3,7,1,1]))
-  varsX[(nVarSel+1)] <- "age"
+  outX <- modOut$multiOut[evalSegs,1:nYears,7,1,1]
+  outX <- colMeans(outX,na.rm = TRUE)
+  varsX[(nVarSel+1)] <- paste0(vname,"age")
   xx[(nVarSel+1),1:nYears] <- outX
-  # save(domAge,file=paste0("outputDT/forCent",r_no,"/domAge_",
-  #                         harscen,"_",rcpfile,"_",
-  #                         "sampleID",sampleID,".rdata"))
   ####VenergyWood
-  outX <- apply(modOut$multiEnergyWood[,,,1],1:2,sum)
-  outX <- colMeans(outX[!is.na(outX[,1]),])
-  # outX <- c(mean(outX[simYear1]),mean(outX[simYear2]),mean(outX[simYear3]))
+  outX <- apply(modOut$multiEnergyWood[evalSegs,,,1],1:2,sum)
+  outX <- colMeans(outX,na.rm = TRUE)
   xx[(nVarSel+2),1:nYears] <- outX
-  varsX[(nVarSel+2)] <- "VenergyWood"
-  # names(outX) <- paste0("p",1:3)
-  # VenergyWood <- outX
-  # save(VenergyWood,file=paste0("outputDT/forCent",r_no,
-  #                              "/VenergyWood_",harscen,"_",rcpfile,"_",
-  #                              "sampleID",sampleID,".rdata"))
+  varsX[(nVarSel+2)] <- paste0(vname,"VenergyWood")
   ####GVbiomass
-  outX <- modOut$GVout[,,4]
-  outX <- colMeans(outX[!is.na(outX[,1]),])
-  #outX <- c(mean(outX[simYear1]),
-  #     mean(outX[simYear2]),
-  #     mean(outX[simYear3]))
+  outX <- modOut$GVout[evalSegs,,4]
+  outX <- colMeans(outX,na.rm = TRUE)
   xx[(nVarSel+3),1:nYears] <- outX
-  varsX[(nVarSel+3)] <- "wGV"
-  # names(GVw) <- paste0("p",1:3)
-  # save(GVgpp,file=paste0("outputDT/forCent",r_no,
-  #                        "/GVgpp_",harscen,"_",rcpfile,"_",
-  #                        "sampleID",sampleID,".rdata"))
+  varsX[(nVarSel+3)] <- paste0(vname,"wGV")
   ####Wtot trees
-  outX <- apply(modOut$multiOut[,,c(24,25,31,32,33),,1],1:2,sum)
-  #nas <- length(which(is.na(rowSums(outX))))
-  #outX <- colMeans(outX[which(!is.na(rowSums(outX))),])
-  outX <- colMeans(outX)
+  outX <- apply(modOut$multiOut[evalSegs,,c(24,25,31,32,33),,1],1:2,sum)
+  outX <- colMeans(outX,na.rm = TRUE)
   xx[(nVarSel+4),1:nYears] <- outX
-  varsX[(nVarSel+4)] <- "Wtot"
-  
-  outX <- apply(modOut$multiEnergyWood[,,,2],1:2,sum)
-  outX <- colMeans(outX[!is.na(outX[,1]),])
-  #print(outX)
+  varsX[(nVarSel+4)] <- paste0(vname,"Wtot")
+  ####WenergyWood
+  outX <- apply(modOut$multiEnergyWood[evalSegs,,,2],1:2,sum)
+  outX <- colMeans(outX,na.rm = TRUE)
   xx[(nVarSel+5),1:nYears] <- outX
-  varsX[(nVarSel+5)] <- "Wenergywood"
-  
-  # save(Wtot,file=paste0("outputDT/forCent",r_no,"/Wtot_",
-  #                       harscen,"_",rcpfile,"_",
-  #                       "sampleID",sampleID,".rdata"))
-  # rm(domSpecies,domAge,Vdec,WenergyWood,Wtot,pX,p1,p2,p3); gc()
-  # if(sampleID==sampleForPlots){dev.off()}
-  
-  if("NEP" %in% varsX){
-    print(paste0("peatland postprocessing sampleID", sampleID))
-    #### Peatland post-processing
-    coords <- cbind(sampleX$x, sampleX$y)
-    marginX= 1:2#(length(dim(out$annual[,,varSel,]))-1)
-    
-    pX <- data.table(segID=sampleX$segID,apply(modOut$multiOut[,,"npp",,1],marginX,sum))
-    #p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
-    #p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
-    #p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
-    #pX <- data.table(p1,p2[,2],p3[,2]) # can be the same segment multiple times
-    assign("NPP",pX)
-    
-    pX <- data.table(data.table(segID=sampleX$segID,apply(modOut$multiOut[,,"NEP",,1],marginX,sum)))
-    #p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
-    #p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
-    #p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
-    #pX <- data.table(p1,p2[,2],p3[,2]) # can be the same segment multiple times
-    assign("NEP",pX)
-    
-    pX <- data.table(apply(modOut$multiOut[,,26,,1],marginX,sum))
-    for(li in 27:29){ # litter input
-      pX <- pX + data.table(apply(modOut$multiOut[,,li,,1],marginX,sum))
-    }
-    pX <- data.table(segID=sampleX$segID,pX)
-    assign("LitterSum", pX)
-    #print(LitterSum)
-    #print(c(nrow(LitterSum),ncol(LitterSum)))
-    #print(c(nrow(NPP),ncol(NPP)))
-    #print(c(nrow(NEP),ncol(NEP)))
-                      
-    ##!!###step to reduce the size of the peat raster 
-    ###load npp first outside loop to get peatX
-    peatX <- extract(finPeats, coords)
-    ##!!## end
-    
-    ###load site type raster
-    fert<-modOut$multiOut[,1,"sitetype",1,1]
-    
-    N2O <- data.frame(matrix(0,nrow = nrow(NEP), ncol = ncol(NEP)-1))
-    CH4 <- data.frame(matrix(0,nrow = nrow(NEP), ncol = ncol(NEP)-1))
+  varsX[(nVarSel+5)] <- paste0(vname,"Wenergywood")
 
-    ECN2O1 <- 0.23 + 0.04*rnorm(1) #g N2O m−2 year−1
-    ECN2O2 <- 0.077 + 0.004*rnorm(1) #g N2O m−2 year−1
-    ECCH4 <- 0.34 + 0.12 * rnorm(1)
-    #CH4 <- NEP#data.frame()
-    #####Loop along periods
-
-    for(curr in 2:(nYears+1)) {
-      #curr <- paste0("per",i)
-      npp <- NPP[,..curr]
-      nep <- NEP[,..curr]
-      littersum <- data.table(LitterSum[,..curr])
-      
-      nep <- processPeatUQ(peatX,fert,npp,nep,littersum,drPeatID,1,EC1,EC2)
-      nep <- processPeatUQ(peatX,fert,npp,nep,littersum,drPeatID,2,EC1,EC2)
-      NEP[,curr] <- nep
-      N2O[,curr-1] <- processPeatUQ_N2O_CH4(peatX, fert, drPeatID, type = "N2O", 
+  #print(paste0("peatland CH4 and N2O postprocessing sampleID", sampleID))
+  #### Peatland post-processing
+  #marginX= 1:2#(length(dim(out$annual[,,varSel,]))-1)
+  fert<-sampleX$fert[evalSegs] #modOut$multiOut[,1,"sitetype",1,1]
+  ECN2O1 <- 0.23 + 0.04*rnorm(1) #g N2O m−2 year−1
+  ECN2O2 <- 0.077 + 0.004*rnorm(1) #g N2O m−2 year−1
+  ECCH4 <- 0.34 + 0.12 * rnorm(1)
+  N2O <- data.frame(matrix(0,nrow = nSites, ncol = 1))
+  CH4 <- data.frame(matrix(0,nrow = nSites, ncol = 1))
+  # estimate N2O and CHe for the first year pixels 
+  N2O[,1] <- processPeatUQ_N2O_CH4(sampleX$peatID[evalSegs], fert, drPeatID, type = "N2O", 
                                             ECN2O1 = ECN2O1, ECN2O2 = ECN2O2)
-      CH4[,curr-1] <- processPeatUQ_N2O_CH4(peatX, fert, drPeatID, type = "CH4",
+  CH4[,1] <- processPeatUQ_N2O_CH4(sampleX$peatID[evalSegs], fert, drPeatID, type = "CH4",
                                             ECCH4 = ECCH4)
-    }  
-    NEP <- colMeans(NEP[which(!is.na(NEP[,2])),])
-    N2O <- colMeans(N2O[which(!is.na(N2O[,1])),])
-    CH4 <- colMeans(CH4[which(!is.na(CH4[,1])),])
-    #xx[which(varsX == "NEP"),] <- NEP[2:(nYears+1)]
-    xx[(nVarSel+6),1:nYears] <- NEP[-1]
-    varsX[(nVarSel+6)] <- "NEPprocPeat"
-    xx[(nVarSel+7),1:nYears] <- N2O
-    varsX[(nVarSel+7)] <- "N2O"
-    xx[(nVarSel+8),1:nYears] <- CH4
-    varsX[(nVarSel+8)] <- "CH4"
-    
-  }
-  
+  N2O <- colMeans(N2O)
+  CH4 <- colMeans(CH4)
+  # N2O and CH4 emissions remain constant for the whole simulation period
+  xx[(nVarSel+6),1:nYears] <- N2O
+  varsX[(nVarSel+6)] <- paste0(vname,"N2O")
+  xx[(nVarSel+7),1:nYears] <- CH4
+  varsX[(nVarSel+7)] <- paste0(vname,"CH4")
+
+  # all results as output    
   outX <- data.table(t(xx))
   names(outX) <- varsX
-  print(outX[1,])
-  #outX[,periods:=paste0('p',1:3)]
-  
   return(outX)
 } 
 
@@ -252,9 +170,9 @@ UncOutProcSeg <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
   ####test plot
   #if(sampleID==sampleForPlots){testPlot(outX,"domSpecies",areas)}
   ###take the most frequent species in the periods
-  p1 <- outX[,.(per1 = Mode(as.numeric(.SD))[1]),.SDcols=colsOut1,by=segID]
-  p2 <- outX[,.(per2 = Mode(as.numeric(.SD))[1]),.SDcols=colsOut2,by=segID]
-  p3 <- outX[,.(per3 = Mode(as.numeric(.SD))[1]),.SDcols=colsOut3,by=segID]
+  p1 <- outX[,.(per1 = Mode(as.numeric(.SD),na.rm=T)[1]),.SDcols=colsOut1,by=segID]
+  p2 <- outX[,.(per2 = Mode(as.numeric(.SD),na.rm=T)[1]),.SDcols=colsOut2,by=segID]
+  p3 <- outX[,.(per3 = Mode(as.numeric(.SD),na.rm=T)[1]),.SDcols=colsOut3,by=segID]
   pX <- merge(p1,p2)
   pX <- merge(pX,p3)
   varsX[[(ij+2)]] <- pX

@@ -53,9 +53,13 @@ runModel <- function(sampleID, outType="dTabs",
   }
   if(procInSample){
     if(is.null(initSoilC)){
-      if(identical(landClassX,1:3)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to3.rdata"))
-      if(identical(landClassX,1:2)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to2.rdata"))
-      if(identical(landClassX,1)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1.rdata"))
+      if(outType=="uncRun"){
+        load(paste0("initSoilCunc/forCent",r_no,"/initSoilC_uncRun_",sampleID,".rdata"))
+      } else {
+        if(identical(landClassX,1:3)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to3.rdata"))
+        if(identical(landClassX,1:2)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to2.rdata"))
+        if(identical(landClassX,1)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1.rdata"))
+      }
     }
     setnames(xDat,"nPix","N")
     xDat[,area:=N*16^2/10000]
@@ -112,13 +116,22 @@ runModel <- function(sampleID, outType="dTabs",
     sampleX <- ops[[sampleID]]
   }
   
-  if(outType=="uncRun"){
+  if(outType %in% c("uncRun","uncSeg")){
     area_tot <- sum(data.all$area) # ha
     sampleX[,area := 16^2/10000] 
     cA <- 1/nrow(sampleX) #area_tot/nrow(sampleX) 
-    harvestLims <- harvestLimsr[sampleID,]
+    harvestLims <- as.numeric(harvestLimsr[sampleID,])
+    HarvLimMaak[,1]<-harvestLims[1]*HarvLimMaak[,1]
+    HarvLimMaak[,2]<-harvestLims[2]*HarvLimMaak[,2]
     print(paste("sampleID",sampleID,"harvestLims ="))
     print(harvestLims)
+    if(outType=="uncRun"){
+      coeffPeat1 <- EC1[sampleID]
+      coeffPeat2 <- EC2[sampleID]
+    }
+    if(uncRCP>0) {rcps <- paste0(climMod[climModids[sampleID]],rcpx[uncRCP])}
+    else {rcps <- "CurrClim"}
+    print(paste0("Climate model ",sampleID,": ",rcps))
   } else {
     sampleX[,area := N*16^2/10000] 
   }
@@ -132,17 +145,14 @@ runModel <- function(sampleID, outType="dTabs",
   ## ---------------------------------------------------------
   i = 0
   rcpfile = rcps
-  #if(outType != "uncRun"){
-  if(!outType %in% c("uncRun","uncSeg")){
-    load(paste(climatepath, rcpfile,".rdata", sep=""))  
-    if(rcpfile=="CurrClim"){
-      #####process data considering only current climate###
-      # dat <- dat[rday %in% 1:10958] #uncomment to select some years (10958 needs to be modified)
-      maxRday <- max(dat$rday)
-      xday <- c(dat$rday,(dat$rday+maxRday),(dat$rday+maxRday*2))
-      dat = rbind(dat,dat,dat)
-      dat[,rday:=xday]
-    }
+  load(paste(climatepath, rcpfile,".rdata", sep=""))  
+  if(rcpfile=="CurrClim"){
+    #####process data considering only current climate###
+    # dat <- dat[rday %in% 1:10958] #uncomment to select some years (10958 needs to be modified)
+    maxRday <- max(dat$rday)
+    xday <- c(dat$rday,(dat$rday+maxRday),(dat$rday+maxRday*2))
+    dat = rbind(dat,dat,dat)
+    dat[,rday:=xday]
   }
   ## Loop regions -------------------------------------------------------
   # for (r_no in regions) {
@@ -171,11 +181,13 @@ runModel <- function(sampleID, outType="dTabs",
   
   ###set parameters
   # if(outType %in% c("uncRun","uncSeg")){
+  ###set parameters
+  # if(outType %in% c("uncRun","uncSeg")){
   HcFactor <- 1
   if(outType %in% c("uncRun","uncSeg")){
     pCrobasX <- pCROBASr[[sampleID]]
-    pPRELES <- as.numeric(pPRELr[sampleID,])
-    pYAS <- as.numeric(pYASr[sampleID,])
+    pPRELES <- pPRELr[sampleID,]
+    pYAS <- pYASr[sampleID,]
     HcFactor <- HcFactorr[sampleID] 
     print(paste("sampleID",sampleID,"HcFactor =",HcFactor))
   }
@@ -189,6 +201,7 @@ runModel <- function(sampleID, outType="dTabs",
   if(outType %in% c("uncRun","uncSeg")){
     initPrebas$pPRELES <- pPRELES
     initPrebas$pYASSO <- pYAS
+    initPrebas$pCROBAS<-pCrobasX
   }
   
   opsna <- which(is.na(initPrebas$multiInitVar))
@@ -337,8 +350,8 @@ runModel <- function(sampleID, outType="dTabs",
   # region <- regionPrebas(initPrebas)
   ###run PREBAS
   if(initilizeSoil){
-    if(!(harvScen =="Base" & harvInten == "Base")){
-      if(outType!="uncRun"){
+    if(!(harvScen =="Base" & harvInten == "Base") | rcps!="CurrClim"){
+      if(!outType %in% c("uncRun","uncSeg")){
         if(!harvScen %in% c("protect","protectNoAdH","protectTapio")){
           if(is.null(initSoilC)){
             if(identical(landClassX,1:3)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to3.rdata"))
@@ -348,6 +361,7 @@ runModel <- function(sampleID, outType="dTabs",
         }
       }else{ # if UncRun or uncSeg
         load(paste0("initSoilCunc/forCent",r_no,"/initSoilC_",outType,"_",sampleID,".rdata"))
+        print(paste0("initsoilID",sampleID,"loaded"))
       }
       # initPrebas$yassoRun <- rep(1,initPrebas$nSites)
       # initPrebas$soilC[,1,,,] <- initSoilC
@@ -454,8 +468,10 @@ runModel <- function(sampleID, outType="dTabs",
   }
   
   print(paste("runModel",sampleID,"completed"))
+  
   ##calculate steady state carbon from prebas litter 
-  if(harvScen=="Base" & harvInten =="Base" & initilizeSoil){
+    ###run yasso (starting from steady state) using PREBAS litter
+  if(harvScen=="Base" & harvInten =="Base" & initilizeSoil & rcps=="CurrClim"){
     initSoilC <- stXX_GV(region, 1)
     print(paste("initSoilC",sampleID))
     if(outType!="testRun" | forceSaveInitSoil){
@@ -463,28 +479,39 @@ runModel <- function(sampleID, outType="dTabs",
         if(identical(landClassX,1:3)) save(initSoilC,file=paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to3.rdata"))
         if(identical(landClassX,1:2)) save(initSoilC,file=paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to2.rdata"))
         if(identical(landClassX,1)) save(initSoilC,file=paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1.rdata"))
-      } else {
+      } else if(uncRCP == 0 & outType!="uncSeg") {
         save(initSoilC,file=paste0("initSoilCunc/forCent",r_no,"/initSoilC_",outType,"_",sampleID,".rdata"))
+        print(paste0("initsoilID",sampleID," saved"))
       }
     }
     ###run yasso (starting from steady state) using PREBAS litter
     # region <- yassoPREBASin(region,initSoilC)
     initPrebas$yassoRun <- rep(1,initPrebas$nSites)
     initPrebas$soilC[,1,,,] <- initSoilC
-    if (is.na(minDharvX)) {
+    if (outType!="uncSeg" & is.na(minDharvX)) {
       region <- funPreb(initPrebas, HarvLim = as.numeric(HarvLimX),
                              cutAreas =cutArX,compHarv=compHarvX,
                      startSimYear=reStartYear)
-    } else {
+    } else if(outType!="uncSeg"){
       region <- funPreb(initPrebas, HarvLim = as.numeric(HarvLimX),
                              minDharv = minDharvX,cutAreas =cutArX,
                              compHarv=compHarvX,
                      startSimYear=reStartYear)
-    }
+    } else if(outType=="uncSeg"){
+      print(paste0("Run sampleID",sampleID," with no harvests"))
+      initPrebas$ClCut = initPrebas$defaultThin = rep(0,nSample)
+      HarvLimX = 0
+      cutArX <- cutArX * 0.
+      region <- regionPrebas(initPrebas, 
+                             HarvLim = as.numeric(HarvLimX),
+                             minDharv = minDharvX,
+                             cutAreas = cutArX,
+                             compHarv=compHarvX)
+    } 
     # out <- region$multiOut[,,,,1]
   }
-  print(paste("all runs done",sampleID))
-  
+
+
   #####process drained Peat
   if(procDrPeat){
     siteDrPeat1 <- which(sampleX$pseudoptyp==400 & region$siteInfo[,3]<4)
@@ -495,11 +522,11 @@ runModel <- function(sampleID, outType="dTabs",
     coefCH4 = coefCH4/1000*10000 #g m-2 y-1 -> kg ha-1
     coefN20_1 = coefN20_1/1000*10000 #g m-2 y-1 -> kg ha-1
     coefN20_2 = coefN20_2/1000*10000 #g m-2 y-1 -> kg ha-1
-    region$CH4emisDrPeat_kgyear = coefCH4*region$areas[siteDrPeat1] +
-      coefCH4*region$areas[siteDrPeat2]
-    region$N2OemisDrPeat_kgyear = coefN20_1*region$areas[siteDrPeat1] +
-      coefN20_2*region$areas[siteDrPeat2]
-    
+    region$CH4emisDrPeat_kgyear = sum(coefCH4*region$areas[siteDrPeat1]) +
+      sum(coefCH4*region$areas[siteDrPeat2])
+    region$N2OemisDrPeat_kgyear = sum(coefN20_1*region$areas[siteDrPeat1]) +
+      sum(coefN20_2*region$areas[siteDrPeat2])
+
     region$multiOut[siteDrPeat1,,46,,1] = 0.
     region$multiOut[siteDrPeat1,,46,,1] = region$multiOut[siteDrPeat1,,18,,1] - 
       region$multiOut[siteDrPeat1,,26,,1]/10 - region$multiOut[siteDrPeat1,,27,,1]/10 - 
@@ -544,10 +571,34 @@ runModel <- function(sampleID, outType="dTabs",
     uncTab <- UncOutProc(varSel=varSel,#c(46,39,30,37), 
                          funX=funX,#rep("sum",4),
                          modOut=region,sampleID=sampleID,
-                         finPeats=finPeats,sampleX=sampleX,
-                         EC1=EC1[sampleID],EC2=EC2[sampleID])
-    #uncTab <- UncOutProc(varSel=c(46,39,30,37), funX=rep("sum",4),modOut=region)
-    #print(uncTab)
+                         finPeats=finPeats,sampleX=sampleX)#,
+    yy <- which(sampleX$peatID == 100) # mineral soils
+    uncTab <- cbind(uncTab,UncOutProc(varSel=varSel,#c(46,39,30,37), 
+                                      funX=funX,#rep("sum",4),
+                                      modOut=region,sampleID=sampleID,
+                                      finPeats=finPeats,sampleX=sampleX,vname="min",
+                                      evalSegs=yy))#,
+    yy <- which(sampleX$peatID == 400) # drained peatlands
+    uncTab <- cbind(uncTab,UncOutProc(varSel=varSel,#c(46,39,30,37), 
+                                      funX=funX,#rep("sum",4),
+                                      modOut=region,sampleID=sampleID,
+                                      finPeats=finPeats,sampleX=sampleX,
+                                      vname="drPeat",
+                                      evalSegs=yy))#,
+    yy <- which(sampleX$consArea == 1) # conservation areas
+    uncTab <- cbind(uncTab,UncOutProc(varSel=varSel,#c(46,39,30,37), 
+                                      funX=funX,#rep("sum",4),
+                                      modOut=region,sampleID=sampleID,
+                                      finPeats=finPeats,sampleX=sampleX,
+                                      vname="cons",
+                                      evalSegs=yy))#,
+    yy <- which(sampleX$consArea == 0) # managed & poorly productive forest
+    uncTab <- cbind(uncTab,UncOutProc(varSel=varSel,#c(46,39,30,37), 
+                                      funX=funX,#rep("sum",4),
+                                      modOut=region,sampleID=sampleID,
+                                      finPeats=finPeats,sampleX=sampleX,
+                                      vname="man_pprod",
+                                      evalSegs=yy))#,
     return(uncTab)
   } 
   if(outType=="uncSeg"){
