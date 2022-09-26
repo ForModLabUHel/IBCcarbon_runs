@@ -469,8 +469,7 @@ for(nii in nii0:niter2){
                                         outModReStart = reStartMod, initSoilCreStart = reStartSoil,
                                         funPreb = reStartRegionPrebas,reStartYear = 7)
                              }
-                           },
-                           mc.cores = 4)
+                           })
 #      sampleXs <- lapply(sampleIDs, function(jx) { 
 #        runModel(jx, outType=outType, harvScen=harvscen,
 #                 harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat)})
