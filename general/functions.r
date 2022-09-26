@@ -577,7 +577,7 @@ runModel <- function(sampleID, outType="dTabs",
       reStartMod$multiOut <- region$multiOut[,1:reStartYearUnc,,,]
       reStartMod$initClearcut <- region$initClearcut
       reStartSoil = region$soilC[,1:reStartYearUnc,,,]
-      save(reStartMod,reStartSoil,file=paste0("uncRuns/regRuns/restartRun_uncRun",sampleID,"_",r_no,".rdata"))
+      save(reStartMod,reStartSoil,file=paste0("uncRuns/regRuns/restartRun_uncRun",r_no,"_",sampleID,".rdata"))
     }
     uncTab <- UncOutProc(varSel=varSel,#c(46,39,30,37), 
                          funX=funX,#rep("sum",4),
