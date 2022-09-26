@@ -426,7 +426,7 @@ for(nii in nii0:niter2){
   #sampleXs <- lapply(sampleIDs[1:3], function(jx) { runModel(jx, outType=outType)})      
   #sampleXs <- mclapply(sampleIDs[(1+(nii-1)*nParRuns):(nii*nParRuns)], function(jx) {
   #source_url("https://raw.githubusercontent.com/virpi-j/IBCcarbon_runs/master/general/functions.r")
-  reStartYearUnc <- 8
+  reStartYearUnc <- 7
   source_url("https://raw.githubusercontent.com/virpi-j/IBCcarbon_runs/master/general/functions.r")
   print("start runModel")
   if(testRun){ # if needed to test an individual sample
