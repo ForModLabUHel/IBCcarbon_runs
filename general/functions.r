@@ -195,7 +195,7 @@ runModel <- function(sampleID, outType="dTabs",
   initPrebas = create_prebas_input.f(r_no, clim, data.sample, nYears = nYears,
                                      startingYear = startingYear,domSPrun=domSPrun,
                                      harv=harvScen, HcFactorX=HcFactor,
-                                     initSoilC=initSoilCreStart,
+                                     initSoilC=initSoilCreStart, reStartYear=reStartYear,
                                      outModReStart=outModReStart)
   
   if(outType %in% c("uncRun","uncSeg")){
@@ -568,6 +568,15 @@ runModel <- function(sampleID, outType="dTabs",
     return("all outs saved")  
   } 
   if(outType=="uncRun"){
+    if(harvScen=="Base" & harvInten=="Base"){
+      reStartMod <- list()
+      reStartMod$siteInfo <- modRun$region$siteInfo
+      reStartMod$GVout <- modRun$region$GVout[,1:reStartYear,]
+      reStartMod$multiOut <- modRun$region$multiOut[,1:reStartYear,,,]
+      reStartMod$initClearcut <- modRun$region$initClearcut
+      reStartSoil = modRun$region$soilC[,1:reStartYear,,,]
+      save(reStartMod,reStartSoil,file=paste("restartRun_uncRun",sampleID,"_",r_no,".rdata"))
+    }
     uncTab <- UncOutProc(varSel=varSel,#c(46,39,30,37), 
                          funX=funX,#rep("sum",4),
                          modOut=region,sampleID=sampleID,
@@ -600,6 +609,7 @@ runModel <- function(sampleID, outType="dTabs",
                                       vname="man_pprod",
                                       evalSegs=yy))#,
     return(uncTab)
+    
   } 
   if(outType=="uncSeg"){
     uncSegTab <- UncOutProcSeg(varSel=varSel, funX=funX,
@@ -730,7 +740,7 @@ sample_data.f = function(data.all, nSample) {
 # StartingYear = climate data that detrermines simulation period must have year greater than this.
 create_prebas_input.f = function(r_no, clim, data.sample, nYears,
                                  startingYear=0,domSPrun=0,
-                                 harv, HcFactorX=HcFactor, 
+                                 harv, HcFactorX=HcFactor, reStartYear=1,
                                  outModReStart=NULL,initSoilC=NULL
                                  ) { 
   # dat = climscendataset
@@ -966,14 +976,14 @@ create_prebas_input.f = function(r_no, clim, data.sample, nYears,
       # initPrebas$mortMod[data.sample$cons==1] <- 3 
     }
     if(!is.null(outModReStart$multiOut)){
-      initPrebas$multiOut[,,,1:3,] <- outModReStart$multiOut
-      initPrebas$multiOut[,,8,,] = 0
-      initPrebas$GVout <- outModReStart$GVout
+      initPrebas$multiOut[,1:reStartYear,,1:3,] <- outModReStart$multiOut
+      initPrebas$multiOut[,1:reStartYear,8,,] = 0
+      initPrebas$GVout[,1:reStartYear,] <- outModReStart$GVout
     } 
     if(!is.null(outModReStart$siteInfo)) initPrebas$siteInfo <- outModReStart$siteInfo
     if(!is.null(outModReStart$initClearcut)) initPrebas$initClearcut <- outModReStart$initClearcut
   }
-  if(!is.null(initSoilC)) initPrebas$soilC[,,,,1:3] <- initSoilC
+  if(!is.null(initSoilC)) initPrebas$soilC[,1:reStartYear,,,1:3] <- initSoilC
   
   return(initPrebas)
 }

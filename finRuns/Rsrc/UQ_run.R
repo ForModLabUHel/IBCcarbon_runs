@@ -477,11 +477,22 @@ for(nii in nii0:niter2){
 #      runModel(jx, outType=outType, harvScen=harvscen,
 #               harvInten=harvinten, cons10run = zon10)})
     sampleXs <- mclapply(sampleIDs[(1+(nii-1)*nParRuns):(nii*nParRuns)], 
-                         function(jx) {
-      runModel(jx, outType=outType, harvScen=harvscen,
-              harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat)},
+                function(jx) {
+                  if(harvscen=="Base" & harvinten=="Base"){
+                    runModel(jx, outType=outType, harvScen=harvscen,
+                      harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat)
+                  } else {
+                    load(file=paste("restartRun_uncRun",sampleID,"_",r_no,".rdata"))
+                    runModel(jx, outType=outType, harvScen=harvscen,
+                        harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat,
+                        outModReStart = reStartMod, initSoilCreStart = reStartSoil,
+                        funPreb = reStartRegionPrebas,reStartYear = 7)
+                    }
+                  },
               mc.cores = 4)
-##    mc.cores = parallel::detectCores()/2)
+
+    
+    ##    mc.cores = parallel::detectCores()/2)
 ##      mc.cores = nCores,mc.silent=FALSE)      ## Split this job across 10 cores
   }
   timeRun <- Sys.time() - startRun
