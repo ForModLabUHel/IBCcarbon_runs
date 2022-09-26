@@ -4,6 +4,7 @@ if(!exists("mortMod")) mortMod <- 3
 if(!exists("r_no")) r_no <- 4
 if(!exists("sampleID")) sampleID=3
 if(!exists("outDyr")) outDyr="outSample"
+if(!exists("reStartYearX")) reStartYearX=7
 
 harvIntensities <- c("Base","MaxSust","Low")
 
@@ -29,10 +30,10 @@ if(harvScen=="Base"){
   
   reStartMod <- list()
   reStartMod$siteInfo <- modRun$region$siteInfo
-  reStartMod$GVout <- modRun$region$GVout
-  reStartMod$multiOut <- modRun$region$multiOut
+  reStartMod$GVout <- modRun$region$GVout[,1:reStartYearX,]
+  reStartMod$multiOut <- modRun$region$multiOut[,1:reStartYearX,,,,]
   reStartMod$initClearcut <- modRun$region$initClearcut
-  reStartSoil = modRun$region$soilC
+  reStartSoil = modRun$region$soilC[,1:reStartYearX,,,]
   save(reStartMod,reStartSoil,file=paste("restartRun_",r_no,".rdata"))
   toMem <- c(toMem,"reStartSoil","reStartMod")
   region <- modRun$region
@@ -194,7 +195,7 @@ if(harvScen=="Base"){
                          harvScen=harvScen,harvInten=harvInten,
                          cons10run=cons10run,landClassUnman=landClassUnman,
                          outModReStart = reStartMod, initSoilCreStart = reStartSoil,
-                         funPreb = reStartRegionPrebas,reStartYear = 7)
+                         funPreb = reStartRegionPrebas,reStartYear = reStartYearX)
       region <- modRun$region
       rm(modRun); gc()
       datAll <- data.table()
@@ -374,7 +375,7 @@ if(harvScen=="protect"){
                        harvScen=harvScen,harvInten=harvInten,
                        cons10run=cons10run,landClassUnman=landClassUnman,
                        outModReStart = reStartMod, initSoilCreStart = reStartSoil,
-                       funPreb = reStartRegionPrebas,reStartYear = 7)
+                       funPreb = reStartRegionPrebas,reStartYear = reStartYearX)
     region <- modRun$region
     rm(modRun); gc()
     datAll <- data.table()
@@ -553,7 +554,7 @@ for(harvInten in harvIntensities){
                        harvScen=harvScen,harvInten=harvInten,
                        cons10run=cons10run,landClassUnman=landClassUnman,
                        outModReStart = reStartMod, initSoilCreStart = reStartSoil,
-                       funPreb = reStartRegionPrebas,reStartYear = 7)
+                       funPreb = reStartRegionPrebas,reStartYear = reStartYearX)
 
     region <- modRun$region
     rm(modRun); gc()
@@ -732,7 +733,7 @@ if(harvScen =="TapioAndNoHarv"){
                          harvScen=harvScen,harvInten=harvInten,
                          cons10run=cons10run,landClassUnman=landClassUnman,
                          outModReStart = reStartMod, initSoilCreStart = reStartSoil,
-                         funPreb = reStartRegionPrebas,reStartYear = 7)
+                         funPreb = reStartRegionPrebas,reStartYear = reStartYearX)
       region <- modRun$region
       rm(modRun); gc()
       datAll <- data.table()
