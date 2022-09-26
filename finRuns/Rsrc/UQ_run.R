@@ -291,7 +291,7 @@ if(uncRun){# sample model parameters, HcFactor and peatland emission coefficient
     # sample input values for the samples
     #if(uncInput){
       print(paste0("input uncertainties for ",length(sampleIDs)," sample sets..."))
-      ops <-  uncVariables(ops=copy(ops), sampleIDs = sampleIsD,
+      ops <-  uncVariables(ops=copy(ops), sampleIDs = sampleIDs,
                            rage = rage,
                            uncInput = uncInput, uncSiteType = uncSiteType, 
                            uncAge = uncAge) 
