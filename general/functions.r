@@ -571,10 +571,34 @@ runModel <- function(sampleID, outType="dTabs",
     uncTab <- UncOutProc(varSel=varSel,#c(46,39,30,37), 
                          funX=funX,#rep("sum",4),
                          modOut=region,sampleID=sampleID,
-                         finPeats=finPeats,sampleX=sampleX,
-                         EC1=EC1[sampleID],EC2=EC2[sampleID])
-    #uncTab <- UncOutProc(varSel=c(46,39,30,37), funX=rep("sum",4),modOut=region)
-    #print(uncTab)
+                         finPeats=finPeats,sampleX=sampleX)#,
+    yy <- which(sampleX$peatID == 100) # mineral soils
+    uncTab <- cbind(uncTab,UncOutProc(varSel=varSel,#c(46,39,30,37), 
+                                      funX=funX,#rep("sum",4),
+                                      modOut=region,sampleID=sampleID,
+                                      finPeats=finPeats,sampleX=sampleX,vname="min",
+                                      evalSegs=yy))#,
+    yy <- which(sampleX$peatID == 400) # drained peatlands
+    uncTab <- cbind(uncTab,UncOutProc(varSel=varSel,#c(46,39,30,37), 
+                                      funX=funX,#rep("sum",4),
+                                      modOut=region,sampleID=sampleID,
+                                      finPeats=finPeats,sampleX=sampleX,
+                                      vname="drPeat",
+                                      evalSegs=yy))#,
+    yy <- which(sampleX$consArea == 1) # conservation areas
+    uncTab <- cbind(uncTab,UncOutProc(varSel=varSel,#c(46,39,30,37), 
+                                      funX=funX,#rep("sum",4),
+                                      modOut=region,sampleID=sampleID,
+                                      finPeats=finPeats,sampleX=sampleX,
+                                      vname="cons",
+                                      evalSegs=yy))#,
+    yy <- which(sampleX$consArea == 0) # managed & poorly productive forest
+    uncTab <- cbind(uncTab,UncOutProc(varSel=varSel,#c(46,39,30,37), 
+                                      funX=funX,#rep("sum",4),
+                                      modOut=region,sampleID=sampleID,
+                                      finPeats=finPeats,sampleX=sampleX,
+                                      vname="man_pprod",
+                                      evalSegs=yy))#,
     return(uncTab)
   } 
   if(outType=="uncSeg"){
