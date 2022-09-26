@@ -220,10 +220,13 @@ if(uncRun & !uncSeg & uncPeat){
   }
 }
 
-harvestLimsr <- data.table(t(matrix(1,2,1000)))
 if((uncRun & uncHarv) & !loadParids){
+  harvestLimsr <- data.table(t(matrix(1,2,1000)))
+  print("Uncertain harvest targets")
   harvestLimsr[-1,1] <- (hlimf[1]+0.02*rnorm(1000-1)) #roundwood
   harvestLimsr[-1,2] <- (hlimf[2]+0.02*rnorm(1000-1)) #energywood
+} else if(uncRun & !uncHarv) {
+  harvestLimsr <- data.table(t(matrix(1,2,1000)))
 }
 #print(harvestLimsr[1:2,])
 
