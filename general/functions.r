@@ -201,6 +201,7 @@ runModel <- function(sampleID, outType="dTabs",
   if(outType %in% c("uncRun","uncSeg")){
     initPrebas$pPRELES <- pPRELES
     initPrebas$pYASSO <- pYAS
+    initPrebas$pCROBAS<-pCrobasX
   }
   
   opsna <- which(is.na(initPrebas$multiInitVar))
@@ -349,8 +350,8 @@ runModel <- function(sampleID, outType="dTabs",
   # region <- regionPrebas(initPrebas)
   ###run PREBAS
   if(initilizeSoil){
-    if(!(harvScen =="Base" & harvInten == "Base")){
-      if(outType!="uncRun"){
+    if(!(harvScen =="Base" & harvInten == "Base") | rcps!="CurrClim"){
+      if(!outType %in% c("uncRun","uncSeg")){
         if(!harvScen %in% c("protect","protectNoAdH","protectTapio")){
           if(is.null(initSoilC)){
             if(identical(landClassX,1:3)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to3.rdata"))
@@ -360,6 +361,7 @@ runModel <- function(sampleID, outType="dTabs",
         }
       }else{ # if UncRun or uncSeg
         load(paste0("initSoilCunc/forCent",r_no,"/initSoilC_",outType,"_",sampleID,".rdata"))
+        print(paste0("initsoilID",sampleID,"loaded"))
       }
       # initPrebas$yassoRun <- rep(1,initPrebas$nSites)
       # initPrebas$soilC[,1,,,] <- initSoilC
@@ -466,8 +468,10 @@ runModel <- function(sampleID, outType="dTabs",
   }
   
   print(paste("runModel",sampleID,"completed"))
+  
   ##calculate steady state carbon from prebas litter 
-  if(harvScen=="Base" & harvInten =="Base" & initilizeSoil){
+    ###run yasso (starting from steady state) using PREBAS litter
+  if(harvScen=="Base" & harvInten =="Base" & initilizeSoil & rcps=="CurrClim"){
     initSoilC <- stXX_GV(region, 1)
     print(paste("initSoilC",sampleID))
     if(outType!="testRun" | forceSaveInitSoil){
@@ -475,28 +479,39 @@ runModel <- function(sampleID, outType="dTabs",
         if(identical(landClassX,1:3)) save(initSoilC,file=paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to3.rdata"))
         if(identical(landClassX,1:2)) save(initSoilC,file=paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to2.rdata"))
         if(identical(landClassX,1)) save(initSoilC,file=paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1.rdata"))
-      } else {
+      } else if(uncRCP == 0 & outType!="uncSeg") {
         save(initSoilC,file=paste0("initSoilCunc/forCent",r_no,"/initSoilC_",outType,"_",sampleID,".rdata"))
+        print(paste0("initsoilID",sampleID," saved"))
       }
     }
     ###run yasso (starting from steady state) using PREBAS litter
     # region <- yassoPREBASin(region,initSoilC)
     initPrebas$yassoRun <- rep(1,initPrebas$nSites)
     initPrebas$soilC[,1,,,] <- initSoilC
-    if (is.na(minDharvX)) {
+    if (outType!="uncSeg" & is.na(minDharvX)) {
       region <- funPreb(initPrebas, HarvLim = as.numeric(HarvLimX),
                              cutAreas =cutArX,compHarv=compHarvX,
                      startSimYear=reStartYear)
-    } else {
+    } else if(outType!="uncSeg"){
       region <- funPreb(initPrebas, HarvLim = as.numeric(HarvLimX),
                              minDharv = minDharvX,cutAreas =cutArX,
                              compHarv=compHarvX,
                      startSimYear=reStartYear)
-    }
+    } else if(outType=="uncSeg"){
+      print(paste0("Run sampleID",sampleID," with no harvests"))
+      initPrebas$ClCut = initPrebas$defaultThin = rep(0,nSample)
+      HarvLimX = 0
+      cutArX <- cutArX * 0.
+      region <- regionPrebas(initPrebas, 
+                             HarvLim = as.numeric(HarvLimX),
+                             minDharv = minDharvX,
+                             cutAreas = cutArX,
+                             compHarv=compHarvX)
+    } 
     # out <- region$multiOut[,,,,1]
   }
-  print(paste("all runs done",sampleID))
-  
+
+
   #####process drained Peat
   if(procDrPeat){
     siteDrPeat1 <- which(sampleX$pseudoptyp==400 & region$siteInfo[,3]<4)
@@ -507,11 +522,11 @@ runModel <- function(sampleID, outType="dTabs",
     coefCH4 = coefCH4/1000*10000 #g m-2 y-1 -> kg ha-1
     coefN20_1 = coefN20_1/1000*10000 #g m-2 y-1 -> kg ha-1
     coefN20_2 = coefN20_2/1000*10000 #g m-2 y-1 -> kg ha-1
-    region$CH4emisDrPeat_kgyear = coefCH4*region$areas[siteDrPeat1] +
-      coefCH4*region$areas[siteDrPeat2]
-    region$N2OemisDrPeat_kgyear = coefN20_1*region$areas[siteDrPeat1] +
-      coefN20_2*region$areas[siteDrPeat2]
-    
+    region$CH4emisDrPeat_kgyear = sum(coefCH4*region$areas[siteDrPeat1]) +
+      sum(coefCH4*region$areas[siteDrPeat2])
+    region$N2OemisDrPeat_kgyear = sum(coefN20_1*region$areas[siteDrPeat1]) +
+      sum(coefN20_2*region$areas[siteDrPeat2])
+
     region$multiOut[siteDrPeat1,,46,,1] = 0.
     region$multiOut[siteDrPeat1,,46,,1] = region$multiOut[siteDrPeat1,,18,,1] - 
       region$multiOut[siteDrPeat1,,26,,1]/10 - region$multiOut[siteDrPeat1,,27,,1]/10 - 

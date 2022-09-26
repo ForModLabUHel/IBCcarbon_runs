@@ -232,7 +232,7 @@ if(uncRun & !loadParids){
     set.seed(NULL)
     resampleYears <- matrix(sample(1:nYears,nYears*1000,replace=T),
                             ncol = nYears,nrow = 1000)
-    #resampleYears[,1:(2021-2015)] <- matrix(1:(2021-2015),ncol = (2021-2015),nrow = 1000, byrow = T)
+    resampleYears[,1:(2021-2015)] <- matrix(1:(2021-2015),ncol = (2021-2015),nrow = 1000, byrow = T)
     
     if(uncSeg) resampleYears1 <- resampleYears
   }
@@ -289,17 +289,20 @@ if(uncRun){# sample model parameters, HcFactor and peatland emission coefficient
   
   if(!uncSeg & !loadUnc){ # if region level uncertainty run, sample input variables
     # sample input values for the samples
-    if(uncInput){
+    #if(uncInput){
       print(paste0("input uncertainties for ",length(sampleIDs)," sample sets..."))
-      ops <-  uncVariables(ops=copy(ops), sampleIDs = sampleIDs) 
+      ops <-  uncVariables(ops=copy(ops), sampleIDs = sampleIsD,
+                           rage = rage,
+                           uncInput = uncInput, uncSiteType = uncSiteType, 
+                           uncAge = uncAge) 
       print("... done.")
-    }
+    #}
     
       
-    if(!loadUnc){#testRun){
+    #if(!loadUnc){#testRun){
       save(opsInd,ops,file=paste0("uncRuns/regRuns/opsInd_reg",r_no,"_uncSeg",uncSeg,".rdata"))
       print(paste("opsInds saved for region",r_no))
-    }
+    #}
   } #if(!uncSeg & !loadUnc) 
 }
   
