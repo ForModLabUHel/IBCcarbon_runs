@@ -459,8 +459,21 @@ for(nii in nii0:niter2){
       outModReStart=NULL
       reStartYear=1
       sampleXs <- lapply(sampleIDs, function(jx) { 
-        runModel(jx, outType=outType, harvScen=harvscen,
-                 harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat)})
+                             if(harvscen=="Base" & harvinten=="Base"){
+                               runModel(jx, outType=outType, harvScen=harvscen,
+                                        harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat)
+                             } else {
+                               load(file=paste("restartRun_uncRun",sampleID,"_",r_no,".rdata"))
+                               runModel(jx, outType=outType, harvScen=harvscen,
+                                        harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat,
+                                        outModReStart = reStartMod, initSoilCreStart = reStartSoil,
+                                        funPreb = reStartRegionPrebas,reStartYear = 7)
+                             }
+                           },
+                           mc.cores = 4)
+#      sampleXs <- lapply(sampleIDs, function(jx) { 
+#        runModel(jx, outType=outType, harvScen=harvscen,
+#                 harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat)})
       
     }
     #sampleXs <- runModel(sampleIDs,outType=outType)
