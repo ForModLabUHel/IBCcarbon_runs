@@ -463,7 +463,7 @@ for(nii in nii0:niter2){
                                runModel(jx, outType=outType, harvScen=harvscen,
                                         harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat)
                              } else {
-                               print(paste("Load -2021 results for sampleID",jx))
+                               print(paste("Load 2015-2021 results for sampleID",jx))
                                load(file=paste("restartRun_uncRun",sampleID,"_",r_no,".rdata"))
                                runModel(jx, outType=outType, harvScen=harvscen,
                                         harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat,
