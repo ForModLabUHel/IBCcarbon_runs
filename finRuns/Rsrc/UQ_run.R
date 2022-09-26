@@ -426,6 +426,7 @@ for(nii in nii0:niter2){
   #sampleXs <- lapply(sampleIDs[1:3], function(jx) { runModel(jx, outType=outType)})      
   #sampleXs <- mclapply(sampleIDs[(1+(nii-1)*nParRuns):(nii*nParRuns)], function(jx) {
   #source_url("https://raw.githubusercontent.com/virpi-j/IBCcarbon_runs/master/general/functions.r")
+  reStartYearUnc <- 7
   source_url("https://raw.githubusercontent.com/virpi-j/IBCcarbon_runs/master/general/functions.r")
   print("start runModel")
   if(testRun){ # if needed to test an individual sample
@@ -459,8 +460,21 @@ for(nii in nii0:niter2){
       outModReStart=NULL
       reStartYear=1
       sampleXs <- lapply(sampleIDs, function(jx) { 
-        runModel(jx, outType=outType, harvScen=harvscen,
-                 harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat)})
+                             if(harvscen=="Base" & harvinten=="Base"){
+                               runModel(jx, outType=outType, harvScen=harvscen,
+                                        harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat)
+                             } else {
+                               print(paste("Load 2015-2021 results for sampleID",jx))
+                               load(file=paste0("uncRuns/regRuns/restartRun_uncRun",r_no,"_",jx,"_.rdata"))
+                               runModel(jx, outType=outType, harvScen=harvscen,
+                                        harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat,
+                                        outModReStart = reStartMod, initSoilCreStart = reStartSoil,
+                                        funPreb = reStartRegionPrebas,reStartYear = reStartYearUnc)
+                             }
+                           })
+#      sampleXs <- lapply(sampleIDs, function(jx) { 
+#        runModel(jx, outType=outType, harvScen=harvscen,
+#                 harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat)})
       
     }
     #sampleXs <- runModel(sampleIDs,outType=outType)
@@ -477,11 +491,23 @@ for(nii in nii0:niter2){
 #      runModel(jx, outType=outType, harvScen=harvscen,
 #               harvInten=harvinten, cons10run = zon10)})
     sampleXs <- mclapply(sampleIDs[(1+(nii-1)*nParRuns):(nii*nParRuns)], 
-                         function(jx) {
-      runModel(jx, outType=outType, harvScen=harvscen,
-              harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat)},
+                function(jx) {
+                  if(harvscen=="Base" & harvinten=="Base"){
+                    runModel(jx, outType=outType, harvScen=harvscen,
+                      harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat)
+                  } else {
+                    print(paste("Load 2015-2021 results for sampleID",jx))
+                    load(file=paste0("uncRuns/regRuns/restartRun_uncRun",r_no,"_",jx,".rdata"))
+                    runModel(jx, outType=outType, harvScen=harvscen,
+                        harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat,
+                        outModReStart = reStartMod, initSoilCreStart = reStartSoil,
+                        funPreb = reStartRegionPrebas,reStartYear = reStartYearUnc)
+                    }
+                  },
               mc.cores = 4)
-##    mc.cores = parallel::detectCores()/2)
+
+    
+    ##    mc.cores = parallel::detectCores()/2)
 ##      mc.cores = nCores,mc.silent=FALSE)      ## Split this job across 10 cores
   }
   timeRun <- Sys.time() - startRun
