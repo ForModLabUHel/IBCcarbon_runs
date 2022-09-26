@@ -34,7 +34,7 @@ if(harvScen=="Base"){
   reStartMod$multiOut <- modRun$region$multiOut[,1:reStartYearX,,,,]
   reStartMod$initClearcut <- modRun$region$initClearcut
   reStartSoil = modRun$region$soilC[,1:reStartYearX,,,]
-  save(reStartMod,reStartSoil,file=paste("restartRun_",r_no,".rdata"))
+  save(reStartMod,reStartSoil,file=paste0(outDyr,"/reStartData/restartRun_",r_no,".rdata"))
   toMem <- c(toMem,"reStartSoil","reStartMod")
   region <- modRun$region
   rm(modRun); gc()
@@ -354,7 +354,8 @@ if(harvScen=="Base"){
 
 if(harvScen=="protect"){
   harvScenTorun <- harvScen
-  load(paste("restartRun_",r_no,".rdata"))
+  load(paste0(outDyr,"/reStartData/restartRun_",r_no,".rdata"))
+  
   datAllScen <- data.table()
   harvIntenXs <- c("Base","Low","MaxSust","Base")
   harvScenXs <- c("protect","protect","protect","protectTapio")
@@ -536,7 +537,7 @@ if(harvScen=="protect"){
 
 ######run adapt and Mitigation
 if(harvScen %in% c("adapt","Mitigation")){
-  load(paste("restartRun_",r_no,".rdata"))
+  load(paste0(outDyr,"/reStartData/restartRun_",r_no,".rdata"))
   datAllScen <- data.table()
 
   # scens <- c("adapt",
@@ -714,7 +715,7 @@ Sys.chmod(f, (file.info(f)$mode | "0777"),use_umask=FALSE)
 
 if(harvScen =="TapioAndNoHarv"){
   harvScenTorun <- harvScen
-  load(paste("restartRun_",r_no,".rdata"))
+  load(paste0(outDyr,"/reStartData/restartRun_",r_no,".rdata"))
   datAllScen <- data.table()
 
   scens <- c("NoHarv",
