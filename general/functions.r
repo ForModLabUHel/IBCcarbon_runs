@@ -570,13 +570,13 @@ runModel <- function(sampleID, outType="dTabs",
   if(outType=="uncRun"){
     if(harvScen=="Base" & harvInten=="Base"){
       print(paste0("Save 2015-2021 Base/Base results of sampleID",sampleID))
-      reStartYear<-6
+      reStartYearUnc<-6
       reStartMod <- list()
-      reStartMod$siteInfo <- modRun$region$siteInfo
-      reStartMod$GVout <- modRun$region$GVout[,1:reStartYear,]
-      reStartMod$multiOut <- modRun$region$multiOut[,1:reStartYear,,,]
-      reStartMod$initClearcut <- modRun$region$initClearcut
-      reStartSoil = modRun$region$soilC[,1:reStartYear,,,]
+      reStartMod$siteInfo <- region$siteInfo
+      reStartMod$GVout <- region$GVout[,1:reStartYearUnc,]
+      reStartMod$multiOut <- region$multiOut[,1:reStartYearUnc,,,]
+      reStartMod$initClearcut <- region$initClearcut
+      reStartSoil = region$soilC[,1:reStartYearUnc,,,]
       save(reStartMod,reStartSoil,file=paste("uncRuns/regRuns/restartRun_uncRun",sampleID,"_",r_no,".rdata"))
     }
     uncTab <- UncOutProc(varSel=varSel,#c(46,39,30,37), 
