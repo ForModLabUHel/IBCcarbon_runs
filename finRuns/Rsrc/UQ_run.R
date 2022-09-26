@@ -426,6 +426,7 @@ for(nii in nii0:niter2){
   #sampleXs <- lapply(sampleIDs[1:3], function(jx) { runModel(jx, outType=outType)})      
   #sampleXs <- mclapply(sampleIDs[(1+(nii-1)*nParRuns):(nii*nParRuns)], function(jx) {
   #source_url("https://raw.githubusercontent.com/virpi-j/IBCcarbon_runs/master/general/functions.r")
+  reStartYearUnc <- 8
   source_url("https://raw.githubusercontent.com/virpi-j/IBCcarbon_runs/master/general/functions.r")
   print("start runModel")
   if(testRun){ # if needed to test an individual sample
@@ -468,7 +469,7 @@ for(nii in nii0:niter2){
                                runModel(jx, outType=outType, harvScen=harvscen,
                                         harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat,
                                         outModReStart = reStartMod, initSoilCreStart = reStartSoil,
-                                        funPreb = reStartRegionPrebas,reStartYear = 7)
+                                        funPreb = reStartRegionPrebas,reStartYear = reStartYearUnc)
                              }
                            })
 #      sampleXs <- lapply(sampleIDs, function(jx) { 
@@ -495,11 +496,12 @@ for(nii in nii0:niter2){
                     runModel(jx, outType=outType, harvScen=harvscen,
                       harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat)
                   } else {
-                    load(file=paste("restartRun_uncRun",sampleID,"_",r_no,".rdata"))
+                    print(paste("Load 2015-2021 results for sampleID",jx))
+                    load(file=paste("uncRuns/regRuns/restartRun_uncRun",jx,"_",r_no,".rdata"))
                     runModel(jx, outType=outType, harvScen=harvscen,
                         harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat,
                         outModReStart = reStartMod, initSoilCreStart = reStartSoil,
-                        funPreb = reStartRegionPrebas,reStartYear = 7)
+                        funPreb = reStartRegionPrebas,reStartYear = reStartYearUnc)
                     }
                   },
               mc.cores = 4)

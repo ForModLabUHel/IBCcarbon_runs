@@ -570,7 +570,7 @@ runModel <- function(sampleID, outType="dTabs",
   if(outType=="uncRun"){
     if(harvScen=="Base" & harvInten=="Base"){
       print(paste0("Save 2015-2021 Base/Base results of sampleID",sampleID))
-      reStartYearUnc<-7
+      #reStartYearUnc<-reStartYearUnc
       reStartMod <- list()
       reStartMod$siteInfo <- region$siteInfo
       reStartMod$GVout <- region$GVout[,1:reStartYearUnc,]
