@@ -464,7 +464,7 @@ for(nii in nii0:niter2){
                                         harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat)
                              } else {
                                print(paste("Load 2015-2021 results for sampleID",jx))
-                               load(file=paste("restartRun_uncRun",sampleID,"_",r_no,".rdata"))
+                               load(file=paste("uncRuns/regRuns/restartRun_uncRun",jx,"_",r_no,".rdata"))
                                runModel(jx, outType=outType, harvScen=harvscen,
                                         harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat,
                                         outModReStart = reStartMod, initSoilCreStart = reStartSoil,
