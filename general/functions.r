@@ -210,7 +210,11 @@ runModel <- function(sampleID, outType="dTabs",
   ##### if the mortality model flag is 13 uses 
   ##### mortMod=1 (reineke) for managed forests
   ##### mortMod=3 (reineke + empirical model) for unmanaged forests
-
+  if(mortMod==13){
+    initPrebas$mortMod <- c(1,3)#rep(1,dim(initPrebas$multiOut)[1])
+    # initPrebas$mortMod[initPrebas$ClCut==0] <- 3
+  }
+  
   
   ### for adapt and protect scenario Replanting schemes 
   ### do not replant pine in sitetypes 1 and 2
