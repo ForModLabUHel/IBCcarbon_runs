@@ -153,7 +153,18 @@ runModel <- function(sampleID, outType="dTabs",
     xday <- c(dat$rday,(dat$rday+maxRday),(dat$rday+maxRday*2))
     dat = rbind(dat,dat,dat)
     dat[,rday:=xday]
-  }
+  }# }else{
+  #   ####check if the database include all IDs
+  #   missingIDs <- setdiff(unique(sampleX$id, unique(dat$id)))
+  #   if(length(missingIDs)>0){
+  #     coords <- fread("/scratch/project_2000994/RCP/coordinates")
+  #     for(i in 1:length(missingIDs)){
+  #       idX <- order((coords$x - coords$x[missingIDs[i]])^2 + (coords$y - coords$y[missingIDs[i]])^2)[2]
+  #       sampleX[id==missingIDs[i]] <- idX
+  #     }
+  #     print(paste("clim ids: ",missingIDs, "were replaced"))
+  #   }
+  # }
   ## Loop regions -------------------------------------------------------
   # for (r_no in regions) {
   # print(date())
