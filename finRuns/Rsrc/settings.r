@@ -200,6 +200,14 @@ if(regSets=="maakunta"){
                   rep(unlist(energyWoodTab[id==r_no,13]),10),
                   rep(unlist(energyWoodTab[id==r_no,14]),10)
   ))
+  
+  ####!!!!!!!!!!!to be checked!!!!!!!
+  ####energy wood from statistics is energy Wood extracted from the roundwood
+  roundWood <- energyWood + roundWood
+  ###we assume that energy wood is roughly 30% of the energy wood extracted from the roundwood
+  energyWood <- 0.3 * energyWood
+  ######!!!!#####
+  
   clcutArTab <- data.table(read_excel(
     path = "/scratch/project_2000994/PREBASruns/metadata/maakunta/harvest.xlsx",
     sheet="clearcutAreas"))
