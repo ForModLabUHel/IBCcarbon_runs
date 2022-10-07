@@ -28,15 +28,16 @@ runModel <- function(sampleID, outType="dTabs",
   if(!is.null(sampleX)) sampleID <- "sampleX"
   print(paste("start sample ID",sampleID))
   
+  ###flag for soil initialization
+  if(is.null(initSoilCreStart)){
+    initilizeSoil=T
+    initSoilC <- NULL
+  }else{
+    initilizeSoil=F
+    initSoilC <- initSoilCreStart[,1,,,]
+  }
+
   if(is.null(sampleX)){
-    ###flag for soil initialization
-    if(is.null(initSoilCreStart)){
-      initilizeSoil=T
-      initSoilC <- NULL
-    }else{
-      initilizeSoil=F
-      initSoilC <- initSoilCreStart[,1,,,]
-    }
     
     procInSample=F
     ####in the protection scenarios consider buffer to protection areas
