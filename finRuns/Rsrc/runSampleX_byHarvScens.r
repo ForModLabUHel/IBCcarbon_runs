@@ -12,6 +12,26 @@ fileName <- paste0(outDyr,"/r_no",r_no,"_clcutArFact",clcutArFact,
                    "_addHarv",compHarvX,"_landClassX",range(landClassX)[1],
                    "to",range(landClassX)[2],"_mortMod",mortMod)
 
+##Sample from age distribution start
+load("/scratch/project_2000994/PREBASruns/metadata/maakunta/ageClass_probs.rdata")
+probs <- ageClass_probs[maakID==r_no]
+nSample=20000
+probs[,NbyAgeClass:= round(nSample*probAgeClass)]
+sampleX <- data.all[age==0][sample(.N,probs[age20==0]$NbyAgeClass,replace=T)]
+sampleX <- rbind(sampleX,data.all[age>0 & age<=20][sample(.N,probs[age20==10]$NbyAgeClass,replace=T)])
+sampleX <- rbind(sampleX,data.all[age>20 & age<=40][sample(.N,probs[age20==30]$NbyAgeClass,replace=T)])
+sampleX <- rbind(sampleX,data.all[age>40 & age<=60][sample(.N,probs[age20==50]$NbyAgeClass,replace=T)])
+sampleX <- rbind(sampleX,data.all[age>60 & age<=80][sample(.N,probs[age20==70]$NbyAgeClass,replace=T)])
+sampleX <- rbind(sampleX,data.all[age>80 & age<=100][sample(.N,probs[age20==90]$NbyAgeClass,replace=T)])
+sampleX <- rbind(sampleX,data.all[age>100 & age<=120][sample(.N,probs[age20==110]$NbyAgeClass,replace=T)])
+sampleX <- rbind(sampleX,data.all[age>120 & age<=140][sample(.N,probs[age20==130]$NbyAgeClass,replace=T)])
+sampleX <- rbind(sampleX,data.all[age>140][sample(.N,probs[age20==150]$NbyAgeClass,replace=T)])
+sampleX$area <- 1
+sampleX[,N:= as.double(N)]
+sampleX[,N:= 1/(16^2/10000)]
+nSample <- nrow(sampleX)
+##Sample from age distribution end
+
 toMem <- ls()
 
 ####run Base scenario & intensity
@@ -19,13 +39,16 @@ if(harvScen=="Base"){
   harvInten = "Base"
   source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
   source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
-  nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
-  set.seed(1)
-  ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
-  # toMem <- ls()
+
+  
+    # nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
+  # set.seed(1)
+  # ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
+  # # toMem <- ls()
   modRun <- runModel(sampleID,outType="testRun",forceSaveInitSoil=T,
                      harvScen=harvScen,harvInten=harvInten,compHarvX = compHarvX,
-                     cons10run=cons10run,landClassUnman=landClassUnman)
+                     cons10run=cons10run,landClassUnman=landClassUnman,
+                     sampleX=sampleX)
   
   
   reStartMod <- list()
@@ -195,7 +218,8 @@ if(harvScen=="Base"){
                          harvScen=harvScen,harvInten=harvInten,
                          cons10run=cons10run,landClassUnman=landClassUnman,
                          outModReStart = reStartMod, initSoilCreStart = reStartSoil,
-                         funPreb = reStartRegionPrebas,reStartYear = reStartYearX)
+                         funPreb = reStartRegionPrebas,reStartYear = reStartYearX,
+                         sampleX=sampleX)
       region <- modRun$region
       rm(modRun); gc()
       datAll <- data.table()
@@ -376,7 +400,8 @@ if(harvScen=="protect"){
                        harvScen=harvScen,harvInten=harvInten,
                        cons10run=cons10run,landClassUnman=landClassUnman,
                        outModReStart = reStartMod, initSoilCreStart = reStartSoil,
-                       funPreb = reStartRegionPrebas,reStartYear = reStartYearX)
+                       funPreb = reStartRegionPrebas,reStartYear = reStartYearX,
+                       sampleX=sampleX)
     region <- modRun$region
     rm(modRun); gc()
     datAll <- data.table()
@@ -555,7 +580,8 @@ for(harvInten in harvIntensities){
                        harvScen=harvScen,harvInten=harvInten,
                        cons10run=cons10run,landClassUnman=landClassUnman,
                        outModReStart = reStartMod, initSoilCreStart = reStartSoil,
-                       funPreb = reStartRegionPrebas,reStartYear = reStartYearX)
+                       funPreb = reStartRegionPrebas,reStartYear = reStartYearX,
+                       sampleX=sampleX)
 
     region <- modRun$region
     rm(modRun); gc()
@@ -734,7 +760,8 @@ if(harvScen =="TapioAndNoHarv"){
                          harvScen=harvScen,harvInten=harvInten,
                          cons10run=cons10run,landClassUnman=landClassUnman,
                          outModReStart = reStartMod, initSoilCreStart = reStartSoil,
-                         funPreb = reStartRegionPrebas,reStartYear = reStartYearX)
+                         funPreb = reStartRegionPrebas,reStartYear = reStartYearX,
+                         sampleX=sampleX)
       region <- modRun$region
       rm(modRun); gc()
       datAll <- data.table()
