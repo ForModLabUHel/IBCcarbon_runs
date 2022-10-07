@@ -14,7 +14,6 @@ require(dplyr)
 require(abind)
 require(sm)
 library(Matrix)
-library(DescTools)
 
 ###load packages in CSC project folder
 # if(CSCrun){
