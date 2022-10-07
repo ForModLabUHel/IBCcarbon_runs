@@ -14,7 +14,8 @@ runModel <- function(sampleID, outType="dTabs",
                      landClassUnman=NULL,compHarvX = 0,
                      funPreb = regionPrebas,
                      initSoilCreStart=NULL,
-                     outModReStart=NULL,reStartYear=1){
+                     outModReStart=NULL,reStartYear=1,
+                     sampleX=NULL){
   # outType determines the type of output:
   # dTabs -> standard run, mod outputs saved as data.tables 
   # testRun-> test run reports the mod out and initPrebas as objects
@@ -24,96 +25,99 @@ runModel <- function(sampleID, outType="dTabs",
   # cons10run -> flag for conservation areas 10% run
   
   # print(date())
+  if(!is.null(sampleX)) sampleID <- "sampleX"
   print(paste("start sample ID",sampleID))
   
-  ###flag for soil initialization
-  if(is.null(initSoilCreStart)){
-    initilizeSoil=T
-    initSoilC <- NULL
-  }else{
-    initilizeSoil=F
-    initSoilC <- initSoilCreStart[,1,,,]
-  }
-   
-  procInSample=F
-  ####in the protection scenarios consider buffer to protection areas
-  ####if cons10run == TRUE run the model considering 10% area is conservation area according to zonation results
-  if(harvScen %in% c("protect","protectNoAdH","protectTapio") & cons10run==FALSE ){
-    # sampleX$cons[sampleX$Wbuffer==1] <- 1
-    load(paste0("input/maakunta/maakunta_",r_no,"_IDsBuffer.rdata"))
-    xDat <- buffDat
-    procInSample = T
-    initilizeSoil = F
-  }
-  if(cons10run){
-    load(paste0("input/maakunta/maakunta_",r_no,"_IDsCons10.rdata"))
-    xDat <- cons10Dat
-    procInSample = T
-    initilizeSoil = F
-  }
-  if(procInSample){
-    if(is.null(initSoilC)){
-      if(outType=="uncRun"){
-        load(paste0("initSoilCunc/forCent",r_no,"/initSoilC_uncRun_",sampleID,".rdata"))
-      } else {
-        if(identical(landClassX,1:3)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to3.rdata"))
-        if(identical(landClassX,1:2)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to2.rdata"))
-        if(identical(landClassX,1)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1.rdata"))
+  if(is.null(sampleX)){
+    ###flag for soil initialization
+    if(is.null(initSoilCreStart)){
+      initilizeSoil=T
+      initSoilC <- NULL
+    }else{
+      initilizeSoil=F
+      initSoilC <- initSoilCreStart[,1,,,]
+    }
+    
+    procInSample=F
+    ####in the protection scenarios consider buffer to protection areas
+    ####if cons10run == TRUE run the model considering 10% area is conservation area according to zonation results
+    if(harvScen %in% c("protect","protectNoAdH","protectTapio") & cons10run==FALSE ){
+      # sampleX$cons[sampleX$Wbuffer==1] <- 1
+      load(paste0("input/maakunta/maakunta_",r_no,"_IDsBuffer.rdata"))
+      xDat <- buffDat
+      procInSample = T
+      initilizeSoil = F
+    }
+    if(cons10run){
+      load(paste0("input/maakunta/maakunta_",r_no,"_IDsCons10.rdata"))
+      xDat <- cons10Dat
+      procInSample = T
+      initilizeSoil = F
+    }
+    if(procInSample){
+      if(is.null(initSoilC)){
+        if(outType=="uncRun"){
+          load(paste0("initSoilCunc/forCent",r_no,"/initSoilC_uncRun_",sampleID,".rdata"))
+        } else {
+          if(identical(landClassX,1:3)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to3.rdata"))
+          if(identical(landClassX,1:2)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to2.rdata"))
+          if(identical(landClassX,1)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1.rdata"))
+        }
       }
-    }
-    setnames(xDat,"nPix","N")
-    xDat[,area:=N*16^2/10000]
-    
-    # setkey(ops[[sampleID]],maakuntaID)
-    # setkey(xDat,maakuntaID)
-    posX <- which(ops[[sampleID]]$maakuntaID %in% xDat$maakuntaID)
-    maakX <- ops[[sampleID]][posX]$maakuntaID
-    myXdat <- semi_join(xDat[maakuntaID %in% maakX],ops[[sampleID]],by="maakuntaID")
-    for(ijf in 1:nrow(myXdat)){
-      ops[[sampleID]][maakuntaID ==myXdat$maakuntaID[ijf]]$area <- myXdat$area[ijf]
-      ops[[sampleID]][maakuntaID ==myXdat$maakuntaID[ijf]]$N <- myXdat$N[ijf]
-    }
-    
-    selX <- xDat[!maakuntaID %in% maakX &
-                   oldMaakID %in% maakX]
-    ops[[sampleID]][,oldMaakID:=maakuntaID]
-    
-    selX$newCons <- NULL
-    selX$Wbuffer <- NULL
-    ops[[sampleID]]$Wbuffer <- NULL
-    
-    sampleX <- rbind(ops[[sampleID]],selX)
-    sampleX$segID <- sampleX$maakuntaID
-    x0 <- which(sampleX$N==0)    
-    sampleX <- sampleX[-x0]
-    segIDs <- sampleX$segID
-    if(is.null(initSoilCreStart) | 
-       (harvScen %in% c("protect","protectNoAdH","protectTapio") & 
-        !cons10run)){
-      initSoilC <- abind(initSoilC,initSoilC[posX,,,],along=1)
-      initSoilC <- initSoilC[-x0,,,]
+      setnames(xDat,"nPix","N")
+      xDat[,area:=N*16^2/10000]
       
-      if(!is.null(initSoilCreStart)){
-        initSoilCreStart <- abind(initSoilCreStart,initSoilCreStart[posX,,,,],along=1)
-        initSoilCreStart <- initSoilCreStart[-x0,,,,]
+      # setkey(ops[[sampleID]],maakuntaID)
+      # setkey(xDat,maakuntaID)
+      posX <- which(ops[[sampleID]]$maakuntaID %in% xDat$maakuntaID)
+      maakX <- ops[[sampleID]][posX]$maakuntaID
+      myXdat <- semi_join(xDat[maakuntaID %in% maakX],ops[[sampleID]],by="maakuntaID")
+      for(ijf in 1:nrow(myXdat)){
+        ops[[sampleID]][maakuntaID ==myXdat$maakuntaID[ijf]]$area <- myXdat$area[ijf]
+        ops[[sampleID]][maakuntaID ==myXdat$maakuntaID[ijf]]$N <- myXdat$N[ijf]
       }
-      if(!is.null(outModReStart)){
-        outModReStart$multiOut <- abind(outModReStart$multiOut,outModReStart$multiOut[posX,,,,],along=1)
-        outModReStart$multiOut <- outModReStart$multiOut[-x0,,,,]
-        outModReStart$GVout <- abind(outModReStart$GVout,outModReStart$GVout[posX,,],along=1)
-        outModReStart$GVout <- outModReStart$GVout[-x0,,]
-        outModReStart$siteInfo <- abind(outModReStart$siteInfo,outModReStart$siteInfo[posX,],along=1)
-        outModReStart$siteInfo <- outModReStart$siteInfo[-x0,]
-        outModReStart$siteInfo[,1] <- segIDs
-        outModReStart$multiOut[,,1,,1] <- array(segIDs,dim=dim(outModReStart$multiOut[,,1,,1])) 
-        outModReStart$initClearcut <- abind(outModReStart$initClearcut,outModReStart$initClearcut[posX,],along=1)
-        outModReStart$initClearcut <- outModReStart$initClearcut[-x0,]
+      
+      selX <- xDat[!maakuntaID %in% maakX &
+                     oldMaakID %in% maakX]
+      ops[[sampleID]][,oldMaakID:=maakuntaID]
+      
+      selX$newCons <- NULL
+      selX$Wbuffer <- NULL
+      ops[[sampleID]]$Wbuffer <- NULL
+      
+      sampleX <- rbind(ops[[sampleID]],selX)
+      sampleX$segID <- sampleX$maakuntaID
+      x0 <- which(sampleX$N==0)    
+      sampleX <- sampleX[-x0]
+      segIDs <- sampleX$segID
+      if(is.null(initSoilCreStart) | 
+         (harvScen %in% c("protect","protectNoAdH","protectTapio") & 
+          !cons10run)){
+        initSoilC <- abind(initSoilC,initSoilC[posX,,,],along=1)
+        initSoilC <- initSoilC[-x0,,,]
+        
+        if(!is.null(initSoilCreStart)){
+          initSoilCreStart <- abind(initSoilCreStart,initSoilCreStart[posX,,,,],along=1)
+          initSoilCreStart <- initSoilCreStart[-x0,,,,]
+        }
+        if(!is.null(outModReStart)){
+          outModReStart$multiOut <- abind(outModReStart$multiOut,outModReStart$multiOut[posX,,,,],along=1)
+          outModReStart$multiOut <- outModReStart$multiOut[-x0,,,,]
+          outModReStart$GVout <- abind(outModReStart$GVout,outModReStart$GVout[posX,,],along=1)
+          outModReStart$GVout <- outModReStart$GVout[-x0,,]
+          outModReStart$siteInfo <- abind(outModReStart$siteInfo,outModReStart$siteInfo[posX,],along=1)
+          outModReStart$siteInfo <- outModReStart$siteInfo[-x0,]
+          outModReStart$siteInfo[,1] <- segIDs
+          outModReStart$multiOut[,,1,,1] <- array(segIDs,dim=dim(outModReStart$multiOut[,,1,,1])) 
+          outModReStart$initClearcut <- abind(outModReStart$initClearcut,outModReStart$initClearcut[posX,],along=1)
+          outModReStart$initClearcut <- outModReStart$initClearcut[-x0,]
+        }
       }
+      
+      # data.all <- rbind(data.all[!maakuntaID %in% xDat$maakuntaID],xDat)
+    }else{
+      sampleX <- ops[[sampleID]]
     }
-    
-    # data.all <- rbind(data.all[!maakuntaID %in% xDat$maakuntaID],xDat)
-  }else{
-    sampleX <- ops[[sampleID]]
   }
   
   if(outType %in% c("uncRun","uncSeg")){

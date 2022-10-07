@@ -190,6 +190,16 @@ if(regSets=="maakunta"){
                  rep(unlist(roundWoodTab[id==r_no,13]),10),
                  rep(unlist(roundWoodTab[id==r_no,14]),10)
   ))
+  energyWoodFromRoundWoodTab <- data.table(read_excel(
+    path = "/scratch/project_2000994/PREBASruns/metadata/maakunta/harvest.xlsx",
+    sheet="energyWoodRoundWood"))
+  energyWoodFromRoundWood <- as.numeric(c(unlist(energyWoodFromRoundWoodTab[id==r_no,3:9]),
+                             rep(unlist(energyWoodFromRoundWoodTab[id==r_no,10]),3),
+                             rep(unlist(energyWoodFromRoundWoodTab[id==r_no,11]),10),
+                             rep(unlist(energyWoodFromRoundWoodTab[id==r_no,12]),10),
+                             rep(unlist(energyWoodFromRoundWoodTab[id==r_no,13]),10),
+                             rep(unlist(energyWoodFromRoundWoodTab[id==r_no,14]),10)
+  ))
   energyWoodTab <- data.table(read_excel(
     path = "/scratch/project_2000994/PREBASruns/metadata/maakunta/harvest.xlsx",
     sheet="energyWood"))
@@ -202,10 +212,8 @@ if(regSets=="maakunta"){
   ))
   
   ####!!!!!!!!!!!to be checked!!!!!!!
-  ####energy wood from statistics is energy Wood extracted from the roundwood
-  roundWood <- energyWood + roundWood
-  ###we assume that energy wood is roughly 30% of the energy wood extracted from the roundwood
-  energyWood <- 0.3 * energyWood
+  ####energy wood from statistics includes pulp, sawn and energyWood from roundWood
+  roundWood <- energyWoodFromRoundWood + roundWood
   ######!!!!#####
   
   clcutArTab <- data.table(read_excel(
