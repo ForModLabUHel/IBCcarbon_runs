@@ -14,6 +14,8 @@ fileName <- paste0(outDyr,"/r_no",r_no,"_clcutArFact",clcutArFact,
 
 ##Sample from age distribution start
 if(sampleFromAgeClass){
+  source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
+  source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
   load("/scratch/project_2000994/PREBASruns/metadata/maakunta/ageClass_probs.rdata")
   probs <- ageClass_probs[maakID==r_no]
   nSample=20000
