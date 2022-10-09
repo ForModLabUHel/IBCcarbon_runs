@@ -66,7 +66,9 @@ if(harvScen=="Base"){
   region <- modRun$region
   rm(modRun); gc()
   datAll <- data.table()
-  segID <- region$siteInfo[,1]
+  # segID <- region$siteInfo[,1]
+  segID <- region$siteInfo[,1] <- 1:length(region$siteInfo[,1])
+  region$multiOut[,,1,,1] <- 1:length(region$siteInfo[,1])
   for(i in 1:length(varSel)){
     datX <- outProcFun(region,varSel[i],funX[i])
     datX <- melt(datX,"segID")
@@ -227,7 +229,9 @@ if(harvScen=="Base"){
       region <- modRun$region
       rm(modRun); gc()
       datAll <- data.table()
-      segID <- region$siteInfo[,1]
+      # segID <- region$siteInfo[,1]
+      segID <- region$siteInfo[,1] <- 1:length(region$siteInfo[,1])
+      region$multiOut[,,1,,1] <- 1:length(region$siteInfo[,1])
       for(i in 1:length(varSel)){
         datX <- outProcFun(region,varSel[i],funX[i])
         datX <- melt(datX,"segID")
@@ -409,7 +413,9 @@ if(harvScen=="protect"){
     region <- modRun$region
     rm(modRun); gc()
     datAll <- data.table()
-    segID <- region$siteInfo[,1]
+    # segID <- region$siteInfo[,1]
+    segID <- region$siteInfo[,1] <- 1:length(region$siteInfo[,1])
+    region$multiOut[,,1,,1] <- 1:length(region$siteInfo[,1])
     for(i in 1:length(varSel)){
       datX <- outProcFun(region,varSel[i],funX[i])
       datX <- melt(datX,"segID")
@@ -590,7 +596,9 @@ if(harvScen %in% c("adapt","Mitigation")){
     region <- modRun$region
     rm(modRun); gc()
     datAll <- data.table()
-    segID <- region$siteInfo[,1]
+    # segID <- region$siteInfo[,1]
+    segID <- region$siteInfo[,1] <- 1:length(region$siteInfo[,1])
+    region$multiOut[,,1,,1] <- 1:length(region$siteInfo[,1])
     for(i in 1:length(varSel)){
       datX <- outProcFun(region,varSel[i],funX[i])
       datX <- melt(datX,"segID")
@@ -769,7 +777,9 @@ if(harvScen =="TapioAndNoHarv"){
       region <- modRun$region
       rm(modRun); gc()
       datAll <- data.table()
-      segID <- region$siteInfo[,1]
+      # segID <- region$siteInfo[,1]
+      segID <- region$siteInfo[,1] <- 1:length(region$siteInfo[,1])
+      region$multiOut[,,1,,1] <- 1:length(region$siteInfo[,1])
       for(i in 1:length(varSel)){
         datX <- outProcFun(region,varSel[i],funX[i])
         datX <- melt(datX,"segID")
