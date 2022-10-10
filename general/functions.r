@@ -72,23 +72,23 @@ runModel <- function(sampleID, outType="dTabs",
       
       # setkey(ops[[sampleID]],maakuntaID)
       # setkey(xDat,maakuntaID)
-      posX <- which(ops[[sampleID]]$maakuntaID %in% xDat$maakuntaID)
-      maakX <- ops[[sampleID]][posX]$maakuntaID
-      myXdat <- semi_join(xDat[maakuntaID %in% maakX],ops[[sampleID]],by="maakuntaID")
+      posX <- which(sampleX$maakuntaID %in% xDat$maakuntaID)
+      maakX <- sampleX[posX]$maakuntaID
+      myXdat <- semi_join(xDat[maakuntaID %in% maakX],sampleX,by="maakuntaID")
       for(ijf in 1:nrow(myXdat)){
-        ops[[sampleID]][maakuntaID ==myXdat$maakuntaID[ijf]]$area <- myXdat$area[ijf]
-        ops[[sampleID]][maakuntaID ==myXdat$maakuntaID[ijf]]$N <- myXdat$N[ijf]
+        sampleX[maakuntaID ==myXdat$maakuntaID[ijf]]$area <- myXdat$area[ijf]
+        sampleX[maakuntaID ==myXdat$maakuntaID[ijf]]$N <- myXdat$N[ijf]
       }
       
       selX <- xDat[!maakuntaID %in% maakX &
                      oldMaakID %in% maakX]
-      ops[[sampleID]][,oldMaakID:=maakuntaID]
+      sampleX[,oldMaakID:=maakuntaID]
       
       selX$newCons <- NULL
       selX$Wbuffer <- NULL
-      ops[[sampleID]]$Wbuffer <- NULL
+      sampleX$Wbuffer <- NULL
       
-      sampleX <- rbind(ops[[sampleID]],selX)
+      sampleX <- rbind(sampleX,selX)
       sampleX$segID <- sampleX$maakuntaID
       x0 <- which(sampleX$N==0)    
       sampleX <- sampleX[-x0]
