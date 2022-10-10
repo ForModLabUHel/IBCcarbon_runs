@@ -25,12 +25,11 @@ if(harvScen=="Base"){
   harvInten = "Base"
   source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
   source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
-  
-  
-  # nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
-  # set.seed(1)
-  # ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
-  # # toMem <- ls()
+  if(!sampleFromAgeClass){
+    nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
+    set.seed(1)
+    ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
+  }
   modRun <- runModel(sampleID,outType="testRun",forceSaveInitSoil=T,
                      harvScen=harvScen,harvInten=harvInten,compHarvX = compHarvX,
                      cons10run=cons10run,landClassUnman=landClassUnman,
@@ -198,10 +197,11 @@ if(harvScen=="Base"){
     for(harvScen in scens){
       source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
       source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
-      nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
-      set.seed(1)
-      ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
-      # toMem <- ls()
+      if(!sampleFromAgeClass){
+        nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
+        set.seed(1)
+        ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
+      }
       modRun <- runModel(sampleID,outType="testRun",compHarvX = compHarvX,
                          harvScen=harvScen,harvInten=harvInten,
                          cons10run=cons10run,landClassUnman=landClassUnman,
@@ -382,9 +382,11 @@ if(harvScen=="protect"){
     # for(harvScen in scens){
     source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
     source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
-    nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
-    set.seed(1)
-    ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
+    if(!sampleFromAgeClass){
+      nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
+      set.seed(1)
+      ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
+    }
     # toMem <- ls()
     modRun <- runModel(sampleID,outType="testRun",compHarvX = compHarvX,
                        harvScen=harvScen,harvInten=harvInten,
@@ -564,9 +566,11 @@ if(harvScen %in% c("adapt","Mitigation")){
     # for(harvScen in scens){
     source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
     source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
-    nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
-    set.seed(1)
-    ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
+    if(!sampleFromAgeClass){
+      nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
+      set.seed(1)
+      ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
+    }
     # toMem <- ls()
     modRun <- runModel(sampleID,outType="testRun",compHarvX = compHarvX,
                        harvScen=harvScen,harvInten=harvInten,
@@ -746,9 +750,11 @@ if(harvScen =="TapioAndNoHarv"){
     for(harvScen in scens){
       source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
       source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
-      nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
-      set.seed(1)
-      ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
+      if(!sampleFromAgeClass){
+        nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
+        set.seed(1)
+        ops <- split(data.all, sample(1:nSamples, nrow(data.all), replace=T))
+      }
       # toMem <- ls()
       modRun <- runModel(sampleID,outType="testRun",compHarvX = compHarvX,
                          harvScen=harvScen,harvInten=harvInten,

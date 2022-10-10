@@ -38,24 +38,26 @@ runModel <- function(sampleID, outType="dTabs",
   }
 
   if(is.null(sampleX)){
-    
-    procInSample=F
+    sampleX <- ops[[sampleID]]
+  }
+  
+  procInSample=F
     ####in the protection scenarios consider buffer to protection areas
     ####if cons10run == TRUE run the model considering 10% area is conservation area according to zonation results
-    if(harvScen %in% c("protect","protectNoAdH","protectTapio") & cons10run==FALSE ){
+  if(harvScen %in% c("protect","protectNoAdH","protectTapio") & cons10run==FALSE ){
       # sampleX$cons[sampleX$Wbuffer==1] <- 1
       load(paste0("input/maakunta/maakunta_",r_no,"_IDsBuffer.rdata"))
       xDat <- buffDat
       procInSample = T
       initilizeSoil = F
-    }
-    if(cons10run){
+  }
+  if(cons10run){
       load(paste0("input/maakunta/maakunta_",r_no,"_IDsCons10.rdata"))
       xDat <- cons10Dat
       procInSample = T
       initilizeSoil = F
-    }
-    if(procInSample){
+  }
+  if(procInSample){
       if(is.null(initSoilC)){
         if(outType=="uncRun"){
           load(paste0("initSoilCunc/forCent",r_no,"/initSoilC_uncRun_",sampleID,".rdata"))
@@ -114,11 +116,6 @@ runModel <- function(sampleID, outType="dTabs",
           outModReStart$initClearcut <- outModReStart$initClearcut[-x0,]
         }
       }
-      
-      # data.all <- rbind(data.all[!maakuntaID %in% xDat$maakuntaID],xDat)
-    }else{
-      sampleX <- ops[[sampleID]]
-    }
   }
   
   if(outType %in% c("uncRun","uncSeg")){
