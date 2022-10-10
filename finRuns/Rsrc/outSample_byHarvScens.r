@@ -353,7 +353,7 @@ if(harvScen=="Base"){
     }
   }
   print("Base runs completed")
-  areas <- data.table(segID=region$siteInfo[,1],area=region$areas)
+  areas <- data.table(segID=region$siteInfo[,1],area=region$areas,cons=region$ClCut)
   save(datAllScen,areas,file=paste0(fileName,"_",harvScen,".rdata"))
   
   Sys.chmod(list.dirs("initSoilC"), "0777",use_umask=FALSE)
@@ -539,7 +539,7 @@ if(harvScen=="protect"){
     # }
     # }
   }
-  areasProtect <- data.table(segID=region$siteInfo[,1],area=region$areas)
+  areasProtect <- data.table(segID=region$siteInfo[,1],area=region$areas,cons=region$ClCut)
   datAllScenProtect <- datAllScen
   print("protect runs completed")
   save(datAllScenProtect,areasProtect,file=paste0(fileName,"_",harvScenTorun,".rdata"))
@@ -723,7 +723,7 @@ if(harvScen %in% c("adapt","Mitigation")){
     print(paste0("harvest intensity ", harvInten))
     # }
   }
-  areas <- data.table(segID=region$siteInfo[,1],area=region$areas)
+  areas <- data.table(segID=region$siteInfo[,1],area=region$areas,cons=region$ClCut)
   print(paste0(harvScen," runs completed"))
   save(datAllScen,areas,file=paste0(fileName,"_",harvScen,".rdata"))
   
@@ -906,7 +906,7 @@ if(harvScen =="TapioAndNoHarv"){
       print(paste0("harvest intensity ", harvInten))
     }
   }
-  areas <- data.table(segID=region$siteInfo[,1],area=region$areas)
+  areas <- data.table(segID=region$siteInfo[,1],area=region$areas,cons=region$ClCut)
   print(paste0(harvScenTorun," runs completed"))
   save(datAllScen,areas,file=paste0(fileName,"_",harvScenTorun,".rdata"))
   
