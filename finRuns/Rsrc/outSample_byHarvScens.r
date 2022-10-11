@@ -22,6 +22,7 @@ toMem <- ls()
 
 ####run Base scenario & intensity
 if(harvScen=="Base"){
+  datAllScen <- data.table()
   if(cons10run==FALSE){
     harvInten = "Base"
     source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
