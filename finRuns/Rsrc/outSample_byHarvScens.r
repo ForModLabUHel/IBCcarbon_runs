@@ -21,7 +21,7 @@ if(sampleFromAgeClass){
 toMem <- ls()
 
 ####run Base scenario & intensity
-if(harvScen=="Base"){
+if(harvScen=="Base" & cons10run==F){
   harvInten = "Base"
   source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
   source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
@@ -42,7 +42,7 @@ if(harvScen=="Base"){
   reStartMod$multiOut <- modRun$region$multiOut[,1:reStartYearX,,,]
   reStartMod$initClearcut <- modRun$region$initClearcut
   reStartSoil = modRun$region$soilC[,1:reStartYearX,,,]
-  save(reStartMod,reStartSoil,file=paste0(outDyr,"/reStartData/restartRun_",r_no,".rdata"))
+  save(reStartMod,reStartSoil,file=paste0("/scratch/project_2000994/PREBASruns/finRuns/reStartData/restartRun_",r_no,".rdata"))
   toMem <- c(toMem,"reStartSoil","reStartMod")
   region <- modRun$region
   rm(modRun); gc()
@@ -193,8 +193,11 @@ if(harvScen=="Base"){
   scens <- "Base"
   # datAllScen <- data.table()
   # toMem <- ls()
-  for(harvInten in c("Low","MaxSust")){
+  if(cons10run) harvIntens <- c("Base","Low","MaxSust")
+  if(!cons10run) harvIntens <- c("Low","MaxSust")
+  for(harvInten in harvIntens){
     for(harvScen in scens){
+      load(paste0("/scratch/project_2000994/PREBASruns/finRuns/reStartData/restartRun_",r_no,".rdata"))
       source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
       source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
       if(!sampleFromAgeClass){
@@ -368,7 +371,7 @@ if(harvScen=="Base"){
 
 if(harvScen=="protect"){
   harvScenTorun <- harvScen
-  load(paste0(outDyr,"/reStartData/restartRun_",r_no,".rdata"))
+  load(paste0("/scratch/project_2000994/PREBASruns/finRuns/reStartData/restartRun_",r_no,".rdata"))
   
   datAllScen <- data.table()
   harvIntenXs <- c("Base","Low","MaxSust","Base")
@@ -556,7 +559,7 @@ if(harvScen=="protect"){
 
 ######run adapt and Mitigation
 if(harvScen %in% c("adapt","Mitigation")){
-  load(paste0(outDyr,"/reStartData/restartRun_",r_no,".rdata"))
+  load(paste0("/scratch/project_2000994/PREBASruns/finRuns/reStartData/restartRun_",r_no,".rdata"))
   datAllScen <- data.table()
   
   # scens <- c("adapt",
@@ -739,7 +742,7 @@ if(harvScen %in% c("adapt","Mitigation")){
 
 if(harvScen =="TapioAndNoHarv"){
   harvScenTorun <- harvScen
-  load(paste0(outDyr,"/reStartData/restartRun_",r_no,".rdata"))
+  load(paste0("/scratch/project_2000994/PREBASruns/finRuns/reStartData/restartRun_",r_no,".rdata"))
   datAllScen <- data.table()
   
   scens <- c("NoHarv",
