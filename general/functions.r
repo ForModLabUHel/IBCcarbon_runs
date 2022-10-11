@@ -99,7 +99,7 @@ runModel <- function(sampleID, outType="dTabs",
     segIDs <- sampleX$segID
     if(is.null(initSoilCreStart) | 
        (harvScen %in% c("protect","protectNoAdH","protectTapio") & 
-        !cons10run)){
+        !cons10run)| cons10run){
       initSoilC <- abind(initSoilC,initSoilC[posX,,,],along=1)
       initSoilC <- initSoilC[-x0,,,]
       
