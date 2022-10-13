@@ -91,6 +91,8 @@ runModel <- function(sampleID, outType="dTabs",
     
     selX <- selX[, ..namesCol] 
     sampleX <- sampleX[, ..namesCol] 
+    sampleX$oldCons <- sampleX$cons
+    selX$oldCons <- 0 
     sampleX <- rbind(sampleX,selX)
     
     sampleX$segID <- sampleX$maakuntaID
@@ -559,8 +561,8 @@ runModel <- function(sampleID, outType="dTabs",
   }
   #####start initialize deadWood volume
   ## identify managed and unmanaged forests
-  manFor <-  which(sampleX$cons==0)
-  unmanFor <- which(sampleX$cons==1)
+  manFor <-  which(sampleX$oldCons==0)
+  unmanFor <- which(sampleX$oldCons==1)
   if(outType=="ststDeadW"){
     unmanDeadW <- initDeadW(region,unmanFor,yearsDeadW)
     manDeadW <- initDeadW(region,manFor,yearsDeadW)
