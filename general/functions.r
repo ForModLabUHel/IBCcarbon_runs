@@ -40,7 +40,7 @@ runModel <- function(sampleID, outType="dTabs",
   if(is.null(sampleX)){
     sampleX <- ops[[sampleID]]
   }
-  
+  sampleX$oldCons <- sampleX$cons
   procInSample=F
   ####in the protection scenarios consider buffer to protection areas
   ####if cons10run == TRUE run the model considering 10% area is conservation area according to zonation results
