@@ -5,7 +5,7 @@
 ## ---------------------------------------------------------------------
 ## MAIN SCRIPT: uncRun for random segments, uncSeg for random values for segments
 ## ---------------------------------------------------------------------
-runModel <- function(sampleID, outType="dTabs",
+runModel <- function(sampleID, outType="dTabs", uncRCP=0,
                      harvScen,harvInten,easyInit=FALSE,
                      forceSaveInitSoil=F, cons10run = F,
                      procDrPeat=F,coeffPeat1=-240,coeffPeat2=70,
@@ -158,21 +158,34 @@ runModel <- function(sampleID, outType="dTabs",
     #####process data considering only current climate###
     # dat <- dat[rday %in% 1:10958] #uncomment to select some years (10958 needs to be modified)
     maxRday <- max(dat$rday)
-    xday <- c(dat$rday,(dat$rday+maxRday),(dat$rday+maxRday*2))
-    dat = rbind(dat,dat,dat)
+    if(uncRun){
+      if(unc100){
+        xday <- c(dat$rday,(dat$rday+maxRday),(dat$rday+maxRday*2),
+                  (dat$rday+maxRday*3),(dat$rday+maxRday*4))
+        dat = rbind(dat,dat,dat,dat,dat)
+      } else {
+        xday <- c(dat$rday,(dat$rday+maxRday),(dat$rday+maxRday*2))
+        dat = rbind(dat,dat,dat)
+      }
+    } else {
+      xday <- c(dat$rday,(dat$rday+maxRday),(dat$rday+maxRday*2))
+      dat = rbind(dat,dat,dat)
+    }
     dat[,rday:=xday]
-  }# }else{
-  #   ####check if the database include all IDs
-  #   missingIDs <- setdiff(unique(sampleX$id, unique(dat$id)))
-  #   if(length(missingIDs)>0){
-  #     coords <- fread("/scratch/project_2000994/RCP/coordinates")
-  #     for(i in 1:length(missingIDs)){
-  #       idX <- order((coords$x - coords$x[missingIDs[i]])^2 + (coords$y - coords$y[missingIDs[i]])^2)[2]
-  #       sampleX[id==missingIDs[i]] <- idX
-  #     }
-  #     print(paste("clim ids: ",missingIDs, "were replaced"))
-  #   }
-  # }
+  } else {
+    missingIDs <- setdiff(unique(sampleX$id), unique(dat$id))
+    if(length(missingIDs)>0){
+      coords <- fread("/scratch/project_2000994/RCP/coordinates")
+      for(i in 1:length(missingIDs)){
+        idX <- order((coords$x - coords$x[missingIDs[i]])^2 + (coords$y - coords$y[missingIDs[i]])^2)
+        idX <- idX[idX%in%unique(dat$id)][1]
+        nn<-which(sampleX$id==missingIDs[i]) 
+        sampleX[nn,climID:=idX]
+        sampleX[nn,id:=idX]
+        print(paste("SampleID",sampleID,"clim ids: ",missingIDs[i], "was replaced with",idX))
+      }
+    }
+  }
   ## Loop regions -------------------------------------------------------
   # for (r_no in regions) {
   # print(date())
@@ -348,10 +361,13 @@ runModel <- function(sampleID, outType="dTabs",
   #if(!is.na(cutArX)){
   print("calculating clearcutting areas")
   clcutArX <- clcutAr * sum(areas)/sum(data.all$area)
+  if(length(clcutArX)<nYears) clcutArX<-c(clcutArX,clcutArX[rep(length(clcutArX),nYears-length(clcutArX))])
   clcutArX <- cbind(clcutArX[1:nYears],0.)
   tendX <- tendingAr * sum(areas)/sum(data.all$area)
+  if(length(tendX)<nYears) tendX<-c(tendX,tendX[rep(length(tendX),nYears-length(tendX))])
   tendX <- cbind(tendX[1:nYears],0.)
   fThinX <- firstThinAr * sum(areas)/sum(data.all$area)
+  if(length(fThinX)<nYears) fThinX<-c(fThinX,fThinX[rep(length(fThinX),nYears-length(fThinX))])
   fThinX <- cbind(fThinX[1:nYears],0.)
   cutArX <- cbind(clcutArX,tendX)
   cutArX <- cbind(cutArX,fThinX)
@@ -391,6 +407,9 @@ runModel <- function(sampleID, outType="dTabs",
   
   print(paste0("harvest scenario ", harvScen))
   print(paste0("harvest intensity ", harvInten))
+  if(nrow(HarvLim1)<nYears){
+    HarvLim1<-rbind(HarvLim1,matrix(HarvLim1[nrow(HarvLim1),],(nYears-nrow(HarvLim1)),ncol(HarvLim1),byrow = T))
+  }
   HarvLimX <- HarvLim1[1:nYears,]
   
   if(harvScen %in% c("adapt","adaptNoAdH","adaptTapio")){
@@ -572,6 +591,14 @@ runModel <- function(sampleID, outType="dTabs",
   }else{
     load(paste0("initDeadWVss/reg",
                 r_no,"_deadWV_mortMod",mortMod,".rdata"))
+    if(nrow(unmanDeadW$ssDeadW)<nYears){
+      tmp<-unmanDeadW$ssDeadW
+      tmp<-rbind(tmp,matrix(tmp[nrow(tmp),],ncol=ncol(tmp),nrow=nYears-nrow(tmp),byrow = T))
+      unmanDeadW$ssDeadW<-tmp
+      tmp<-manDeadW$ssDeadW
+      tmp<-rbind(tmp,matrix(tmp[nrow(tmp),],ncol=ncol(tmp),nrow=nYears-nrow(tmp),byrow = T))
+      manDeadW$ssDeadW<-tmp
+    } 
     region$multiOut[manFor,,8,1:3,1] <- region$multiOut[manFor,,8,1:3,1] + 
       aperm(replicate(length(manFor),(manDeadW$ssDeadW[1:nYears,])),c(3,1:2))
     region$multiOut[unmanFor,,8,1:3,1] <- region$multiOut[unmanFor,,8,1:3,1] + 
