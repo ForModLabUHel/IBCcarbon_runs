@@ -8,6 +8,7 @@
 
 #rm(list=ls())
 #sampleID <- 4
+print("start UQ_run")
 rcpfile="CurrClim"
 library(data.table)
 library(devtools)
@@ -16,6 +17,9 @@ library(stringr)
 CSCrun=T
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/loadPackages.r")
 
+if(zon10){
+  library(raster)
+}
 ststDeadW<-FALSE
 #source("localSettings.r")
 
@@ -24,6 +28,9 @@ if(uncSeg) outType <- "uncSeg"
 #harvscen<- "Base" #"Base", adapt","protect","protectNoAdH","adaptNoAdH","adaptTapio"
 #harvinten<- "Base" # "Base", "Low", "MaxSust", "NoHarv" 
   
+if(unc100){ nYears <-100
+print("unc100 run")
+}
 ##### From GitHub
 source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
 #source_url("https://raw.githubusercontent.com/virpi-j/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
@@ -99,6 +106,13 @@ data.all[,consArea:=cons]
 # No harvests on "kitumaa", set here as conservation area
 data.all$cons[which(data.all$landclass==2)]<-1
 
+filee <- paste0("uncRuns/regRuns/samplexout_reg",r_no,
+                "_CurrClim_Base_Base_samplesize",nSitesRunr,"_iters",nSamplesr,
+                "_pr",uncPCrobas,"_Xr",uncInput,"_ager",uncAge,
+                "_Cr",uncClim,"_str",uncSiteType,".rdata")
+
+if(file.exists(filee)) {loadUnc<-TRUE
+print("Old results found, use the same input sets to continue")}
 set.seed(10)
 if(loadParids){ 
   if(!uncSeg) {
@@ -357,38 +371,38 @@ if(uncSeg && file.exists(paste0("uncRuns/segRuns/samplexout_uncSeg_reg",r_no,
   #nii0<-(length(sampleOutput[[1]])-1)/3+1
   nii0<-as.numeric(strsplit(colnames(sampleOutput[[1]])[length(sampleOutput[[1]])],"per3.")[[1]][2])+1
 }
-if(!uncSeg) {
+if(!uncSeg){
   ffilee <- paste0("uncRuns/regRuns/samplexout_reg",r_no,
              "_",rcpsname,"_",harvscen,"_",harvinten,                                    
-             "_samplesize",nSitesRunr,"_iters",nSamplesr,
-             "_pr",uncPCrobas,"_Xr",uncInput,"_ager",uncAge,
-             "_Cr",uncClim,"_str",uncSiteType,".rdata")
+                         "_samplesize",nSitesRunr,"_iters",nSamplesr,
+                         "_pr",uncPCrobas,"_Xr",uncInput,"_ager",uncAge,
+                         "_Cr",uncClim,"_str",uncSiteType,".rdata")
   print(paste("load ",ffilee))
   if(file.exists(ffilee)){
     load(ffilee)
   #nii0<-(length(sampleOutput[[1]])-1)/3+1
     nii0<-nrow(sampleOutput[[2]])+1
-  }
-}
+       }
+     }
 if(!uncSeg){
   niter <- ceiling(nSamplesr/nParRuns)
   nii0 <- ceiling(nii0/nParRuns)
 } else {
   niter <- nSamplesr
-}
+   }
 if(nii0 > niter) nii0<-1
 print(paste("start from iteration",nii0))
 #if(!uncSeg){
-#  filee <- paste0("uncRuns/regRuns/samplexout_reg",r_no,
+#        filee <- paste0("uncRuns/regRuns/samplexout_reg",r_no,
 #       "_",rcpsname,"_",hscen,"_",harvinten,                                    
-#       "_samplesize",nSitesRunr,"_iters",nSamplesr,
-#       "_pr",uncPCrobas,"_Xr",uncInput,"_ager",uncAge,
-#       "_Cr",uncClim,"_str",uncSiteType,".rdata")
+#                        "_samplesize",nSitesRunr,"_iters",nSamplesr,
+#                        "_pr",uncPCrobas,"_Xr",uncInput,"_ager",uncAge,
+#                        "_Cr",uncClim,"_str",uncSiteType,".rdata")
 #  if(file.exists(filee)){
-#    load(filee)
+#        load(filee)
 #    nii0<-(length(sampleOutput[[1]])-1)/3+1
 #  print(paste("start from iteration",nii0))
-#}
+#  }
 niter2 <- niter
 if(uncSeg) niter2 <- 53
 
@@ -429,6 +443,7 @@ for(nii in nii0:niter2){
   reStartYearUnc <- 7
   source_url("https://raw.githubusercontent.com/virpi-j/IBCcarbon_runs/master/general/functions.r")
   print("start runModel")
+  #uncRCPs <- 0:2
   if(testRun){ # if needed to test an individual sample
     if(uncSeg){
       sampleXs <- lapply(sampleIDs, function(jx) { 
@@ -444,6 +459,7 @@ for(nii in nii0:niter2){
       easyInit=FALSE
       forceSaveInitSoil=F 
       cons10run = F
+      funPreb = regionPrebas
       procDrPeat=T
       coeffPeat1=-240
       coeffPeat2=70
@@ -459,19 +475,71 @@ for(nii in nii0:niter2){
       initSoilCreStart=NULL
       outModReStart=NULL
       reStartYear=1
+      if(unc100){
+        uncRCPs <- uncRCPs[1]
+        harvintens <- c("Base","NoHarv")
+        print("Run 100 year")
+      }
       sampleXs <- lapply(sampleIDs, function(jx) { 
-                             if(harvscen=="Base" & harvinten=="Base"){
-                               runModel(jx, outType=outType, harvScen=harvscen,
-                                        harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat)
-                             } else {
-                               print(paste("Load 2015-2021 results for sampleID",jx))
-                               load(file=paste0("uncRuns/regRuns/restartRun_uncRun",r_no,"_",jx,"_.rdata"))
-                               runModel(jx, outType=outType, harvScen=harvscen,
-                                        harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat,
-                                        outModReStart = reStartMod, initSoilCreStart = reStartSoil,
-                                        funPreb = reStartRegionPrebas,reStartYear = reStartYearUnc)
-                             }
-                           })
+          outXcc <- list()
+          ind <-1
+          for(uncRCP in uncRCPs){
+            harvscen<-"Base" 
+            harvinten <- "Base"
+            if(uncRCP==0){
+              rcpsname <- "CurrClim"
+              rcps <- rcpsname
+            } else if(uncRCP==1){
+              rcpsname <- "RCP45"
+            } else if(uncRCP==2){
+              rcpsname <- "RCP85"
+            } 
+            print(harvinten)
+            #source_url("https://raw.githubusercontent.com/virpi-j/IBCcarbon_runs/master/general/functions.r")
+            outtmp <- runModel(jx, outType=outType, harvScen=harvscen,uncRCP=uncRCP,
+                   harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat)
+            outXcc[[ind]] <- outtmp
+            names(outXcc)[ind] <- paste0(harvscen,"_",harvinten,"_",rcpsname)
+            ind<-ind+1
+            print(paste("Load 2015-2021 results for sampleID",jx))
+            load(file=paste0("uncRuns/regRuns/restartRun_uncRun",r_no,"_",jx,".rdata"))
+            for(harvind in 2:length(harvintens)){
+              harvinten <- harvintens[harvind]
+              harvscen <- "Base"
+              if(harvinten=="NoHarv") harvscen<-"NoHarv"
+              print(harvinten)
+              outtmp <- runModel(jx, outType=outType, harvScen=harvscen,uncRCP=uncRCP,
+                   harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat,
+                   outModReStart = reStartMod, initSoilCreStart = reStartSoil,
+                   funPreb = reStartRegionPrebas,reStartYear = reStartYearUnc)
+              outXcc[[ind]] <- outtmp
+              names(outXcc)[ind] <- paste0(harvscen,"_",harvinten,"_",rcpsname)
+              ind<-ind+1
+            }
+          }
+          unlink(paste0("uncRuns/regRuns/restartRun_uncRun",r_no,"_",jx,".rdata"))
+          print("2015-2021 file is deleted")
+          if(uncRCP==2 & harvinten==harvintens[4]){
+          unlink(paste0("initSoilCunc/forCent",r_no,"/initSoilC_",
+                        outType,"_",jx,".rdata"))
+          print(paste0("initsoilID",jx," deleted"))}
+          return(outXcc)
+      })
+      
+      
+#      sampleXs <- lapply(sampleIDs, function(jx) { 
+#                             if(harvscen=="Base" & harvinten=="Base"){
+#                               runModel(jx, outType=outType, harvScen=harvscen,
+#                                        harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat)
+#                             } else {
+#                               print(paste("Load 2015-2021 results for sampleID",jx))
+#                               load(file=paste0("uncRuns/regRuns/restartRun_uncRun",r_no,"_",jx,"_.rdata"))
+#                               runModel(jx, outType=outType, harvScen=harvscen,
+#                                        harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat,
+#                                        outModReStart = reStartMod, initSoilCreStart = reStartSoil,
+#                                        funPreb = reStartRegionPrebas,reStartYear = reStartYearUnc)
+#                             }
+#                          })
 #      sampleXs <- lapply(sampleIDs, function(jx) { 
 #        runModel(jx, outType=outType, harvScen=harvscen,
 #                 harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat)})
@@ -490,98 +558,188 @@ for(nii in nii0:niter2){
  #   sampleXs <- lapply(sampleIDs, function(jx) { 
 #      runModel(jx, outType=outType, harvScen=harvscen,
 #               harvInten=harvinten, cons10run = zon10)})
-    sampleXs <- mclapply(sampleIDs[(1+(nii-1)*nParRuns):(nii*nParRuns)], 
-                function(jx) {
-                  if(harvscen=="Base" & harvinten=="Base"){
-                    runModel(jx, outType=outType, harvScen=harvscen,
-                      harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat)
-                  } else {
-                    print(paste("Load 2015-2021 results for sampleID",jx))
-                    load(file=paste0("uncRuns/regRuns/restartRun_uncRun",r_no,"_",jx,".rdata"))
-                    runModel(jx, outType=outType, harvScen=harvscen,
-                        harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat,
-                        outModReStart = reStartMod, initSoilCreStart = reStartSoil,
-                        funPreb = reStartRegionPrebas,reStartYear = reStartYearUnc)
-                    }
-                  },
-              mc.cores = 4)
+    if(unc100){
+      uncRCPs <- uncRCPs[1]
+      harvintens <- c("Base","NoHarv")
+      print("Run 100 year")
+    }
+    sampleXs <- mclapply(sampleIDs[(1+(nii-1)*nParRuns):min(length(sampleIDs),(nii*nParRuns))], 
+                         function(jx){ 
+      outXcc <- list()
+      ind <-1
+      for(uncRCP in uncRCPs){
+        harvinten <- "Base"
+        harvscen<-"Base" 
+        if(uncRCP==0){
+          rcpsname <- "CurrClim"
+          rcps <- rcpsname
+        } else if(uncRCP==1){
+          rcpsname <- "RCP45"
+        } else if(uncRCP==2){
+          rcpsname <- "RCP85"
+        } 
+        #source_url("https://raw.githubusercontent.com/virpi-j/IBCcarbon_runs/master/general/functions.r")
+        outtmp <- runModel(jx, outType=outType, harvScen=harvscen,uncRCP=uncRCP,
+                           harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat)
+        outXcc[[ind]] <- outtmp
+        names(outXcc)[ind] <- paste0(harvscen,"_",harvinten,"_",rcpsname)
+        ind<-ind+1
+        print(paste("Load 2015-2021 results for sampleID",jx))
+        load(file=paste0("uncRuns/regRuns/restartRun_uncRun",r_no,"_",jx,".rdata"))
+        for(harvind in 2:length(harvintens)){
+          harvinten<-harvintens[harvind]
+          harvscen <- "Base"
+          if(harvinten=="NoHarv") harvscen<-"NoHarv"
+          outtmp <- runModel(jx, outType=outType, harvScen=harvscen,uncRCP=uncRCP,
+                             harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat,
+                             outModReStart = reStartMod, initSoilCreStart = reStartSoil,
+                             funPreb = reStartRegionPrebas,reStartYear = reStartYearUnc)
+          outXcc[[ind]] <- outtmp
+          names(outXcc)[ind] <- paste0(harvscen,"_",harvinten,"_",rcpsname)
+          ind<-ind+1
+        }
+      }
+      unlink(paste0("uncRuns/regRuns/restartRun_uncRun",r_no,"_",jx,".rdata"))
+      print("2015-2021 file is deleted")
+      unlink(paste0("initSoilCunc/forCent",r_no,"/initSoilC_",
+                    outType,"_",jx,".rdata"))
+      print(paste0("initsoilID",jx," deleted"))
+      return(outXcc)
+    },              
+    mc.cores = 4)
+
+
+#        sampleXs <- mclapply(sampleIDs[(1+(nii-1)*nParRuns):(nii*nParRuns)], 
+#                function(jx) {
+#                  if(harvscen=="Base" & harvinten=="Base"){
+#                    runModel(jx, outType=outType, harvScen=harvscen,
+#                      harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat)
+#                  } else {
+#                    print(paste("Load 2015-2021 results for sampleID",jx))
+#                    load(file=paste0("uncRuns/regRuns/restartRun_uncRun",r_no,"_",jx,".rdata"))
+#                    runModel(jx, outType=outType, harvScen=harvscen,
+#                        harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat,
+#                        outModReStart = reStartMod, initSoilCreStart = reStartSoil,
+#                        funPreb = reStartRegionPrebas,reStartYear = reStartYearUnc)
+#                    }
+#                  },
+#              mc.cores = 4)
 
     
-    ##    mc.cores = parallel::detectCores()/2)
-##      mc.cores = nCores,mc.silent=FALSE)      ## Split this job across 10 cores
   }
   timeRun <- Sys.time() - startRun
   print(paste("time for runs",timeRun))
   if(!uncSeg){
-    print(sampleXs[[1]][1,])
-    hscen <- harvscen
-    if(zon10) hscen <- paste0(hscen,"zon10")
-    save(area_total,areas_all,sampleOutput,file=paste0("uncRuns/regRuns/samplexout_reg",r_no,
-                                             "_tmp.rdata")) 
-    m <- ncol(sampleXs[[1]])
-    n <- length(sampleXs)
-    varNams <- names(sampleXs[[1]])
-    #varNams <-  sampleXs[[1]][,"vari"]
-    # g /m2 /year -> -44/12*16^2/10^12
-    errorsList <- data.frame()
-    for(j in 1:m){
-      x <- data.frame()
-      for(k in 1:n){
-        if(length(sampleXs[[k]]) > 1){
-          x <- rbind(x, t(as.matrix(sampleXs[[k]])[,j]))#,with=FALSE]))
-        } else if(k == 1) {
-          errorsList <- rbind(errorsList, sampleID = k)
+    save(area_total,areas_all,sampleXs,
+         file=paste0("uncRuns/regRuns/samplexout_reg",r_no,
+                                           "_tmp.rdata")) 
+    for(uncRCP in uncRCPs){
+      harvinten <- "Base"
+      if(uncRCP==0){
+        rcpsname <- "CurrClim"
+        #rcps <- rcpsname
+      } else if(uncRCP==1){
+        rcpsname <- "RCP45"
+      } else if(uncRCP==2){
+        rcpsname <- "RCP85"
+      } 
+      for(harvind in 1:length(harvintens)){
+        harvinten <- harvintens[harvind]  
+        harvindRCP <- length(harvintens)*uncRCP+harvind
+        print(sampleXs[[1]][[harvindRCP]][1,])
+        print(harvindRCP)
+        hscen <- harvscen
+        if(zon10) hscen <- paste0(hscen,"zon10")
+        m <- ncol(sampleXs[[1]][[1]]) # how many variables
+        n <- length(sampleXs) # how many new similations
+        varNams <- names(sampleXs[[1]][[1]])#names(sampleXs[[1]])
+        #varNams <-  sampleXs[[1]][,"vari"]
+        # g /m2 /year -> -44/12*16^2/10^12
+        errorsList <- data.frame()
+        sampleOutputb <- list()
+        if(nii>1) sampleOutputb <- sampleOutput[[harvindRCP]]
+        for(j in 1:m){
+          x <- data.frame()
+          for(k in 1:n){
+            if(length(sampleXs[[k]][[harvindRCP]]) > 1){
+              xx <- t(as.matrix(sampleXs[[k]][[harvindRCP]])[,j])
+              if(harvind>1 & (grepl("round",varNams[j]) | grepl("energy",varNams[j]))){
+                xx[1:reStartYearUnc] <- t(as.matrix(sampleXs[[k]]
+                                                  [[length(harvintens)*uncRCP+1]])[1:reStartYearUnc,j])
+              }
+              x <- rbind(x, xx)#,with=FALSE]))
+            } else if(k == 1) {
+              errorsList <- rbind(errorsList, sampleID = k)
+            }
+          }
+          if(nii == 1){
+            sampleOutputb[[j]] <- x
+          } else {
+            sampleOutputb[[j]] <- rbind(sampleOutputb[[j]], x)
+          }
+          names(sampleOutputb)[j] <- varNams[j]
         }
-      }
-      #names(x) <- sampleXs[[1]]$periods
-      #x[,3:5] <- x[,3:5]*cS[j]
-      if(nii == 1){
-        sampleOutput[[j]] <- x
-      } else {
-        sampleOutput[[j]] <- rbind(sampleOutput[[j]], x)
-      }
-      names(sampleOutput)[j] <- varNams[j]
-    }
-    
-    save(area_total,areas_all,sampleOutput,file=paste0("uncRuns/regRuns/samplexout_reg",r_no,
+        sampleOutput[[harvindRCP]]<-sampleOutputb
+        names(sampleOutput)[harvindRCP] <- names(sampleXs[[1]])[harvindRCP]
+        if(grepl("Curr", names(sampleXs[[1]]))[harvindRCP]) rcpsname <- "CurrClim"
+        if(grepl("RCP45", names(sampleXs[[1]]))[harvindRCP]) rcpsname <- "RCP45"
+        if(grepl("RCP85", names(sampleXs[[1]]))[harvindRCP]) rcpsname <- "RCP85"
+        if(unc100){
+          save(area_total,areas_all,sampleOutputb,file=paste0("uncRuns/regRuns/samplexout100_reg",r_no,
+                                                              "_",rcpsname,"_",hscen,"_",harvinten,                                    
+                                                              "_samplesize",nSitesRunr,"_iters",nSamplesr,
+                                                              "_pr",uncPCrobas,"_Xr",uncInput,"_ager",uncAge,
+                                                              "_Cr",uncClim,"_str",uncSiteType,".rdata")) 
+        } else {
+          if(r_no==rspecial){ 
+            save(area_total,areas_all,sampleOutputb,file=paste0("uncRuns/regRuns/samplexout_reg",r_no,
+                                                                "_",nii0,"_",rcpsname,"_",hscen,"_",harvinten,                                    
+                                                                "_samplesize",nSitesRunr,"_iters",nSamplesr,
+                                                                "_pr",uncPCrobas,"_Xr",uncInput,"_ager",uncAge,
+                                                                "_Cr",uncClim,"_str",uncSiteType,".rdata")) 
+          } else {
+            save(area_total,areas_all,sampleOutputb,file=paste0("uncRuns/regRuns/samplexout_reg",r_no,
                                              "_",rcpsname,"_",hscen,"_",harvinten,                                    
                                              "_samplesize",nSitesRunr,"_iters",nSamplesr,
                                              "_pr",uncPCrobas,"_Xr",uncInput,"_ager",uncAge,
                                              "_Cr",uncClim,"_str",uncSiteType,".rdata")) 
-    
-    #print("make histograms...")
-    print("make plots")
-    m <- length(sampleOutput)
-    print(paste(m,"variables"))
-    n <- nrow(sampleOutput[[1]])
-    hscen <- harvscen
-    pdf(file = paste0("uncRuns/regRuns/plots_reg",r_no,
+          }
+        }
+        print("make plots")
+        m <- length(sampleOutputb)
+        print(paste(m,"variables"))
+        n <- nrow(sampleOutputb[[1]])
+        hscen <- harvscen
+        pdf(file = paste0("uncRuns/regRuns/plots_reg",r_no,"_",rcpsname,
                       "_",hscen,"_",harvinten,"_samplesize",nSitesRunr,"_iters",nSamplesr,
                       "_pr",uncPCrobas,"_Xr",uncInput,"_ager",uncAge,
                       "_Cr",uncClim,"_str",uncSiteType,
                       "_uncPeat",uncPeat,".pdf"))
     
-    for(indj in 1:m){
-      x <- sampleOutput[[indj]]
-      varNams <- rownames(x)[1]
-      xnas <- which(is.na(x[,1]))
-      x <- x[which(!is.na(x[,1])),]
-      #png(file = paste0("uncRuns/plots_regionID",r_no,"_",varNams,
-      #                  "_",nSitesRunr,"_",harvscen,"_",
-      #                  "_pr",uncPCrobas,"_Xr",uncInput,"_ager",uncAge,
-      #                  "_Cr",uncClim,"_str",uncSiteType,
-      #                  "_uncPeat",uncPeat,".png"))
-      time <- 2015 + 1:ncol(x)
-      for(iter in 1:n){
-        if(iter==1){
-          plot(time,x[iter,], ylab = rownames(x)[1], xlab = "year")
-        } else{
-          points(time,x[iter,])
+        for(indj in 1:m){
+          x <- sampleOutputb[[indj]]
+          varNams <- rownames(x)[1]
+          xnas <- which(is.na(x[,1]))
+          x <- x[which(!is.na(x[,1])),]
+          #png(file = paste0("uncRuns/plots_regionID",r_no,"_",varNams,
+          #                  "_",nSitesRunr,"_",harvscen,"_",
+          #                  "_pr",uncPCrobas,"_Xr",uncInput,"_ager",uncAge,
+          #                  "_Cr",uncClim,"_str",uncSiteType,
+          #                  "_uncPeat",uncPeat,".png"))
+          time <- 2015 + 1:ncol(x)
+          for(iter in 1:n){
+            if(iter==1){
+              plot(time,x[iter,], ylab = rownames(x)[1], xlab = "year")
+            } else{
+              points(time,x[iter,])
+            }
+          }
         }
+        dev.off()
+        print("plots made")
       }
     }
-    dev.off()
-    print("plots made")
+                      
   } else { # if uncSeg
     save(sampleXs, ops,file = paste0("uncRuns/segRuns/samplexouttmp_uncSeg_reg",
                                 r_no,"_NoHarv.rdata"))
