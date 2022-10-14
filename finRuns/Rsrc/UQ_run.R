@@ -8,7 +8,7 @@
 
 #rm(list=ls())
 #sampleID <- 4
-print("start UQ_run")
+print(paste("start UQ_run, date",Sys.Date()))
 rcpfile="CurrClim"
 library(data.table)
 library(devtools)
@@ -27,10 +27,8 @@ outType <- "uncRun" # Setting for the runModel-function
 if(uncSeg) outType <- "uncSeg"
 #harvscen<- "Base" #"Base", adapt","protect","protectNoAdH","adaptNoAdH","adaptTapio"
 #harvinten<- "Base" # "Base", "Low", "MaxSust", "NoHarv" 
-  
-if(unc100){ nYears <-100
-print("unc100 run")
-}
+
+if(unc100) nYears <-100
 ##### From GitHub
 source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
 #source_url("https://raw.githubusercontent.com/virpi-j/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
@@ -44,7 +42,7 @@ source_url("https://raw.githubusercontent.com/virpi-j/IBCcarbon_runs/master/gene
 
 nSitesRun <- nSitesRunr
 print(paste("start region",r_no,"run",outType,"- harvest scenario",harvscen,"-harvest intensity", harvinten,
-"- set size",nSitesRun,"- no of repetitions", nSamplesr))
+            "- set size",nSitesRun,"- no of repetitions", nSamplesr))
 
 # Climate model and RCP names
 climMod <- c("CanESM2.","CNRM.","GFDL.","HadGEM2.","MIROC.")
@@ -76,7 +74,7 @@ undrPeatID <- 700  ### ID = 700 for luke database; undrained peatland
 load(paste0("input/maakunta/maakunta_",r_no,"_IDsTab.rdata"))
 data.all <- cbind(data.all,data.IDs[match(data.all$segID, data.IDs$maakuntaID),4:5])
 if(file.exists(paste0("uncRuns/peatID_reg",r_no,".rdata"))){
-   load(paste0("uncRuns/peatID_reg",r_no,".rdata"))
+  load(paste0("uncRuns/peatID_reg",r_no,".rdata"))
 } else {
   print("Extract peatIDs...")
   peatIDs <-extract(finPeats, cbind(data.all$x,data.all$y))
@@ -97,8 +95,8 @@ if(ExcludeUndrPeatlands){
   # Exclude undrained peatlands
   undrpeatX <- data.all$peatID==undrPeatID
   print(paste0("Discard undrained ", sum(data.all$area[(which(undrpeatX))])," ha (",
-             round(sum(data.all$area[(which(undrpeatX))])/sum(data.all$area)*1000)/10,
-             " percent of the whole area)"))
+               round(sum(data.all$area[(which(undrpeatX))])/sum(data.all$area)*1000)/10,
+               " percent of the whole area)"))
   data.all <- copy(data.all[!undrpeatX,]) # cut off 
 }
 data.all[,consArea:=cons]
@@ -122,10 +120,10 @@ if(loadParids){
   }
   print("Parameter set indexes loaded.")
 } else {
-    parids1 <- sample(1:999,1000, replace = TRUE)
-    parids2 <- sample(1:999,1000, replace = TRUE)
-    parids3 <- sample(1:999,1000, replace = TRUE)
-    climModids <- sample(1:length(climMod), 1000,replace=TRUE)
+  parids1 <- sample(1:999,1000, replace = TRUE)
+  parids2 <- sample(1:999,1000, replace = TRUE)
+  parids3 <- sample(1:999,1000, replace = TRUE)
+  climModids <- sample(1:length(climMod), 1000,replace=TRUE)
 }
 
 if(uncRun){ # load distribution data
@@ -139,14 +137,14 @@ if(uncRun){ # load distribution data
       areas <- areas/area_total
       #load(paste0("uncRuns/parids_reg",r_no,".rdata"))
     } else {
-    #  load(paste0("uncRuns/parids_reg",r_no,"uncSeg.rdata"))
+      #  load(paste0("uncRuns/parids_reg",r_no,"uncSeg.rdata"))
     }
   }# else {
-    #if(!uncSeg){
-      #save(parids, file=paste0("uncRuns/parids_reg",r_no,".rdata"))
-    #} else {
-      #save(parids, file=paste0("uncRuns/parids_reg",r_no,"uncSeg.rdata"))
-    #}
+  #if(!uncSeg){
+  #save(parids, file=paste0("uncRuns/parids_reg",r_no,".rdata"))
+  #} else {
+  #save(parids, file=paste0("uncRuns/parids_reg",r_no,"uncSeg.rdata"))
+  #}
   #}
   #pCROBASr <- list()
   if(uncPCrobas){
@@ -268,6 +266,17 @@ if(uncRun & !loadParids){
   }
 }
 
+if(unc100 & !loadParids){
+  print("Generate random sets of years")
+  set.seed(NULL)
+  resampleYears <- matrix(sample(1:nYears,nYears*1000,replace=T),
+                          ncol = nYears,nrow = 1000)
+  resampleYears[,1:(2021-2015)] <- matrix(1:(2021-2015),ncol = (2021-2015),nrow = 1000, byrow = T)
+  save(resampleYears, file=paste0("uncRuns/regRuns/resampleyears100.rdata"))
+} else if(unc100) {
+  print("load random set of 100 years")
+  load(paste0("uncRuns/regRuns/resampleyears100.rdata"))
+}
 
 
 if(uncRun){# sample model parameters, HcFactor and peatland emission coefficients
@@ -308,25 +317,25 @@ if(uncRun){# sample model parameters, HcFactor and peatland emission coefficient
   if(!uncSeg & !loadUnc){ # if region level uncertainty run, sample input variables
     # sample input values for the samples
     #if(uncInput){
-      print(paste0("input uncertainties for ",length(sampleIDs)," sample sets..."))
-      ops <-  uncVariables(ops=copy(ops), sampleIDs = sampleIDs,
-                           rage = rage,
-                           uncInput = uncInput, uncSiteType = uncSiteType, 
-                           uncAge = uncAge) 
-      print("... done.")
+    print(paste0("input uncertainties for ",length(sampleIDs)," sample sets..."))
+    ops <-  uncVariables(ops=copy(ops), sampleIDs = sampleIDs,
+                         rage = rage,
+                         uncInput = uncInput, uncSiteType = uncSiteType, 
+                         uncAge = uncAge) 
+    print("... done.")
     #}
     
-      
+    
     #if(!loadUnc){#testRun){
-      save(opsInd,ops,file=paste0("uncRuns/regRuns/opsInd_reg",r_no,"_uncSeg",uncSeg,".rdata"))
-      print(paste("opsInds saved for region",r_no))
+    save(opsInd,ops,file=paste0("uncRuns/regRuns/opsInd_reg",r_no,"_uncSeg",uncSeg,".rdata"))
+    print(paste("opsInds saved for region",r_no))
     #}
   } #if(!uncSeg & !loadUnc) 
 }
-  
+
 if(!loadParids){
   if(!uncSeg){
-  save(opsInd,parids1,parids2,parids3,harvestLimsr,climModids,resampleYears,EC1,EC2,HcFactorr,
+    save(opsInd,parids1,parids2,parids3,harvestLimsr,climModids,resampleYears,EC1,EC2,HcFactorr,
          file=paste0("uncRuns/regRuns/loadParids.rdata")) 
   } else {
     save(parids1,parids2,parids3,harvestLimsr,climModids,resampleYears1,HcFactorr,
@@ -365,44 +374,98 @@ if(uncSeg){
 #}
 nii0 <- 1
 if(uncSeg && file.exists(paste0("uncRuns/segRuns/samplexout_uncSeg_reg",r_no,
-                                             "_iters",nSamplesr,"_NoHarv.rdata"))){
+                                "_iters",nSamplesr,"_NoHarv.rdata"))){
   load(paste0("uncRuns/segRuns/samplexout_uncSeg_reg",r_no,
               "_iters",nSamplesr,"_NoHarv.rdata"))
   #nii0<-(length(sampleOutput[[1]])-1)/3+1
   nii0<-as.numeric(strsplit(colnames(sampleOutput[[1]])[length(sampleOutput[[1]])],"per3.")[[1]][2])+1
 }
 if(!uncSeg){
-  ffilee <- paste0("uncRuns/regRuns/samplexout_reg",r_no,
-             "_",rcpsname,"_",harvscen,"_",harvinten,                                    
-                         "_samplesize",nSitesRunr,"_iters",nSamplesr,
-                         "_pr",uncPCrobas,"_Xr",uncInput,"_ager",uncAge,
-                         "_Cr",uncClim,"_str",uncSiteType,".rdata")
-  print(paste("load ",ffilee))
-  if(file.exists(ffilee)){
-    load(ffilee)
-  #nii0<-(length(sampleOutput[[1]])-1)/3+1
-    nii0<-nrow(sampleOutput[[2]])+1
-       }
-     }
-if(!uncSeg){
-  niter <- ceiling(nSamplesr/nParRuns)
-  nii0 <- ceiling(nii0/nParRuns)
-} else {
-  niter <- nSamplesr
-   }
-if(nii0 > niter) nii0<-1
-print(paste("start from iteration",nii0))
-#if(!uncSeg){
+  nSamplesr0<-nSamplesr 
+  nSamplesr<-100
+  filee <- paste0("uncRuns/regRuns/samplexout_reg",r_no,
+                  "_CurrClim_Base_Base_samplesize",nSitesRunr,"_iters",nSamplesr,
+                  "_pr",uncPCrobas,"_Xr",uncInput,"_ager",uncAge,
+                  "_Cr",uncClim,"_str",uncSiteType,".rdata")
+  
+  if(file.exists(filee)){
+    sampleOutput<-list()
+    for(uncRCP in uncRCPs){
+      if(uncRCP==0){
+        rcpsname <- "CurrClim"
+        #rcps <- rcpsname
+      } else if(uncRCP==1){
+        rcpsname <- "RCP45"
+      } else if(uncRCP==2){
+        rcpsname <- "RCP85"
+      } 
+      sampleOutputtmp<-list()
+      for(harvind in 1:length(harvintens)){
+        harvinten <- harvintens[harvind]  
+        harvindRCP <- length(harvintens)*uncRCP+harvind
+        
+        filee <- paste0("uncRuns/regRuns/samplexout_reg",r_no,
+                        "_",rcpsname,"_Base_",harvintens[harvind],
+                        "_samplesize",nSitesRunr,"_iters",nSamplesr,
+                        "_pr",uncPCrobas,"_Xr",uncInput,"_ager",uncAge,
+                        "_Cr",uncClim,"_str",uncSiteType,".rdata")
+        load(filee)
+        sampleOutput[[harvindRCP]]<-sampleOutputb
+        #names(sampleOutput)[harvindRCP] <- names(sampleXs[[1]])[harvindRCP]
+      }
+      #sampleOutput[[uncRCP+1]]<-sampleOutputtmp
+      #names(sampleOutput)[uncRCP+1]<-rcpsname
+    }
+    nii0 <- nrow(sampleOutput[[1]][[1]])
+    #nii0 <- ceiling(nii0/nParRuns)+1
+    print(paste("number of runs in old files:",nii0))
+  }
+  nSamplesr<-nSamplesr0 
+}
+#  if(file.exists(filee)){
+#    sampleOutput<-list()
+#    for(uncRCP in uncRCPs){
+#      if(uncRCP==0){
+#        rcpsname <- "CurrClim"
+#      } else if(uncRCP==1){
+#        rcpsname <- "RCP45"
+##      } else if(uncRCP==2){
+#        rcpsname <- "RCP85"
+#      } 
+#      sampleOutputtmp<-list()
+#      for(harvind in 1:length(harvintens)){
+#        harvinten <- harvintens[harvind]  
+#        harvindRCP <- length(harvintens)*uncRCP+harvind
+#        
 #        filee <- paste0("uncRuns/regRuns/samplexout_reg",r_no,
-#       "_",rcpsname,"_",hscen,"_",harvinten,                                    
+#                        "_",rcpsname,"_Base_",harvintens[harvind],
 #                        "_samplesize",nSitesRunr,"_iters",nSamplesr,
 #                        "_pr",uncPCrobas,"_Xr",uncInput,"_ager",uncAge,
 #                        "_Cr",uncClim,"_str",uncSiteType,".rdata")
-#  if(file.exists(filee)){
 #        load(filee)
-#    nii0<-(length(sampleOutput[[1]])-1)/3+1
-#  print(paste("start from iteration",nii0))
+#        sampleOutput[[harvindRCP]]<-sampleOutputb
+#        #names(sampleOutput)[harvindRCP] <- names(sampleXs[[1]])[harvindRCP]
+#      }
+#    }
+#    nii0 <- nrow(sampleOutput[[1]][[1]][[1]])
+#  } else {
+#    print("No previous results available!")
 #  }
+#}
+rspecial <- 50
+if(!uncSeg & nii0!=1){
+  niter <- ceiling(nSamplesr/nParRuns)
+  nii0 <- ceiling(nii0/nParRuns)+1
+  if(r_no==rspecial){ 
+    nii0 <- 10
+    sampleOutput<-list()
+  }
+} else {
+  niter <- max(1,ceiling(nSamplesr/nParRuns))
+  #  niter <- nSamplesr
+}
+if(nii0 > niter) nii0<-1
+print(paste("start from iteration",nii0))
 niter2 <- niter
 if(uncSeg) niter2 <- 53
 
@@ -415,7 +478,7 @@ for(nii in nii0:niter2){
                           ncol=length(resampleYears1[nii,]), byrow=TRUE)
     
     ops <- copy(ops_orig)
-
+    
     if(uncInput & nii>1){
       print(paste0("input uncertainties for ",length(sampleIDs),"..."))
       ops <-  uncVariables(ops=ops, sampleIDs = sampleIDs)
@@ -449,9 +512,9 @@ for(nii in nii0:niter2){
       sampleXs <- lapply(sampleIDs, function(jx) { 
         runModel(jx, outType=outType, harvScen="Base",
                  harvInten="Base")})
-#      sampleXs <- lapply(sampleIDs, function(jx) { 
-#        runModel(jx, outType=outType, harvScen="NoHarv",
-#                 harvInten="NoHarv")})
+      #      sampleXs <- lapply(sampleIDs, function(jx) { 
+      #        runModel(jx, outType=outType, harvScen="NoHarv",
+      #                 harvInten="NoHarv")})
       
     }else{
       harvScen<-harvscen
@@ -481,68 +544,68 @@ for(nii in nii0:niter2){
         print("Run 100 year")
       }
       sampleXs <- lapply(sampleIDs, function(jx) { 
-          outXcc <- list()
-          ind <-1
-          for(uncRCP in uncRCPs){
-            harvscen<-"Base" 
-            harvinten <- "Base"
-            if(uncRCP==0){
-              rcpsname <- "CurrClim"
-              rcps <- rcpsname
-            } else if(uncRCP==1){
-              rcpsname <- "RCP45"
-            } else if(uncRCP==2){
-              rcpsname <- "RCP85"
-            } 
+        outXcc <- list()
+        ind <-1
+        for(uncRCP in uncRCPs){
+          harvscen<-"Base" 
+          harvinten <- "Base"
+          if(uncRCP==0){
+            rcpsname <- "CurrClim"
+            rcps <- rcpsname
+          } else if(uncRCP==1){
+            rcpsname <- "RCP45"
+          } else if(uncRCP==2){
+            rcpsname <- "RCP85"
+          } 
+          print(harvinten)
+          #source_url("https://raw.githubusercontent.com/virpi-j/IBCcarbon_runs/master/general/functions.r")
+          outtmp <- runModel(jx, outType=outType, harvScen=harvscen,uncRCP=uncRCP,
+                             harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat)
+          outXcc[[ind]] <- outtmp
+          names(outXcc)[ind] <- paste0(harvscen,"_",harvinten,"_",rcpsname)
+          ind<-ind+1
+          print(paste("Load 2015-2021 results for sampleID",jx))
+          load(file=paste0("uncRuns/regRuns/restartRun_uncRun",r_no,"_",jx,".rdata"))
+          for(harvind in 2:length(harvintens)){
+            harvinten <- harvintens[harvind]
+            harvscen <- "Base"
+            if(harvinten=="NoHarv") harvscen<-"NoHarv"
             print(harvinten)
-            #source_url("https://raw.githubusercontent.com/virpi-j/IBCcarbon_runs/master/general/functions.r")
             outtmp <- runModel(jx, outType=outType, harvScen=harvscen,uncRCP=uncRCP,
-                   harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat)
+                               harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat,
+                               outModReStart = reStartMod, initSoilCreStart = reStartSoil,
+                               funPreb = reStartRegionPrebas,reStartYear = reStartYearUnc)
             outXcc[[ind]] <- outtmp
             names(outXcc)[ind] <- paste0(harvscen,"_",harvinten,"_",rcpsname)
             ind<-ind+1
-            print(paste("Load 2015-2021 results for sampleID",jx))
-            load(file=paste0("uncRuns/regRuns/restartRun_uncRun",r_no,"_",jx,".rdata"))
-            for(harvind in 2:length(harvintens)){
-              harvinten <- harvintens[harvind]
-              harvscen <- "Base"
-              if(harvinten=="NoHarv") harvscen<-"NoHarv"
-              print(harvinten)
-              outtmp <- runModel(jx, outType=outType, harvScen=harvscen,uncRCP=uncRCP,
-                   harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat,
-                   outModReStart = reStartMod, initSoilCreStart = reStartSoil,
-                   funPreb = reStartRegionPrebas,reStartYear = reStartYearUnc)
-              outXcc[[ind]] <- outtmp
-              names(outXcc)[ind] <- paste0(harvscen,"_",harvinten,"_",rcpsname)
-              ind<-ind+1
-            }
           }
-          unlink(paste0("uncRuns/regRuns/restartRun_uncRun",r_no,"_",jx,".rdata"))
-          print("2015-2021 file is deleted")
-          if(uncRCP==2 & harvinten==harvintens[4]){
+        }
+        unlink(paste0("uncRuns/regRuns/restartRun_uncRun",r_no,"_",jx,".rdata"))
+        print("2015-2021 file is deleted")
+        if(uncRCP==2 & harvinten==harvintens[4]){
           unlink(paste0("initSoilCunc/forCent",r_no,"/initSoilC_",
                         outType,"_",jx,".rdata"))
           print(paste0("initsoilID",jx," deleted"))}
-          return(outXcc)
+        return(outXcc)
       })
       
       
-#      sampleXs <- lapply(sampleIDs, function(jx) { 
-#                             if(harvscen=="Base" & harvinten=="Base"){
-#                               runModel(jx, outType=outType, harvScen=harvscen,
-#                                        harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat)
-#                             } else {
-#                               print(paste("Load 2015-2021 results for sampleID",jx))
-#                               load(file=paste0("uncRuns/regRuns/restartRun_uncRun",r_no,"_",jx,"_.rdata"))
-#                               runModel(jx, outType=outType, harvScen=harvscen,
-#                                        harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat,
-#                                        outModReStart = reStartMod, initSoilCreStart = reStartSoil,
-#                                        funPreb = reStartRegionPrebas,reStartYear = reStartYearUnc)
-#                             }
-#                          })
-#      sampleXs <- lapply(sampleIDs, function(jx) { 
-#        runModel(jx, outType=outType, harvScen=harvscen,
-#                 harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat)})
+      #      sampleXs <- lapply(sampleIDs, function(jx) { 
+      #                             if(harvscen=="Base" & harvinten=="Base"){
+      #                               runModel(jx, outType=outType, harvScen=harvscen,
+      #                                        harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat)
+      #                             } else {
+      #                               print(paste("Load 2015-2021 results for sampleID",jx))
+      #                               load(file=paste0("uncRuns/regRuns/restartRun_uncRun",r_no,"_",jx,"_.rdata"))
+      #                               runModel(jx, outType=outType, harvScen=harvscen,
+      #                                        harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat,
+      #                                        outModReStart = reStartMod, initSoilCreStart = reStartSoil,
+      #                                        funPreb = reStartRegionPrebas,reStartYear = reStartYearUnc)
+      #                             }
+      #                          })
+      #      sampleXs <- lapply(sampleIDs, function(jx) { 
+      #        runModel(jx, outType=outType, harvScen=harvscen,
+      #                 harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat)})
       
     }
     #sampleXs <- runModel(sampleIDs,outType=outType)
@@ -555,9 +618,9 @@ for(nii in nii0:niter2){
     #  runModel(jx, outType=outType, harvScen="NoHarv" ,harvInten="NoHarv")}, 
     #  mc.cores = nCores,mc.silent=FALSE)      ## Split this job across 10 cores
   } else {
- #   sampleXs <- lapply(sampleIDs, function(jx) { 
-#      runModel(jx, outType=outType, harvScen=harvscen,
-#               harvInten=harvinten, cons10run = zon10)})
+    #   sampleXs <- lapply(sampleIDs, function(jx) { 
+    #      runModel(jx, outType=outType, harvScen=harvscen,
+    #               harvInten=harvinten, cons10run = zon10)})
     if(unc100){
       uncRCPs <- uncRCPs[1]
       harvintens <- c("Base","NoHarv")
@@ -565,66 +628,66 @@ for(nii in nii0:niter2){
     }
     sampleXs <- mclapply(sampleIDs[(1+(nii-1)*nParRuns):min(length(sampleIDs),(nii*nParRuns))], 
                          function(jx){ 
-      outXcc <- list()
-      ind <-1
-      for(uncRCP in uncRCPs){
-        harvinten <- "Base"
-        harvscen<-"Base" 
-        if(uncRCP==0){
-          rcpsname <- "CurrClim"
-          rcps <- rcpsname
-        } else if(uncRCP==1){
-          rcpsname <- "RCP45"
-        } else if(uncRCP==2){
-          rcpsname <- "RCP85"
-        } 
-        #source_url("https://raw.githubusercontent.com/virpi-j/IBCcarbon_runs/master/general/functions.r")
-        outtmp <- runModel(jx, outType=outType, harvScen=harvscen,uncRCP=uncRCP,
-                           harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat)
-        outXcc[[ind]] <- outtmp
-        names(outXcc)[ind] <- paste0(harvscen,"_",harvinten,"_",rcpsname)
-        ind<-ind+1
-        print(paste("Load 2015-2021 results for sampleID",jx))
-        load(file=paste0("uncRuns/regRuns/restartRun_uncRun",r_no,"_",jx,".rdata"))
-        for(harvind in 2:length(harvintens)){
-          harvinten<-harvintens[harvind]
-          harvscen <- "Base"
-          if(harvinten=="NoHarv") harvscen<-"NoHarv"
-          outtmp <- runModel(jx, outType=outType, harvScen=harvscen,uncRCP=uncRCP,
-                             harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat,
-                             outModReStart = reStartMod, initSoilCreStart = reStartSoil,
-                             funPreb = reStartRegionPrebas,reStartYear = reStartYearUnc)
-          outXcc[[ind]] <- outtmp
-          names(outXcc)[ind] <- paste0(harvscen,"_",harvinten,"_",rcpsname)
-          ind<-ind+1
-        }
-      }
-      unlink(paste0("uncRuns/regRuns/restartRun_uncRun",r_no,"_",jx,".rdata"))
-      print("2015-2021 file is deleted")
-      unlink(paste0("initSoilCunc/forCent",r_no,"/initSoilC_",
-                    outType,"_",jx,".rdata"))
-      print(paste0("initsoilID",jx," deleted"))
-      return(outXcc)
-    },              
-    mc.cores = 4)
-
-
-#        sampleXs <- mclapply(sampleIDs[(1+(nii-1)*nParRuns):(nii*nParRuns)], 
-#                function(jx) {
-#                  if(harvscen=="Base" & harvinten=="Base"){
-#                    runModel(jx, outType=outType, harvScen=harvscen,
-#                      harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat)
-#                  } else {
-#                    print(paste("Load 2015-2021 results for sampleID",jx))
-#                    load(file=paste0("uncRuns/regRuns/restartRun_uncRun",r_no,"_",jx,".rdata"))
-#                    runModel(jx, outType=outType, harvScen=harvscen,
-#                        harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat,
-#                        outModReStart = reStartMod, initSoilCreStart = reStartSoil,
-#                        funPreb = reStartRegionPrebas,reStartYear = reStartYearUnc)
-#                    }
-#                  },
-#              mc.cores = 4)
-
+                           outXcc <- list()
+                           ind <-1
+                           for(uncRCP in uncRCPs){
+                             harvinten <- "Base"
+                             harvscen<-"Base" 
+                             if(uncRCP==0){
+                               rcpsname <- "CurrClim"
+                               rcps <- rcpsname
+                             } else if(uncRCP==1){
+                               rcpsname <- "RCP45"
+                             } else if(uncRCP==2){
+                               rcpsname <- "RCP85"
+                             } 
+                             #source_url("https://raw.githubusercontent.com/virpi-j/IBCcarbon_runs/master/general/functions.r")
+                             outtmp <- runModel(jx, outType=outType, harvScen=harvscen,uncRCP=uncRCP,
+                                                harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat)
+                             outXcc[[ind]] <- outtmp
+                             names(outXcc)[ind] <- paste0(harvscen,"_",harvinten,"_",rcpsname)
+                             ind<-ind+1
+                             print(paste("Load 2015-2021 results for sampleID",jx))
+                             load(file=paste0("uncRuns/regRuns/restartRun_uncRun",r_no,"_",jx,".rdata"))
+                             for(harvind in 2:length(harvintens)){
+                               harvinten<-harvintens[harvind]
+                               harvscen <- "Base"
+                               if(harvinten=="NoHarv") harvscen<-"NoHarv"
+                               outtmp <- runModel(jx, outType=outType, harvScen=harvscen,uncRCP=uncRCP,
+                                                  harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat,
+                                                  outModReStart = reStartMod, initSoilCreStart = reStartSoil,
+                                                  funPreb = reStartRegionPrebas,reStartYear = reStartYearUnc)
+                               outXcc[[ind]] <- outtmp
+                               names(outXcc)[ind] <- paste0(harvscen,"_",harvinten,"_",rcpsname)
+                               ind<-ind+1
+                             }
+                           }
+                           unlink(paste0("uncRuns/regRuns/restartRun_uncRun",r_no,"_",jx,".rdata"))
+                           print("2015-2021 file is deleted")
+                           unlink(paste0("initSoilCunc/forCent",r_no,"/initSoilC_",
+                                         outType,"_",jx,".rdata"))
+                           print(paste0("initsoilID",jx," deleted"))
+                           return(outXcc)
+                         },              
+                         mc.cores = 4)
+    
+    
+    #        sampleXs <- mclapply(sampleIDs[(1+(nii-1)*nParRuns):(nii*nParRuns)], 
+    #                function(jx) {
+    #                  if(harvscen=="Base" & harvinten=="Base"){
+    #                    runModel(jx, outType=outType, harvScen=harvscen,
+    #                      harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat)
+    #                  } else {
+    #                    print(paste("Load 2015-2021 results for sampleID",jx))
+    #                    load(file=paste0("uncRuns/regRuns/restartRun_uncRun",r_no,"_",jx,".rdata"))
+    #                    runModel(jx, outType=outType, harvScen=harvscen,
+    #                        harvInten=harvinten, cons10run = zon10, procDrPeat = uncPeat,
+    #                        outModReStart = reStartMod, initSoilCreStart = reStartSoil,
+    #                        funPreb = reStartRegionPrebas,reStartYear = reStartYearUnc)
+    #                    }
+    #                  },
+    #              mc.cores = 4)
+    
     
   }
   timeRun <- Sys.time() - startRun
@@ -632,7 +695,7 @@ for(nii in nii0:niter2){
   if(!uncSeg){
     save(area_total,areas_all,sampleXs,
          file=paste0("uncRuns/regRuns/samplexout_reg",r_no,
-                                           "_tmp.rdata")) 
+                     "_tmp.rdata")) 
     for(uncRCP in uncRCPs){
       harvinten <- "Base"
       if(uncRCP==0){
@@ -665,7 +728,7 @@ for(nii in nii0:niter2){
               xx <- t(as.matrix(sampleXs[[k]][[harvindRCP]])[,j])
               if(harvind>1 & (grepl("round",varNams[j]) | grepl("energy",varNams[j]))){
                 xx[1:reStartYearUnc] <- t(as.matrix(sampleXs[[k]]
-                                                  [[length(harvintens)*uncRCP+1]])[1:reStartYearUnc,j])
+                                                    [[length(harvintens)*uncRCP+1]])[1:reStartYearUnc,j])
               }
               x <- rbind(x, xx)#,with=FALSE]))
             } else if(k == 1) {
@@ -699,10 +762,10 @@ for(nii in nii0:niter2){
                                                                 "_Cr",uncClim,"_str",uncSiteType,".rdata")) 
           } else {
             save(area_total,areas_all,sampleOutputb,file=paste0("uncRuns/regRuns/samplexout_reg",r_no,
-                                             "_",rcpsname,"_",hscen,"_",harvinten,                                    
-                                             "_samplesize",nSitesRunr,"_iters",nSamplesr,
-                                             "_pr",uncPCrobas,"_Xr",uncInput,"_ager",uncAge,
-                                             "_Cr",uncClim,"_str",uncSiteType,".rdata")) 
+                                                                "_",rcpsname,"_",hscen,"_",harvinten,                                    
+                                                                "_samplesize",nSitesRunr,"_iters",nSamplesr,
+                                                                "_pr",uncPCrobas,"_Xr",uncInput,"_ager",uncAge,
+                                                                "_Cr",uncClim,"_str",uncSiteType,".rdata")) 
           }
         }
         print("make plots")
@@ -711,11 +774,11 @@ for(nii in nii0:niter2){
         n <- nrow(sampleOutputb[[1]])
         hscen <- harvscen
         pdf(file = paste0("uncRuns/regRuns/plots_reg",r_no,"_",rcpsname,
-                      "_",hscen,"_",harvinten,"_samplesize",nSitesRunr,"_iters",nSamplesr,
-                      "_pr",uncPCrobas,"_Xr",uncInput,"_ager",uncAge,
-                      "_Cr",uncClim,"_str",uncSiteType,
-                      "_uncPeat",uncPeat,".pdf"))
-    
+                          "_",hscen,"_",harvinten,"_samplesize",nSitesRunr,"_iters",nSamplesr,
+                          "_pr",uncPCrobas,"_Xr",uncInput,"_ager",uncAge,
+                          "_Cr",uncClim,"_str",uncSiteType,
+                          "_uncPeat",uncPeat,".pdf"))
+        
         for(indj in 1:m){
           x <- sampleOutputb[[indj]]
           varNams <- rownames(x)[1]
@@ -739,14 +802,14 @@ for(nii in nii0:niter2){
         print("plots made")
       }
     }
-                      
+    
   } else { # if uncSeg
     save(sampleXs, ops,file = paste0("uncRuns/segRuns/samplexouttmp_uncSeg_reg",
-                                r_no,"_NoHarv.rdata"))
+                                     r_no,"_NoHarv.rdata"))
     n <- length(sampleXs)
     if(length(sampleXs[[1]])>1){ # if results exist, save to sampleOutput
       #if(nii==1){
-        varNams <- names(sampleXs[[1]])
+      varNams <- names(sampleXs[[1]])
       #} else {
       #  varNams <- names(sampleOutput)
       #}
@@ -758,7 +821,7 @@ for(nii in nii0:niter2){
             print(paste("k id",k,"no result, run"))
             sampleXss <- lapply(sampleIDtmp, function(jx) { 
               runModel(jx, outType=outType, harvScen="Base",
-                     harvInten="Base")})
+                       harvInten="Base")})
             sampleXs[[k]]<-sampleXss[[1]]
           }
           x <- rbind(x, sampleXs[[k]][[j]])
@@ -793,9 +856,9 @@ for(nii in nii0:niter2){
         }
       }
       hscen <- harvscen
-    
+      
       save(sampleOutput,file=paste0("uncRuns/segRuns/samplexout_uncSeg_reg",r_no,
-                                  "_iters",nSamplesr,"_NoHarv.rdata")) 
+                                    "_iters",nSamplesr,"_NoHarv.rdata")) 
     }# If results exist  
   }
   print(paste0("Run time for ",length(sampleIDs)," samples of size ", nSitesRunr," = ",timeRun))
