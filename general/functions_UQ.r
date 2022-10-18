@@ -1,5 +1,6 @@
 
 
+
 distr_correction <- function(Y,Xtrue,Xdiscr=FALSE){
   # y is the matrix of new sample - observations in lines, variables in columns
   # x is the matrix of the measured values = truth
@@ -54,25 +55,28 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
   nSites <-  length(evalSegs)
   marginX= 1:2
   #print(nSites)
+  modOuti<-modOut
+  modOuti$multiOut <- modOuti$multiOut[evalSegs,,,,]
+  #sampleX <- sampleX[evalSegs,]
   nVarSel <- length(varSel)
   varsX <- rep(NA,(nVarSel+7))
   xx <- matrix(NA,(nVarSel+7),nYears)
-
   for (ij in 1:nVarSel) {
     if(funXX[ij]=="baWmean"){
-      outX <- data.table(segID=sampleX$segID,baWmean(modOut,varSel[ij]))
+      outX <- data.table(segID=sampleX$segID[evalSegs],baWmean(modOuti,varSel[ij]))
       #outX <- baWmean(modOut,varSel[ij])
     }
     if(funXX[ij]=="sum"){
       #outX <- apply(modOut$multiOut[evalSegs,,varSel[ij],,1],1:2,sum)
-      outX <- data.table(segID=sampleX$segID,apply(modOut$multiOut[,,varSel[ij],,1],marginX,sum))
+      outX <- data.table(segID=sampleX$segID[evalSegs],apply(modOut$multiOut[evalSegs,,varSel[ij],,1],marginX,sum))
     }
     outX <- colMeans(outX,na.rm = TRUE)
     varsX[ij] <- paste0(vname,varNames[varSel[ij]])
     xx[ij,1:nYears] <- outX[-1]
     # assign(varNames[varSel[ij]],outX)
   }
-  
+  rm(list="modOuti")
+  gc()
   ####process and save special variables: 
   ###age
   outX <- modOut$multiOut[evalSegs,1:nYears,7,1,1]
@@ -99,7 +103,7 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
   outX <- colMeans(outX,na.rm = TRUE)
   xx[(nVarSel+5),1:nYears] <- outX
   varsX[(nVarSel+5)] <- paste0(vname,"Wenergywood")
-
+  
   #print(paste0("peatland CH4 and N2O postprocessing sampleID", sampleID))
   #### Peatland post-processing
   #marginX= 1:2#(length(dim(out$annual[,,varSel,]))-1)
@@ -111,9 +115,9 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
   CH4 <- data.frame(matrix(0,nrow = nSites, ncol = 1))
   # estimate N2O and CHe for the first year pixels 
   N2O[,1] <- processPeatUQ_N2O_CH4(sampleX$peatID[evalSegs], fert, drPeatID, type = "N2O", 
-                                            ECN2O1 = ECN2O1, ECN2O2 = ECN2O2)
+                                   ECN2O1 = ECN2O1, ECN2O2 = ECN2O2)
   CH4[,1] <- processPeatUQ_N2O_CH4(sampleX$peatID[evalSegs], fert, drPeatID, type = "CH4",
-                                            ECCH4 = ECCH4)
+                                   ECCH4 = ECCH4)
   N2O <- colMeans(N2O)
   CH4 <- colMeans(CH4)
   # N2O and CH4 emissions remain constant for the whole simulation period
@@ -121,7 +125,7 @@ UncOutProc <- function(varSel=c(46,39,30,37), funX=rep("sum",4),
   varsX[(nVarSel+6)] <- paste0(vname,"N2O")
   xx[(nVarSel+7),1:nYears] <- CH4
   varsX[(nVarSel+7)] <- paste0(vname,"CH4")
-
+  
   # all results as output    
   outX <- data.table(t(xx))
   names(outX) <- varsX
