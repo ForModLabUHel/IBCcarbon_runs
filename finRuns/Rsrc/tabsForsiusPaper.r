@@ -1,7 +1,12 @@
 library(data.table)
-allData_currPA <- fread("C:/Users/minunno/Documents/research/IBC-carbon/results/outSampleHcF1.2/summaryRes/allRes_currentPA.csv")
+
+fileRoot <- "country_clcutArFact1_addHarv2_landClassX1to2_mortMod13_"
+
+pathX <- "C:/Users/minunno/Documents/research/IBC-carbon/results/outSampleHcF1.2/summaryRes/"
+allData_currPA <- fread(paste0(pathX,"allRes_currentPA_",fileRoot,".csv"))
 allData_currPA$V1 <- NULL
-allData_10PA <- fread("C:/Users/minunno/Documents/research/IBC-carbon/results/outSampleHcF1.2_cons10run/summaryRes/allRes_10%PA.csv")
+pathX <- "C:/Users/minunno/Documents/research/IBC-carbon/results/outSampleHcF1.2_cons10run/summaryRes/"
+allData_10PA <- fread(paste0(pathX,"allRes_10%PA_",fileRoot,".csv"))
 allData_10PA$V1 <- NULL
 
 allData_currPA$period <- allData_10PA$period <- "NaN"
@@ -59,5 +64,5 @@ tableS3 <- dataByPerMeans[,.(harScen,harvInten,ProtAreas,
                              Vharvested,NEEtot)]
 
 setwd("C:/Users/minunno/Documents/research/IBC-carbon/results/tables/")
-write.csv(tableS2,file = "tableS2.csv")
-write.csv(tableS3,file = "tableS3.csv")
+write.csv(tableS2,file = paste0("tableS2",fileRoot,".csv"))
+write.csv(tableS3,file = paste0("tableS3",fileRoot,".csv"))
