@@ -1,6 +1,6 @@
 library(data.table)
 
-fileRoot <- "country_clcutArFact1_addHarv2_landClassX1to2_mortMod13_"
+fileRoot <- "country_clcutArFact1.2_addHarv2_landClassX1to2_mortMod13_"
 
 pathX <- "C:/Users/minunno/Documents/research/IBC-carbon/results/outSampleHcF1.2/summaryRes/"
 allData_currPA <- fread(paste0(pathX,"allRes_currentPA_",fileRoot,".csv"))
