@@ -55,10 +55,10 @@ data10PA <- data10PA[period!="NaN"]
 data10PA$ProtAreas <- "10%"
 
 dataByPerMeans <- rbind(datacurrPA,data10PA)
-tableS2 <- dataByPerMeans[,.(harScen,harvInten,ProtAreas,
+tableS2 <- dataByPerMeans[,.(period,harScen,harvInten,ProtAreas,
                               management,maakNames,Vharvested,Wharvested,NEEtot)]
 
-tableS3 <- dataByPerMeans[,.(harScen,harvInten,ProtAreas,
+tableS3 <- dataByPerMeans[,.(period,harScen,harvInten,ProtAreas,
                              management,maakNames,
                              VolGrowth,WtreesGV,soilCtot,
                              Vharvested,NEEtot)]
