@@ -66,3 +66,7 @@ tableS3 <- dataByPerMeans[,.(period,harScen,harvInten,ProtAreas,
 setwd("C:/Users/minunno/Documents/research/IBC-carbon/results/tables/")
 write.csv(tableS2,file = paste0("tableS2",fileRoot,".csv"))
 write.csv(tableS3,file = paste0("tableS3",fileRoot,".csv"))
+
+
+tableS3_v2 <- tableS3[maakNames=="country" & management %in% c("all","protection areas") & harScen=="Base"]
+write.csv(tableS3_v2,file = paste0("tableS3_v2",fileRoot,".csv"))
