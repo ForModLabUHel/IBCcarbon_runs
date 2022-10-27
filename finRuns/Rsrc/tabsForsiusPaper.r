@@ -55,10 +55,10 @@ data10PA <- data10PA[period!="NaN"]
 data10PA$ProtAreas <- "10%"
 
 dataByPerMeans <- rbind(datacurrPA,data10PA)
-tableS2 <- dataByPerMeans[,.(period,harScen,harvInten,ProtAreas,
+tableS2 <- dataByPerMeans[,.(period,harScen,harvInten,ProtAreas,area,
                               management,maakNames,Vharvested,Wharvested,NEEtot)]
 
-tableS3 <- dataByPerMeans[,.(period,harScen,harvInten,ProtAreas,
+tableS3 <- dataByPerMeans[,.(period,harScen,harvInten,ProtAreas,area,
                              management,maakNames,
                              VolGrowth,WtreesGV,soilCtot,
                              Vharvested,NEEtot)]
@@ -68,5 +68,11 @@ write.csv(tableS2,file = paste0("tableS2",fileRoot,".csv"))
 write.csv(tableS3,file = paste0("tableS3",fileRoot,".csv"))
 
 
-tableS3_v2 <- tableS3[maakNames=="country" & management %in% c("all","protection areas") & harScen=="Base"]
-write.csv(tableS3_v2,file = paste0("tableS3_v2",fileRoot,".csv"))
+# tableS3_v2 <- tableS3[maakNames=="country" & management %in% c("all","protection areas") & harScen=="Base"]
+# write.csv(tableS3_v2,file = paste0("tableS3_v2",fileRoot,".csv"))
+
+
+# tableS2_rcp4.5 <- tableS2[maakNames=="country" & management %in% c("all","protection areas") & harScen=="Base"]
+# tableS3_rcp4.5 <- tableS3[maakNames=="country" & management %in% c("all","protection areas") & harScen=="Base"]
+# write.csv(tableS2_rcp4.5,file = paste0("tableS2_rcp4.5",fileRoot,".csv"))
+# write.csv(tableS3_rcp4.5,file = paste0("tableS3_rcp4.5",fileRoot,".csv"))
