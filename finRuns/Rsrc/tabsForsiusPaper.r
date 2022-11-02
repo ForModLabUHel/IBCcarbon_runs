@@ -29,14 +29,14 @@ allData_currPA[,Wharvested := (WroundWood+WenergyWood)*area/1e9 * 3.67]
 allData_currPA[,NEEtot := -1*(NEP)*area/1e8 * 3.67]
 allData_currPA[,WtreesGV := (GVw + WtotTrees)*area/1e9]
 allData_currPA[,soilCtot := (soilC)*area/1e9]
-allData_currPA[,VolGrowth := grossGrowth/1e6]
+allData_currPA[,VolGrowth := grossGrowth*area/1e6]
 
 allData_10PA[,Vharvested := (VroundWood+VenergyWood)*area/1e6]
 allData_10PA[,Wharvested := (WroundWood+WenergyWood)*area/1e9 * 3.67]
 allData_10PA[,NEEtot := -1*(NEP)*area/1e8 * 3.67]
 allData_10PA[,WtreesGV := (GVw + WtotTrees)*area/1e9]
 allData_10PA[,soilCtot := (soilC)*area/1e9]
-allData_10PA[,VolGrowth := grossGrowth/1e6]
+allData_10PA[,VolGrowth := grossGrowth*area/1e6]
 
 namesVar <- names(allData_currPA)
 noMeanVars <- c("harScen","year","harvInten","management","runsID","maakID","maakNames","period")
