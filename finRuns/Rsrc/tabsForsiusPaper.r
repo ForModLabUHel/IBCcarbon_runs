@@ -76,3 +76,87 @@ write.csv(tableS3,file = paste0("tableS3",fileRoot,".csv"))
 # tableS3_rcp4.5 <- tableS3[maakNames=="country" & management %in% c("all","protection areas") & harScen=="Base"]
 # write.csv(tableS2_rcp4.5,file = paste0("tableS2_rcp4.5",fileRoot,".csv"))
 # write.csv(tableS3_rcp4.5,file = paste0("tableS3_rcp4.5",fileRoot,".csv"))
+
+
+
+
+
+
+# library(data.table)
+# dataX <- fread("C:/Users/minunno/Documents/research/IBC-carbon/results/tables/tableS2_rcp4.5country_clcutArFact1.2_addHarv2_landClassX1to2_mortMod13_.csv")
+# dataX$V1 <- NULL
+# dataX2 <- fread("C:/Users/minunno/Documents/research/IBC-carbon/results/tables/tableS3_rcp4.5country_clcutArFact1.2_addHarv2_landClassX1to2_mortMod13_.csv")
+# dataX2$V1 <- NULL
+# 
+# areas <- fread("C:/Users/minunno/Documents/research/IBC-carbon/results/tables/areasFor.txt")
+# 
+# myData <- dataX[harScen=="Base" & !maakNames %in% c("Aland","country")]
+# myData[maakNames=="PohjoisNASavo"]$maakNames <- "PohjoisSavo"
+# myData[maakNames=="VarsnaisSuomi"]$maakNames <- "VarsinaisSuomi"
+# 
+# myData2 <- dataX2[harScen=="Base" & !maakNames %in% c("Aland","country")]
+# myData2[maakNames=="PohjoisNASavo"]$maakNames <- "PohjoisSavo"
+# myData2[maakNames=="VarsnaisSuomi"]$maakNames <- "VarsinaisSuomi"
+# 
+# regNames <- unique(areas$regNames)
+# 
+# for(i in 1:18){
+#   for(protAreaX in c("current","10%")){
+#     for(managX in c("all","protection areas","managed forests")){
+#       xdat <- myData[ProtAreas==protAreaX & 
+#                        maakNames==regNames[i]&
+#                        management==managX]
+#       
+#       xdat2 <- myData2[ProtAreas==protAreaX & 
+#                          maakNames==regNames[i]&
+#                          management==managX]
+#       
+#       xarea <- areas[regNames==regNames[i] & 
+#                        ProtAreas==protAreaX]
+#       
+#       if(managX=="all") areaX <- xarea$areaTot
+#       if(managX=="protection areas") areaX <- xarea$consArea
+#       if(managX=="managed forests") areaX <- xarea$manArea
+#       
+#       xdat[,Vharvested:=Vharvested/area*areaX]
+#       xdat[,Wharvested:=Wharvested/area*areaX]
+#       xdat[,NEEtot:=NEEtot/area*areaX]
+#       
+#       xdat2[,VolGrowth:=VolGrowth*areaX]
+#       xdat2[,WtreesGV:=WtreesGV/area*areaX]
+#       xdat2[,soilCtot:=soilCtot/area*areaX]
+#       xdat2[,Vharvested:=Vharvested/area*areaX]
+#       xdat2[,NEEtot:=NEEtot/area*areaX]
+#       
+#       
+#       myData[ProtAreas==protAreaX & 
+#                maakNames==regNames[i]&
+#                management==managX] <- xdat
+#       
+#       myData2[ProtAreas==protAreaX & 
+#                 maakNames==regNames[i]&
+#                 management==managX] <- xdat2
+#       
+#     }
+#   }
+# }
+# 
+# 
+# countryS2 <- myData[,.(Vharvested=sum(Vharvested),
+#                        Wharvested=sum(Wharvested),
+#                        NEEtot=sum(NEEtot)),
+#                     by=.(period,harScen,
+#                          harvInten,ProtAreas,
+#                          management,maakNames)]
+# 
+# countryS3 <- myData2[,.(VolGrowth=sum(VolGrowth),
+#                         WtreesGV=sum(WtreesGV),
+#                         soilCtot=sum(soilCtot),
+#                         Vharvested=sum(Vharvested),
+#                         NEEtot=sum(NEEtot)),
+#                      by=.(period,harScen,
+#                           harvInten,ProtAreas,
+#                           management,maakNames)]
+# 
+# write.csv(countryS2,file="tableS2_rcp4.5country_clcutArFact1.2_addHarv2_landClassX1to2_mortMod13_.csv")
+# write.csv(countryS3,file="tableS3_rcp4.5country_clcutArFact1.2_addHarv2_landClassX1to2_mortMod13_.csv")
