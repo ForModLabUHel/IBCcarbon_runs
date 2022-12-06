@@ -606,6 +606,34 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
   }
   ####end initialize deadWood Volume
   
+  
+  ####summarize model Outputs
+  ####BioIndicator calculations
+  if(BioIndCalc){
+    ####BioIndicators
+    bioInd <- calBioIndices(region)
+    bioIndNames <- names(bioInd)
+    ###average values
+    for(ij in 1:length(bioIndNames)){
+      datX <- data.table(segID=sampleX$segID,bioInd[[ij]])
+      p1 <- datX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
+      p2 <- datX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
+      p3 <- datX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
+      
+      pX <- data.table(p1,p2[,2],p3[,2]) # can be the same segment multiple times
+      
+      assign(bioIndNames[ij],pX)
+      #save 
+      save(list=bioIndNames[ij],
+           file=paste0("outputDT/forCent",r_no,"/",
+                       bioIndNames[ij],"_harscen",harvScen,
+                       "_harInten",harvInten,"_",
+                       rcpfile,"_","sampleID",sampleID,".rdata"))
+      print(bioIndNames[ij])
+    }
+    rm(list=bioIndNames); gc()
+  }  
+  
   if(outType=="testRun") return(list(region = region,initPrebas=initPrebas))
   if(outType=="dTabs"){
     runModOut(sampleID, sampleX,region,r_no,harvScen,harvInten,rcpfile,areas,
