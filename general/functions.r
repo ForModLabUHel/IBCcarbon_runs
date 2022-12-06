@@ -864,7 +864,7 @@ create_prebas_input.f = function(r_no, clim, data.sample, nYears,
       initVar[,5,] = 0.
       ix = unlist(data.sample[, which.max(c(pine, spruce, decid)), by=1:nrow(data.sample)] [, 2])
       for(jx in 1:nSites) initVar[jx,5,ix[jx]] = as.numeric(data.sample[, ba])[jx]
-    } else{
+    }else{
       ###initialize model for mixed forest runs
       initVar[,5,1] <- as.numeric(data.sample[,(ba * pine/(pine+spruce+decid))])
       initVar[,5,2] <- as.numeric(data.sample[,(ba * spruce/(pine+spruce+decid))])

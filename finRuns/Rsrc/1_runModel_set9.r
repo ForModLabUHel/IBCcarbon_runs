@@ -14,7 +14,7 @@ toMem <- ls()
 # for(sampleID in sampleIDs){
 # set.seed(1234, kind = "L'Ecuyer-CMRG" )
 mclapply(sampleIDs, function(jx) {
-  runModel(jx)  ## Do nothing for 10 seconds
+  runModel(jx,harvScen=harvScen,harvInten=harvInten)
 }, mc.cores = nCores)      ## Split this job across 10 cores
 
 # models outputs to NAs, outputDT, initSoilC and plots
