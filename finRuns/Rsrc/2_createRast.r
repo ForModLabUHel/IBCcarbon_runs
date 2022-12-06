@@ -38,7 +38,7 @@ if(!exists("varXs")) varXs <- c(varNames[varSel], specialVars)
 
 for(varX in varXs){
   # varX <- varXs[1]
-  fileXs <- list.files(path = paste0(pathtoken,pathFiles), pattern = paste0(varX,"_",harvScen,"_",rcps))
+  fileXs <- list.files(path = paste0(pathtoken,pathFiles), pattern = paste0(varX,"_harscen",harvScen,"_harInten",harvInten,"_",rcps))
   if(length(fileXs) != nSamples) stop(paste0(nSamples-length(fileXs)," files missing"))
 
   outX <- data.table()
