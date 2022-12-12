@@ -7,9 +7,8 @@ source("Rsrc/fra/maakuntaRuns/codes/outSampleSettings.r")
 ##settings
 HSIminVal <- 0.5
 harvScen <- "Base"
-cons10run <- F
-
 for(harvScen in c("Base", "protect",  "adapt", "Mitigation","TapioAndNoHarv")){ ## Base protect  adapt Mitigation TapioAndNoHarv
+
   # devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/outSamplePlotsCountry.r")
   #devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/outSamplePlotsRegions.r")
   # for(harvScen in c("Base", "protect",  "adapt", "Mitigation", "TapioAndNoHarv")){
