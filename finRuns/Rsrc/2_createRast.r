@@ -89,23 +89,32 @@ dev.off()
 
 
 ###soilType raster
-print("creating site type raster")
-npp = raster(paste0("rasters/forCent",r_no,"/",
-                    "npp_",min(per1),"-",max(per1),
-                    "_harscen",harvScen,
-                    "_harInten",harvInten,"_",
-                    rcpfile,".tif"))
+if(file.exists(paste0("rasters/forCent",r_no,"/",
+                      "npp_",min(per1),"-",max(per1),
+                      "_harscen",harvScen,
+                      "_harInten",harvInten,"_",
+                      rcpfile,".tif"))){
 
-fertX <- data.all[,.(segID,fert)]
-setkey(fertX,segID)
-fertX <- merge(fertX,data.IDs)
-rastFert <- rasterFromXYZ(fertX[,.(x,y,fert)])
-crs(rastFert) <- crsX
-# rastFert <- resample(rastFert, npp,method="ngb")
-
-writeRaster(rastFert,filename = paste0("rasters/forCent",r_no,"/siteType.tiff"),overwrite=T)
-
-rm(list=ls());gc()
+  print("creating site type raster")
+  
+  npp = raster(paste0("rasters/forCent",r_no,"/",
+                      "npp_",min(per1),"-",max(per1),
+                      "_harscen",harvScen,
+                      "_harInten",harvInten,"_",
+                      rcpfile,".tif"))
+  
+  fertX <- data.all[,.(segID,fert)]
+  setkey(fertX,segID)
+  fertX <- merge(fertX,data.IDs)
+  rastFert <- rasterFromXYZ(fertX[,.(x,y,fert)])
+  crs(rastFert) <- crsX
+  # rastFert <- resample(rastFert, npp,method="ngb")
+  
+  writeRaster(rastFert,filename = paste0("rasters/forCent",r_no,"/siteType.tiff"),overwrite=T)
+  
+  rm(list=ls());gc()
+  
+}
 
 
 print("all raster created")
