@@ -1,6 +1,6 @@
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/loadPackages.r")
 # devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/testCode.r")
-mortMod=3
+mortMod=2
 if(!exists("maaks")) maaks <- 1:19 
 if(!exists("sampleID")) sampleID <- 1#498 #136
 if(!exists("harvScen")) harvScen <- "Base"
