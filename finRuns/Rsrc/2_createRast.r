@@ -51,7 +51,7 @@ for(varX in varXs){
   setkey(data.IDs,segID)
   
   tabX <- merge(outX,data.IDs)
-
+rm(outX);gc()
   
   # can make a loop 
   rastX <- rasterFromXYZ(tabX[,.(x,y,per1)])
@@ -80,6 +80,8 @@ for(varX in varXs){
                           "_harInten",harvInten,"_",
                           rcpfile,".tiff"),overwrite=T)
   hist(rastX, main = paste(varX,"per3"))
+rm(tabX);gc()
+rm(rastX);gc()
  
   # if(varX!="DeadWoodVolume")  file.remove(paste0(pathFiles,fileXs))
   file.remove(paste0(pathFiles,fileXs))
