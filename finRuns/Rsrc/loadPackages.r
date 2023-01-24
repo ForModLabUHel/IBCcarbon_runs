@@ -22,7 +22,7 @@ if(CSCrun){
   libpath <- .libPaths()[1]
 }
 ###choose PREBAS version
-vPREBAS <- "master"   #### choose PREBAS version to run the model  "master" "v0.2.x"
+vPREBAS <- "v1.0.0"   #### choose PREBAS version to run the model  "master" "v1.0.0"
 install_github("ForModLabUHel/Rprebasso", ref=vPREBAS)
 
 library(Rprebasso)
