@@ -1508,7 +1508,37 @@ specialVarProc <- function(sampleX,region,r_no,harvScen,harvInten,rcpfile,sample
                         rcpfile,"_",
                         "sampleID",sampleID,".rdata"))
   
-  ####WenergyWood
+  ###pine Volume Vpine
+  outX <- vSpFun(region,SpID=1)
+  if(sampleID==sampleForPlots){testPlot(outX,"Vpine",areas)}
+  p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
+  p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
+  p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
+  pX <- merge(p1,p2)
+  pX <- merge(pX,p3)
+  Vpine <- pX
+  save(Vpine,file=paste0("outputDT/forCent",r_no,"/Vpine",
+                        "_harscen",harvScen,
+                        "_harInten",harvInten,"_",
+                        rcpfile,"_",
+                        "sampleID",sampleID,".rdata"))
+
+  ###Spruce Volume Vspruce
+  outX <- vSpFun(region,SpID = 2)
+  if(sampleID==sampleForPlots){testPlot(outX,"Vspruce",areas)}
+  p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
+  p2 <- outX[, .(per2 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut2, by = segID] 
+  p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
+  pX <- merge(p1,p2)
+  pX <- merge(pX,p3)
+  Vspruce <- pX
+  save(Vspruce,file=paste0("outputDT/forCent",r_no,"/Vspruce",
+                        "_harscen",harvScen,
+                        "_harInten",harvInten,"_",
+                        rcpfile,"_",
+                        "sampleID",sampleID,".rdata"))
+
+####WenergyWood
   outX <- data.table(segID=sampleX$segID,apply(region$multiEnergyWood[,,,2],1:2,sum))
   if(sampleID==sampleForPlots){testPlot(outX,"WenergyWood",areas)}
   p1 <- outX[, .(per1 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut1, by = segID] 
@@ -2008,6 +2038,22 @@ vDecFun <- function(modOut){
   outX <- data.table(segID=segID,VdecMat)
 }
 
+###retunrs the Volume by species
+## modOut -> multiPREBAS output
+## SpID -> species ID
+vSpFun <- function(modOut,SpID){
+  segID <- modOut$siteInfo[,1]
+  oo <- data.table(which(modOut$multiOut[,,4,,1]==SpID,arr.ind=T))
+  setnames(oo,c("site","year","layer"))
+  vx <-modOut$multiOut[,,30,,1][as.matrix(oo)]
+  oo$VSp <- vx
+  setkey(oo,site,year)
+  ff <- oo[,sum(VSp),by=.(site,year)]
+  VspMat <- matrix(0,modOut$nSites,modOut$maxYears)
+  VspMat[as.matrix(ff[,1:2])] <- unlist(ff[,3])
+  outX <- data.table(segID=segID,VspMat)
+  return(outX)
+}
 
 #####extract model output as baweighted mean or sum according to funX
 ##modOut -> multiPREBAS output
