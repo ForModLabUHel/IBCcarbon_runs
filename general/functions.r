@@ -589,8 +589,21 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
                                          r_no,"_deadWV_mortMod",mortMod,".rdata"))
     return("deadWood volume at steady state saved")
   }else{
-    load(paste0("initDeadWVss/reg",
-                r_no,"_deadWV_mortMod",mortMod,".rdata"))
+    ###start. additional line to average the deadwood volume over the 3 regions used in Ismael runs
+    load(paste0("initDeadWVss/reg4_deadWV_mortMod",mortMod,".rdata"))
+    unmanxx4 <- unmanDeadW$ssDeadW
+    manxx4 <- manDeadW$ssDeadW
+    load(paste0("initDeadWVss/reg6_deadWV_mortMod",mortMod,".rdata"))
+    unmanxx6 <- unmanDeadW$ssDeadW
+    manxx6 <- manDeadW$ssDeadW
+    load(paste0("initDeadWVss/reg14_deadWV_mortMod",mortMod,".rdata"))
+    unmanxx13 <- unmanDeadW$ssDeadW
+    manxx13 <- manDeadW$ssDeadW
+    unmanDeadW$ssDeadW <- (unmanxx4 + unmanxx6 + unmanxx13)/3
+    manDeadW$ssDeadW <- (manxx4 + manxx6 + manxx13)/3
+    ###end. additional line to average the deadwood volume over the 3 regions used in Ismael runs
+    # load(paste0("initDeadWVss/reg",
+    #             r_no,"_deadWV_mortMod",mortMod,".rdata"))
     if(nrow(unmanDeadW$ssDeadW)<nYears){
       tmp<-unmanDeadW$ssDeadW
       tmp<-rbind(tmp,matrix(tmp[nrow(tmp),],ncol=ncol(tmp),nrow=nYears-nrow(tmp),byrow = T))
