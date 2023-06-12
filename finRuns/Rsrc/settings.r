@@ -55,6 +55,8 @@ HcFactorAll <- rep(1,19)#c(1.2,0.8,0.8,1.2,1.2,0.8,1.2,1.2,0.8,
                  # 0.8,1.2,0.8,0.8,1.2,0.8,1.2,0.8,1.2,1.2)
 if(!exists("HcFactor") & regSets=="maakunta") HcFactor = HcFactorAll[r_no]
 if(!exists("HcFactor") & regSets=="forCent") HcFactor = 1.
+if(!exists("HcModVx")) HcModVx = 1
+
 ###parameters for adaptation scenario
 if(!exists("fertThin")) fertThin=3 ###flag that indicates to which TapioType of thinning apply the fertilization:1->precommercial; 2->firstThin; 3->normal thinning
 if(!exists("nYearsFert")) nYearsFert=20 ###number of years for which the fertilization has effect
