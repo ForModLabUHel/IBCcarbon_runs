@@ -1,4 +1,5 @@
 # define some settings that you might want to manipulate later
+CSCrun = T
 r_no = regions = 1 ### forest center ID
 nSetRuns = 10 #number of set runs
 regSets <- "maakunta" ### "forCent", "maakunta"
