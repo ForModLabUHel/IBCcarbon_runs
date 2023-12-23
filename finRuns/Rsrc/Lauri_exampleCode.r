@@ -40,4 +40,13 @@ points(modRun_NoHarv$region$multiOut[siteX,,varX,2,1],col=2)
 points(modRun_NoHarv$region$multiOut[siteX,,varX,3,1],col=3)
 
 
+Vtot_base <- apply(modRun_Base$region$multiOut[,,30,,1],2,sum) 
+
+Vtot_noharv <- apply(modRun_NoHarv$region$multiOut[,,30,,1],2,sum) 
+
+ylimX <-range(Vtot_base,Vtot_noharv)
+
+plot(Vtot_base,ylim=ylimX)
+points(Vtot_noharv,col=2)
+
 
