@@ -282,12 +282,12 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
       #sample(1:nYears,nYears,replace=T)
     }else{
       set.seed(10)
-      resampleYear <- sample(1:nYears,nYears)
+      resampleYear <- sample(8:nYears,(nYears-7))
     } 
-    initPrebas$ETSy <- initPrebas$ETSy[,resampleYear]
-    initPrebas$P0y <- initPrebas$P0y[,resampleYear,]
-    initPrebas$weather <- initPrebas$weather[,resampleYear,,]
-    initPrebas$weatherYasso <- initPrebas$weatherYasso[,resampleYear,]
+    initPrebas$ETSy[,8:nYears] <- initPrebas$ETSy[,resampleYear]
+    initPrebas$P0y[,8:nYears,] <- initPrebas$P0y[,resampleYear,]
+    initPrebas$weather[,8:nYears,,] <- initPrebas$weather[,resampleYear,,]
+    initPrebas$weatherYasso[,8:nYears,] <- initPrebas$weatherYasso[,resampleYear,]
   }
   
   
