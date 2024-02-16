@@ -740,7 +740,7 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
 check_management_vector <- function(management_vector, cons=0) {
   if(length(management_vector)==0){
     warning(paste0("No rows found in data where cons column value is ", cons, ". Output may be faulty!"))
-    message(paste0("Check warnings in error.txt!"))
+    print(paste0("Check warnings in error.txt!"))
     return(NA)
   }
   return(management_vector)
