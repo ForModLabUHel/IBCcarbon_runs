@@ -581,7 +581,10 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
   #####start initialize deadWood volume
   ## identify managed and unmanaged forests
   manFor <-  which(sampleX$oldCons==0)
+  manFor <- check_management_vector(management_vector = manFor)
   unmanFor <- which(sampleX$oldCons==1)
+  unmanFor <- check_management_vector(management_vector = unmanFor, cons = 1)
+  
   if(outType=="ststDeadW"){
     unmanDeadW <- initDeadW(region,unmanFor,yearsDeadW)
     manDeadW <- initDeadW(region,manFor,yearsDeadW)
@@ -718,6 +721,24 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
   
   #print(uncRun)
   # }
+}
+
+#' Make sure management vector is not integer(0). The management vector is a vector of row indexes in the original data
+#' filtered by the management type (eg. cons column value).
+#'
+#' @param management_vector integer The vector of row indexes filtered from the original data (eg. manFor, unmanFor)
+#' @param cons integer Management type column (cons) value in data used for filtering (0 or 1)
+#'
+#' @return integer The original vector if its length > 0, otherwise NA
+#' @export
+#'
+#' @examples
+check_management_vector <- function(management_vector, cons=0) {
+  if(length(management_vector)==0){
+    warning(paste0("No rows found in data where cons column value is ", cons, ". Output may be faulty!"))
+    return(NA)
+  }
+  return(management_vector)
 }
 
 runModOut <- function(sampleID, sampleX,modOut,r_no,harvScen,harvInten,rcpfile,areas,

@@ -4,3 +4,6 @@
 .Ruserdata
 data.sample.rdata
 dataGPPAnnikkicue.rdata
+
+# Test files
+general/test.R
