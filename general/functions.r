@@ -740,6 +740,7 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
 check_management_vector <- function(management_vector, cons=0) {
   if(length(management_vector)==0){
     warning(paste0("No rows found in data where cons column value is ", cons, ". Output may be faulty!"))
+    message(paste0("Check warnings in error.txt!"))
     return(NA)
   }
   return(management_vector)
@@ -756,7 +757,7 @@ check_management_vector <- function(management_vector, cons=0) {
 #'
 #' @examples
 management_to_region_multiOut <- function(region, management_vector, deadW) {
-  if(!is.na(management_vector)) {
+  if(!any(is.na(management_vector))) {
     region$multiOut[management_vector,,8,1:3,1] <- region$multiOut[management_vector,,8,1:3,1] + 
       aperm(replicate(length(management_vector),(deadW$ssDeadW[1:nYears,])),c(3,1:2))
   }
