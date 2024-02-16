@@ -596,15 +596,15 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
     ###start. additional line to average the deadwood volume over the 3 regions used in Ismael runs
       load(paste0("initDeadWVss/reg4_deadWV_mortMod",mortMod,".rdata"))
       unmanxx4 <- unmanDeadW$ssDeadW
-      manxx4 <- manDeadW$ssDeadW
+      manxx4 <- deadW$ssDeadW
       load(paste0("initDeadWVss/reg6_deadWV_mortMod",mortMod,".rdata"))
       unmanxx6 <- unmanDeadW$ssDeadW
-      manxx6 <- manDeadW$ssDeadW
+      manxx6 <- deadW$ssDeadW
       load(paste0("initDeadWVss/reg14_deadWV_mortMod",mortMod,".rdata"))
       unmanxx13 <- unmanDeadW$ssDeadW
-      manxx13 <- manDeadW$ssDeadW
+      manxx13 <- deadW$ssDeadW
       unmanDeadW$ssDeadW <- (unmanxx4 + unmanxx6 + unmanxx13)/3
-      manDeadW$ssDeadW <- (manxx4 + manxx6 + manxx13)/3
+      deadW$ssDeadW <- (manxx4 + manxx6 + manxx13)/3
       ###end. additional line to average the deadwood volume over the 3 regions used in Ismael runs
     }else{
       load(paste0("initDeadWVss/reg",
@@ -614,14 +614,18 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
       tmp<-unmanDeadW$ssDeadW
       tmp<-rbind(tmp,matrix(tmp[nrow(tmp),],ncol=ncol(tmp),nrow=nYears-nrow(tmp),byrow = T))
       unmanDeadW$ssDeadW<-tmp
-      tmp<-manDeadW$ssDeadW
+      tmp<-deadW$ssDeadW
       tmp<-rbind(tmp,matrix(tmp[nrow(tmp),],ncol=ncol(tmp),nrow=nYears-nrow(tmp),byrow = T))
-      manDeadW$ssDeadW<-tmp
+      deadW$ssDeadW<-tmp
     } 
-    region$multiOut[manFor,,8,1:3,1] <- region$multiOut[manFor,,8,1:3,1] + 
-      aperm(replicate(length(manFor),(manDeadW$ssDeadW[1:nYears,])),c(3,1:2))
-    region$multiOut[unmanFor,,8,1:3,1] <- region$multiOut[unmanFor,,8,1:3,1] + 
-      aperm(replicate(length(unmanFor),(unmanDeadW$ssDeadW[1:nYears,])),c(3,1:2))
+    
+    region <- management_to_region_multiOut(region = region, management_vector = manFor, deadW = manDeadW)
+    region <- management_to_region_multiOut(region = region, management_vector = unmanFor, deadW = unmanDeadW)
+    
+    # region$multiOut[manFor,,8,1:3,1] <- region$multiOut[manFor,,8,1:3,1] + 
+    #   aperm(replicate(length(manFor),(manDeadW$ssDeadW[1:nYears,])),c(3,1:2))
+    # region$multiOut[unmanFor,,8,1:3,1] <- region$multiOut[unmanFor,,8,1:3,1] + 
+    #   aperm(replicate(length(unmanFor),(unmanDeadW$ssDeadW[1:nYears,])),c(3,1:2))
   }
   ####end initialize deadWood Volume
   
@@ -740,6 +744,25 @@ check_management_vector <- function(management_vector, cons=0) {
   }
   return(management_vector)
 }
+
+#' Add management to region multiOut if it is not NA
+#'
+#' @param region array Initialised model
+#' @param management_vector integer The vector of row indexes filtered from the original data (eg. manFor, unmanFor)
+#' @param deadW array Array for dead wood type (eg. managed, unmanaged)
+#'
+#' @return array region
+#' @export
+#'
+#' @examples
+management_to_region_multiOut <- function(region, management_vector, deadW) {
+  if(!is.na(management_vector)) {
+    region$multiOut[management_vector,,8,1:3,1] <- region$multiOut[management_vector,,8,1:3,1] + 
+      aperm(replicate(length(management_vector),(deadW$ssDeadW[1:nYears,])),c(3,1:2))
+  }
+  return(region)
+}
+
 
 runModOut <- function(sampleID, sampleX,modOut,r_no,harvScen,harvInten,rcpfile,areas,
                       colsOut1,colsOut2,colsOut3,varSel,sampleForPlots){
