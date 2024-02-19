@@ -619,8 +619,8 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
       deadW$ssDeadW<-tmp
     } 
     
-    region <- management_to_region_multiOut(region = region, management_vector = manFor, deadW = manDeadW)
-    region <- management_to_region_multiOut(region = region, management_vector = unmanFor, deadW = unmanDeadW)
+    region <- management_to_region_multiOut(region = region, management_vector = manFor, deadW = manDeadW, nYears = nYears)
+    region <- management_to_region_multiOut(region = region, management_vector = unmanFor, deadW = unmanDeadW, nYears = nYears)
     
     # region$multiOut[manFor,,8,1:3,1] <- region$multiOut[manFor,,8,1:3,1] + 
     #   aperm(replicate(length(manFor),(manDeadW$ssDeadW[1:nYears,])),c(3,1:2))
@@ -751,12 +751,13 @@ check_management_vector <- function(management_vector, cons=0) {
 #' @param region array Initialised model
 #' @param management_vector integer The vector of row indexes filtered from the original data (eg. manFor, unmanFor)
 #' @param deadW array Array for dead wood type (eg. managed, unmanaged)
+#' @param nYears integer Number of years
 #'
 #' @return array region
 #' @export
 #'
 #' @examples
-management_to_region_multiOut <- function(region, management_vector, deadW) {
+management_to_region_multiOut <- function(region, management_vector, deadW, nYears) {
   if(!any(is.na(management_vector))) {
     region$multiOut[management_vector,,8,1:3,1] <- region$multiOut[management_vector,,8,1:3,1] + 
       aperm(replicate(length(management_vector),(deadW$ssDeadW[1:nYears,])),c(3,1:2))
