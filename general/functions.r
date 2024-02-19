@@ -581,9 +581,9 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
   #####start initialize deadWood volume
   ## identify managed and unmanaged forests
   manFor <-  which(sampleX$oldCons==0)
-  # manFor <- check_management_vector(management_vector = manFor)
+  manFor <- check_management_vector(management_vector = manFor)
   unmanFor <- which(sampleX$oldCons==1)
-  # unmanFor <- check_management_vector(management_vector = unmanFor, cons = 1)
+  unmanFor <- check_management_vector(management_vector = unmanFor, cons = 1)
   
   if(outType=="ststDeadW"){
     unmanDeadW <- initDeadW(region,unmanFor,yearsDeadW)
