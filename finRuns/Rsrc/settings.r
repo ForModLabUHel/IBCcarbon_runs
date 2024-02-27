@@ -26,7 +26,7 @@ install_github("ForModLabUHel/Rprebasso", ref=vPREBAS)
 library(Rprebasso)
 library(DescTools)
 
-# r_no = regions = 2  ### forest center ID
+r_no = regions = 2  ### forest center ID
 nCores <- 6  ####  number of cores
 sampleForPlots <- 1
 ###management and intesity of harvest
