@@ -1,4 +1,4 @@
-# CSCrun=T
+CSCrun=T
 
 library(raster)
 library(rgdal)
