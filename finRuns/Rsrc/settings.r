@@ -22,9 +22,10 @@ require(sm)
 # ###choose PREBAS version
 # vPREBAS <- "master"   #### choose PREBAS version to run the model  "master" "v0.2.x"
 # install_github("ForModLabUHel/Rprebasso", ref=vPREBAS)
-install.packages('Rprebasso', lib=libpath)
 
-library(Rprebasso)
+require(Rprebasso)
+
+# library(Rprebasso)
 library(DescTools)
 
 r_no = regions = 2  ### forest center ID
