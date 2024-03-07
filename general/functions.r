@@ -25,7 +25,7 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
   # cons10run -> flag for conservation areas 10% run
   
   # print(date())
-  if(!is.null(sampleX)) sampleID <- "sampleX"
+  if(!is.null(sampleX)) sampleID <- paste0("sampleX_",sampleID)
   print(paste("start sample ID",sampleID))
   
   ###flag for soil initialization
