@@ -622,10 +622,6 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
     region <- management_to_region_multiOut(region = region, management_vector = manFor, deadW = manDeadW, nYears = nYears)
     region <- management_to_region_multiOut(region = region, management_vector = unmanFor, deadW = unmanDeadW, nYears = nYears)
     
-    # region$multiOut[manFor,,8,1:3,1] <- region$multiOut[manFor,,8,1:3,1] +
-    #   aperm(replicate(length(manFor),(manDeadW$ssDeadW[1:nYears,])),c(3,1:2))
-    # region$multiOut[unmanFor,,8,1:3,1] <- region$multiOut[unmanFor,,8,1:3,1] +
-    #   aperm(replicate(length(unmanFor),(unmanDeadW$ssDeadW[1:nYears,])),c(3,1:2))
   }
   ####end initialize deadWood Volume
   
@@ -739,7 +735,7 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
 #' @examples
 check_management_vector <- function(management_vector, cons=0) {
   if(length(management_vector)==0){
-    warning(paste0("No rows found in data where cons column value is ", cons, ". Output may be faulty!"))
+    warning(paste0("No rows found in data where cons column value is ", cons, "."))
     print(paste0("Check warnings in error.txt!"))
     return(NA)
   }
