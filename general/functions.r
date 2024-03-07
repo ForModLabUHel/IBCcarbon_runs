@@ -25,7 +25,7 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
   # cons10run -> flag for conservation areas 10% run
   
   # print(date())
-  if(!is.null(sampleX)) sampleID <- "sampleX"
+  if(!is.null(sampleX)) sampleID <- paste0("sampleX_",sampleID)
   print(paste("start sample ID",sampleID))
   
   ###flag for soil initialization
@@ -581,7 +581,10 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
   #####start initialize deadWood volume
   ## identify managed and unmanaged forests
   manFor <-  which(sampleX$oldCons==0)
+  manFor <- check_management_vector(management_vector = manFor)
   unmanFor <- which(sampleX$oldCons==1)
+  unmanFor <- check_management_vector(management_vector = unmanFor, cons = 1)
+  
   if(outType=="ststDeadW"){
     unmanDeadW <- initDeadW(region,unmanFor,yearsDeadW)
     manDeadW <- initDeadW(region,manFor,yearsDeadW)
@@ -593,15 +596,15 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
     ###start. additional line to average the deadwood volume over the 3 regions used in Ismael runs
       load(paste0("initDeadWVss/reg4_deadWV_mortMod",mortMod,".rdata"))
       unmanxx4 <- unmanDeadW$ssDeadW
-      manxx4 <- manDeadW$ssDeadW
+      manxx4 <- deadW$ssDeadW
       load(paste0("initDeadWVss/reg6_deadWV_mortMod",mortMod,".rdata"))
       unmanxx6 <- unmanDeadW$ssDeadW
-      manxx6 <- manDeadW$ssDeadW
+      manxx6 <- deadW$ssDeadW
       load(paste0("initDeadWVss/reg14_deadWV_mortMod",mortMod,".rdata"))
       unmanxx13 <- unmanDeadW$ssDeadW
-      manxx13 <- manDeadW$ssDeadW
+      manxx13 <- deadW$ssDeadW
       unmanDeadW$ssDeadW <- (unmanxx4 + unmanxx6 + unmanxx13)/3
-      manDeadW$ssDeadW <- (manxx4 + manxx6 + manxx13)/3
+      deadW$ssDeadW <- (manxx4 + manxx6 + manxx13)/3
       ###end. additional line to average the deadwood volume over the 3 regions used in Ismael runs
     }else{
       load(paste0("initDeadWVss/reg",
@@ -611,14 +614,14 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
       tmp<-unmanDeadW$ssDeadW
       tmp<-rbind(tmp,matrix(tmp[nrow(tmp),],ncol=ncol(tmp),nrow=nYears-nrow(tmp),byrow = T))
       unmanDeadW$ssDeadW<-tmp
-      tmp<-manDeadW$ssDeadW
+      tmp<-deadW$ssDeadW
       tmp<-rbind(tmp,matrix(tmp[nrow(tmp),],ncol=ncol(tmp),nrow=nYears-nrow(tmp),byrow = T))
-      manDeadW$ssDeadW<-tmp
+      deadW$ssDeadW<-tmp
     } 
-    region$multiOut[manFor,,8,1:3,1] <- region$multiOut[manFor,,8,1:3,1] + 
-      aperm(replicate(length(manFor),(manDeadW$ssDeadW[1:nYears,])),c(3,1:2))
-    region$multiOut[unmanFor,,8,1:3,1] <- region$multiOut[unmanFor,,8,1:3,1] + 
-      aperm(replicate(length(unmanFor),(unmanDeadW$ssDeadW[1:nYears,])),c(3,1:2))
+    
+    region <- management_to_region_multiOut(region = region, management_vector = manFor, deadW = manDeadW, nYears = nYears)
+    region <- management_to_region_multiOut(region = region, management_vector = unmanFor, deadW = unmanDeadW, nYears = nYears)
+    
   }
   ####end initialize deadWood Volume
   
@@ -719,6 +722,45 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
   #print(uncRun)
   # }
 }
+
+#' Make sure management vector is not integer(0). The management vector is a vector of row indexes in the original data
+#' filtered by the management type (eg. cons column value).
+#'
+#' @param management_vector integer The vector of row indexes filtered from the original data (eg. manFor, unmanFor)
+#' @param cons integer Management type column (cons) value in data used for filtering (0 or 1)
+#'
+#' @return integer The original vector if its length > 0, otherwise NA
+#' @export
+#'
+#' @examples
+check_management_vector <- function(management_vector, cons=0) {
+  if(length(management_vector)==0){
+    warning(paste0("No rows found in data where cons column value is ", cons, "."))
+    print(paste0("Check warnings in error.txt!"))
+    return(NA)
+  }
+  return(management_vector)
+}
+
+#' Add management to region multiOut if it is not NA
+#'
+#' @param region array Initialised model
+#' @param management_vector integer The vector of row indexes filtered from the original data (eg. manFor, unmanFor)
+#' @param deadW array Array for dead wood type (eg. managed, unmanaged)
+#' @param nYears integer Number of years
+#'
+#' @return array region
+#' @export
+#'
+#' @examples
+management_to_region_multiOut <- function(region, management_vector, deadW, nYears) {
+  if(!any(is.na(management_vector))) {
+    region$multiOut[management_vector,,8,1:3,1] <- region$multiOut[management_vector,,8,1:3,1] + 
+      aperm(replicate(length(management_vector),(deadW$ssDeadW[1:nYears,])),c(3,1:2))
+  }
+  return(region)
+}
+
 
 runModOut <- function(sampleID, sampleX,modOut,r_no,harvScen,harvInten,rcpfile,areas,
                       colsOut1,colsOut2,colsOut3,varSel,sampleForPlots){
