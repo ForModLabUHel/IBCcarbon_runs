@@ -754,11 +754,19 @@ check_management_vector <- function(management_vector, cons=0) {
 #'
 #' @examples
 management_to_region_multiOut <- function(region, management_vector, deadW, nYears) {
-  if(!any(is.na(management_vector))) {
-    region$multiOut[management_vector,,8,1:3,1] <- region$multiOut[management_vector,,8,1:3,1] + 
-      aperm(replicate(length(management_vector),(deadW$ssDeadW[1:nYears,])),c(3,1:2))
-  }
-  return(region)
+  
+  tryCatch(
+    {
+      if(!any(is.na(management_vector))) {
+        region$multiOut[management_vector,,8,1:3,1] <- region$multiOut[management_vector,,8,1:3,1] +
+          aperm(replicate(length(management_vector),(deadW$ssDeadW[1:nYears,])),c(3,1:2))
+      }
+    }, 
+    error = function(e) {
+      print(e)
+    },
+    finally = return(region)
+  )
 }
 
 
