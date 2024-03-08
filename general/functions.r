@@ -581,9 +581,9 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
   #####start initialize deadWood volume
   ## identify managed and unmanaged forests
   manFor <-  which(sampleX$oldCons==0)
-  manFor <- check_management_vector(management_vector = manFor)
+  # manFor <- check_management_vector(management_vector = manFor)
   unmanFor <- which(sampleX$oldCons==1)
-  unmanFor <- check_management_vector(management_vector = unmanFor, cons = 1)
+  # unmanFor <- check_management_vector(management_vector = unmanFor, cons = 1)
   
   if(outType=="ststDeadW"){
     unmanDeadW <- initDeadW(region,unmanFor,yearsDeadW)
@@ -742,7 +742,7 @@ check_management_vector <- function(management_vector, cons=0) {
   return(management_vector)
 }
 
-#' Add management to region multiOut if it is not NA
+#' Add management to region multiOut if it is not NA and if its length > 1
 #'
 #' @param region array Initialised model
 #' @param management_vector integer The vector of row indexes filtered from the original data (eg. manFor, unmanFor)
@@ -757,7 +757,7 @@ management_to_region_multiOut <- function(region, management_vector, deadW, nYea
   
   tryCatch(
     {
-      if(!any(is.na(management_vector))) {
+      if(!any(is.na(management_vector)) & length(management_vector) > 1) {
         region$multiOut[management_vector,,8,1:3,1] <- region$multiOut[management_vector,,8,1:3,1] +
           aperm(replicate(length(management_vector),(deadW$ssDeadW[1:nYears,])),c(3,1:2))
       }
