@@ -1,7 +1,6 @@
 
-#### ------------------- FROM FORK!!! ------------------- ####
-devtools::source_url("https://raw.githubusercontent.com/samvancart/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
-source_url("https://raw.githubusercontent.com/samvancart/IBCcarbon_runs/master/general/functions.r")
+devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
+source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
 
 
 

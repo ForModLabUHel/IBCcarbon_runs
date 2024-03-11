@@ -62,9 +62,9 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
       if(outType=="uncRun"){
         load(paste0("initSoilCunc/forCent",r_no,"/initSoilC_uncRun_",sampleID,".rdata"))
       } else {
-        if(identical(landClassX,1:3)) load(paste0(path_initiSoilC, "/initSoilC_",sampleID,"_LandClass1to3.rdata"))
-        if(identical(landClassX,1:2)) load(paste0(path_initiSoilC, "/initSoilC_",sampleID,"_LandClass1to2.rdata"))
-        if(identical(landClassX,1)) load(paste0(path_initiSoilC, "/initSoilC_",sampleID,"_LandClass1.rdata"))
+        if(identical(landClassX,1:3)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to3.rdata"))
+        if(identical(landClassX,1:2)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to2.rdata"))
+        if(identical(landClassX,1)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1.rdata"))
       }
     }
     setnames(xDat,"nPix","N")
@@ -388,9 +388,9 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
       if(!outType %in% c("uncRun","uncSeg")){
         if(!harvScen %in% c("protect","protectNoAdH","protectTapio")){
           if(is.null(initSoilC)){
-            if(identical(landClassX,1:3)) load(paste0(path_initiSoilC, "/initSoilC_",sampleID,"_LandClass1to3.rdata"))
-            if(identical(landClassX,1:2)) load(paste0(path_initiSoilC, "/initSoilC_",sampleID,"_LandClass1to2.rdata"))
-            if(identical(landClassX,1)) load(paste0(path_initiSoilC, "/initSoilC_",sampleID,"_LandClass1.rdata"))
+            if(identical(landClassX,1:3)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to3.rdata"))
+            if(identical(landClassX,1:2)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to2.rdata"))
+            if(identical(landClassX,1)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1.rdata"))
           }
         }
       }else{ # if UncRun or uncSeg
@@ -513,9 +513,9 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
     print(paste("initSoilC",sampleID))
     if(outType!="testRun" | forceSaveInitSoil){
       if(!outType %in% c("uncRun","uncSeg")){
-        if(identical(landClassX,1:3)) save(initSoilC,file=paste0(path_initiSoilC, "/initSoilC_",sampleID,"_LandClass1to3.rdata"))
-        if(identical(landClassX,1:2)) save(initSoilC,file=paste0(path_initiSoilC, "/initSoilC_",sampleID,"_LandClass1to2.rdata"))
-        if(identical(landClassX,1)) save(initSoilC,file=paste0(path_initiSoilC, "/initSoilC_",sampleID,"_LandClass1.rdata"))
+        if(identical(landClassX,1:3)) save(initSoilC,file=paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to3.rdata"))
+        if(identical(landClassX,1:2)) save(initSoilC,file=paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to2.rdata"))
+        if(identical(landClassX,1)) save(initSoilC,file=paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1.rdata"))
       } else if(uncRCP == 0 & outType!="uncSeg") {
         save(initSoilC,file=paste0("initSoilCunc/forCent",r_no,"/initSoilC_",outType,"_",sampleID,".rdata"))
         print(paste0("initsoilID",sampleID," saved"))
