@@ -97,7 +97,7 @@ funX[match(varNames[c(7,11:12,14)],varNames[varSel])] <- "baWmean"
 if(!exists("path_wrkdir")) path_wrkdir = "/scratch/project_2000994/PREBASruns/finRuns/"
 
 # Path to initial soil carbon
-if(!exists("path_initiSoilC")) path_initiSoilC = "/scratch/project_2000994/PREBASruns/finRuns/"
+if(!exists("path_initSoilC")) path_initSoilC = "/scratch/project_2000994/PREBASruns/finRuns/"
 
 # Path to outputs
 if(!exists("path_output")) path_output = "/scratch/project_2000994/PREBASruns/finRuns/"
