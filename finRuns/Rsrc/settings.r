@@ -114,6 +114,7 @@ get_or_create_path <- function(pathVarName, defaultDir, subDir="") {
     path <- file.path(mainDir, subDir)
     print(paste0("Creating ", pathVarName, " in ", path))
     dir.create(path = path, recursive = T, showWarnings = T)
+    path <- mainDir
   }
   return(path)
 } 
