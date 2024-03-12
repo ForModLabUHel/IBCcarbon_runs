@@ -90,17 +90,71 @@ funX[match(varNames[c(7,11:12,14)],varNames[varSel])] <- "baWmean"
 # forCent <- readOGR(dsn = "/scratch/project_2000994/PREBASruns/Kokemaenjoki/shapes/",layer = "mkeskus13tm35")
 
 
-####paths
-#pathtoken = "/scratch/project_2000994/PREBASruns/finRuns/"
 
-# Path to working directory
-if(!exists("path_wrkdir")) path_wrkdir = "/scratch/project_2000994/PREBASruns/finRuns/"
 
-# Path to initial soil carbon
-if(!exists("path_initSoilC")) path_initSoilC = "/scratch/project_2000994/PREBASruns/finRuns/"
 
-# Path to outputs
-if(!exists("path_output")) path_output = "/scratch/project_2000994/PREBASruns/finRuns/"
+
+#' See if a specific variable exists and contains a directory path and return the path if it does. 
+#' If the variable doesn't exist then a default path is returned. If the variable exists but
+#' the directory path doesn't yet then the path is created.
+#'
+#' @param pathVarName character A string representing the variable name
+#' @param defaultDir character The default directory path
+#' @param subDir character The subdirectory that will be added
+#'
+#' @return character The path
+#' @export
+#'
+#' @examples
+get_or_create_path <- function(pathVarName, defaultDir, subDir="") {
+  if(!exists(pathVarName)) {
+    path = defaultDir
+  } else {
+    mainDir <- eval(parse(text=pathVarName))
+    path <- file.path(mainDir, subDir)
+    print(paste0("Creating ", pathVarName, " in ", path))
+    dir.create(path = path, recursive = T, showWarnings = T)
+  }
+  return(path)
+} 
+
+
+# Default working directory
+defaultDir <- "/scratch/project_2000994/PREBASruns/finRuns/"
+
+# Forest centre
+forCent_folder <- paste0("forCent", r_no)
+
+# Initial soil carbon subdirectory
+initSoilC_subDir <- paste0("initSoilC/", forCent_folder)
+
+# Outputs subdirectory
+output_subDir <- paste0("outputDT/", forCent_folder)
+
+
+
+# Get or create working directory path
+path_wrkdir <- get_or_create_path(pathVarName = "path_wrkdir", defaultDir = defaultDir)
+
+# Get or create initial soil carbon path
+path_initSoilC <- get_or_create_path(pathVarName = "path_initSoilC", defaultDir = defaultDir, subDir = initSoilC_subDir)
+
+# Get or create outputs path
+path_output <- get_or_create_path(pathVarName = "path_output", defaultDir = defaultDir, subDir = output_subDir)
+
+
+
+# # Path to working directory
+# if(!exists("path_wrkdir")) path_wrkdir = "/scratch/project_2000994/PREBASruns/finRuns/"
+# 
+# # Path to initial soil carbon
+# if(!exists("path_initSoilC")) path_initSoilC = "/scratch/project_2000994/PREBASruns/finRuns/"
+# 
+# # Path to outputs
+# if(!exists("path_output")) path_output = "/scratch/project_2000994/PREBASruns/finRuns/"
+
+
+
 
 # Path to climate data
 climatepath = "/scratch/project_2000994/RCP/"
