@@ -1505,8 +1505,23 @@ calMean <- function(varX,hscenX,areas){
 
 
 
+
 specialVarProc <- function(sampleX,region,r_no,harvScen,harvInten,rcpfile,sampleID,
                            colsOut1,colsOut2,colsOut3,areas,sampleForPlots){
+  
+  
+  
+  get_out_file <- function(path_output, variable_name) {
+    out_file <- paste0(path_output,"/outputDT/forCent",r_no,"/", variable_name,
+                   "_harscen",harvScen,
+                   "_harInten",harvInten,"_",
+                   rcpfile,"_",
+                   "sampleID",sampleID,".rdata")
+    return(out_file)
+  }
+  
+  
+  
   nYears <-  max(region$nYears)
   nSites <-  max(region$nSites)
   ####process and save special variables: 
@@ -1521,11 +1536,15 @@ specialVarProc <- function(sampleX,region,r_no,harvScen,harvInten,rcpfile,sample
   pX <- merge(p1,p2)
   pX <- merge(pX,p3)
   domSpecies <- pX
-  save(domSpecies,file=paste0("outputDT/forCent",r_no,"/domSpecies",
-                              "_harscen",harvScen,
-                              "_harInten",harvInten,"_",
-                              rcpfile,"_",
-                              "sampleID",sampleID,".rdata"))
+  
+  out_file <- get_out_file(path_output = path_output, variable_name = "domSpecies")
+  save(domSpecies, file = out_file)
+  
+  # save(domSpecies,file=paste0("outputDT/forCent",r_no,"/domSpecies",
+                              # "_harscen",harvScen,
+                              # "_harInten",harvInten,"_",
+                              # rcpfile,"_",
+                              # "sampleID",sampleID,".rdata"))
   # rm(domSpecies); gc()
   ###age dominant species
   outX <- domFun(region,varX="age")
