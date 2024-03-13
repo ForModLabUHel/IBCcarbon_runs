@@ -1634,7 +1634,7 @@ specialVarProc <- function(sampleX,region,r_no,harvScen,harvInten,rcpfile,sample
   
   # Save all outputs
   outputNames <- c("domSpecies","domAge","Vdec","Vpine","Vspruce","WenergyWood","VenergyWood","GVgpp","GVw","Wtot")
-  invisible(lapply(outputs, function(x) save(list=x, file = get_out_file(path_output = path_output, variable_name = x))))
+  invisible(lapply(outputNames, function(x) save(list=x, file = get_out_file(path_output = path_output, variable_name = x))))
   
   
   rm(domSpecies,domAge,Vdec,WenergyWood,Wtot,pX,p1,p2,p3); gc()
