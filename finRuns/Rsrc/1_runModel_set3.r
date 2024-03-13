@@ -4,7 +4,7 @@ devtools::source_url("https://raw.githubusercontent.com/samvancart/IBCcarbon_run
 source_url("https://raw.githubusercontent.com/samvancart/IBCcarbon_runs/master/general/functions.r")
 
 
-
+data.all <- data.all[,10000]
 
 setX=3
 nSitesRun = 1000
