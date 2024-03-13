@@ -643,7 +643,7 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
       assign(bioIndNames[ij],pX)
       #save 
       save(list=bioIndNames[ij],
-           file=paste0("outputDT/forCent",r_no,"/",
+           file=paste0(path_output, "/outputDT/forCent",r_no,"/",
                        bioIndNames[ij],"_harscen",harvScen,
                        "_harInten",harvInten,"_",
                        rcpfile,"_","sampleID",sampleID,".rdata"))
@@ -759,7 +759,7 @@ runModOut <- function(sampleID, sampleX,modOut,r_no,harvScen,harvInten,rcpfile,a
     pdf(paste0("plots/testPlots_",r_no,"_",
                harvScen,"_",rcpfile,".pdf"))
     out <- modOut$multiOut
-    save(out,file = paste0("outputDT/forCent",r_no,"/testData.rdata"))
+    save(out,file = paste0(path_output, "/outputDT/forCent",r_no,"/testData.rdata"))
     rm(out);gc()
   } 
   marginX= 1:2#(length(dim(out$annual[,,varSel,]))-1)
@@ -794,7 +794,7 @@ runModOut <- function(sampleID, sampleX,modOut,r_no,harvScen,harvInten,rcpfile,a
     assign(varNames[varSel[ij]],pX)
     
     save(list=varNames[varSel[ij]],
-         file=paste0("outputDT/forCent",r_no,"/",
+         file=paste0(path_output, "/outputDT/forCent",r_no,"/",
                      varNames[varSel[ij]],
                      "_harscen",harvScen,
                      "_harInten",harvInten,"_",
@@ -1495,7 +1495,7 @@ prep.climate.f = function(dat, data.sample, startingYear, nYears){
 # }
 
 calMean <- function(varX,hscenX,areas){
-  load(paste0("outputDT/",varX,"_",hscenX,"_CurrClim.rdata"))
+  load(paste0(path_output, "/outputDT/",varX,"_",hscenX,"_CurrClim.rdata"))
   varAreas <- get(varX)*areas
   # Vareas <- Vareas[-siteX]
   totX <- colSums(varAreas,na.rm = T)
