@@ -1510,7 +1510,7 @@ specialVarProc <- function(sampleX,region,r_no,harvScen,harvInten,rcpfile,sample
                            colsOut1,colsOut2,colsOut3,areas,sampleForPlots){
   
   
-  
+  # Get the output path for a variable
   get_out_file <- function(path_output, variable_name) {
     out_file <- paste0(path_output,"/outputDT/forCent",r_no,"/", variable_name,
                    "_harscen",harvScen,
@@ -1537,14 +1537,7 @@ specialVarProc <- function(sampleX,region,r_no,harvScen,harvInten,rcpfile,sample
   pX <- merge(pX,p3)
   domSpecies <- pX
   
-  # out_file <- get_out_file(path_output = path_output, variable_name = "domSpecies")
-  # save(domSpecies, file = out_file)
   
-  # save(domSpecies,file=paste0("outputDT/forCent",r_no,"/domSpecies",
-                              # "_harscen",harvScen,
-                              # "_harInten",harvInten,"_",
-                              # rcpfile,"_",
-                              # "sampleID",sampleID,".rdata"))
   # rm(domSpecies); gc()
   ###age dominant species
   outX <- domFun(region,varX="age")
@@ -1555,11 +1548,7 @@ specialVarProc <- function(sampleX,region,r_no,harvScen,harvInten,rcpfile,sample
   pX <- merge(pX,p3)
   domAge <- pX
   
-  # save(domAge,file=paste0("outputDT/forCent",r_no,"/domAge",
-  #                         "_harscen",harvScen,
-  #                         "_harInten",harvInten,"_",
-  #                         rcpfile,"_",
-  #                         "sampleID",sampleID,".rdata"))
+
   ###deciduous Volume Vdec
   outX <- vDecFun(region)
   if(sampleID==sampleForPlots){testPlot(outX,"Vdec",areas)}
@@ -1569,11 +1558,7 @@ specialVarProc <- function(sampleX,region,r_no,harvScen,harvInten,rcpfile,sample
   pX <- merge(p1,p2)
   pX <- merge(pX,p3)
   Vdec <- pX
-  # save(Vdec,file=paste0("outputDT/forCent",r_no,"/Vdec",
-  #                       "_harscen",harvScen,
-  #                       "_harInten",harvInten,"_",
-  #                       rcpfile,"_",
-  #                       "sampleID",sampleID,".rdata"))
+
   
   ###pine Volume Vpine
   outX <- vSpFun(region,SpID=1)
@@ -1584,11 +1569,7 @@ specialVarProc <- function(sampleX,region,r_no,harvScen,harvInten,rcpfile,sample
   pX <- merge(p1,p2)
   pX <- merge(pX,p3)
   Vpine <- pX
-  # save(Vpine,file=paste0("outputDT/forCent",r_no,"/Vpine",
-  #                       "_harscen",harvScen,
-  #                       "_harInten",harvInten,"_",
-  #                       rcpfile,"_",
-  #                       "sampleID",sampleID,".rdata"))
+
 
   ###Spruce Volume Vspruce
   outX <- vSpFun(region,SpID = 2)
@@ -1599,11 +1580,7 @@ specialVarProc <- function(sampleX,region,r_no,harvScen,harvInten,rcpfile,sample
   pX <- merge(p1,p2)
   pX <- merge(pX,p3)
   Vspruce <- pX
-  # save(Vspruce,file=paste0("outputDT/forCent",r_no,"/Vspruce",
-  #                       "_harscen",harvScen,
-  #                       "_harInten",harvInten,"_",
-  #                       rcpfile,"_",
-  #                       "sampleID",sampleID,".rdata"))
+
 
 ####WenergyWood
   outX <- data.table(segID=sampleX$segID,apply(region$multiEnergyWood[,,,2],1:2,sum))
@@ -1613,11 +1590,8 @@ specialVarProc <- function(sampleX,region,r_no,harvScen,harvInten,rcpfile,sample
   p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
   pX <- merge(p1,p2)
   WenergyWood <- merge(pX,p3)
-  # save(WenergyWood,file=paste0("outputDT/forCent",r_no,"/WenergyWood",
-  #                              "_harscen",harvScen,
-  #                              "_harInten",harvInten,"_",
-  #                              rcpfile,"_",
-  #                              "sampleID",sampleID,".rdata"))
+
+  
   ####VenergyWood
   outX <- data.table(segID=sampleX$segID,apply(region$multiEnergyWood[,,,1],1:2,sum))
   if(sampleID==sampleForPlots){testPlot(outX,"VenergyWood",areas)}
@@ -1626,11 +1600,8 @@ specialVarProc <- function(sampleX,region,r_no,harvScen,harvInten,rcpfile,sample
   p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
   pX <- merge(p1,p2)
   VenergyWood <- merge(pX,p3)
-  # save(VenergyWood,file=paste0("outputDT/forCent",r_no,
-  #                              "/VenergyWood","_harscen",harvScen,
-  #                              "_harInten",harvInten,"_",
-  #                              rcpfile,"_",
-  #                              "sampleID",sampleID,".rdata"))
+
+  
   ####GVgpp
   outX <- data.table(segID=sampleX$segID,region$GVout[,,3])
   if(sampleID==sampleForPlots){testPlot(outX,"GVgpp",areas)}
@@ -1639,12 +1610,8 @@ specialVarProc <- function(sampleX,region,r_no,harvScen,harvInten,rcpfile,sample
   p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
   pX <- merge(p1,p2)
   GVgpp <- merge(pX,p3)
-  # save(GVgpp,file=paste0("outputDT/forCent",r_no,
-  #                        "/GVgpp",
-  #                        "_harscen",harvScen,
-  #                        "_harInten",harvInten,"_",
-  #                        rcpfile,"_",
-  #                        "sampleID",sampleID,".rdata"))
+
+  
   ####GVw
   outX <- data.table(segID=sampleX$segID,region$GVout[,,4])
   if(sampleID==sampleForPlots){testPlot(outX,"GVw",areas)}
@@ -1653,11 +1620,8 @@ specialVarProc <- function(sampleX,region,r_no,harvScen,harvInten,rcpfile,sample
   p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
   pX <- merge(p1,p2)
   GVw <- merge(pX,p3)
-  # save(GVw,file=paste0("outputDT/forCent",r_no,
-  #                      "/GVw","_harscen",harvScen,
-  #                      "_harInten",harvInten,
-  #                      "_",rcpfile,"_",
-  #                      "sampleID",sampleID,".rdata"))
+
+  
   ####Wtot
   outX <- data.table(segID=sampleX$segID,apply(region$multiOut[,,c(24,25,31,32,33),,1],1:2,sum))
   if(sampleID==sampleForPlots){testPlot(outX,"Wtot",areas)}
@@ -1666,16 +1630,12 @@ specialVarProc <- function(sampleX,region,r_no,harvScen,harvInten,rcpfile,sample
   p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
   pX <- merge(p1,p2)
   Wtot <- merge(pX,p3)
-  # save(Wtot,file=paste0("outputDT/forCent",r_no,"/Wtot",
-  #                       "_harscen",harvScen,
-  #                       "_harInten",harvInten,"_",
-  #                       rcpfile,"_",
-  #                       "sampleID",sampleID,".rdata"))
-  
+
   
   # Save all outputs
   outputNames <- c("domSpecies","domAge","Vdec","Vpine","Vspruce","WenergyWood","VenergyWood","GVgpp","GVw","Wtot")
-  invisible(lapply(outputNames, function(x) save(x, file = get_out_file(path_output = path_output, variable_name = x))))
+  invisible(lapply(outputs, function(x) save(list=x, file = get_out_file(path_output = path_output, variable_name = x))))
+  
   
   rm(domSpecies,domAge,Vdec,WenergyWood,Wtot,pX,p1,p2,p3); gc()
   if(sampleID==sampleForPlots){dev.off()}

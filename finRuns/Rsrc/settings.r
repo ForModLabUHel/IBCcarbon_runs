@@ -123,6 +123,8 @@ get_or_create_path <- function(pathVarName, defaultDir, subDir="") {
 # Default working directory
 defaultDir <- "/scratch/project_2000994/PREBASruns/finRuns/"
 
+
+
 # Forest centre
 forCent_folder <- paste0("forCent", r_no)
 
