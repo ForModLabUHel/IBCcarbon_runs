@@ -62,9 +62,9 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
       if(outType=="uncRun"){
         load(paste0("initSoilCunc/forCent",r_no,"/initSoilC_uncRun_",sampleID,".rdata"))
       } else {
-        if(identical(landClassX,1:3)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to3.rdata"))
-        if(identical(landClassX,1:2)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to2.rdata"))
-        if(identical(landClassX,1)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1.rdata"))
+        if(identical(landClassX,1:3)) load(paste0(path_initSoilC, "/initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to3.rdata"))
+        if(identical(landClassX,1:2)) load(paste0(path_initSoilC, "/initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to2.rdata"))
+        if(identical(landClassX,1)) load(paste0(path_initSoilC, "/initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1.rdata"))
       }
     }
     setnames(xDat,"nPix","N")
@@ -388,9 +388,9 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
       if(!outType %in% c("uncRun","uncSeg")){
         if(!harvScen %in% c("protect","protectNoAdH","protectTapio")){
           if(is.null(initSoilC)){
-            if(identical(landClassX,1:3)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to3.rdata"))
-            if(identical(landClassX,1:2)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to2.rdata"))
-            if(identical(landClassX,1)) load(paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1.rdata"))
+            if(identical(landClassX,1:3)) load(paste0(path_initSoilC, "/initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to3.rdata"))
+            if(identical(landClassX,1:2)) load(paste0(path_initSoilC, "/initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to2.rdata"))
+            if(identical(landClassX,1)) load(paste0(path_initSoilC, "/initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1.rdata"))
           }
         }
       }else{ # if UncRun or uncSeg
@@ -513,9 +513,9 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
     print(paste("initSoilC",sampleID))
     if(outType!="testRun" | forceSaveInitSoil){
       if(!outType %in% c("uncRun","uncSeg")){
-        if(identical(landClassX,1:3)) save(initSoilC,file=paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to3.rdata"))
-        if(identical(landClassX,1:2)) save(initSoilC,file=paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to2.rdata"))
-        if(identical(landClassX,1)) save(initSoilC,file=paste0("initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1.rdata"))
+        if(identical(landClassX,1:3)) save(initSoilC,file=paste0(path_initSoilC, "/initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to3.rdata"))
+        if(identical(landClassX,1:2)) save(initSoilC,file=paste0(path_initSoilC, "/initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1to2.rdata"))
+        if(identical(landClassX,1)) save(initSoilC,file=paste0(path_initSoilC, "/initSoilC/forCent",r_no,"/initSoilC_",sampleID,"_LandClass1.rdata"))
       } else if(uncRCP == 0 & outType!="uncSeg") {
         save(initSoilC,file=paste0("initSoilCunc/forCent",r_no,"/initSoilC_",outType,"_",sampleID,".rdata"))
         print(paste0("initsoilID",sampleID," saved"))
@@ -643,7 +643,7 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
       assign(bioIndNames[ij],pX)
       #save 
       save(list=bioIndNames[ij],
-           file=paste0("outputDT/forCent",r_no,"/",
+           file=paste0(path_output, "/outputDT/forCent",r_no,"/",
                        bioIndNames[ij],"_harscen",harvScen,
                        "_harInten",harvInten,"_",
                        rcpfile,"_","sampleID",sampleID,".rdata"))
@@ -759,7 +759,7 @@ runModOut <- function(sampleID, sampleX,modOut,r_no,harvScen,harvInten,rcpfile,a
     pdf(paste0("plots/testPlots_",r_no,"_",
                harvScen,"_",rcpfile,".pdf"))
     out <- modOut$multiOut
-    save(out,file = paste0("outputDT/forCent",r_no,"/testData.rdata"))
+    save(out,file = paste0(path_output, "/outputDT/forCent",r_no,"/testData.rdata"))
     rm(out);gc()
   } 
   marginX= 1:2#(length(dim(out$annual[,,varSel,]))-1)
@@ -794,7 +794,7 @@ runModOut <- function(sampleID, sampleX,modOut,r_no,harvScen,harvInten,rcpfile,a
     assign(varNames[varSel[ij]],pX)
     
     save(list=varNames[varSel[ij]],
-         file=paste0("outputDT/forCent",r_no,"/",
+         file=paste0(path_output, "/outputDT/forCent",r_no,"/",
                      varNames[varSel[ij]],
                      "_harscen",harvScen,
                      "_harInten",harvInten,"_",
@@ -1164,338 +1164,10 @@ prep.climate.f = function(dat, data.sample, startingYear, nYears){
 }
 
 
-# simSummary.f = function(region=region, r_no, nYears, startingYear, rcpfile, harvScen) {
-#   
-#   out = region[['multiOut']]
-#   VOL = out[, , 30, , 1]
-#   VOL = apply(VOL, c(1,2), sum)
-#   ## SO THIS IS NOW MEAN VOL PER HA OF nSample SIMULATED SAMPLES (by YEAR):
-#   VOL = apply(VOL, 2, mean)
-#   ## Multiply by area (tha)
-#   VOL_INAREA = VOL * nfiareas[ID==r_no, AREA] * 1000 / 1000000 ## mill m3
-#   ## at the beginning 207.7 mill m3, vrt 189.9 according to NFI (for region 7 = Keski-Suomi)
-#   
-#   Vmort = out[, , 42, , 1]
-#   Vmort = apply(Vmort, c(1,2), sum)
-#   ## SO THIS IS NOW MEAN VOL PER HA OF nSample SIMULATED SAMPLES (by YEAR):
-#   Vmort = apply(Vmort, 2, mean)
-#   Vmort_INAREA = Vmort * nfiareas[ID==r_no, AREA] * 1000 / 1000000 ## mill m3
-#   
-#   
-#   ## WHY THIS IS NOT THE SAME AS har?
-#   Vharvested = out[, , 37, , 1]
-#   Vharvested = apply(Vharvested, c(1,2), sum)
-#   ## SO THIS IS NOW MEAN VOL PER HA OF nSample SIMULATED SAMPLES (by YEAR):
-#   Vharvested = apply(Vharvested, 2, mean)
-#   Vharvested_INAREA = Vharvested * nfiareas[ID==r_no, AREA] * 1000 / 1000000 ## mill m3
-#   
-#   grossgrowth = out[, , 43, , 1]
-#   grossgrowth = apply(grossgrowth, c(1,2), sum)
-#   ## SO THIS IS NOW MEAN VOL PER HA OF nSample SIMULATED SAMPLES (by YEAR):
-#   grossgrowth = apply(grossgrowth, 2, mean)
-#   grossgrowth_INAREA = grossgrowth * nfiareas[ID==r_no, AREA] * 1000 / 1000000 ## mill m3
-#   
-#   dbh = out[, , 12, , 1]
-#   dbh = apply(dbh, c(1,2), mean)
-#   ## SO THIS IS NOW MEAN VOL PER HA OF nSample SIMULATED SAMPLES (by YEAR):
-#   dbh = apply(dbh, 2, mean)
-#   
-#   age = out[, , 7, , 1]
-#   age = apply(age, c(1,2), mean)
-#   ## SO THIS IS NOW MEAN VOL PER HA OF nSample SIMULATED SAMPLES (by YEAR):
-#   age = apply(age, 2, mean)
-#   
-#   gpp = out[, , 10, , 1]
-#   gpp = apply(gpp, c(1,2), sum)
-#   ## SO THIS IS NOW MEAN VOL PER HA OF nSample SIMULATED SAMPLES (by YEAR):
-#   gpp = apply(gpp, 2, mean)
-#   #npp_INAREA = npp * nfiareas[ID==7, AREA] * 1000 / 1000000 ## mill m3
-#   
-#   
-#   npp = out[, , 18, , 1]
-#   npp = apply(npp, c(1,2), sum)
-#   ## SO THIS IS NOW MEAN VOL PER HA OF nSample SIMULATED SAMPLES (by YEAR):
-#   npp = apply(npp, 2, mean)
-#   #npp_INAREA = npp * nfiareas[ID==7, AREA] * 1000 / 1000000 ## mill m3
-#   
-#   
-#   nep = out[, , 46, , 1]
-#   nep = apply(nep, c(1,2), sum, na.rm=TRUE)
-#   ## SO THIS IS NOW MEAN VOL PER HA OF nSample SIMULATED SAMPLES (by YEAR):
-#   nep = apply(nep, 2, mean)
-#   
-#   
-#   B_tree = out[, , 35, , 1]
-#   B_tree = apply(B_tree, c(1,2), sum)
-#   ## SO THIS IS NOW MEAN VOL PER HA OF nSample SIMULATED SAMPLES (by YEAR):
-#   B_tree = apply(B_tree, 2, mean)
-#   
-#   lproj = out[, , 21, , 1]
-#   lproj = apply(lproj, c(1,2), mean)
-#   ## SO THIS IS NOW MEAN VOL PER HA OF nSample SIMULATED SAMPLES (by YEAR):
-#   lproj = apply(lproj, 2, mean)
-#   data.table(r_no, rcpfile, harvScen, year=startingYear + (1:nYears),
-#              VOL, VOL_INAREA, Vharvested, Vmort, Vmort_INAREA,
-#              grossgrowth_INAREA, dbh, age, gpp, npp, nep, B_tree, lproj)
-# }
-# 
-# # this function create maps in tif format from raw data.
-# createTif <- function(climate, management, yearOut, variable, species, startingYear){
-#   simYear <- yearOut - startingYear
-#   
-#   files <- intersect(list.files(path= "output/", pattern = climate), list.files(path= "output/",pattern = management))
-#   
-#   outX <- data.table()
-#   ops <- split(data.all, sample(1:115, nrow(data.all), replace=T))
-#   
-#   for(i in 1:length(files)){
-#     sampleID <- paste0("sample",i,".")
-#     
-#     fileX <- files[grep(sampleID,files,fixed = T)]
-#     
-#     load(paste0("output/",fileX))
-#     
-#     out <- data.table(out$annual[,simYear,variable,])
-#     
-#     set.seed(1)
-#     sampleX <- ops[[i]]
-#     sampleX[,area := N*16^2/10000]
-#     sampleX[,id:=climID]
-#     
-#     outX <- rbind(outX,cbind(sampleX$segID,out))
-#     print(i)
-#   }
-#   
-#   
-#   
-#   setnames(outX,c("segID","pine","spruce","birch"))
-#   
-#   outX[, tot := rowSums(.SD), .SDcols = c("pine","spruce","birch")]
-#   
-#   
-#   outXY <- merge(kokeIDsTab,outX,all = T)
-#   
-#   ###create raster 
-#   rastX <- rasterFromXYZ(outXY[,c("x","y",species),with=F])
-#   crs(rastX) <- crs(kokeShp)
-#   
-#   rastName <- paste0("outRast/",climate,"_",management,"_var",varNames[variable],
-#                      "_spec",species,"_year",yearOut,".tif")
-#   writeRaster(rastX,filename = rastName)
-# }
-# 
-# # this function create maps in tif format from data.tables selecting one year or the average of a time priod if yearOut is a vector of years
-# createTifFromDT <- function(climate, management, yearOut, variable, species, startingYear){
-#   simYear <- yearOut - startingYear
-#   fileDT=paste0("outputDT/",varNames[variable],"_",management,"_",climate,".rdata")  
-#   load(fileDT)
-#   
-#   outX <- t(get(varNames[variable]))
-#   if (length(simYear)==1) outX <- outX[simYear,]
-#   if (length(simYear)>1) outX <- colMeans(outX[simYear,],na.rm = T)
-#   
-#   segID <- areas <-numeric(0)
-#   set.seed(1)
-#   ops <- split(data.all, sample(1:115, nrow(data.all), replace=T))
-#   for(i in 1:115){
-#     # set.seed(1)
-#     sampleX <- ops[[i]]
-#     sampleX[,area := N*16^2/10000]
-#     sampleX[,id:=climID]
-#     segID <- c(segID,sampleX$segID)
-#     areas <- c(areas,sampleX$area)
-#     # print(i)
-#   }
-#   outX <- data.table(cbind(segID,areas,outX))
-#   
-#   setnames(outX,c("segID","areas",varNames[variable]))
-#   
-#   # outX[, tot := rowSums(.SD), .SDcols = c("pine","spruce","birch")]
-#   
-#   outXY <- merge(kokeIDsTab,outX,all = T)
-#   
-#   ###create raster 
-#   rastX <- rasterFromXYZ(outXY[,c("x","y",varNames[variable]),with=F])
-#   crs(rastX) <- crs(kokeShp)
-#   
-#   rastName <- paste0("outRast/",climate,"_",management,"_var",varNames[variable],
-#                      "_spec",species,"_year",min(yearOut),"_",max(yearOut),".tif")
-#   writeRaster(rastX,filename = rastName,overwrite=T)
-# }
-# 
-# 
-# 
-# ##function to compile all data and create data.table 
-# createDT <- function(climate, management,variable, species, startingYear){
-#   
-#   files <- intersect(list.files(path= "output/", pattern = climate), list.files(path= "output/",pattern = management))
-#   
-#   for (ij in variable) assign(varNames[ij],data.table())
-#   VenergyWood <- WenergyWood <- data.table()
-#   
-#   # segID <- areas <-numeric(0)
-#   
-#   for(i in 1:length(files)){
-#     sampleID <- paste0("sample",i,".")
-#     
-#     fileX <- files[grep(sampleID,files,fixed = T)]
-#     
-#     load(paste0("output/",fileX))
-#     
-#     ###sum harvests
-#     if(i==1){
-#       harvest <- out$harvest
-#     }else{
-#       harvest <- harvest+out$harvest  
-#     }
-#     
-#     VenergyWood <- rbind(VenergyWood,apply(out$energyWood[,,,1],1:2,sum))
-#     WenergyWood <- rbind(WenergyWood,apply(out$energyWood[,,,2],1:2,sum))
-#     
-#     marginX= 1:2#(length(dim(out$annual[,,variable,]))-1)
-#     for (ij in variable) {
-#      varIndx <- match(varNames[ij],varNames[varSel])  
-#      assign(varNames[ij],data.table(rbind(eval(parse(text = varNames[ij])),
-#                  apply(out$annual[,,varIndx,],marginX,sum))))
-#     }    
-#     print(i)
-#   }
-#   
-#   ###proc and save total harvests
-#   totHarvest <- data.table(harvest)
-#   setnames(totHarvest,c("roundWood","energyWood"))
-#   save(totHarvest,file=paste0("outputDT/","totHarvest","_",management,"_",climate,".rdata"))
-#   
-#   save(VenergyWood,file=paste0("outputDT/","VenergyWood","_",management,"_",climate,".rdata"))
-#   save(WenergyWood,file=paste0("outputDT/","WenergyWood","_",management,"_",climate,".rdata"))
-#   
-#   
-#   for(ij in variable) save(list=varNames[ij],file=paste0("outputDT/",varNames[ij],"_",management,"_",climate,".rdata"))
-# }
-# 
-# ##function to compile all data and create data.table by species
-# createDTbySp <- function(climate, management,variable, species, startingYear){
-#   
-#   files <- intersect(list.files(path= "output/", pattern = climate), list.files(path= "output/",pattern = management))
-#   
-#   for (ij in variable){
-#     assign(paste0(varNames[ij],1),data.table())
-#     assign(paste0(varNames[ij],2),data.table())
-#     assign(paste0(varNames[ij],3),data.table())
-#   }
-#   # segID <- areas <-numeric(0)
-#   
-#   for(i in 1:length(files)){
-#     sampleID <- paste0("sample",i,".")
-#     
-#     fileX <- files[grep(sampleID,files,fixed = T)]
-#     
-#     load(paste0("output/",fileX))
-#     
-#     marginX= 1:2#(length(dim(out$annual[,,variable,]))-1)
-#     for (ij in variable){
-#       assign(paste0(varNames[ij],1),
-#              data.table(rbind(eval(parse(text = paste0(varNames[ij],1))),
-#                               out$annual[,,ij,1])))
-#       assign(paste0(varNames[ij],2),
-#              data.table(rbind(eval(parse(text = paste0(varNames[ij],2))),
-#                               out$annual[,,ij,2])))
-#       assign(paste0(varNames[ij],3),
-#              data.table(rbind(eval(parse(text = paste0(varNames[ij],3))),
-#                               out$annual[,,ij,3])))
-#     } 
-#     
-#     print(i)
-#   }
-#   
-#   for(ij in variable){
-#     save(list=c(paste0(varNames[ij],1),paste0(varNames[ij],2),paste0(varNames[ij],3)),
-#          file=paste0("outputDT/",varNames[ij],"_",management,"_",climate,"_bySpecies.rdata"))
-#   } 
-# }
-# 
-# 
-# # this function compute the annual totals of the region from data.tables 
-# aTOTfromDT <- function(yearOut, variable, species="tot", startingYear){
-#   simYear <- yearOut - startingYear
-#   segID <- areas <-numeric(0)
-#   set.seed(1)
-#   ops <- split(data.all, sample(1:115, nrow(data.all), replace=T))
-#   for(i in 1:115){
-#     sampleX <- ops[[i]]
-#     sampleX[,area := N*16^2/10000]
-#     sampleX[,id:=climID]
-#     segID <- c(segID,sampleX$segID)
-#     areas <- c(areas,sampleX$area)
-#     # print(i)
-#   }
-#   files <- list.files("outputDT/",pattern=paste0(varNames[variable],"_"))
-#   if (species=="tot") files <- files[-grep("bySpecies",files)]
-#   allOut <- data.table()
-#   for(i in 1:length(files)){
-#     load(paste0("outputDT/",files[i]))
-#     
-#     dats <- strsplit(files[i], "[_.]+")
-#     if(variable %in% 32:33) dats[[1]] <- dats[[1]][-2]
-#     climate=dats[[1]][3]
-#     management=dats[[1]][2]
-#     outX <- get(varNames[variable])*areas
-#     outX <- colMeans(outX,na.rm=T)
-#     outX <- data.table(cbind(outX,climate,management))
-#     outX[,year:=yearOut]
-#     allOut <- rbind(allOut,outX)
-#   }
-#   
-#   setnames(allOut,c(varNames[variable],"climate","management","year"))
-#   allOut$climate <- factor(allOut$climate)
-#   allOut$management <- factor(allOut$management)
-#   allOut[,1] <- as.numeric(unlist(allOut[,1]))
-#   
-#   fwrite(allOut,file= paste0("plots/",varNames[variable],"_DT.txt"))  
-#   
-#   p <- ggplot(data=allOut, 
-#               aes_string(x="year", y=varNames[variable])) +
-#     # scale_shape_manual(values=1:nlevels(countryTot$harvScenario)) +
-#     labs(title = varNames[variable])+
-#     # geom_smooth() +
-#     xlab("Year") +
-#     ylab("") +
-#     geom_point(aes(colour=management, shape = climate,group=interaction(management, climate))) +
-#     geom_line(aes(colour=management, group=interaction(management, climate)))
-#   
-#   pdf(file=paste0("plots/",varNames[variable], ".pdf"))
-#   print(p)
-#   dev.off()
-# }
-# 
-# ###compute total biomass from DTs
-# Wtot <- function(manClim){
-#   files <- paste0("outputDT/",varNames[c(24:25,31:33)],manClim)
-#   for(i in 1:5) load(files[i])
-#   Wtot <- Wstem + W_croot + wf_STKG + Wbranch + WfineRoots
-#   save(Wtot,file = paste0("outputDT/","Wtot",manClim))
-# }
 
-
-# createPlotfromDT <- function(path, variable){
-#   DT <- fread(paste0(path,varNames[variable],"_DT.txt"))
-#   p <- ggplot(data=DT, 
-#               aes_string(x="year", y=varNames[variable])) +
-#     # scale_shape_manual(values=1:nlevels(countryTot$harvScenario)) +
-#     labs(title = varNames[variable])+
-#     # geom_smooth() +
-#     xlab("Year") +
-#     ylab("") +
-#     geom_point(aes(colour=management, shape = climate,group=interaction(management, climate))) +
-#     geom_line(aes(colour=management, group=interaction(management, climate)))
-#   
-#   png(file=paste0("plots/",varNames[variable], ".png"),width = 500,height = 500)
-#   print(p)
-#   dev.off()
-# }
 
 calMean <- function(varX,hscenX,areas){
-  load(paste0("outputDT/",varX,"_",hscenX,"_CurrClim.rdata"))
+  load(paste0(path_output, "/outputDT/",varX,"_",hscenX,"_CurrClim.rdata"))
   varAreas <- get(varX)*areas
   # Vareas <- Vareas[-siteX]
   totX <- colSums(varAreas,na.rm = T)
@@ -1505,8 +1177,23 @@ calMean <- function(varX,hscenX,areas){
 
 
 
+
 specialVarProc <- function(sampleX,region,r_no,harvScen,harvInten,rcpfile,sampleID,
                            colsOut1,colsOut2,colsOut3,areas,sampleForPlots){
+  
+  
+  # Get the output path for a variable
+  get_out_file <- function(path_output, variable_name) {
+    out_file <- paste0(path_output,"/outputDT/forCent",r_no,"/", variable_name,
+                   "_harscen",harvScen,
+                   "_harInten",harvInten,"_",
+                   rcpfile,"_",
+                   "sampleID",sampleID,".rdata")
+    return(out_file)
+  }
+  
+  
+  
   nYears <-  max(region$nYears)
   nSites <-  max(region$nSites)
   ####process and save special variables: 
@@ -1521,11 +1208,8 @@ specialVarProc <- function(sampleX,region,r_no,harvScen,harvInten,rcpfile,sample
   pX <- merge(p1,p2)
   pX <- merge(pX,p3)
   domSpecies <- pX
-  save(domSpecies,file=paste0("outputDT/forCent",r_no,"/domSpecies",
-                              "_harscen",harvScen,
-                              "_harInten",harvInten,"_",
-                              rcpfile,"_",
-                              "sampleID",sampleID,".rdata"))
+  
+  
   # rm(domSpecies); gc()
   ###age dominant species
   outX <- domFun(region,varX="age")
@@ -1536,11 +1220,7 @@ specialVarProc <- function(sampleX,region,r_no,harvScen,harvInten,rcpfile,sample
   pX <- merge(pX,p3)
   domAge <- pX
   
-  save(domAge,file=paste0("outputDT/forCent",r_no,"/domAge",
-                          "_harscen",harvScen,
-                          "_harInten",harvInten,"_",
-                          rcpfile,"_",
-                          "sampleID",sampleID,".rdata"))
+
   ###deciduous Volume Vdec
   outX <- vDecFun(region)
   if(sampleID==sampleForPlots){testPlot(outX,"Vdec",areas)}
@@ -1550,11 +1230,7 @@ specialVarProc <- function(sampleX,region,r_no,harvScen,harvInten,rcpfile,sample
   pX <- merge(p1,p2)
   pX <- merge(pX,p3)
   Vdec <- pX
-  save(Vdec,file=paste0("outputDT/forCent",r_no,"/Vdec",
-                        "_harscen",harvScen,
-                        "_harInten",harvInten,"_",
-                        rcpfile,"_",
-                        "sampleID",sampleID,".rdata"))
+
   
   ###pine Volume Vpine
   outX <- vSpFun(region,SpID=1)
@@ -1565,11 +1241,7 @@ specialVarProc <- function(sampleX,region,r_no,harvScen,harvInten,rcpfile,sample
   pX <- merge(p1,p2)
   pX <- merge(pX,p3)
   Vpine <- pX
-  save(Vpine,file=paste0("outputDT/forCent",r_no,"/Vpine",
-                        "_harscen",harvScen,
-                        "_harInten",harvInten,"_",
-                        rcpfile,"_",
-                        "sampleID",sampleID,".rdata"))
+
 
   ###Spruce Volume Vspruce
   outX <- vSpFun(region,SpID = 2)
@@ -1580,11 +1252,7 @@ specialVarProc <- function(sampleX,region,r_no,harvScen,harvInten,rcpfile,sample
   pX <- merge(p1,p2)
   pX <- merge(pX,p3)
   Vspruce <- pX
-  save(Vspruce,file=paste0("outputDT/forCent",r_no,"/Vspruce",
-                        "_harscen",harvScen,
-                        "_harInten",harvInten,"_",
-                        rcpfile,"_",
-                        "sampleID",sampleID,".rdata"))
+
 
 ####WenergyWood
   outX <- data.table(segID=sampleX$segID,apply(region$multiEnergyWood[,,,2],1:2,sum))
@@ -1594,11 +1262,8 @@ specialVarProc <- function(sampleX,region,r_no,harvScen,harvInten,rcpfile,sample
   p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
   pX <- merge(p1,p2)
   WenergyWood <- merge(pX,p3)
-  save(WenergyWood,file=paste0("outputDT/forCent",r_no,"/WenergyWood",
-                               "_harscen",harvScen,
-                               "_harInten",harvInten,"_",
-                               rcpfile,"_",
-                               "sampleID",sampleID,".rdata"))
+
+  
   ####VenergyWood
   outX <- data.table(segID=sampleX$segID,apply(region$multiEnergyWood[,,,1],1:2,sum))
   if(sampleID==sampleForPlots){testPlot(outX,"VenergyWood",areas)}
@@ -1607,11 +1272,8 @@ specialVarProc <- function(sampleX,region,r_no,harvScen,harvInten,rcpfile,sample
   p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
   pX <- merge(p1,p2)
   VenergyWood <- merge(pX,p3)
-  save(VenergyWood,file=paste0("outputDT/forCent",r_no,
-                               "/VenergyWood","_harscen",harvScen,
-                               "_harInten",harvInten,"_",
-                               rcpfile,"_",
-                               "sampleID",sampleID,".rdata"))
+
+  
   ####GVgpp
   outX <- data.table(segID=sampleX$segID,region$GVout[,,3])
   if(sampleID==sampleForPlots){testPlot(outX,"GVgpp",areas)}
@@ -1620,12 +1282,8 @@ specialVarProc <- function(sampleX,region,r_no,harvScen,harvInten,rcpfile,sample
   p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
   pX <- merge(p1,p2)
   GVgpp <- merge(pX,p3)
-  save(GVgpp,file=paste0("outputDT/forCent",r_no,
-                         "/GVgpp",
-                         "_harscen",harvScen,
-                         "_harInten",harvInten,"_",
-                         rcpfile,"_",
-                         "sampleID",sampleID,".rdata"))
+
+  
   ####GVw
   outX <- data.table(segID=sampleX$segID,region$GVout[,,4])
   if(sampleID==sampleForPlots){testPlot(outX,"GVw",areas)}
@@ -1634,11 +1292,8 @@ specialVarProc <- function(sampleX,region,r_no,harvScen,harvInten,rcpfile,sample
   p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
   pX <- merge(p1,p2)
   GVw <- merge(pX,p3)
-  save(GVw,file=paste0("outputDT/forCent",r_no,
-                       "/GVw","_harscen",harvScen,
-                       "_harInten",harvInten,
-                       "_",rcpfile,"_",
-                       "sampleID",sampleID,".rdata"))
+
+  
   ####Wtot
   outX <- data.table(segID=sampleX$segID,apply(region$multiOut[,,c(24,25,31,32,33),,1],1:2,sum))
   if(sampleID==sampleForPlots){testPlot(outX,"Wtot",areas)}
@@ -1647,11 +1302,13 @@ specialVarProc <- function(sampleX,region,r_no,harvScen,harvInten,rcpfile,sample
   p3 <- outX[, .(per3 = rowMeans(.SD,na.rm=T)), .SDcols = colsOut3, by = segID] 
   pX <- merge(p1,p2)
   Wtot <- merge(pX,p3)
-  save(Wtot,file=paste0("outputDT/forCent",r_no,"/Wtot",
-                        "_harscen",harvScen,
-                        "_harInten",harvInten,"_",
-                        rcpfile,"_",
-                        "sampleID",sampleID,".rdata"))
+
+  
+  # Save all outputs
+  outputNames <- c("domSpecies","domAge","Vdec","Vpine","Vspruce","WenergyWood","VenergyWood","GVgpp","GVw","Wtot")
+  invisible(lapply(outputNames, function(x) save(list=x, file = get_out_file(path_output = path_output, variable_name = x))))
+  
+  
   rm(domSpecies,domAge,Vdec,WenergyWood,Wtot,pX,p1,p2,p3); gc()
   if(sampleID==sampleForPlots){dev.off()}
   
@@ -2120,5 +1777,30 @@ outProcFun <- function(modOut,varSel,funX="baWmean"){
   return(outX)
 }
 
+
+#' See if a specific variable exists and contains a directory path and return the path if it does. 
+#' If the variable doesn't exist then a default path is returned. If the variable exists but
+#' the directory path doesn't yet then the path is created.
+#'
+#' @param pathVarName character A string representing the variable name
+#' @param defaultDir character The default directory path
+#' @param subDir character The subdirectory that will be added
+#'
+#' @return character The path
+#' @export
+#'
+#' @examples
+get_or_create_path <- function(pathVarName, defaultDir, subDir="") {
+  if(!exists(pathVarName)) {
+    path = defaultDir
+  } else {
+    mainDir <- eval(parse(text=pathVarName))
+    path <- file.path(mainDir, subDir)
+    print(paste0("Creating ", pathVarName, " in ", path))
+    dir.create(path = path, recursive = T, showWarnings = F)
+    path <- mainDir
+  }
+  return(path)
+} 
 
 
