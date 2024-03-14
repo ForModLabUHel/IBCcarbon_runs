@@ -581,9 +581,8 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
   #####start initialize deadWood volume
   ## identify managed and unmanaged forests
   manFor <-  which(sampleX$oldCons==0)
-  manFor <- check_management_vector(management_vector = manFor)
   unmanFor <- which(sampleX$oldCons==1)
-  unmanFor <- check_management_vector(management_vector = unmanFor, cons = 1)
+
   
   if(outType=="ststDeadW"){
     unmanDeadW <- initDeadW(region,unmanFor,yearsDeadW)
@@ -723,26 +722,9 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
   # }
 }
 
-#' Make sure management vector is not integer(0). The management vector is a vector of row indexes in the original data
-#' filtered by the management type (eg. cons column value).
-#'
-#' @param management_vector integer The vector of row indexes filtered from the original data (eg. manFor, unmanFor)
-#' @param cons integer Management type column (cons) value in data used for filtering (0 or 1)
-#'
-#' @return integer The original vector if its length > 0, otherwise NA
-#' @export
-#'
-#' @examples
-check_management_vector <- function(management_vector, cons=0) {
-  if(length(management_vector)==0){
-    warning(paste0("No rows found in data where cons column value is ", cons, "."))
-    print(paste0("Check warnings in error.txt!"))
-    return(NA)
-  }
-  return(management_vector)
-}
 
-#' Add management to region multiOut if it is not NA
+
+#' Add management to region multiOut if it is not NA and if its length > 1
 #'
 #' @param region array Initialised model
 #' @param management_vector integer The vector of row indexes filtered from the original data (eg. manFor, unmanFor)
@@ -754,11 +736,19 @@ check_management_vector <- function(management_vector, cons=0) {
 #'
 #' @examples
 management_to_region_multiOut <- function(region, management_vector, deadW, nYears) {
-  if(!any(is.na(management_vector))) {
-    region$multiOut[management_vector,,8,1:3,1] <- region$multiOut[management_vector,,8,1:3,1] + 
-      aperm(replicate(length(management_vector),(deadW$ssDeadW[1:nYears,])),c(3,1:2))
-  }
-  return(region)
+  
+  tryCatch(
+    {
+      if(length(management_vector) > 1) {
+        region$multiOut[management_vector,,8,1:3,1] <- region$multiOut[management_vector,,8,1:3,1] +
+          aperm(replicate(length(management_vector),(deadW$ssDeadW[1:nYears,])),c(3,1:2))
+      }
+    }, 
+    error = function(e) {
+      print(e)
+    },
+    finally = return(region)
+  )
 }
 
 
