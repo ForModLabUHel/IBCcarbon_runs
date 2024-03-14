@@ -1,6 +1,3 @@
-# Load functions
-devtools::source_url("https://raw.githubusercontent.com/samvancart/IBCcarbon_runs/master/finRuns/Rsrc/functions.r")
-
 # CSCrun=T
 
 library(raster)
@@ -30,6 +27,11 @@ require(Rprebasso)
 
 # library(Rprebasso)
 library(DescTools)
+
+
+# Load functions
+devtools::source_url("https://raw.githubusercontent.com/samvancart/IBCcarbon_runs/master/general/functions.r")
+
 
 # r_no = regions = 2  ### forest center ID
 nCores <- 6  ####  number of cores
