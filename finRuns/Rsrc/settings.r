@@ -1,3 +1,6 @@
+# Load functions
+devtools::source_url("https://raw.githubusercontent.com/samvancart/IBCcarbon_runs/master/finRuns/Rsrc/functions.r")
+
 # CSCrun=T
 
 library(raster)
@@ -93,36 +96,8 @@ funX[match(varNames[c(7,11:12,14)],varNames[varSel])] <- "baWmean"
 
 
 
-
-#' See if a specific variable exists and contains a directory path and return the path if it does. 
-#' If the variable doesn't exist then a default path is returned. If the variable exists but
-#' the directory path doesn't yet then the path is created.
-#'
-#' @param pathVarName character A string representing the variable name
-#' @param defaultDir character The default directory path
-#' @param subDir character The subdirectory that will be added
-#'
-#' @return character The path
-#' @export
-#'
-#' @examples
-get_or_create_path <- function(pathVarName, defaultDir, subDir="") {
-  if(!exists(pathVarName)) {
-    path = defaultDir
-  } else {
-    mainDir <- eval(parse(text=pathVarName))
-    path <- file.path(mainDir, subDir)
-    print(paste0("Creating ", pathVarName, " in ", path))
-    dir.create(path = path, recursive = T, showWarnings = T)
-    path <- mainDir
-  }
-  return(path)
-} 
-
-
 # Default working directory
 defaultDir <- "/scratch/project_2000994/PREBASruns/finRuns/"
-
 
 
 # Forest centre
@@ -144,18 +119,6 @@ path_initSoilC <- get_or_create_path(pathVarName = "path_initSoilC", defaultDir 
 
 # Get or create outputs path
 path_output <- get_or_create_path(pathVarName = "path_output", defaultDir = defaultDir, subDir = output_subDir)
-
-
-
-# # Path to working directory
-# if(!exists("path_wrkdir")) path_wrkdir = "/scratch/project_2000994/PREBASruns/finRuns/"
-# 
-# # Path to initial soil carbon
-# if(!exists("path_initSoilC")) path_initSoilC = "/scratch/project_2000994/PREBASruns/finRuns/"
-# 
-# # Path to outputs
-# if(!exists("path_output")) path_output = "/scratch/project_2000994/PREBASruns/finRuns/"
-
 
 
 
