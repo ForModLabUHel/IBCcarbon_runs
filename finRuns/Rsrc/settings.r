@@ -119,9 +119,9 @@ if(!exists("nSitesRun")) nSitesRun = 20000  ###aproximative number of samples fo
 # nSetRuns = 10 #number of set runs
 
 ####period for model output calculations
-per1=2017:2025
-per2=2026:2033
-per3=2034:2050
+if(!exists("per1")) per1=2017:2025
+if(!exists("per2")) per2=2026:2033
+if(!exists("per3")) per3=2034:2050
 simYear1 = per1 - startingYear
 simYear1 <- simYear1[simYear1>0]
 simYear2 = per2 - startingYear
