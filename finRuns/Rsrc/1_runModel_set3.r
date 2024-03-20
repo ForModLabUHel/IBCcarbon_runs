@@ -2,14 +2,8 @@
 devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/finRuns/Rsrc/settings.r")
 source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
 
-
-
-
-data.all <- data.all[1:10000]
-
-
 setX=3
-nSitesRun = 1000
+nSitesRun = 20000
 nSamples <- ceiling(dim(data.all)[1]/nSitesRun)
 sampleIDs <- split(1:nSamples,             # Applying split() function
                    cut(seq_along(1:nSamples),
