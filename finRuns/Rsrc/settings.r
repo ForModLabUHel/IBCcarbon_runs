@@ -28,6 +28,11 @@ require(Rprebasso)
 # library(Rprebasso)
 library(DescTools)
 
+
+# Load functions
+devtools::source_url("https://raw.githubusercontent.com/ForModLabUHel/IBCcarbon_runs/master/general/functions.r")
+
+
 # r_no = regions = 2  ### forest center ID
 nCores <- 6  ####  number of cores
 sampleForPlots <- 1
@@ -90,12 +95,36 @@ funX[match(varNames[c(7,11:12,14)],varNames[varSel])] <- "baWmean"
 # forCent <- readOGR(dsn = "/scratch/project_2000994/PREBASruns/Kokemaenjoki/shapes/",layer = "mkeskus13tm35")
 
 
-####paths
-#pathtoken = "/scratch/project_2000994/PREBASruns/finRuns/"
-if(!exists("path_wrkdir")) path_wrkdir = "/scratch/project_2000994/PREBASruns/finRuns/"
-if(!exists("path_initiSoilC")) path_initiSoilC = "/scratch/project_2000994/PREBASruns/finRuns/"
-if(!exists("path_output")) path_output = "/scratch/project_2000994/PREBASruns/finRuns/"
 
+
+
+# Default working directory
+defaultDir <- "/scratch/project_2000994/PREBASruns/finRuns/"
+
+
+# Forest centre
+forCent_folder <- paste0("forCent", r_no)
+
+# Initial soil carbon subdirectory
+initSoilC_subDir <- paste0("initSoilC/", forCent_folder)
+
+# Outputs subdirectory
+output_subDir <- paste0("outputDT/", forCent_folder)
+
+
+
+# Get or create working directory path
+path_wrkdir <- get_or_create_path(pathVarName = "path_wrkdir", defaultDir = defaultDir)
+
+# Get or create initial soil carbon path
+path_initSoilC <- get_or_create_path(pathVarName = "path_initSoilC", defaultDir = defaultDir, subDir = initSoilC_subDir)
+
+# Get or create outputs path
+path_output <- get_or_create_path(pathVarName = "path_output", defaultDir = defaultDir, subDir = output_subDir)
+
+
+
+# Path to climate data
 climatepath = "/scratch/project_2000994/RCP/"
 
 crsX <- ("+proj=utm +zone=35 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m
