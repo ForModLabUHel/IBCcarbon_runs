@@ -1202,9 +1202,9 @@ specialVarProc <- function(sampleX,region,r_no,harvScen,harvInten,rcpfile,sample
   ####test plot
   if(sampleID==sampleForPlots){testPlot(outX,"domSpecies",areas)}
   ###take the most frequent species in the periods
-  p1 <- outX[,.(per1 = Mode(as.numeric(.SD))[1]),.SDcols=colsOut1,by=segID]
-  p2 <- outX[,.(per2 = Mode(as.numeric(.SD))[1]),.SDcols=colsOut2,by=segID]
-  p3 <- outX[,.(per3 = Mode(as.numeric(.SD))[1]),.SDcols=colsOut3,by=segID]
+  p1 <- outX[, .(per1 = Mode(as.numeric(unlist(.SD)))[1]), .SDcols = colsOut1, by = segID]
+  p2 <- outX[, .(per2 = Mode(as.numeric(unlist(.SD)))[1]), .SDcols = colsOut2, by = segID]
+  p3 <- outX[, .(per3 = Mode(as.numeric(unlist(.SD)))[1]), .SDcols = colsOut3, by = segID]
   pX <- merge(p1,p2)
   pX <- merge(pX,p3)
   domSpecies <- pX
