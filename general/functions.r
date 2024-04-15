@@ -762,6 +762,16 @@ runModOut <- function(sampleID, sampleX,modOut,r_no,harvScen,harvInten,rcpfile,a
     save(out,file = paste0(path_output, "/outputDT/forCent",r_no,"/testData.rdata"))
     rm(out);gc()
   } 
+  
+  ### ----------------- TEST SAVE MULTIOUT ----------------- ###
+  
+  out <- modOut$multiOut
+  save(out,file = paste0(path_output, "/outputDT/forCent",r_no,"/testData.rdata"))
+  rm(out);gc()
+  
+  ### ----------------- END TEST SAVE MULTIOUT ----------------- ###
+  
+  
   marginX= 1:2#(length(dim(out$annual[,,varSel,]))-1)
   nas <- data.table()
   
