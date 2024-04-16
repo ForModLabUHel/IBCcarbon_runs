@@ -763,6 +763,10 @@ runModOut <- function(sampleID, sampleX,modOut,r_no,harvScen,harvInten,rcpfile,a
     rm(out);gc()
   } 
   
+  
+  
+  
+  
   ### ----------------- TEST SAVE MULTIOUT ----------------- ###
   
   out <- modOut$multiOut
@@ -770,6 +774,10 @@ runModOut <- function(sampleID, sampleX,modOut,r_no,harvScen,harvInten,rcpfile,a
   rm(out);gc()
   
   ### ----------------- END TEST SAVE MULTIOUT ----------------- ###
+  
+  
+  
+  
   
   
   marginX= 1:2#(length(dim(out$annual[,,varSel,]))-1)
@@ -812,7 +820,7 @@ runModOut <- function(sampleID, sampleX,modOut,r_no,harvScen,harvInten,rcpfile,a
     rm(list=varNames[varSel[ij]]); gc()
     # save NAs
     if(nrow(nas)>0){
-      save(nas,file=paste0("NAs/NAs_forCent",r_no,
+      save(nas,file=paste0(path_na, "/NAs/NAs_forCent",r_no,
                            "_","sampleID",sampleID,
                            "_harscen",harvScen,
                            "_harInten",harvInten,"_",

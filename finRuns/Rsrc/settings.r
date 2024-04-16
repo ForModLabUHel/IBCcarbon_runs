@@ -111,6 +111,9 @@ initSoilC_subDir <- paste0("initSoilC/", forCent_folder)
 # Outputs subdirectory
 output_subDir <- paste0("outputDT/", forCent_folder)
 
+# NAs subdirectory
+na_subDir <- paste0("NAs/")
+
 
 
 # Get or create working directory path
@@ -121,6 +124,9 @@ path_initSoilC <- get_or_create_path(pathVarName = "path_initSoilC", defaultDir 
 
 # Get or create outputs path
 path_output <- get_or_create_path(pathVarName = "path_output", defaultDir = defaultDir, subDir = output_subDir)
+
+# Get or create NAs path
+path_na <- get_or_create_path(pathVarName = "path_na", defaultDir = defaultDir, subDir = na_subDir)
 
 
 
