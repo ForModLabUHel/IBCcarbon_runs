@@ -204,6 +204,7 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
   ## Prepare the same initial state for all harvest scenarios that are simulated in a loop below
   data.sample = sample_data.f(sampleX, nSample)
   if(rcpfile=="CurrClim") data.sample$id <- data.sample$CurrClimID
+  if(exists("climIDName"))data.sample$id <- data.sample[[climIDName]]
   areas <- data.sample$area
   totAreaSample <- sum(data.sample$area)
   
