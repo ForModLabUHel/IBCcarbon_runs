@@ -15,7 +15,7 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
                      funPreb = regionPrebas,
                      initSoilCreStart=NULL,
                      outModReStart=NULL,reStartYear=1,
-                     sampleX=NULL){
+                     sampleX=NULL,deadWoodCalc=TRUE){
   # outType determines the type of output:
   # dTabs -> standard run, mod outputs saved as data.tables 
   # testRun-> test run reports the mod out and initPrebas as objects
@@ -23,6 +23,7 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
   # uncRun -> reports the output table for the regional uncertainty run
   # uncSeg -> reports the list of output table for the segment uncertainty run
   # cons10run -> flag for conservation areas 10% run
+  # deadWoodCalc=TRUE -> flag for deadwood calculations if not interested in deadWood set to FALSE
   
   # print(date())
   if(!is.null(sampleX)) sampleID <- paste0("sampleX_",sampleID)
@@ -579,51 +580,55 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
     region$multiOut[siteDrPeat2,,46,1,1] = region$multiOut[siteDrPeat2,,46,1,1] + 
       coeffPeat2 +  region$GVout[siteDrPeat2,,5] - region$GVout[siteDrPeat2,,2]/10
   }
-  #####start initialize deadWood volume
-  ## identify managed and unmanaged forests
-  manFor <-  which(sampleX$oldCons==0)
-  unmanFor <- which(sampleX$oldCons==1)
+  
+  
+  if(deadWoodCalc){
+   #####start initialize deadWood volume
+   ## identify managed and unmanaged forests
+   manFor <-  which(sampleX$oldCons==0)
+   unmanFor <- which(sampleX$oldCons==1)
 
   
-  if(outType=="ststDeadW"){
-    unmanDeadW <- initDeadW(region,unmanFor,yearsDeadW)
-    manDeadW <- initDeadW(region,manFor,yearsDeadW)
-    save(unmanDeadW,manDeadW,file=paste0("initDeadWVss/reg",
-                                         r_no,"_deadWV_mortMod",mortMod,".rdata"))
-    return("deadWood volume at steady state saved")
-  }else{
-    if(HSIruns){
-    ###start. additional line to average the deadwood volume over the 3 regions used in Ismael runs
-      load(paste0("initDeadWVss/reg4_deadWV_mortMod",mortMod,".rdata"))
-      unmanxx4 <- unmanDeadW$ssDeadW
-      manxx4 <- deadW$ssDeadW
-      load(paste0("initDeadWVss/reg6_deadWV_mortMod",mortMod,".rdata"))
-      unmanxx6 <- unmanDeadW$ssDeadW
-      manxx6 <- deadW$ssDeadW
-      load(paste0("initDeadWVss/reg14_deadWV_mortMod",mortMod,".rdata"))
-      unmanxx13 <- unmanDeadW$ssDeadW
-      manxx13 <- deadW$ssDeadW
-      unmanDeadW$ssDeadW <- (unmanxx4 + unmanxx6 + unmanxx13)/3
-      deadW$ssDeadW <- (manxx4 + manxx6 + manxx13)/3
-      ###end. additional line to average the deadwood volume over the 3 regions used in Ismael runs
+    if(outType=="ststDeadW"){
+      unmanDeadW <- initDeadW(region,unmanFor,yearsDeadW)
+      manDeadW <- initDeadW(region,manFor,yearsDeadW)
+      save(unmanDeadW,manDeadW,file=paste0("initDeadWVss/reg",
+                                           r_no,"_deadWV_mortMod",mortMod,".rdata"))
+      return("deadWood volume at steady state saved")
     }else{
-      load(paste0("initDeadWVss/reg",
-                  r_no,"_deadWV_mortMod",mortMod,".rdata"))
+      if(HSIruns){
+        ###start. additional line to average the deadwood volume over the 3 regions used in Ismael runs
+        load(paste0("initDeadWVss/reg4_deadWV_mortMod",mortMod,".rdata"))
+        unmanxx4 <- unmanDeadW$ssDeadW
+        manxx4 <- deadW$ssDeadW
+        load(paste0("initDeadWVss/reg6_deadWV_mortMod",mortMod,".rdata"))
+        unmanxx6 <- unmanDeadW$ssDeadW
+        manxx6 <- deadW$ssDeadW
+        load(paste0("initDeadWVss/reg14_deadWV_mortMod",mortMod,".rdata"))
+        unmanxx13 <- unmanDeadW$ssDeadW
+        manxx13 <- deadW$ssDeadW
+        unmanDeadW$ssDeadW <- (unmanxx4 + unmanxx6 + unmanxx13)/3
+        deadW$ssDeadW <- (manxx4 + manxx6 + manxx13)/3
+        ###end. additional line to average the deadwood volume over the 3 regions used in Ismael runs
+      }else{
+        load(paste0("initDeadWVss/reg",
+                    r_no,"_deadWV_mortMod",mortMod,".rdata"))
+      }
+      if(nrow(unmanDeadW$ssDeadW)<nYears){
+        tmp<-unmanDeadW$ssDeadW
+        tmp<-rbind(tmp,matrix(tmp[nrow(tmp),],ncol=ncol(tmp),nrow=nYears-nrow(tmp),byrow = T))
+        unmanDeadW$ssDeadW<-tmp
+        tmp<-deadW$ssDeadW
+        tmp<-rbind(tmp,matrix(tmp[nrow(tmp),],ncol=ncol(tmp),nrow=nYears-nrow(tmp),byrow = T))
+        deadW$ssDeadW<-tmp
+      } 
+      
+      region <- management_to_region_multiOut(region = region, management_vector = manFor, deadW = manDeadW, nYears = nYears)
+      region <- management_to_region_multiOut(region = region, management_vector = unmanFor, deadW = unmanDeadW, nYears = nYears)
+      
     }
-    if(nrow(unmanDeadW$ssDeadW)<nYears){
-      tmp<-unmanDeadW$ssDeadW
-      tmp<-rbind(tmp,matrix(tmp[nrow(tmp),],ncol=ncol(tmp),nrow=nYears-nrow(tmp),byrow = T))
-      unmanDeadW$ssDeadW<-tmp
-      tmp<-deadW$ssDeadW
-      tmp<-rbind(tmp,matrix(tmp[nrow(tmp),],ncol=ncol(tmp),nrow=nYears-nrow(tmp),byrow = T))
-      deadW$ssDeadW<-tmp
-    } 
-    
-    region <- management_to_region_multiOut(region = region, management_vector = manFor, deadW = manDeadW, nYears = nYears)
-    region <- management_to_region_multiOut(region = region, management_vector = unmanFor, deadW = unmanDeadW, nYears = nYears)
-    
+    ####end initialize deadWood Volume
   }
-  ####end initialize deadWood Volume
   
   
   ####summarize model Outputs
