@@ -78,15 +78,21 @@ varOuts <- c("NEP","GPPtrees", "npp", "grossGrowth",
              "Litter_fWoody", "Litter_cWoody",
              "DeadWoodVolume", "D", "BA", "H", "Vmort","Wdb",
              "Hc_base","wf_STKG","Rh")
-varSel <- match(varOuts,varNames)
-specialVars <- c("domSpecies","domAge","Vdec","Vpine","Vspruce","VenergyWood",
-                 "WenergyWood","Wtot","GVgpp","GVw")
+if(!exists("varSel")){
+  varSel <- match(varOuts,varNames)
+}
+if(!exists("specialVars")){
+  specialVars <- c("domSpecies","domAge","Vdec","Vpine","Vspruce","VenergyWood",
+                   "WenergyWood","Wtot","GVgpp","GVw")
+}
 
 #varSel <- c(7,8,9,11:13,17:18,22,24:33,37:39,41:46)   #### variables IDs to be stored
 
 ###set if you want to use Layers sum of BA average of stored variables
-funX <- rep("sum",length(varSel))
-funX[match(varNames[c(7,11:12,14)],varNames[varSel])] <- "baWmean"
+if(!exists("funX")){
+  funX <- rep("sum",length(varSel))
+  funX[match(varNames[c(7,11:12,14)],varNames[varSel])] <- "baWmean"
+}
 # name raster file with segs
 # rastSegFN <- "/scratch/project_2000994/MVMIsegments/segment-IDs/ls_seg2.img"
 
