@@ -24,6 +24,7 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
   # uncSeg -> reports the list of output table for the segment uncertainty run
   # cons10run -> flag for conservation areas 10% run
   # deadWoodCalc=TRUE -> flag for deadwood calculations if not interested in deadWood set to FALSE
+  # kuntaNielu -> will output the variables needed in the project
   
   # print(date())
   if(!is.null(sampleX)) sampleID <- paste0("sampleX_",sampleID)
@@ -659,6 +660,31 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
   }  
   
   if(outType=="testRun") return(list(region = region,initPrebas=initPrebas))
+  if(outType=="kuntaNielu"){
+    ####create pdf for test plots 
+    marginX= 1:2#(length(dim(out$annual[,,varSel,]))-1)
+
+    for (ij in 1:length(varSel)) {
+      # print(varSel[ij])
+      if(funX[ij]=="baWmean"){
+        outX <- data.table(segID=sampleX$segID,baWmean(modOut,varSel[ij]))
+      }
+      if(funX[ij]=="sum"){
+        outX <- data.table(segID=sampleX$segID,apply(modOut$multiOut[,,varSel[ij],,1],marginX,sum))
+      }
+      
+      assign(varNames[varSel[ij]],outX)
+      
+      save(list=varNames[varSel[ij]],
+           file=paste0(path_output, "/outputDT/forCent",r_no,"/",
+                       varNames[varSel[ij]],
+                       "_harscen",harvScen,
+                       "_harInten",harvInten,"_",
+                       rcpfile,"_","sampleID",sampleID,".rdata"))
+      rm(list=varNames[varSel[ij]]); gc()
+      # save NAs
+      return("all outs saved for KuntaNielu")  
+  }
   if(outType=="dTabs"){
     runModOut(sampleID, sampleX,region,r_no,harvScen,harvInten,rcpfile,areas,
               colsOut1,colsOut2,colsOut3,varSel,sampleForPlots)
