@@ -682,8 +682,15 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
                        "_harInten",harvInten,"_",
                        rcpfile,"_","sampleID",sampleID,".rdata"))
       rm(list=varNames[varSel[ij]]); gc()
-      # save NAs
-      return("all outs saved for KuntaNielu")  
+    }
+    
+    WenergyWood <- data.table(segID=sampleX$segID,apply(region$multiEnergyWood[,,,2],1:2,sum))
+    GVgpp <- data.table(segID=sampleX$segID,region$GVout[,,3])
+    GVw <- data.table(segID=sampleX$segID,region$GVout[,,4])
+    outputNames <- c("WenergyWood","GVgpp","GVw")
+    invisible(lapply(outputNames, function(x) save(list=x, file = get_out_file(path_output = path_output, variable_name = x))))
+    
+    return("all outs saved for KuntaNielu")  
   }
   if(outType=="dTabs"){
     runModOut(sampleID, sampleX,region,r_no,harvScen,harvInten,rcpfile,areas,
@@ -1210,20 +1217,18 @@ calMean <- function(varX,hscenX,areas){
 
 
 
+# Get the output path for a variable
+get_out_file <- function(path_output, variable_name) {
+  out_file <- paste0(path_output,"/outputDT/forCent",r_no,"/", variable_name,
+                     "_harscen",harvScen,
+                     "_harInten",harvInten,"_",
+                     rcpfile,"_",
+                     "sampleID",sampleID,".rdata")
+  return(out_file)
+}
+
 specialVarProc <- function(sampleX,region,r_no,harvScen,harvInten,rcpfile,sampleID,
                            colsOut1,colsOut2,colsOut3,areas,sampleForPlots){
-  
-  
-  # Get the output path for a variable
-  get_out_file <- function(path_output, variable_name) {
-    out_file <- paste0(path_output,"/outputDT/forCent",r_no,"/", variable_name,
-                   "_harscen",harvScen,
-                   "_harInten",harvInten,"_",
-                   rcpfile,"_",
-                   "sampleID",sampleID,".rdata")
-    return(out_file)
-  }
-  
   
   
   nYears <-  max(region$nYears)
@@ -1284,7 +1289,6 @@ specialVarProc <- function(sampleX,region,r_no,harvScen,harvInten,rcpfile,sample
   pX <- merge(p1,p2)
   pX <- merge(pX,p3)
   Vspruce <- pX
-
 
 ####WenergyWood
   outX <- data.table(segID=sampleX$segID,apply(region$multiEnergyWood[,,,2],1:2,sum))
