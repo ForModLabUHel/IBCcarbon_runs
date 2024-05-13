@@ -665,7 +665,7 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
     marginX= 1:2#(length(dim(out$annual[,,varSel,]))-1)
 
     for (ij in 1:length(varSel)) {
-      # print(varSel[ij])
+      print(paste0("varSel ", varSel[ij]))
       if(funX[ij]=="baWmean"){
         outX <- data.table(segID=sampleX$segID,baWmean(region,varSel[ij]))
       }
@@ -688,6 +688,7 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
     GVgpp <- data.table(segID=sampleX$segID,region$GVout[,,3])
     GVw <- data.table(segID=sampleX$segID,region$GVout[,,4])
     outputNames <- c("WenergyWood","GVgpp","GVw")
+    print(paste0("outputNames ", outputNames))
     invisible(lapply(outputNames, function(x) save(list=x, file = get_out_file(path_output = path_output, variable_name = x))))
     
     return("all outs saved for KuntaNielu")  
