@@ -1243,7 +1243,7 @@ calMean <- function(varX,hscenX,areas){
 
 
 # Get the output path for a variable
-get_out_file <- function(path_output, variable_name, r_no, harScen, harvInten, rcpfile, sampleID) {
+get_out_file <- function(path_output, variable_name, r_no, harvScen, harvInten, rcpfile, sampleID) {
   out_file <- paste0(path_output,"/outputDT/forCent",r_no,"/", variable_name,
                      "_harscen",harvScen,
                      "_harInten",harvInten,"_",
