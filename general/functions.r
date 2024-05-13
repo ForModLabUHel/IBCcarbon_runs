@@ -15,7 +15,7 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
                      funPreb = regionPrebas,
                      initSoilCreStart=NULL,
                      outModReStart=NULL,reStartYear=1,
-                     sampleX=NULL){
+                     sampleX=NULL,deadWoodCalc=TRUE){
   # outType determines the type of output:
   # dTabs -> standard run, mod outputs saved as data.tables 
   # testRun-> test run reports the mod out and initPrebas as objects
@@ -23,6 +23,8 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
   # uncRun -> reports the output table for the regional uncertainty run
   # uncSeg -> reports the list of output table for the segment uncertainty run
   # cons10run -> flag for conservation areas 10% run
+  # deadWoodCalc=TRUE -> flag for deadwood calculations if not interested in deadWood set to FALSE
+  # kuntaNielu -> will output the variables needed in the project
   
   # print(date())
   if(!is.null(sampleX)) sampleID <- paste0("sampleX_",sampleID)
@@ -204,6 +206,7 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
   ## Prepare the same initial state for all harvest scenarios that are simulated in a loop below
   data.sample = sample_data.f(sampleX, nSample)
   if(rcpfile=="CurrClim") data.sample$id <- data.sample$CurrClimID
+  if(exists("climIDName"))data.sample$id <- data.sample[[climIDName]]
   areas <- data.sample$area
   totAreaSample <- sum(data.sample$area)
   
@@ -578,51 +581,55 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
     region$multiOut[siteDrPeat2,,46,1,1] = region$multiOut[siteDrPeat2,,46,1,1] + 
       coeffPeat2 +  region$GVout[siteDrPeat2,,5] - region$GVout[siteDrPeat2,,2]/10
   }
-  #####start initialize deadWood volume
-  ## identify managed and unmanaged forests
-  manFor <-  which(sampleX$oldCons==0)
-  unmanFor <- which(sampleX$oldCons==1)
+  
+  
+  if(deadWoodCalc){
+   #####start initialize deadWood volume
+   ## identify managed and unmanaged forests
+   manFor <-  which(sampleX$oldCons==0)
+   unmanFor <- which(sampleX$oldCons==1)
 
   
-  if(outType=="ststDeadW"){
-    unmanDeadW <- initDeadW(region,unmanFor,yearsDeadW)
-    manDeadW <- initDeadW(region,manFor,yearsDeadW)
-    save(unmanDeadW,manDeadW,file=paste0("initDeadWVss/reg",
-                                         r_no,"_deadWV_mortMod",mortMod,".rdata"))
-    return("deadWood volume at steady state saved")
-  }else{
-    if(HSIruns){
-    ###start. additional line to average the deadwood volume over the 3 regions used in Ismael runs
-      load(paste0("initDeadWVss/reg4_deadWV_mortMod",mortMod,".rdata"))
-      unmanxx4 <- unmanDeadW$ssDeadW
-      manxx4 <- deadW$ssDeadW
-      load(paste0("initDeadWVss/reg6_deadWV_mortMod",mortMod,".rdata"))
-      unmanxx6 <- unmanDeadW$ssDeadW
-      manxx6 <- deadW$ssDeadW
-      load(paste0("initDeadWVss/reg14_deadWV_mortMod",mortMod,".rdata"))
-      unmanxx13 <- unmanDeadW$ssDeadW
-      manxx13 <- deadW$ssDeadW
-      unmanDeadW$ssDeadW <- (unmanxx4 + unmanxx6 + unmanxx13)/3
-      deadW$ssDeadW <- (manxx4 + manxx6 + manxx13)/3
-      ###end. additional line to average the deadwood volume over the 3 regions used in Ismael runs
+    if(outType=="ststDeadW"){
+      unmanDeadW <- initDeadW(region,unmanFor,yearsDeadW)
+      manDeadW <- initDeadW(region,manFor,yearsDeadW)
+      save(unmanDeadW,manDeadW,file=paste0("initDeadWVss/reg",
+                                           r_no,"_deadWV_mortMod",mortMod,".rdata"))
+      return("deadWood volume at steady state saved")
     }else{
-      load(paste0("initDeadWVss/reg",
-                  r_no,"_deadWV_mortMod",mortMod,".rdata"))
+      if(HSIruns){
+        ###start. additional line to average the deadwood volume over the 3 regions used in Ismael runs
+        load(paste0("initDeadWVss/reg4_deadWV_mortMod",mortMod,".rdata"))
+        unmanxx4 <- unmanDeadW$ssDeadW
+        manxx4 <- deadW$ssDeadW
+        load(paste0("initDeadWVss/reg6_deadWV_mortMod",mortMod,".rdata"))
+        unmanxx6 <- unmanDeadW$ssDeadW
+        manxx6 <- deadW$ssDeadW
+        load(paste0("initDeadWVss/reg14_deadWV_mortMod",mortMod,".rdata"))
+        unmanxx13 <- unmanDeadW$ssDeadW
+        manxx13 <- deadW$ssDeadW
+        unmanDeadW$ssDeadW <- (unmanxx4 + unmanxx6 + unmanxx13)/3
+        deadW$ssDeadW <- (manxx4 + manxx6 + manxx13)/3
+        ###end. additional line to average the deadwood volume over the 3 regions used in Ismael runs
+      }else{
+        load(paste0("initDeadWVss/reg",
+                    r_no,"_deadWV_mortMod",mortMod,".rdata"))
+      }
+      if(nrow(unmanDeadW$ssDeadW)<nYears){
+        tmp<-unmanDeadW$ssDeadW
+        tmp<-rbind(tmp,matrix(tmp[nrow(tmp),],ncol=ncol(tmp),nrow=nYears-nrow(tmp),byrow = T))
+        unmanDeadW$ssDeadW<-tmp
+        tmp<-deadW$ssDeadW
+        tmp<-rbind(tmp,matrix(tmp[nrow(tmp),],ncol=ncol(tmp),nrow=nYears-nrow(tmp),byrow = T))
+        deadW$ssDeadW<-tmp
+      } 
+      
+      region <- management_to_region_multiOut(region = region, management_vector = manFor, deadW = manDeadW, nYears = nYears)
+      region <- management_to_region_multiOut(region = region, management_vector = unmanFor, deadW = unmanDeadW, nYears = nYears)
+      
     }
-    if(nrow(unmanDeadW$ssDeadW)<nYears){
-      tmp<-unmanDeadW$ssDeadW
-      tmp<-rbind(tmp,matrix(tmp[nrow(tmp),],ncol=ncol(tmp),nrow=nYears-nrow(tmp),byrow = T))
-      unmanDeadW$ssDeadW<-tmp
-      tmp<-deadW$ssDeadW
-      tmp<-rbind(tmp,matrix(tmp[nrow(tmp),],ncol=ncol(tmp),nrow=nYears-nrow(tmp),byrow = T))
-      deadW$ssDeadW<-tmp
-    } 
-    
-    region <- management_to_region_multiOut(region = region, management_vector = manFor, deadW = manDeadW, nYears = nYears)
-    region <- management_to_region_multiOut(region = region, management_vector = unmanFor, deadW = unmanDeadW, nYears = nYears)
-    
+    ####end initialize deadWood Volume
   }
-  ####end initialize deadWood Volume
   
   
   ####summarize model Outputs
@@ -653,6 +660,38 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
   }  
   
   if(outType=="testRun") return(list(region = region,initPrebas=initPrebas))
+  if(outType=="kuntaNielu"){
+    ####create pdf for test plots 
+    marginX= 1:2#(length(dim(out$annual[,,varSel,]))-1)
+
+    for (ij in 1:length(varSel)) {
+      # print(varSel[ij])
+      if(funX[ij]=="baWmean"){
+        outX <- data.table(segID=sampleX$segID,baWmean(modOut,varSel[ij]))
+      }
+      if(funX[ij]=="sum"){
+        outX <- data.table(segID=sampleX$segID,apply(modOut$multiOut[,,varSel[ij],,1],marginX,sum))
+      }
+      
+      assign(varNames[varSel[ij]],outX)
+      
+      save(list=varNames[varSel[ij]],
+           file=paste0(path_output, "/outputDT/forCent",r_no,"/",
+                       varNames[varSel[ij]],
+                       "_harscen",harvScen,
+                       "_harInten",harvInten,"_",
+                       rcpfile,"_","sampleID",sampleID,".rdata"))
+      rm(list=varNames[varSel[ij]]); gc()
+    }
+    
+    WenergyWood <- data.table(segID=sampleX$segID,apply(region$multiEnergyWood[,,,2],1:2,sum))
+    GVgpp <- data.table(segID=sampleX$segID,region$GVout[,,3])
+    GVw <- data.table(segID=sampleX$segID,region$GVout[,,4])
+    outputNames <- c("WenergyWood","GVgpp","GVw")
+    invisible(lapply(outputNames, function(x) save(list=x, file = get_out_file(path_output = path_output, variable_name = x))))
+    
+    return("all outs saved for KuntaNielu")  
+  }
   if(outType=="dTabs"){
     runModOut(sampleID, sampleX,region,r_no,harvScen,harvInten,rcpfile,areas,
               colsOut1,colsOut2,colsOut3,varSel,sampleForPlots)
@@ -1196,20 +1235,18 @@ calMean <- function(varX,hscenX,areas){
 
 
 
+# Get the output path for a variable
+get_out_file <- function(path_output, variable_name) {
+  out_file <- paste0(path_output,"/outputDT/forCent",r_no,"/", variable_name,
+                     "_harscen",harvScen,
+                     "_harInten",harvInten,"_",
+                     rcpfile,"_",
+                     "sampleID",sampleID,".rdata")
+  return(out_file)
+}
+
 specialVarProc <- function(sampleX,region,r_no,harvScen,harvInten,rcpfile,sampleID,
                            colsOut1,colsOut2,colsOut3,areas,sampleForPlots){
-  
-  
-  # Get the output path for a variable
-  get_out_file <- function(path_output, variable_name) {
-    out_file <- paste0(path_output,"/outputDT/forCent",r_no,"/", variable_name,
-                   "_harscen",harvScen,
-                   "_harInten",harvInten,"_",
-                   rcpfile,"_",
-                   "sampleID",sampleID,".rdata")
-    return(out_file)
-  }
-  
   
   
   nYears <-  max(region$nYears)
@@ -1270,7 +1307,6 @@ specialVarProc <- function(sampleX,region,r_no,harvScen,harvInten,rcpfile,sample
   pX <- merge(p1,p2)
   pX <- merge(pX,p3)
   Vspruce <- pX
-
 
 ####WenergyWood
   outX <- data.table(segID=sampleX$segID,apply(region$multiEnergyWood[,,,2],1:2,sum))
