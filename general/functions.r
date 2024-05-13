@@ -689,7 +689,13 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
     GVw <- data.table(segID=sampleX$segID,region$GVout[,,4])
     outputNames <- c("WenergyWood","GVgpp","GVw")
     print(paste0("outputNames ", outputNames))
-    invisible(lapply(outputNames, function(x) save(list=x, file = get_out_file(path_output = path_output, variable_name = x))))
+    invisible(lapply(outputNames, function(x) save(list=x, file = get_out_file(path_output = path_output, 
+                                                                               variable_name = x,
+                                                                               r_no = r_no,
+                                                                               harvScen = harvScen,
+                                                                               harvInten = harvInten,
+                                                                               rcpfile = rcpfile,
+                                                                               sampleID = sampleID))))
     
     return("all outs saved for KuntaNielu")  
   }
@@ -1237,7 +1243,7 @@ calMean <- function(varX,hscenX,areas){
 
 
 # Get the output path for a variable
-get_out_file <- function(path_output, variable_name) {
+get_out_file <- function(path_output, variable_name, r_no, harScen, harvInten, rcpfile, sampleID) {
   out_file <- paste0(path_output,"/outputDT/forCent",r_no,"/", variable_name,
                      "_harscen",harvScen,
                      "_harInten",harvInten,"_",
@@ -1361,7 +1367,14 @@ specialVarProc <- function(sampleX,region,r_no,harvScen,harvInten,rcpfile,sample
   
   # Save all outputs
   outputNames <- c("domSpecies","domAge","Vdec","Vpine","Vspruce","WenergyWood","VenergyWood","GVgpp","GVw","Wtot")
-  invisible(lapply(outputNames, function(x) save(list=x, file = get_out_file(path_output = path_output, variable_name = x))))
+  invisible(lapply(outputNames, function(x) save(list=x, file = get_out_file(
+    path_output = path_output, 
+    variable_name = x,
+    r_no = r_no,
+    harvScen = harvScen,
+    harvInten = harvInten,
+    rcpfile = rcpfile,
+    sampleID = sampleID))))
   
   
   rm(domSpecies,domAge,Vdec,WenergyWood,Wtot,pX,p1,p2,p3); gc()
