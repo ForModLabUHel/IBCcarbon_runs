@@ -667,10 +667,10 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
     for (ij in 1:length(varSel)) {
       # print(varSel[ij])
       if(funX[ij]=="baWmean"){
-        outX <- data.table(segID=sampleX$segID,baWmean(modOut,varSel[ij]))
+        outX <- data.table(segID=sampleX$segID,baWmean(region,varSel[ij]))
       }
       if(funX[ij]=="sum"){
-        outX <- data.table(segID=sampleX$segID,apply(modOut$multiOut[,,varSel[ij],,1],marginX,sum))
+        outX <- data.table(segID=sampleX$segID,apply(region$multiOut[,,varSel[ij],,1],marginX,sum))
       }
       
       assign(varNames[varSel[ij]],outX)
