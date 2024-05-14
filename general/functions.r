@@ -673,15 +673,17 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
         outX <- data.table(segID=sampleX$segID,apply(region$multiOut[,,varSel[ij],,1],marginX,sum))
       }
       
-      assign(varNames[varSel[ij]],outX)
+      # Remove special characters from varNames[varSel[ij]]
+      varSel_name <- strsplit(varNames[varSel[ij]], split = "/")[[1]][1]
+      assign(varSel_name,outX)
       
-      save(list=varNames[varSel[ij]],
+      save(list=varSel_name,
            file=paste0(path_output, "/outputDT/forCent",r_no,"/",
-                       varNames[varSel[ij]],
+                       varSel_name,
                        "_harscen",harvScen,
                        "_harInten",harvInten,"_",
                        rcpfile,"_","sampleID",sampleID,".rdata"))
-      rm(list=varNames[varSel[ij]]); gc()
+      rm(list=varSel_name); gc()
     }
     
     WenergyWood <- data.table(segID=sampleX$segID,apply(region$multiEnergyWood[,,,2],1:2,sum))
