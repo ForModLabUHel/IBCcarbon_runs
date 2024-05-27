@@ -699,6 +699,35 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
                                                                                rcpfile = rcpfile,
                                                                                sampleID = sampleID))))
     
+    
+    # Biodiversity indicators
+    bioInd <- calBioIndices(region)
+    
+    # Cast to data table with segID
+    bioIndList <- lapply(bioInd,function(x) data.table(segID=sampleX$segID, x))
+    
+    # Save
+    invisible(lapply(seq_along(bioIndList), function(x) {
+      
+      temp_env <- new.env()
+      
+      var_name <- names(bioIndList)[x]
+      
+      assign(var_name, bioIndList[[x]], envir = temp_env)
+      
+      filename <- get_out_file(path_output = path_output, 
+                               variable_name = var_name,
+                               r_no = r_no,
+                               harvScen = harvScen,
+                               harvInten = harvInten,
+                               rcpfile = rcpfile,
+                               sampleID = sampleID)
+      
+      save(list = var_name, file=filename, envir = temp_env)
+      
+      rm(temp_env)
+    })) 
+    
     return("all outs saved for KuntaNielu")  
   }
   if(outType=="dTabs"){
