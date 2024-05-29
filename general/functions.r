@@ -619,9 +619,9 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
         tmp<-unmanDeadW$ssDeadW
         tmp<-rbind(tmp,matrix(tmp[nrow(tmp),],ncol=ncol(tmp),nrow=nYears-nrow(tmp),byrow = T))
         unmanDeadW$ssDeadW<-tmp
-        tmp<-deadW$ssDeadW
+        tmp<-manDeadW$ssDeadW
         tmp<-rbind(tmp,matrix(tmp[nrow(tmp),],ncol=ncol(tmp),nrow=nYears-nrow(tmp),byrow = T))
-        deadW$ssDeadW<-tmp
+        manDeadW$ssDeadW<-tmp
       } 
       
       region <- management_to_region_multiOut(region = region, management_vector = manFor, deadW = manDeadW, nYears = nYears)
