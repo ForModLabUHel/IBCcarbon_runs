@@ -20,8 +20,8 @@ require(abind)
 require(sm)
 
 # ###choose PREBAS version
-# vPREBAS <- "master"   #### choose PREBAS version to run the model  "master" "v0.2.x"
-# install_github("ForModLabUHel/Rprebasso", ref=vPREBAS)
+vPREBAS <- "master"   #### choose PREBAS version to run the model  "master" "v0.2.x"
+install_github("ForModLabUHel/Rprebasso", ref=vPREBAS)
 
 require(Rprebasso)
 
