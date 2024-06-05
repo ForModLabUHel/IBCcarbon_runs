@@ -16,7 +16,7 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
                      initSoilCreStart=NULL,
                      outModReStart=NULL,reStartYear=1,
                      sampleX=NULL,deadWoodCalc=TRUE, 
-                     harvLimDef=NA,
+                     harvLimDef=list(),
                      clCutDef=NA){
   # outType determines the type of output:
   # dTabs -> standard run, mod outputs saved as data.tables 
@@ -418,7 +418,7 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
   HarvLimX <- HarvLim1[1:nYears,]
   
   # Check if harvLims and clearCuts are provided as parameters
-  if(!is.na(harvLimDef)) HarvLimX <- harvLimDef
+  if(!length(harvLimDef)==0) HarvLimX = harvLimDef
   if(!is.na(clCutDef)) cutArX[,1] <- clCutDef
   
   print(paste0("HarvLimX is"))
