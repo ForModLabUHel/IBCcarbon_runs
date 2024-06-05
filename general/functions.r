@@ -15,7 +15,9 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
                      funPreb = regionPrebas,
                      initSoilCreStart=NULL,
                      outModReStart=NULL,reStartYear=1,
-                     sampleX=NULL,deadWoodCalc=TRUE){
+                     sampleX=NULL,deadWoodCalc=TRUE, 
+                     harvLimDef=NA,
+                     clCutDef=NA){
   # outType determines the type of output:
   # dTabs -> standard run, mod outputs saved as data.tables 
   # testRun-> test run reports the mod out and initPrebas as objects
@@ -414,6 +416,17 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
     HarvLim1<-rbind(HarvLim1,matrix(HarvLim1[nrow(HarvLim1),],(nYears-nrow(HarvLim1)),ncol(HarvLim1),byrow = T))
   }
   HarvLimX <- HarvLim1[1:nYears,]
+  
+  # Check if harvLims and clearCuts are provided as parameters
+  if(!is.na(harvLimDef)) HarvLimX <- harvLimDef
+  if(!is.na(clCutDef)) cutArX[,1] <- clCutDef
+  
+  print(paste0("HarvLimX is"))
+  print(HarvLimX)
+  
+  print(paste0("cutArX is"))
+  print(cutArX)
+  
   
   if(harvScen %in% c("adapt","adaptNoAdH","adaptTapio")){
     if(harvScen=="adaptNoAdH"){
