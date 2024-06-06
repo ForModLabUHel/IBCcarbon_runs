@@ -420,13 +420,7 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
   # Check if harvLims and clearCuts are provided as parameters
   if(!length(harvLimDef)==0) HarvLimX = harvLimDef
   if(!is.na(clCutDef)) cutArX[,1] <- clCutDef
-  
-  print(paste0("HarvLimX is"))
-  print(HarvLimX)
-  
-  print(paste0("cutArX is"))
-  print(cutArX)
-  
+
   
   if(harvScen %in% c("adapt","adaptNoAdH","adaptTapio")){
     if(harvScen=="adaptNoAdH"){
