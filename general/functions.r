@@ -16,7 +16,7 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
                      initSoilCreStart=NULL,
                      outModReStart=NULL,reStartYear=1,
                      sampleX=NULL,deadWoodCalc=TRUE, 
-                     harvLimDef=list(),
+                     harvLimDef=NA,
                      clCutDef=NA,latitude=NA){
 
   # outType determines the type of output:
@@ -419,7 +419,14 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
   HarvLimX <- HarvLim1[1:nYears,]
   
   # Check if harvLims and clearCuts are provided as parameters
-  if(!length(harvLimDef)==0) HarvLimX = harvLimDef
+  if(!is.na(harvLimDef)){
+    wEnRatio <- mean(HarvLimX[,2]/rowSums(HarvLimX))
+    harvLimDef[,2] <- harvLimDef[,1]*wEnRatio
+    harvLimDef[,1] <- harvLimDef[,1]*(1-wEnRatio)
+    HarvLimX = harvLimDef
+    if(harvInten == "Low"){ HarvLimX <- HarvLimX * 0.6}
+  } 
+  
   if(!is.na(clCutDef)) cutArX[,1] <- clCutDef
 
   
