@@ -17,7 +17,8 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
                      outModReStart=NULL,reStartYear=1,
                      sampleX=NULL,deadWoodCalc=TRUE, 
                      harvLimDef=list(),
-                     clCutDef=NA){
+                     clCutDef=NA,latitude=NA){
+
   # outType determines the type of output:
   # dTabs -> standard run, mod outputs saved as data.tables 
   # testRun-> test run reports the mod out and initPrebas as objects
@@ -966,7 +967,7 @@ sample_data.f = function(data.all, nSample) {
 create_prebas_input.f = function(r_no, clim, data.sample, nYears,
                                  startingYear=0,domSPrun=0,
                                  harv, HcFactorX=HcFactor, reStartYear=1,
-                                 outModReStart=NULL,initSoilC=NULL
+                                 outModReStart=NULL,initSoilC=NULL,latitude=NA
                                  ) { 
   # dat = climscendataset
   #domSPrun=0 initialize model for mixed forests according to data inputs 
@@ -1189,7 +1190,8 @@ create_prebas_input.f = function(r_no, clim, data.sample, nYears,
                               Precip=clim$Precip[, 1:(nYears*365)],
                               CO2=clim$CO2[, 1:(nYears*365)],
                               yassoRun = 1,
-                              mortMod = mortMod)
+                              mortMod = mortMod,
+                              latitude=latitude)
   
   if(!is.null(outModReStart)){
 
