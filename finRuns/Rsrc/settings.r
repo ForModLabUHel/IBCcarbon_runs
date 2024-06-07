@@ -20,8 +20,8 @@ require(abind)
 require(sm)
 
 # ###choose PREBAS version
-# vPREBAS <- "master"   #### choose PREBAS version to run the model  "master" "v0.2.x"
-# install_github("ForModLabUHel/Rprebasso", ref=vPREBAS)
+vPREBAS <- "master"   #### choose PREBAS version to run the model  "master" "v0.2.x"
+install_github("ForModLabUHel/Rprebasso", ref=vPREBAS)
 
 require(Rprebasso)
 
@@ -117,6 +117,9 @@ initSoilC_subDir <- paste0("initSoilC/", forCent_folder)
 # Outputs subdirectory
 output_subDir <- paste0("outputDT/", forCent_folder)
 
+# NAs subdirectory
+na_subDir <- paste0("NAs/")
+
 
 
 # Get or create working directory path
@@ -127,6 +130,9 @@ path_initSoilC <- get_or_create_path(pathVarName = "path_initSoilC", defaultDir 
 
 # Get or create outputs path
 path_output <- get_or_create_path(pathVarName = "path_output", defaultDir = defaultDir, subDir = output_subDir)
+
+# Get or create NAs path
+path_na <- get_or_create_path(pathVarName = "path_na", defaultDir = defaultDir, subDir = na_subDir)
 
 
 
@@ -145,7 +151,7 @@ harvestLims <- c(9775000,1466000)
 year1harv=0 ###if 1 set harvLim for Low and MaxSust as 0.6 and 1.2 of HarvLim (Base)
 domSPrun = 0   ### 1 -> run only dominant layer
 startingYear = 2015
-endingYear = 2051
+endingYear = 2070
 if(!exists("nYears")) nYears = endingYear-startingYear
 
 if(!exists("rcps")) rcps = "CurrClim" #c("CanESM2.rcp45.rdata","CanESM2.rcp85.rdata")#c("CurrClim","CanESM2.rcp26.rdata")#,"CanESM2.rcp45.rdata","CanESM2.rcp85.rdata")
