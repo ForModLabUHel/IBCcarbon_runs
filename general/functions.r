@@ -16,8 +16,14 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
                      initSoilCreStart=NULL,
                      outModReStart=NULL,reStartYear=1,
                      sampleX=NULL,deadWoodCalc=TRUE, 
+<<<<<<< HEAD
                      harvLimDef=list(),
                      clCutDef=NA){
+=======
+                     harvLimDef=NA,
+                     clCutDef=NA,latitude=NA){
+
+>>>>>>> d6fef3d2de3e819e43c03e67279950efa7a26fb8
   # outType determines the type of output:
   # dTabs -> standard run, mod outputs saved as data.tables 
   # testRun-> test run reports the mod out and initPrebas as objects
@@ -418,7 +424,15 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
   HarvLimX <- HarvLim1[1:nYears,]
   
   # Check if harvLims and clearCuts are provided as parameters
-  if(!length(harvLimDef)==0) HarvLimX = harvLimDef
+
+  if(!is.na(harvLimDef)){
+    wEnRatio <- mean(HarvLimX[,2]/rowSums(HarvLimX))
+    harvLimDef[,2] <- harvLimDef[,1]*wEnRatio
+    harvLimDef[,1] <- harvLimDef[,1]*(1-wEnRatio)
+    HarvLimX = harvLimDef
+    if(harvInten == "Low"){ HarvLimX <- HarvLimX * 0.6}
+  } 
+  
   if(!is.na(clCutDef)) cutArX[,1] <- clCutDef
 
   
@@ -966,7 +980,7 @@ sample_data.f = function(data.all, nSample) {
 create_prebas_input.f = function(r_no, clim, data.sample, nYears,
                                  startingYear=0,domSPrun=0,
                                  harv, HcFactorX=HcFactor, reStartYear=1,
-                                 outModReStart=NULL,initSoilC=NULL
+                                 outModReStart=NULL,initSoilC=NULL,latitude=NA
                                  ) { 
   # dat = climscendataset
   #domSPrun=0 initialize model for mixed forests according to data inputs 
@@ -1189,7 +1203,8 @@ create_prebas_input.f = function(r_no, clim, data.sample, nYears,
                               Precip=clim$Precip[, 1:(nYears*365)],
                               CO2=clim$CO2[, 1:(nYears*365)],
                               yassoRun = 1,
-                              mortMod = mortMod)
+                              mortMod = mortMod,
+                              latitude=latitude)
   
   if(!is.null(outModReStart)){
 
