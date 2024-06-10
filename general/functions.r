@@ -15,15 +15,10 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
                      funPreb = regionPrebas,
                      initSoilCreStart=NULL,
                      outModReStart=NULL,reStartYear=1,
-                     sampleX=NULL,deadWoodCalc=TRUE, 
-<<<<<<< HEAD
+                     sampleX=NULL,deadWoodCalc=TRUE,
                      harvLimDef=list(),
-                     clCutDef=NA){
-=======
-                     harvLimDef=NA,
-                     clCutDef=NA,latitude=NA){
+                     clCutDef=NA, latitude=NA){
 
->>>>>>> d6fef3d2de3e819e43c03e67279950efa7a26fb8
   # outType determines the type of output:
   # dTabs -> standard run, mod outputs saved as data.tables 
   # testRun-> test run reports the mod out and initPrebas as objects
@@ -425,7 +420,7 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
   
   # Check if harvLims and clearCuts are provided as parameters
 
-  if(!is.na(harvLimDef)){
+  if(length(harvLimDef) != 0){
     wEnRatio <- mean(HarvLimX[,2]/rowSums(HarvLimX))
     harvLimDef[,2] <- harvLimDef[,1]*wEnRatio
     harvLimDef[,1] <- harvLimDef[,1]*(1-wEnRatio)
