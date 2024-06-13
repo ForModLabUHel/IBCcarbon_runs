@@ -1,26 +1,33 @@
 # CSCrun=T
-
+require(devtools)
 library(raster)
 library(rgdal)
 library(parallel)
 library(ggplot2)
 library(readxl)
 
-###load packages in CSC project folder
-# if(CSCrun){
-if(CSCrun){
-  .libPaths(c("/projappl/project_2000994/project_rpackages", .libPaths()))
-  libpath <- .libPaths()[1]
+
+# ###choose PREBAS version
+if(!exists("vPREBAS")) vPREBAS = "master"   #### choose PREBAS version to run the model  "master" "v0.2.x"
+
+if(CSCrun & vPREBAS == "newVersion") {
+  .libPaths(c("/scratch/project_2000994/newV", .libPaths()))
 }
-require(devtools)
+
+if(CSCrun & vPREBAS == "master"){
+  .libPaths(c("/scratch/project_2000994/masterV", .libPaths()))
+}
+# if(CSCrun){
+#   .libPaths(c("/projappl/project_2000994/project_rpackages", .libPaths()))
+#   libpath <- .libPaths()[1]
+# }
+
 require(data.table)
 require(plyr)
 require(dplyr)
 require(abind)
 require(sm)
 
-# ###choose PREBAS version
-vPREBAS <- "master"   #### choose PREBAS version to run the model  "master" "v0.2.x"
 install_github("ForModLabUHel/Rprebasso", ref=vPREBAS)
 
 require(Rprebasso)
