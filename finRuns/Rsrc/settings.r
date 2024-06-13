@@ -11,11 +11,16 @@ library(readxl)
 if(!exists("vPREBAS")) vPREBAS = "master"   #### choose PREBAS version to run the model  "master" "v0.2.x"
 
 if(CSCrun & vPREBAS == "newVersion") {
-  .libPaths(c("/scratch/project_2000994/newV", .libPaths()))
+  RprebassoFolder = "/projappl/project_2000994/Rpackages/Rprebasso_newV"
+  .libPaths(c(RprebassoFolder,
+              "/projappl/project_2000994/Rpackages/project_rpackages",
+              .libPaths()))
 }
-
 if(CSCrun & vPREBAS == "master"){
-  .libPaths(c("/scratch/project_2000994/masterV", .libPaths()))
+  RprebassoFolder = "/projappl/project_2000994/Rpackages/Rprebasso_master"
+  .libPaths(c(RprebassoFolder,
+              "/projappl/project_2000994/Rpackages/project_rpackages",
+              .libPaths()))
 }
 # if(CSCrun){
 #   .libPaths(c("/projappl/project_2000994/project_rpackages", .libPaths()))
