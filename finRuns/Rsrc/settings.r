@@ -33,7 +33,7 @@ require(dplyr)
 require(abind)
 require(sm)
 
-install_github("ForModLabUHel/Rprebasso", ref=vPREBAS)
+install_github("ForModLabUHel/Rprebasso", ref=vPREBAS,lib=RprebassoFolder)
 
 require(Rprebasso)
 
