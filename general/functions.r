@@ -567,7 +567,9 @@ runModel <- function(sampleID, outType="dTabs", uncRCP=0,
     # out <- region$multiOut[,,,,1]
   }
 
-
+  print("harvest Limits:")
+  print(HarvLimX)
+  
   #####process drained Peat
   if(procDrPeat){
     siteDrPeat1 <- which(sampleX$pseudoptyp==400 & region$siteInfo[,3]<4)
