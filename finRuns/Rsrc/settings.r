@@ -84,7 +84,7 @@ if(!exists("nYearsFert")) nYearsFert=20 ###number of years for which the fertili
 if(!exists("pCrobasX")) pCrobasX <- pCROB
 pCrobasX[17,1:3] <- pCROB[17,1:3]
 
-varOuts <- c("NEP","GPPtrees", "npp", "grossGrowth", 
+varOuts <- c("NEP/SMI[layer_1]","GPPtrees", "npp", "grossGrowth/bb BA disturbed", 
              "soilC", "V", "age", "WroundWood","VroundWood",
              "Litter_fol", "Litter_fr", 
              "Litter_fWoody", "Litter_cWoody",
