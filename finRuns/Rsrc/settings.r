@@ -51,6 +51,8 @@ sampleForPlots <- 1
 ###management and intesity of harvest
 if(!exists("harvScen")) harvScen = "Base"#c("Base", Low","MaxSust")
 if(!exists("harvInten")) harvInten = "Base"#c("NoHarv","Base")
+if(!exists("harvestPath")) harvestPath = "/scratch/project_2000994/PREBASruns/metadata/maakunta/harvest_new.xlsx"
+if(!exists("harvestAreaPath")) harvestAreaPath = "/scratch/project_2000994/PREBASruns/metadata/maakunta/harvest_area.xlsx"
 
 # Missing from varOuts: 
 # MinPeat-index, NEPdrPeat
@@ -244,34 +246,34 @@ rem = merge(rem, bigregiondrain)
 
 if(regSets=="maakunta"){
   roundWoodTab <- data.table(read_excel(
-    path = "/scratch/project_2000994/PREBASruns/metadata/maakunta/harvest.xlsx",
-    sheet="roundWood"))
-  roundWood <- as.numeric(c(unlist(roundWoodTab[id==r_no,3:9]),
-                            rep(unlist(roundWoodTab[id==r_no,10]),3),
-                            rep(unlist(roundWoodTab[id==r_no,11]),10),
-                            rep(unlist(roundWoodTab[id==r_no,12]),10),
+    path = harvestPath,
+    sheet="logs+pulp"))
+  roundWood <- as.numeric(c(unlist(roundWoodTab[id==r_no,3:12]),
+                            # rep(unlist(roundWoodTab[id==r_no,10]),3),
                             rep(unlist(roundWoodTab[id==r_no,13]),10),
-                            rep(unlist(roundWoodTab[id==r_no,14]),10)
+                            rep(unlist(roundWoodTab[id==r_no,14]),10),
+                            rep(unlist(roundWoodTab[id==r_no,15]),10),
+                            rep(unlist(roundWoodTab[id==r_no,16]),10)
   ))
   energyWoodFromRoundWoodTab <- data.table(read_excel(
-    path = "/scratch/project_2000994/PREBASruns/metadata/maakunta/harvest.xlsx",
-    sheet="energyWoodRoundWood"))
-  energyWoodFromRoundWood <- as.numeric(c(unlist(energyWoodFromRoundWoodTab[id==r_no,3:9]),
-                                          rep(unlist(energyWoodFromRoundWoodTab[id==r_no,10]),3),
-                                          rep(unlist(energyWoodFromRoundWoodTab[id==r_no,11]),10),
-                                          rep(unlist(energyWoodFromRoundWoodTab[id==r_no,12]),10),
+    path = harvestPath,
+    sheet="Roundwood energy"))
+  energyWoodFromRoundWood <- as.numeric(c(unlist(energyWoodFromRoundWoodTab[id==r_no,3:12]),
+                                          # rep(unlist(energyWoodFromRoundWoodTab[id==r_no,10]),3),
                                           rep(unlist(energyWoodFromRoundWoodTab[id==r_no,13]),10),
-                                          rep(unlist(energyWoodFromRoundWoodTab[id==r_no,14]),10)
+                                          rep(unlist(energyWoodFromRoundWoodTab[id==r_no,14]),10),
+                                          rep(unlist(energyWoodFromRoundWoodTab[id==r_no,15]),10),
+                                          rep(unlist(energyWoodFromRoundWoodTab[id==r_no,16]),10)
   ))
   energyWoodTab <- data.table(read_excel(
-    path = "/scratch/project_2000994/PREBASruns/metadata/maakunta/harvest.xlsx",
-    sheet="energyWood"))
-  energyWood <- as.numeric(c(unlist(energyWoodTab[id==r_no,3:9]),
-                             rep(unlist(energyWoodTab[id==r_no,10]),3),
-                             rep(unlist(energyWoodTab[id==r_no,11]),10),
-                             rep(unlist(energyWoodTab[id==r_no,12]),10),
+    path = harvestPath,
+    sheet="energy non roundwood"))
+  energyWood <- as.numeric(c(unlist(energyWoodTab[id==r_no,3:12]),
+                             # rep(unlist(energyWoodTab[id==r_no,10]),3),
                              rep(unlist(energyWoodTab[id==r_no,13]),10),
-                             rep(unlist(energyWoodTab[id==r_no,14]),10)
+                             rep(unlist(energyWoodTab[id==r_no,14]),10),
+                             rep(unlist(energyWoodTab[id==r_no,15]),10),
+                             rep(unlist(energyWoodTab[id==r_no,16]),10)
   ))
   
   ####!!!!!!!!!!!to be checked!!!!!!!
@@ -280,62 +282,61 @@ if(regSets=="maakunta"){
   ######!!!!#####
   
   clcutArTab <- data.table(read_excel(
-    path = "/scratch/project_2000994/PREBASruns/metadata/maakunta/harvest.xlsx",
-    sheet="clearcutAreas"))
-  clcutAr <- as.numeric(c(unlist(clcutArTab[id==r_no,3:9]),
-                          rep(unlist(clcutArTab[id==r_no,10]),3),
-                          rep(unlist(clcutArTab[id==r_no,11]),10),
-                          rep(unlist(clcutArTab[id==r_no,12]),10),
+    path = harvestAreaPath,
+    sheet="Clearcut"))
+  clcutAr <- as.numeric(c(unlist(clcutArTab[id==r_no,3:12]),
+                          # rep(unlist(clcutArTab[id==r_no,10]),3),
                           rep(unlist(clcutArTab[id==r_no,13]),10),
-                          rep(unlist(clcutArTab[id==r_no,14]),10)
+                          rep(unlist(clcutArTab[id==r_no,14]),10),
+                          rep(unlist(clcutArTab[id==r_no,15]),10),
+                          rep(unlist(clcutArTab[id==r_no,16]),10)
   ))
   clcutAr <- clcutAr * clcutArFact
   HarvLimMaak <- cbind(roundWood,energyWood)
   
   thinArTab <- data.table(read_excel(
-    path = "/scratch/project_2000994/PREBASruns/metadata/maakunta/harvest.xlsx",
-    sheet="thinningAreas"))
-  thinAr <- as.numeric(c(unlist(thinArTab[id==r_no,3:9]),
-                         rep(unlist(thinArTab[id==r_no,10]),3),
-                         rep(unlist(thinArTab[id==r_no,11]),10),
-                         rep(unlist(thinArTab[id==r_no,12]),10),
+    path = harvestAreaPath,
+    sheet="Thinning"))
+  thinAr <- as.numeric(c(unlist(thinArTab[id==r_no,3:12]),
                          rep(unlist(thinArTab[id==r_no,13]),10),
-                         rep(unlist(thinArTab[id==r_no,14]),10)
+                         rep(unlist(thinArTab[id==r_no,14]),10),
+                         rep(unlist(thinArTab[id==r_no,15]),10),
+                         rep(unlist(thinArTab[id==r_no,16]),10)
   ))
   noClcutArTab <- data.table(read_excel(
-    path = "/scratch/project_2000994/PREBASruns/metadata/maakunta/harvest.xlsx",
+    path = harvestAreaPath,
     sheet="NoClearCutArea"))
-  noClcutAr <- as.numeric(c(unlist(noClcutArTab[id==r_no,3:9]),
-                            rep(unlist(noClcutArTab[id==r_no,10]),3),
-                            rep(unlist(noClcutArTab[id==r_no,11]),10),
-                            rep(unlist(noClcutArTab[id==r_no,12]),10),
+  noClcutAr <- as.numeric(c(unlist(noClcutArTab[id==r_no,3:12]),
+                            # rep(unlist(noClcutArTab[id==r_no,10]),3),
                             rep(unlist(noClcutArTab[id==r_no,13]),10),
-                            rep(unlist(noClcutArTab[id==r_no,14]),10)
+                            rep(unlist(noClcutArTab[id==r_no,14]),10),
+                            rep(unlist(noClcutArTab[id==r_no,15]),10),
+                            rep(unlist(noClcutArTab[id==r_no,16]),10)
   ))
   
   firstThinAreaTab <- data.table(read_excel(
-    path = "/scratch/project_2000994/PREBASruns/metadata/maakunta/harvest.xlsx",
-    sheet="firstThinArea"))
-  firstThinAr <- as.numeric(c(unlist(firstThinAreaTab[id==r_no,3:9]),
-                              rep(unlist(firstThinAreaTab[id==r_no,10]),3),
-                              rep(unlist(firstThinAreaTab[id==r_no,11]),10),
-                              rep(unlist(firstThinAreaTab[id==r_no,12]),10),
+    path = harvestAreaPath,
+    sheet="First thinning"))
+  firstThinAr <- as.numeric(c(unlist(firstThinAreaTab[id==r_no,3:12]),
+                              # rep(unlist(firstThinAreaTab[id==r_no,10]),3),
                               rep(unlist(firstThinAreaTab[id==r_no,13]),10),
-                              rep(unlist(firstThinAreaTab[id==r_no,14]),10)
+                              rep(unlist(firstThinAreaTab[id==r_no,14]),10),
+                              rep(unlist(firstThinAreaTab[id==r_no,15]),10),
+                              rep(unlist(firstThinAreaTab[id==r_no,16]),10)
   ))
   
   tendingAreaTab <- data.table(read_excel(
-    path = "/scratch/project_2000994/PREBASruns/metadata/maakunta/harvest.xlsx",
-    sheet="tendingArea"))
-  tendingAr <- as.numeric(c(unlist(tendingAreaTab[id==r_no,3:9]),
-                            rep(unlist(tendingAreaTab[id==r_no,10]),3),
-                            rep(unlist(tendingAreaTab[id==r_no,11]),10),
-                            rep(unlist(tendingAreaTab[id==r_no,12]),10),
+    path = harvestAreaPath,
+    sheet="Tending"))
+  tendingAr <- as.numeric(c(unlist(tendingAreaTab[id==r_no,3:12]),
+                            # rep(unlist(tendingAreaTab[id==r_no,10]),3),
                             rep(unlist(tendingAreaTab[id==r_no,13]),10),
-                            rep(unlist(tendingAreaTab[id==r_no,14]),10)
+                            rep(unlist(tendingAreaTab[id==r_no,14]),10),
+                            rep(unlist(tendingAreaTab[id==r_no,15]),10),
+                            rep(unlist(tendingAreaTab[id==r_no,16]),10)
   ))
   stats <- data.table(read_excel(
-    path = "/scratch/project_2000994/PREBASruns/metadata/maakunta/harvest.xlsx",
+    path = harvestPath,
     sheet="stats",col_types=c("text","numeric","numeric","text",rep("numeric",40)),na="NA"))
   ####converts data to model output units
   cFact <- 1e6 ####M m3 -> m3
