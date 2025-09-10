@@ -51,8 +51,8 @@ sampleForPlots <- 1
 ###management and intesity of harvest
 if(!exists("harvScen")) harvScen = "Base"#c("Base", Low","MaxSust")
 if(!exists("harvInten")) harvInten = "Base"#c("NoHarv","Base")
-if(!exists("harvestPath")) harvestPath = "/scratch/project_2000994/PREBASruns/metadata/maakunta/harvest_new.xlsx"
-if(!exists("harvestAreaPath")) harvestAreaPath = "/scratch/project_2000994/PREBASruns/metadata/maakunta/harvest_area.xlsx"
+if(!exists("harvestPath")) harvestPath = "/scratch/project_2000994/PREBASruns/metadata/maakunta/drain_assortments_2015-2024.xlsx"
+if(!exists("harvestAreaPath")) harvestAreaPath = "/scratch/project_2000994/PREBASruns/metadata/maakunta/harvest_types_ha_2015-2024.xlsx"
 
 # Missing from varOuts: 
 # MinPeat-index, NEPdrPeat
